@@ -37,10 +37,74 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// big_lambda
+double big_lambda(double t);
+RcppExport SEXP _nhppp_big_lambda(SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type t(tSEXP);
+    rcpp_result_gen = Rcpp::wrap(big_lambda(t));
+    return rcpp_result_gen;
+END_RCPP
+}
+// big_lambda_inv
+double big_lambda_inv(double z);
+RcppExport SEXP _nhppp_big_lambda_inv(SEXP zSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type z(zSEXP);
+    rcpp_result_gen = Rcpp::wrap(big_lambda_inv(z));
+    return rcpp_result_gen;
+END_RCPP
+}
+// add
+int add(int x, int y);
+RcppExport SEXP _nhppp_add(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(add(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// multiply
+int multiply(int x, int y);
+RcppExport SEXP _nhppp_multiply(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(multiply(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invoke
+int invoke(int x, int y, int (*func)(int, int));
+RcppExport SEXP _nhppp_invoke(SEXP xSEXP, SEXP ySEXP, SEXP int)SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int (*func)(int, >::type int)(int)SEXP);
+    rcpp_result_gen = Rcpp::wrap(invoke(x, y, int)));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_sim_ppp_cn", (DL_FUNC) &_nhppp_sim_ppp_cn, 3},
     {"_nhppp_sim_ppp_ct", (DL_FUNC) &_nhppp_sim_ppp_ct, 4},
+    {"_nhppp_big_lambda", (DL_FUNC) &_nhppp_big_lambda, 1},
+    {"_nhppp_big_lambda_inv", (DL_FUNC) &_nhppp_big_lambda_inv, 1},
+    {"_nhppp_add", (DL_FUNC) &_nhppp_add, 2},
+    {"_nhppp_multiply", (DL_FUNC) &_nhppp_multiply, 2},
+    {"_nhppp_invoke", (DL_FUNC) &_nhppp_invoke, 3},
     {NULL, NULL, 0}
 };
 
