@@ -1,7 +1,5 @@
-#include <Rcpp.h>
-#include <Rmath.h>
+#include "nhppp_types.h"
 using namespace Rcpp;
-
 
 
 // [[Rcpp::export]]
@@ -35,43 +33,94 @@ NumericVector sim_ppp_ct(
 
 
 
-NumericVector big_lambda(NumericVector t){
-  return (t*t);
-}
-double big_lambda(double t){
-  return (t*t);
-}
-
-
-NumericVector big_lambda_inv(NumericVector z){
-  return (sqrt(z));
-}
-double big_lambda_inv(double z){
-  return (sqrt(z));
-}
-
-
-
-
 // [[Rcpp::export]]
 NumericVector sim_nhppp_ct_inv(
   const double t_min, 
-  const double t_max){
+  const double t_max,
+  std::string L_str  = "L_FAIL",
+  std::string L_inv_str  = "Linv_FAIL", 
+  bool only1 = false){
 
   NumericVector dat_warped_time; 
+  XPtr<funcPtr> xp_L = putFunPtrInXPtr2(L_str);
+  funcPtr L = *xp_L;
 
-  dat_warped_time = sim_ppp_ct(1, big_lambda(t_min), big_lambda(t_max));
+  XPtr<funcPtr> xp_L_inv = putFunPtrInXPtr2(L_inv_str);
+  funcPtr L_inv = *xp_L_inv;
 
+  if(only1) {
+    dat_warped_time = sim_ppp_cn(1, 1, L(t_min));
+    dat_warped_time[0] = L_inv(dat_warped_time[0]);
+    return (dat_warped_time);      
+  } 
+
+  dat_warped_time = sim_ppp_ct(1, L(t_min), L(t_max));
   int n = dat_warped_time.size();
   if (n == 0) {
     return dat_warped_time;
   } else {
-    return big_lambda_inv(dat_warped_time);
+    for(int i =0; i<n; i++){
+      dat_warped_time[i] = L_inv(dat_warped_time[i]);
+    }
+    return (dat_warped_time);  
   }
 }
 
+/***R
+ sim_nhppp_ct_inv(0, 3, "L", "Linv", FALSE)
+*/
 
 
+// [[Rcpp::export]]
+NumericVector sim_nhppp_ct_thinning(
+  const double t_min, 
+  const double t_max,
+  const double l_max,
+  std::string l_str  = "l_FAIL", 
+  bool only1 = false){
 
+  const double l_star = 3.0 * l_max; 
+  
+
+  XPtr<funcPtr> xp_l = putFunPtrInXPtr2(l_str);
+  funcPtr lambda = *xp_l;
+
+  // 2 uniforms per while -- second is in thinning
+  NumericVector U(2); 
+  NumericVector times; 
+  
+  double t_new = t_min; 
+  
+  int i = 0;
+  while (t_new <= t_max) {
+    // draw 2 uniforms per while; second is used in the thinning
+    U = runif(2, 0, 1); 
+    
+    t_new = t_new - log(U[0]) / l_star;
+    // the last t_min could go above range_t[2] - catch it here
+    if (U[1] < lambda(t_new) / l_star && t_new <= t_max) {
+      times.push_back(t_new);
+      i++;
+      if (only1 && i == 1) {
+        break;
+      }
+    }
+  }
+  return(times);
+}
+
+/***R
+ sim_nhppp_ct_thinning(2, 3, 6, "l", FALSE)
+*/
+
+/***R
+ microbenchmark::microbenchmark(
+   sim_nhppp_ct_inv(0, 10, "L", "Linv", TRUE),
+   sim_nhppp_ct_inv(0, 10, "L", "Linv", FALSE)[1],
+   sim_nhppp_ct_thinning(0, 10, 20, "l", TRUE),
+   sim_nhppp_ct_thinning(0, 10, 20, "l", FALSE)[1], 
+   times = 1000
+ ) 
+*/
 
 
