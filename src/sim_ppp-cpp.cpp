@@ -2,6 +2,8 @@
 #include <Rmath.h>
 using namespace Rcpp;
 
+
+
 // [[Rcpp::export]]
 NumericVector sim_ppp_cn(
   const double rate, 
@@ -32,55 +34,42 @@ NumericVector sim_ppp_ct(
 }
 
 
-// [[Rcpp::export]]
+
+NumericVector big_lambda(NumericVector t){
+  return (t*t);
+}
 double big_lambda(double t){
   return (t*t);
 }
 
-// [[Rcpp::export]]
+
+NumericVector big_lambda_inv(NumericVector z){
+  return (sqrt(z));
+}
 double big_lambda_inv(double z){
   return (sqrt(z));
 }
 
 
-// [[Rcpp::export]]
-int add(int x, int y)
-{
-    return x + y;
-}
-  
-// [[Rcpp::export]]
-int multiply(int x, int y)
-{
-    return x * y;
-}
-  
+
 
 // [[Rcpp::export]]
-int invoke(int x, int y,
-           int (*func)(int, int))
-{
-    return func(x, y);
-}
-
-/*
 NumericVector sim_nhppp_ct_inv(
-  double (*big_lambda_ptr)(double),
-  double (*big_lambda_inv_ptr)(double),
   const double t_min, 
   const double t_max){
 
   NumericVector dat_warped_time; 
 
-  dat_warped_time = sim_ppp_ct(1, (*big_lambda_ptr)(t_min), (*big_lambda_ptr)(t_max));
+  dat_warped_time = sim_ppp_ct(1, big_lambda(t_min), big_lambda(t_max));
 
-  if (dat_warped_time.size() == 0) {
+  int n = dat_warped_time.size();
+  if (n == 0) {
     return dat_warped_time;
   } else {
-    return (*big_lambda_inv_ptr)(dat_warped_time);
+    return big_lambda_inv(dat_warped_time);
   }
 }
-*/
+
 
 
 

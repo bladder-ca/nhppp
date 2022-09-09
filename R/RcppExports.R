@@ -9,14 +9,6 @@ sim_ppp_ct <- function(rate, t_min, t_max, tol = 10E-6) {
     .Call(`_nhppp_sim_ppp_ct`, rate, t_min, t_max, tol)
 }
 
-big_lambda <- function(t) {
-    .Call(`_nhppp_big_lambda`, t)
-}
-
-big_lambda_inv <- function(z) {
-    .Call(`_nhppp_big_lambda_inv`, z)
-}
-
 add <- function(x, y) {
     .Call(`_nhppp_add`, x, y)
 }
@@ -25,7 +17,7 @@ multiply <- function(x, y) {
     .Call(`_nhppp_multiply`, x, y)
 }
 
-invoke <- function(x, y, int)) {
-    .Call(`_nhppp_invoke`, x, y, int))
+sim_nhppp_ct_inv <- function(t_min, t_max) {
+    .Call(`_nhppp_sim_nhppp_ct_inv`, t_min, t_max)
 }
 
