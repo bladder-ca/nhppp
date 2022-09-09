@@ -9,5 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.9)
+Imports: 
+    Rcpp
 LinkingTo: Rcpp
+RoxygenNote: 7.2.1

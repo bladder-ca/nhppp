@@ -9,15 +9,15 @@ sim_ppp_ct <- function(rate, t_min, t_max, tol = 10E-6) {
     .Call(`_nhppp_sim_ppp_ct`, rate, t_min, t_max, tol)
 }
 
-add <- function(x, y) {
-    .Call(`_nhppp_add`, x, y)
+sim_nhppp_ct_inv <- function(t_min, t_max, L_str = "L_FAIL", L_inv_str = "Linv_FAIL", only1 = FALSE) {
+    .Call(`_nhppp_sim_nhppp_ct_inv`, t_min, t_max, L_str, L_inv_str, only1)
 }
 
-multiply <- function(x, y) {
-    .Call(`_nhppp_multiply`, x, y)
+sim_nhppp_ct_thinning <- function(t_min, t_max, l_max, l_str = "l_FAIL", only1 = FALSE) {
+    .Call(`_nhppp_sim_nhppp_ct_thinning`, t_min, t_max, l_max, l_str, only1)
 }
 
-sim_nhppp_ct_inv <- function(t_min, t_max) {
-    .Call(`_nhppp_sim_nhppp_ct_inv`, t_min, t_max)
+putFunPtrInXPtr2 <- function(fstr) {
+    .Call(`_nhppp_putFunPtrInXPtr2`, fstr)
 }
 
