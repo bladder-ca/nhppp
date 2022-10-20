@@ -29,4 +29,4 @@ comps <- microbenchmark::microbenchmark(
 
 the_plot <- ggplot2::autoplot(comps)
 
-saveRDS(list(the_ggplot = the_plot, results= comps), "/tmp/RvsCpp_results.rds")
+saveRDS(list(the_ggplot = the_plot, results= comps), "./tmp/RvsCpp_results.rds")
