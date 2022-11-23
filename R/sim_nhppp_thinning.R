@@ -22,9 +22,11 @@ sim_nhppp_t_thinning <- function(lambda,
                                  rng_stream = NULL,
                                  only1 = FALSE) {
   if (is.null(lambda_max)) {
-    lambda_max <- stats::optimize(f=function(x) lambda(x), 
-                                  interval = range_t, 
-                                  maximum = TRUE)$objective
+    lambda_max <- stats::optimize(
+      f = function(x) lambda(x),
+      interval = range_t,
+      maximum = TRUE
+    )$objective
   }
   lambda_star <- lambda_max
   X <- numeric()
