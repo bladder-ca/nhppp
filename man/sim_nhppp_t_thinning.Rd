@@ -3,11 +3,11 @@
 \name{sim_nhppp_t_thinning}
 \alias{sim_nhppp_t_thinning}
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-   (t_min, t_max) (thinning method)}
+   (t0, t_max) (thinning method)}
 \usage{
 sim_nhppp_t_thinning(
   lambda,
-  lambda_max = NULL,
+  lambda_maj = NULL,
   range_t = c(0, 10),
   rng_stream = NULL,
   only1 = FALSE
@@ -17,7 +17,8 @@ sim_nhppp_t_thinning(
 \item{lambda}{(function) the instantaneous rate of the NHPPP.
 A continuous function of time.}
 
-\item{lambda_max}{(double) the maximum of `lambda(t)` in `range_t`.}
+\item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
+linear function in `range_t`.}
 
 \item{range_t}{(vector, double) min and max of the time interval.}
 

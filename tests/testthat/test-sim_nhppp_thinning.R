@@ -43,8 +43,9 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
     df <- sim_nhppp_t_thinning(
       lambda = l,
       lambda_maj = c(2.2, 0),
-      range_t = c(5, 10)))
-  )
+      range_t = c(5, 10)
+    )
+  ))
   expect_true(max(df) <= 10)
 
 
@@ -53,8 +54,9 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
     df <- sim_nhppp_t_thinning(
       lambda = l,
       lambda_maj = c(50, -1),
-      range_t = c(5, 10)))
-  )
+      range_t = c(5, 10)
+    )
+  ))
   expect_true(max(df) <= 10)
 
   # works with positive slope majorization function
@@ -62,8 +64,9 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
     df <- sim_nhppp_t_thinning(
       lambda = l,
       lambda_maj = c(2, .1),
-      range_t = c(5, 10)))
-  )
+      range_t = c(5, 10)
+    )
+  ))
   expect_true(max(df) <= 10)
 
   # fails when majorization function is below l
@@ -72,9 +75,7 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
     sim_nhppp_t_thinning(
       lambda = l,
       lambda_maj = c(2, -.1),
-      range_t = c(5, 10)))
-  )
-
-
+      range_t = c(5, 10)
+    )
+  ))
 })
-

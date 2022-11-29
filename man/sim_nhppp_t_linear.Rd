@@ -33,10 +33,11 @@ a vector of event times (t_); if no events realize,
         a vector of length 0
 }
 \description{
-Sample NHPPP times from a linear intensity function 
-using the inversion method, optionally using an `rstream` 
+Sample NHPPP times from a linear intensity function
+using the inversion method, optionally using an `rstream`
 generator or a `Kystis` `RNGClass` object
 }
 \examples{
 x <- sim_nhppp_t_linear(alpha = 0, beta = 0.2)
+
 }

@@ -52,12 +52,12 @@ sim_nhppp_t_inv <- function(Lambda,
 #' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
 #'    (t_min, t_max) with linear intensity function (inversion method)
 #'
-#' @description  Sample NHPPP times from a linear intensity function 
-#' using the inversion method, optionally using an `rstream` 
-#' generator or a `Kystis` `RNGClass` object 
-#' 
-#' @param alpha (double) the intercept  
-#' @param beta (double) the slope 
+#' @description  Sample NHPPP times from a linear intensity function
+#' using the inversion method, optionally using an `rstream`
+#' generator or a `Kystis` `RNGClass` object
+#'
+#' @param alpha (double) the intercept
+#' @param beta (double) the slope
 #' @param range_t (vector, double) min and max of the time interval
 #' @param tol the probability that we will have more than
 #'        the drawn events in (t_min, t_max]
@@ -70,32 +70,29 @@ sim_nhppp_t_inv <- function(Lambda,
 #'
 #' @examples
 #' x <- sim_nhppp_t_linear(alpha = 0, beta = 0.2)
-
-sim_nhppp_t_linear <- function(
-  alpha = 1, 
-  beta = 0, 
-  range_t = c(0, 10),
-  tol = 10^-6,
-  rng_stream = NULL,
-  only1 = FALSE
-  ) {
-  if (beta==0){
+#'
+sim_nhppp_t_linear <- function(alpha = 1,
+                               beta = 0,
+                               range_t = c(0, 10),
+                               tol = 10^-6,
+                               rng_stream = NULL,
+                               only1 = FALSE) {
+  if (beta == 0) {
     stopifnot(alpha > 0)
     return(sim_ppp_t(range_t = range_t, rate = alpha, tol = tol, rng_stream = rng_stream, only1 = only1))
-  } 
+  }
   stopifnot(alpha + beta * range_t[1] >= 0)
   if (beta < 0) {
-    t_max <- -alpha/beta 
+    t_max <- -alpha / beta
     range_t[2] <- min(range_t[2], t_max)
   }
   return(
     sim_nhppp_t_inv(
-      Lambda = function(t) Lambda_linear_form(t, alpha=alpha, beta=beta, t0=range_t[1]), 
-      Lambda_inv = function (z) Lambda_inv_linear_form(z, alpha=alpha, beta=beta, t0=range_t[1]), 
+      Lambda = function(t) Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = range_t[1]),
+      Lambda_inv = function(z) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = range_t[1]),
       range_t = range_t,
       rng_stream = rng_stream,
       only1 = only1
     )
   )
 }
-

@@ -22,8 +22,7 @@ sim_nhppp_t_thinning <- function(lambda,
                                  range_t = c(0, 10),
                                  rng_stream = NULL,
                                  only1 = FALSE) {
-
- #browser()
+  # browser()
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
       f = function(x) lambda(x),
@@ -31,10 +30,10 @@ sim_nhppp_t_thinning <- function(lambda,
       maximum = TRUE
     )$objective
     beta <- 0
-  } else if (length(lambda_maj)==1) {
+  } else if (length(lambda_maj) == 1) {
     alpha <- lambda_maj[1]
     beta <- 0
-  } else if (length(lambda_maj)==2) {
+  } else if (length(lambda_maj) == 2) {
     alpha <- lambda_maj[1]
     beta <- lambda_maj[2]
   }
@@ -44,13 +43,15 @@ sim_nhppp_t_thinning <- function(lambda,
 
   while (t0 <= range_t[2]) {
     t0 <- sim_nhppp_t_linear(alpha = alpha, beta = beta, range_t = c(t0, range_t[2]), rng_stream = rng_stream, only1 = TRUE)
-    if(length(t0)==0) { break }
+    if (length(t0) == 0) {
+      break
+    }
     u <- rng_stream_runif(size = 1, minimum = 0, maximum = 1, rng_stream = rng_stream)
     # the last t0 could go above range_t[2] - catch it here
     acceptance_prob <- lambda(t0) / (alpha + beta * t0)
 
     if (u < acceptance_prob && t0 <= range_t[2]) {
-      stopifnot(acceptance_prob>=0 && acceptance_prob <=1)
+      stopifnot(acceptance_prob >= 0 && acceptance_prob <= 1)
       X <- c(X, t0)
     }
     if (isTRUE(only1) && length(X) == 1) {

@@ -54,14 +54,14 @@ test_that("sim_nhppp_t_linear() works", {
   withr::with_seed(12345, df1 <- sim_nhppp_t_linear(alpha = 0, beta = 1, range_t = c(1, 10)))
   withr::with_seed(12345, df2 <- sim_nhppp_t_inv(
     Lambda = function(t) Lambda_linear_form(t, alpha = 0, beta = 1, t0 = 1),
-    range_t = c(1, 10)))
-  expect_identical(round(df1,3), round(df2,3))
+    range_t = c(1, 10)
+  ))
+  expect_identical(round(df1, 3), round(df2, 3))
 
   withr::with_seed(12345, df1 <- sim_nhppp_t_linear(alpha = 10, beta = -2, range_t = c(1, 10)))
   withr::with_seed(12345, df2 <- sim_nhppp_t_inv(
     Lambda = function(t) Lambda_linear_form(t, alpha = 10, beta = -2, t0 = 1),
-    range_t = c(1, 5)))
-  expect_identical(round(df1,3), round(df2,3))
+    range_t = c(1, 5)
+  ))
+  expect_identical(round(df1, 3), round(df2, 3))
 })
-
-
