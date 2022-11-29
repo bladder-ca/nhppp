@@ -65,3 +65,34 @@ test_that("sim_nhppp_t_linear() works", {
   ))
   expect_identical(round(df1, 3), round(df2, 3))
 })
+
+
+test_that("sim_nhppp_ct_inv() works",{
+  expect_no_error(
+    df<- sim_nhppp_ct_inv(
+      0,        # t_min 
+      10,       # t_max 
+      "L",      # L_str
+      "Linv",  # L_inv_str
+      FALSE     # only1
+    )
+  )
+  expect_true(max(df)<=10)
+
+ expect_no_error(
+    df<- sim_nhppp_ct_inv(
+      0,        # t_min 
+      10,       # t_max 
+      "L",      # L_str
+      "Linv",  # L_inv_str
+      TRUE     # only1
+    )
+  )
+  expect_true(max(df)<=10 && length(df)==1)
+})
+
+
+
+
+
+
