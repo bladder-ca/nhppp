@@ -84,25 +84,23 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
 test_that("sim_nhppp_ct_thinning() works",{
   expect_no_error(
     df<- sim_nhppp_ct_thinning(
-      2,        # t_min 
-      3,        # t_max
-      6,        # l_maj 
-      "l",      # l_str
-      FALSE     # only1
-    )
+      t_min = 1,  
+      t_max = 8,  
+      l_max = 16,  
+      l_str = "l",
+      only1 = FALSE)
   )
-  expect_true(max(df)<=10)
+  expect_true(max(df)<=10 & length(df) >=1)
 
  expect_no_error(
     df<- sim_nhppp_ct_thinning(
-      1,        # t_min 
-      3,        # t_max 
-      6,        # l_maj
-      "l",      # l_str
-      TRUE      # only1
-    )
+      t_min = 1,  
+      t_max = 8,  
+      l_max = 16,  
+      l_str = "l",
+      only1 = TRUE)
   )
-  expect_true(max(df)<=10 && length(df)==1)
+  expect_true(max(df)<=10 & length(df)==1)
 })
 
 

@@ -1,16 +1,17 @@
 #include <Rcpp.h>
 #include <Rmath.h>
 
-typedef double (*funcPtr)(const double & x);
+typedef double (*funcPtr)(const double & x, const Rcpp::NumericVector params);
 
 Rcpp::XPtr<funcPtr> putFunPtrInXPtr2(std::string fstr); 
-Rcpp::NumericVector big_lambda(const Rcpp::NumericVector & t);
-double big_lambda(const double & t);
-Rcpp::NumericVector small_lambda(const Rcpp::NumericVector & t);
-double small_lambda(const double & t);
-Rcpp::NumericVector big_lambda_inv(const Rcpp::NumericVector & z);
-double big_lambda_inv(const double & z);
+double big_lambda(const double & t, const Rcpp::NumericVector params);
+double small_lambda(const double & t, const Rcpp::NumericVector params);
+double big_lambda_inv(const double & z, const Rcpp::NumericVector params);
+
+double Lambda_linear_form(const double &t, const Rcpp::NumericVector params);
+double Lambda_inv_linear_form(const double &z, const Rcpp::NumericVector params);
+
 
 // the vignette L/lambdas 
-double l_vignette(const double & t); 
-double L_vignette(const double & t); 
+double l_vignette(const double & t, const Rcpp::NumericVector params); 
+double L_vignette(const double & t, const Rcpp::NumericVector params); 
