@@ -1,11 +1,12 @@
 #' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-#'    (t_min, t_max) (thinning method)
+#'    (t0, t_max) (thinning method)
 #'
 #' @description Sample NHPPP times using the thinning method, optionally using
 #' an `rstream` generator or a `Kystis` `RNGClass` object.
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
-#' @param lambda_max (double) the maximum of `lambda(t)` in `range_t`.
+#' @param lambda_maj (double, vector) the intercept and optional slope of the majorizing
+#' linear function in `range_t`.
 #' @param range_t (vector, double) min and max of the time interval.
 #' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
 #' @param only1 boolean, draw at most 1 event time
@@ -17,28 +18,41 @@
 #' @examples
 #' x <- sim_nhppp_t_thinning(lambda = function(t) 1 + sin(t))
 sim_nhppp_t_thinning <- function(lambda,
-                                 lambda_max = NULL,
+                                 lambda_maj = NULL,
                                  range_t = c(0, 10),
                                  rng_stream = NULL,
                                  only1 = FALSE) {
-  if (is.null(lambda_max)) {
-    lambda_max <- stats::optimize(
+  # browser()
+  if (is.null(lambda_maj)) {
+    alpha <- stats::optimize(
       f = function(x) lambda(x),
       interval = range_t,
       maximum = TRUE
     )$objective
+    beta <- 0
+  } else if (length(lambda_maj) == 1) {
+    alpha <- lambda_maj[1]
+    beta <- 0
+  } else if (length(lambda_maj) == 2) {
+    alpha <- lambda_maj[1]
+    beta <- lambda_maj[2]
   }
-  lambda_star <- lambda_max
+
   X <- numeric()
-  t_min <- range_t[1]
-  while (t_min <= range_t[2]) {
-    # draw 2 uniforms per while; second is used in the thinning
-    u <- rng_stream_runif(size = 2, minimum = 0, maximum = 1, rng_stream = rng_stream)
-    t_min <- t_min - log(u[1]) / lambda_star
-    # the last t_min could go above range_t[2] - catch it here
-    if (u[2] < lambda(t_min) / lambda_star &&
-      t_min <= range_t[2]) {
-      X <- c(X, t_min)
+  t0 <- range_t[1]
+
+  while (t0 <= range_t[2]) {
+    t0 <- sim_nhppp_t_linear(alpha = alpha, beta = beta, range_t = c(t0, range_t[2]), rng_stream = rng_stream, only1 = TRUE)
+    if (length(t0) == 0) {
+      break
+    }
+    u <- rng_stream_runif(size = 1, minimum = 0, maximum = 1, rng_stream = rng_stream)
+    # the last t0 could go above range_t[2] - catch it here
+    acceptance_prob <- lambda(t0) / (alpha + beta * t0)
+
+    if (u < acceptance_prob && t0 <= range_t[2]) {
+      stopifnot(acceptance_prob >= 0 && acceptance_prob <= 1)
+      X <- c(X, t0)
     }
     if (isTRUE(only1) && length(X) == 1) {
       return(X)
