@@ -73,7 +73,9 @@ test_that("sim_nhppp_ct_inv() works",{
       t_min = 0,
       t_max = 10,
       L_str = "L",
+      L_params = c(0,0,0),
       L_inv_str = "Linv",
+      L_inv_params = c(0,0,0),
       only1 = FALSE)
   )
   expect_true(max(df)<=10)
@@ -83,7 +85,9 @@ test_that("sim_nhppp_ct_inv() works",{
       t_min = 0,
       t_max = 10,
       L_str = "L",
+      L_params = c(0,0,0),
       L_inv_str = "Linv",
+      L_inv_params = c(0,0,0),
       only1 = TRUE)
   )
   expect_true(max(df)<=10 && length(df)==1)
