@@ -99,13 +99,10 @@ test_that("sim_nhppp_ct_linear() works",{
     df <- sim_nhppp_ct_linear(
       alpha = 1,
       beta = 1.0,
-      t_min = 1,
+      t_min = 0,
       t_max = 5,
       tol = 10^-6,
       only1 = FALSE)
   )
-print(df)
 })
-
-
 

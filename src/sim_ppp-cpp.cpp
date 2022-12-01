@@ -54,19 +54,19 @@ NumericVector sim_nhppp_ct_inv(
 
   XPtr<funcPtr> xp_L_inv = putFunPtrInXPtr2(L_inv_str);
   funcPtr L_inv = *xp_L_inv;
-
+  
   if(only1) {
     dat_warped_time = sim_ppp_cn(1, 1, L(t_min, L_params));
     dat_warped_time[0] = L_inv(dat_warped_time[0], L_inv_params);
     return (dat_warped_time);      
   } 
 
-  dat_warped_time = sim_ppp_ct(1, L(t_min, L_params), L(t_max, L_inv_params));
+  dat_warped_time = sim_ppp_ct(1, L(t_min, L_params), L(t_max, L_params));
   int n = dat_warped_time.size();
   if (n == 0) {
     return dat_warped_time;
   } else {
-    for(int i =0; i<n; i++){
+    for(int i = 0; i<n; i++){
       dat_warped_time[i] = L_inv(dat_warped_time[i], L_inv_params);
     }
     return (dat_warped_time);  
@@ -88,6 +88,11 @@ NumericVector sim_nhppp_ct_linear(
   const double tol = 1e-6, 
   const bool only1 = false
   ){
+  NumericVector params(3); 
+  params[0] = alpha; 
+  params[1] = beta; 
+  params[2] = t_min;
+
   if (beta == 0) {
     if(alpha <=0) { 
       stop("Error: beta == 0 and alpha <= 0 "); 
@@ -104,9 +109,9 @@ NumericVector sim_nhppp_ct_linear(
       t_min, 
       t_max,
       "Lambda_linear_form", 
-      (alpha, beta, t_min),
+      params,
       "Lambda_inv_linear_form",
-      (alpha, beta, t_min), 
+      params, 
       only1);
 }
 
