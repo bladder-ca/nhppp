@@ -1,0 +1,330 @@
+---
+title: "vignette-NHPPP"
+author: "Thomas A. Trikalinos, Yuliia Sereda" 
+date: "2022-03-31"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette-NHPPP}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package implements two approaches to draw random event times from a 
+non-homogeneous Poisson Point Process (NHPPP) using the native random number generator 
+or a provided `RngStream` object. 
+
+# Notation 
+A NHPPP has a time-varying non-negative rate $\lambda(t) \ge 0$ for time $t$ in some interval of interest $\mathcal{T} = (a, b)$. We assume $\lambda$ to be continuous in $\mathcal{T}$. Write $\lambda^*$ for the supremum of $\lambda$ over $\mathcal{T}$. 
+
+Define $\Lambda(t) = \int_0^t \lambda(s) \ \text{d}s$ to be the integrated rate in the interval $(0, t)$. By construction $\Lambda$ is a continuous positive monotone function. The integrated rate over an arbitrary interval $(a, t)$ is obtained as $\Lambda(t) - \Lambda(a) = \int_a^t \lambda(s) \ \text{d}s$. 
+
+Write $\Lambda^{-1}(z)$ for the inverse function of $\Lambda$, i.e., 
+$\Lambda^{-1}\big(\Lambda(t)\big) = t$.
+
+The two approaches are: 
+
+1. The *inversion approach*, implemented in `sim_nhppp_t_inv()`.  
+
+    *TODO*: **Expand**. The best case for this function requires $\Lambda$, $\Lambda^{-1}$, and the evaluations $\Lambda(a), \Lambda(b)$, which are provided as options `Lambda`, `Lambda_inv`, and `range_L`, respectively. 
+    
+2. The *thinning approach*, implemented in `sim_nhppp_t_thinning()`.  
+
+    *TODO*: **Expand**. The best case for this function requires $\lambda$ and $\lambda_u$, provided as options `lambda` and `lambda_max`, respectively.
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  echo = TRUE
+)
+#withr::local_preserve_seed()
+set.seed(1234)
+```
+
+Load packages for NHPPP sampling and tests. 
+```{r, setup}
+library(nhppp) # NHPPP in C++
+library(rstream) # Random streams
+library(tidyverse) # Data manipulation
+library(twosamples) # Wasserstein Distance
+```
+
+# Simulating from NHPPP
+
+Consider an example of sinusoidal intensity function with an exponential amplitude and its antiderivative, where $r=0.2$ and $t \in [0, 6\pi)$. In thinning algorithm, the rate of the homogeneous Poisson PP which dominated $\lambda(t)$ was $\lambda_u=\sup_{0 \leq t \leq 6\pi} \lambda(t) = 43.38$.
+```{r}
+r <- 0.2
+tp <- c(0, 6*pi)
+l <- function(t) { exp(r*t)*(1+sin(t)) } # lambda(t)
+L <- function(t) { (exp(r*t)*(r*sin(t)-cos(t)))/(r^2+1)+exp(r*t)/r } # Lambda(t)
+l_sup <- max(sapply(seq(tp[1], tp[2], length.out = 10^4), l))
+```
+
+Load the `rstream` package and create an `RngStream` object. 
+```{r}
+S <- new("rstream.mrg32k3a")
+rstream::rstream.reset(S)
+```
+
+From NHPPP definition, the number of events in the interval of interest is a Poisson random variable with a parameter $\Lambda(6\pi) - \Lambda(0) = 171.13$ representing the mean and variance. 
+```{r}
+mu <- L(tp[2]) - L(tp[1])
+mu
+```
+
+For each method, we generated $10^4$ NHPPP trajectories.
+```{r}
+# List of trajectories - inversion
+nsim <- 10^4
+nhppp_inv <- replicate(nsim, 
+                       nhppp::sim_nhppp_t_inv(Lambda = L, 
+                                              range_t = tp,
+                                              rng_stream = S, 
+                                              only1 = FALSE))
+
+# List of trajectories - thinning
+nhppp_thinning <- replicate(nsim, 
+                            nhppp::sim_nhppp_t_thinning(lambda = l, 
+                                                        lambda_maj = l_sup,
+                                                        range_t = tp,
+                                                        rng_stream = S, 
+                                                        only1 = FALSE))
+
+# List of lists of trajectories
+rv <- list(Inversion = nhppp_inv, Thinning = nhppp_thinning)
+```
+
+
+# Algorithm bias
+
+The next step is to ensure that we simulate from a target density $Pois(171.13)$. If algorithms work well, the shapes of count distributions should be aligned.
+```{r}
+# Empirical count distribution
+count <- as.data.frame(lapply(rv, function(x) sapply(x, length)))
+# Target count density
+td <- data.frame(
+  t = as.integer(
+         seq(min(count$Inversion,count$Thinning),
+             max(count$Inversion,count$Thinning), length.out = nsim)
+         ), 
+  d = dpois(t, mu)
+)
+# Target vs. simulated count distributions
+p1 <- ggplot(count) +
+  geom_density(aes(x = Inversion, linetype = "Inversion", color = "Inversion")) +
+  geom_density(aes(x = Thinning, linetype = "Thinning", color = "Thinning")) +
+  geom_line(aes(y=td$d, x=td$t, color = "Theoretical")) +
+  labs(x = "Count", y = "Density", linetype = "") +
+  scale_linetype_manual(name="",
+                      values=c("Inversion" = 3, 
+                               "Thinning" = 2, 
+                             "Theoretical" = 1)) +
+  scale_colour_manual(name="",
+                        values=c("Inversion" = "#0072B2", 
+                                 "Thinning" = "#D55E00", 
+                                 "Theoretical" = "#999999")) +
+  theme_bw()
+#ggsave("count_densities.pdf", p1, width = 10, height = 7, units = "cm")
+p1
+```
+
+To compare expected and generated count distributions, we calculated several metrics with respect to the number of events in interval:
+  1. Mean absolute bias: $Bias_{N} = \frac{1}{K} \sum_k^K X_k - \Lambda[a,b]$
+  2. Mean relative bias: $RBias_N = \frac{Bias_N} {\Lambda[a, b]}$
+  3. Variance absolute bias: $Bias_{V} =  \frac{1}{K}(X_k - \frac{1}{K} \sum_k^K X_k)^2 - \Lambda[a,b]$
+  4. Variance relative bias: $RBias_V = \frac{Bias_V} {\Lambda[a, b]}$
+  5. Coverage of parameter $\Lambda[a,b]$. We compared $p$\% confidence interval $CI_p$ from theoretical density $Pois(\Lambda[a,b])$ and simulations, where $p \in (95, 90, 75, 50)$.
+  6. Goodness of Fit statistic: ${GOF = \sum_{x \in [0, x_U]} \frac{(O_x - E_x)^2}{E_x}}$ for $x \in X_L, \dots, X_U$, where $O_x$ and $E_x$ represent percentiles of simulated and theoretical distribution respectively. $X_L, X_U$ are the 0.01 and 99.9 percentiles of the Poisson with parameter $\Lambda[a, b]$. $GOF$ is $\chi^2_{X_U-X_L}$. $GOF$ values close to 1 imply a good fit.  
+  7. The Wasserstein test, which compares simulated and theoretical distribution by Wasserstein distance $d$ between the two. The test p-value is calculated by randomly resampling two samples of the same size using the combined sample. $d$ values close to 0 imply a good fit. 
+  
+Both algorithms showed satisfactory fit.
+```{r}
+# Metrics with respect to the number of events in interval
+bias_count <- function(x) {
+  # Mu bias
+  mean_obs <- mean(x)
+  bN <- mean(x - mu)
+  bNr <- (bN/mu)*100 # as percentage
+  
+  # Variance bias
+  var_obs <- var(x)
+  bV <- var(x) - mu
+  bVr <- (bV/mu)*100 # as percentage
+ 
+  # Observed vs Expected count
+  pr1 <- seq(0.0001, 0.999, length.out = 100)
+  E <- qpois(pr1, mu)
+  O <- quantile(x, pr1)
+  
+  # Goodness of Fit
+  GOF <- sum(((O-E)^2)/E)
+  GOF_pval <- pchisq(GOF, length(O)-1, lower.tail = F)
+ 
+  # Coverage
+  pr2 <- c(0.025, 0.05, 0.125, 0.25, 0.75, 0.875, 0.95, 0.975)
+  th <- qpois(pr2, mu) # theoretical percentiles
+  emp <- as.integer(quantile(x, pr2)) # empirical percentiles
+  names(th) <- names(emp) <- paste0(pr2*100, "%")
+  
+  # Wasserstein distance and p-value
+  ed <- density(x)
+  set.seed(784)
+  td <- dpois(as.integer(ed[[1]]), mu)
+  wd <- twosamples::wass_test(ed$y, td)
+  names(wd) <- c("WD", "WD_pval")
+  
+  return(c(mu = mean_obs, BiasN = bN, RBiasN = bNr, 
+                     V = var_obs, BiasV = bV, RBiasV = bVr,
+                     GOF = GOF, GOF_pval = GOF_pval,
+           th = th, emp = emp, wd)
+  )
+}
+
+# Results
+metrics <- round(sapply(count, bias_count), 3)
+metrics
+# Latex table
+# print(xtable::xtable(metrics, type = "latex"), file = "metrics.tex")
+```
+
+We compared normalized intensity function over time, $\frac{\lambda{t}}{\Lambda[a,b]}$ and area one histogram of event times for all $K=10^4$ event time draws. For the above plots, we calculated Wasserstein distance between the empirical (histograms) and theoretical (intensity function) density and Goodness of Fit ($GOF_t$) measure. $GOF_t$ compares observed and expected count of events across $m-th$ histogram bins, where $Expected_m = \Lambda[t_m, t_{m+1}]$ and $GOF_t \sim \chi^2_{M-1}$ with $M$ equal to the total number of bins. 
+
+```{r}
+# Metrics with respect to the event times
+
+# A plot with the normalized intensity function over time, 
+# lambda(t)/Lambda[t_min,t_max] vs area 1 histogram of event times 
+# for all K event time draws
+
+rv_all <- sapply(rv, unlist) # flattened 10^4 trajectories
+
+Name <- c("Inversion", "Thinning")
+bias_times <- function(a) {
+  x <- rv_all[[a]]
+  # Wasserstein distance and p-value
+  td <- density(x)$y
+  ed <- l(density(x)$x)/mu
+  wd <- round(twosamples::wass_test(td, ed), 3)
+  # GOF and p-value
+  b <- 70 # 
+  xmids <- hist(x, breaks = b, plot=F)$mids # histogram time breaks
+  E <- sapply(seq_along(xmids), function(i) {
+                                      (L(xmids[i+1]) - L(xmids[i]))/mu 
+                                }) 
+  E <- E[-length(E)]
+  O <- sapply(seq_along(xmids), function(i) {
+                                    sum(x >= xmids[i] & x <= xmids[i+1])/length(x)
+                                })
+  O <- O[-length(O)]
+  GOF <- round( sum(((O-E)^2)/E), 3 )
+  GOF_pval <- round(pchisq(GOF, length(O)-1, lower.tail = F), 3)
+         
+  # Target density vs area 1 histogram of random variates
+  p  <- ggplot(NULL) +
+        geom_histogram(aes(x=x, y=..density..), 
+                       bins = b, color = "black", fill = "grey") +
+        geom_line(aes(x=x, y=l(x)/mu), size = 1.2, color = "#0072B2") +
+        theme_bw() +
+        labs(y = "Density", x = "Time", title = Name[a]) +
+        annotate(geom = "text", x = 6, y = 0.22,
+                 label = paste0("Wasserstein d=", wd[[1]], ", p=", wd[[2]],
+                                '\n',
+                                'GOF=', GOF, ", p=", GOF_pval))
+
+ return(p)
+}
+
+p2 <- do.call(gridExtra::grid.arrange, 
+              c(lapply(seq_along(rv_all), bias_times), ncol=2))
+#ggsave("bias_times.pdf", p2, width = 20, height = 10, units = "cm")
+p2
+```
+# Computational time
+
+We calculated average computational times across $10^4$ iterations for a simple linear intensity function $\lambda(t) = 2t$ with $t\in [0,10)$, where the cumulative intensity is $\Lambda(t) = t^2$, and the inversion function is $\Lambda^{-1}(z) = \sqrt{z}$. 
+
+```{r}
+# Computational time
+
+# Parameters -- Computations
+l <- function(t) { 2*t }
+L <- function (t) { t^2 }
+Li <- function (z) { sqrt(z) }
+tp <- c(0, 10)
+t <- seq(tp[1], tp[2], length.out = 1000)
+l_max <- max(sapply(t, l))
+n_times <- 10^4
+```
+
+The \textit{best-arguments scenario} is the one with the least number of steps, which is an inversion algorithm with known closed-form solutions for $\Lambda(t)$ and $\Lambda^{-1}(t)$, and thinning with pre-defined $\lambda_u$. \textit{Worse-arguments scenario} is a common case when we pass $\lambda(t)$ to both methods, i.e., thinning with unknown supremum or majorizing function and inversion with numerical solutions for $\Lambda(t)$ and $\Lambda^{-1}(t)$. In addition to the variation in intensity arguments, we calculated time penalties for generating all event times within the interval vs. time to the next event and for using a pointer to the random number generator. Finally, we compared computational times for implementations in \texttt{R} and \texttt{C++}. The latter helps to address overheads of recursive functions, a known bottleneck in \texttt{R}. \texttt{Rcpp} package compiles \texttt{C++} code in \texttt{R} environment. 
+
+```{r}
+# Worse arguments - inversion
+inversion_w_integration <- function(lambda, range_t, only1=FALSE) {
+  Lambda_int <- function(t) {
+    simpson_num_integr(f=lambda, a=range_t[1], b=t, n=50)
+  }
+    nhppp::sim_nhppp_t_inv(Lambda = Lambda_int, range_t = range_t, 
+                                       rng_stream = NULL, only1 = only1)  
+}
+```
+
+```{r}
+comptimes <- bench::mark(
+  "R: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL),
+  "R: Inversion (best args, all samples, substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S),
+  "R: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T),
+  "R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
+  "C++: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = FALSE),
+  "C++: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = TRUE),
+  
+
+  "R: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL),
+  "R: Thinning (best args, all samples, no substream, oblique majorizer)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = c(0.1, 2), range_t = tp, rng_stream = NULL),
+  "R: Thinning (best args, all samples, substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = S), 
+  "R: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = T),
+  "R: Thinning (best args, one sample, no substream, oblique majoriser)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = c(0.1, 2), range_t = tp, rng_stream = NULL, only1 = T),
+    "R: Thinning (worse args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(lambda = l, range_t = tp, only1 = FALSE),
+
+  "C++: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = FALSE),
+  "C++: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = TRUE),
+  "C++: Thinning (best args, all samples, no substream, oblique majoriser)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(0.1, 2), l_str = "l", l_params = 0, only1 = FALSE),
+  "C++: Thinning (best args, one sample, no substream, oblique majorizer)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(0.1, 2), l_str = "l", l_params = 0, only1 = TRUE),
+  
+  
+  check = F, filter_gc = T, max_iterations = n_times
+)
+```
+
+```{r}
+# Plot of results
+labpos <- c(10:7, 4:1, 12:11, 6:5)
+xlabel <- paste0("M=", gsub(" ", "", comptimes$median[labpos], fixed = TRUE))
+xpos <- as.numeric(comptimes$median)[labpos]
+xpos[3] <- xpos[3] + 0.007
+xpos[4] <- xpos[4] - 0.002
+
+p3 <- autoplot(comptimes, type = c("ridge")) +
+  labs(x="", y="") +
+  ggtitle("") +
+  theme(axis.text.x = element_text(size=8),
+        axis.text.y = element_text(size=8)) +
+  annotate("text", x=xpos, y=c(12:1), 
+           label = xlabel,  
+           size = 3, vjust = 1.5, hjust = 0.5) +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 50)) +
+  theme(axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 10),
+        plot.margin = margin(t = 0, r = 1, b = 0, l = 0, "cm"))
+#ggsave("comptimes.pdf", plot=comptimes_plot, height = 6, width=8)
+p3
+```
