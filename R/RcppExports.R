@@ -17,8 +17,8 @@ sim_nhppp_ct_linear <- function(alpha, beta, t_min, t_max, tol = 1e-6, only1 = F
     .Call(`_nhppp_sim_nhppp_ct_linear`, alpha, beta, t_min, t_max, tol, only1)
 }
 
-sim_nhppp_ct_thinning <- function(t_min, t_max, l_max, l_str = "l_FAIL", only1 = FALSE) {
-    .Call(`_nhppp_sim_nhppp_ct_thinning`, t_min, t_max, l_max, l_str, only1)
+sim_nhppp_ct_thinning <- function(t_min, t_max, l_str = "l_FAIL", l_params, l_maj_params, tol = 1e-6, only1 = FALSE) {
+    .Call(`_nhppp_sim_nhppp_ct_thinning`, t_min, t_max, l_str, l_params, l_maj_params, tol, only1)
 }
 
 putFunPtrInXPtr2 <- function(fstr) {

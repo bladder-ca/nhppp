@@ -73,17 +73,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // sim_nhppp_ct_thinning
-NumericVector sim_nhppp_ct_thinning(const double t_min, const double t_max, const double l_max, std::string l_str, bool only1);
-RcppExport SEXP _nhppp_sim_nhppp_ct_thinning(SEXP t_minSEXP, SEXP t_maxSEXP, SEXP l_maxSEXP, SEXP l_strSEXP, SEXP only1SEXP) {
+NumericVector sim_nhppp_ct_thinning(const double t_min, const double t_max, std::string l_str, NumericVector l_params, NumericVector l_maj_params, const double tol, bool only1);
+RcppExport SEXP _nhppp_sim_nhppp_ct_thinning(SEXP t_minSEXP, SEXP t_maxSEXP, SEXP l_strSEXP, SEXP l_paramsSEXP, SEXP l_maj_paramsSEXP, SEXP tolSEXP, SEXP only1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double >::type t_min(t_minSEXP);
     Rcpp::traits::input_parameter< const double >::type t_max(t_maxSEXP);
-    Rcpp::traits::input_parameter< const double >::type l_max(l_maxSEXP);
     Rcpp::traits::input_parameter< std::string >::type l_str(l_strSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l_params(l_paramsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l_maj_params(l_maj_paramsSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< bool >::type only1(only1SEXP);
-    rcpp_result_gen = Rcpp::wrap(sim_nhppp_ct_thinning(t_min, t_max, l_max, l_str, only1));
+    rcpp_result_gen = Rcpp::wrap(sim_nhppp_ct_thinning(t_min, t_max, l_str, l_params, l_maj_params, tol, only1));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -128,7 +130,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_sim_ppp_ct", (DL_FUNC) &_nhppp_sim_ppp_ct, 5},
     {"_nhppp_sim_nhppp_ct_inv", (DL_FUNC) &_nhppp_sim_nhppp_ct_inv, 7},
     {"_nhppp_sim_nhppp_ct_linear", (DL_FUNC) &_nhppp_sim_nhppp_ct_linear, 6},
-    {"_nhppp_sim_nhppp_ct_thinning", (DL_FUNC) &_nhppp_sim_nhppp_ct_thinning, 5},
+    {"_nhppp_sim_nhppp_ct_thinning", (DL_FUNC) &_nhppp_sim_nhppp_ct_thinning, 7},
     {"_nhppp_putFunPtrInXPtr2", (DL_FUNC) &_nhppp_putFunPtrInXPtr2, 1},
     {"_nhppp_Lambda_lf", (DL_FUNC) &_nhppp_Lambda_lf, 2},
     {"_nhppp_Lambda_inv_lf", (DL_FUNC) &_nhppp_Lambda_inv_lf, 2},
