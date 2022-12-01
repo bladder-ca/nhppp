@@ -104,9 +104,9 @@ NumericVector sim_nhppp_ct_linear(
       t_min, 
       t_max,
       "L", 
-      (0.0, 1.1),
+      (alpha, beta, t_min),
       "Linv",
-      (0.0, 1.1), 
+      (alpha, beta, t_min), 
       only1);
 }
 
