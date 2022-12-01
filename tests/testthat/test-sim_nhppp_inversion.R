@@ -94,17 +94,17 @@ test_that("sim_nhppp_ct_inv() works",{
 })
 
 test_that("sim_nhppp_ct_linear() works",{
-
   # constant rate
   expect_no_error(
     df <- sim_nhppp_ct_linear(
       alpha = 1,
-      beta = 0,
+      beta = 1.0,
       t_min = 1,
       t_max = 5,
       tol = 10^-6,
       only1 = FALSE)
   )
+print(df)
 })
 
 

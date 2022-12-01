@@ -103,9 +103,9 @@ NumericVector sim_nhppp_ct_linear(
   return sim_nhppp_ct_inv(
       t_min, 
       t_max,
-      "L", 
+      "Lambda_linear_form", 
       (alpha, beta, t_min),
-      "Linv",
+      "Lambda_inv_linear_form",
       (alpha, beta, t_min), 
       only1);
 }

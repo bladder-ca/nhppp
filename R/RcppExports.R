@@ -25,3 +25,11 @@ putFunPtrInXPtr2 <- function(fstr) {
     .Call(`_nhppp_putFunPtrInXPtr2`, fstr)
 }
 
+Lambda_lf <- function(t, params) {
+    .Call(`_nhppp_Lambda_lf`, t, params)
+}
+
+Lambda_inv_lf <- function(z, params) {
+    .Call(`_nhppp_Lambda_inv_lf`, z, params)
+}
+

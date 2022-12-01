@@ -16,6 +16,34 @@ double big_lambda_inv(const double & z, const Rcpp::NumericVector params = (0.0)
 
 
 
+// [[Rcpp::export]]
+NumericVector Lambda_lf(
+  const Rcpp::NumericVector t, 
+  const Rcpp::NumericVector params){
+  NumericVector res(t.size()); 
+  int i; 
+
+  for(i = 0; i<t.size(); i++ ){
+    res[i] = Lambda_linear_form(t[i], params);
+  }
+  return res;
+}
+
+
+// [[Rcpp::export]]
+NumericVector Lambda_inv_lf(
+  const Rcpp::NumericVector z, 
+  const Rcpp::NumericVector params){
+  NumericVector res(z.size()); 
+  int i; 
+
+  for(i = 0; i<z.size(); i++ ){
+    res[i] = Lambda_inv_linear_form(z[i], params);
+  }
+  return res;
+}
+
+
 
 double Lambda_linear_form(const double &t, const Rcpp::NumericVector params = (0.0, 1.0, 0.0)) {
   double alpha = params[0];

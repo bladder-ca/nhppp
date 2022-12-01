@@ -14,6 +14,10 @@ XPtr<funcPtr> putFunPtrInXPtr2(std::string fstr) {
         return(XPtr<funcPtr>(new funcPtr(&L_vignette)));
     else if (fstr == "l_vignette")
         return(XPtr<funcPtr>(new funcPtr(&l_vignette)));
+    else if (fstr == "Lambda_linear_form")
+        return(XPtr<funcPtr>(new funcPtr(&Lambda_linear_form)));
+        else if (fstr == "Lambda_inv_linear_form")
+        return(XPtr<funcPtr>(new funcPtr(&Lambda_inv_linear_form)));
     else
         return XPtr<funcPtr>(R_NilValue); // runtime error as NULL no XPtr
 }

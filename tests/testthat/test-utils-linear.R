@@ -33,3 +33,25 @@ test_that("Lambda_inv_linear_form works", {
     Lambda_inv_linear_form(z = rep(0, 10), alpha = 0, beta = 0, t0 = 1)
   )
 })
+
+
+test_that("Lambda_lf() and Lambda_inv_lf() work", {
+
+  expect_identical(
+    as.double(1:100),
+    round(Lambda_inv_lf(  
+      Lambda_lf(1:100, c(10,-.1,0)), c(10,-.1,0))
+    ), 5)
+  expect_identical(
+    as.double(1:100), 
+    round(Lambda_inv_lf( 
+      Lambda_lf(1:100, c(10,.1,0)), c(10,.1,0))
+    ), 5)
+  expect_identical(
+    as.double(1:100),     
+    round(Lambda_inv_lf(
+      Lambda_lf(1:100, c(10,0,0)), c(10,0,0))
+    ), 5)
+
+})
+

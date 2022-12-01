@@ -98,6 +98,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Lambda_lf
+NumericVector Lambda_lf(const Rcpp::NumericVector t, const Rcpp::NumericVector params);
+RcppExport SEXP _nhppp_Lambda_lf(SEXP tSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type params(paramsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Lambda_lf(t, params));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Lambda_inv_lf
+NumericVector Lambda_inv_lf(const Rcpp::NumericVector z, const Rcpp::NumericVector params);
+RcppExport SEXP _nhppp_Lambda_inv_lf(SEXP zSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type params(paramsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Lambda_inv_lf(z, params));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_sim_ppp_cn", (DL_FUNC) &_nhppp_sim_ppp_cn, 3},
@@ -106,6 +130,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_sim_nhppp_ct_linear", (DL_FUNC) &_nhppp_sim_nhppp_ct_linear, 6},
     {"_nhppp_sim_nhppp_ct_thinning", (DL_FUNC) &_nhppp_sim_nhppp_ct_thinning, 5},
     {"_nhppp_putFunPtrInXPtr2", (DL_FUNC) &_nhppp_putFunPtrInXPtr2, 1},
+    {"_nhppp_Lambda_lf", (DL_FUNC) &_nhppp_Lambda_lf, 2},
+    {"_nhppp_Lambda_inv_lf", (DL_FUNC) &_nhppp_Lambda_inv_lf, 2},
     {NULL, NULL, 0}
 };
 
