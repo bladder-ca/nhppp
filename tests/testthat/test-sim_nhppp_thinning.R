@@ -137,6 +137,12 @@ test_that("sim_nhppp_ct_thinning() works",{
      l_maj_params = c(1, -0.1),
      only1 = FALSE)
  )
+ 
+ # Lambda supremum rounding error
+ expect_no_error(replicate(10^4, 
+                           sim_nhppp_t_thinning(function(t) 2*t)
+                           )
+                 )
 
 })
 
