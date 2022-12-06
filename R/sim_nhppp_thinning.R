@@ -28,7 +28,7 @@ sim_nhppp_t_thinning <- function(lambda,
       f = function(x) lambda(x),
       interval = range_t,
       maximum = TRUE
-    )$objective
+    )$objective*1.2
     beta <- 0
   } else if (length(lambda_maj) == 1) {
     alpha <- lambda_maj[1]
@@ -86,7 +86,7 @@ sim_nhppp_t_thinning_1 <- function(lambda,
       f = function(x) lambda(x),
       interval = range_t,
       maximum = TRUE
-    )$objective
+    )$objective*1.2
     beta <- 0
   } else if (length(lambda_maj) == 1) {
     alpha <- lambda_maj[1]
