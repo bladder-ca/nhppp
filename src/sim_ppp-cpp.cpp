@@ -116,68 +116,6 @@ NumericVector sim_nhppp_ct_linear(
 }
 
 
-// [[Rcpp::export]]
-NumericVector sim_nhppp_ct_thinning_1(
-  const double t_min, 
-  const double t_max,
-  std::string l_str  = "l_FAIL",
-  NumericVector l_params = (0.0),
-  NumericVector l_maj_params = (0.0),
-  const double tol = 1e-6,
-  bool only1 = false){
-  double alpha, beta, t0, U, acceptance_prob;
-  int i, n_params = l_maj_params.size();  
-  NumericVector tmp, times; 
-
-  if (n_params == 1){
-    alpha = l_maj_params[0]; 
-    beta  = 0.0;
-  } else if (n_params == 2){
-    alpha = l_maj_params[0]; 
-    beta  = l_maj_params[1]; 
-  } else {
-    stop("need an intercept and an optional slope for the majorizing function");
-  }
-  
-  XPtr<funcPtr> xp_l = putFunPtrInXPtr2(l_str);
-  funcPtr lambda = *xp_l;
-
-  
-  t0 = t_min; 
-  i = 0;
-  while (t0 <= t_max) {
-    tmp = sim_nhppp_ct_linear(
-      alpha,
-      beta,
-      t0, 
-      t_max, 
-      tol, 
-      true); // only1  
-    if (tmp.size()==0) {
-      break;
-    } else {
-      t0 = tmp[0];
-    } 
-    
-    U = runif(1, 0, 1)[0]; 
-    acceptance_prob = lambda(t0, l_params) / (alpha + beta * t0);
-
-    if(U<acceptance_prob && t0 <= t_max){
-      if(acceptance_prob>1) {
-        stop("The majorizing function is below the intensity function.");
-      }
-      times.push_back(t0);
-      i++;
-      if (only1 && i == 1) {
-        break;
-      }
-    }
-  }
-  return(times);
-}
-
-
-
 
 // [[Rcpp::export]]
 NumericVector sim_nhppp_ct_thinning(

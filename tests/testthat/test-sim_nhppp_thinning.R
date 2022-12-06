@@ -81,69 +81,71 @@ test_that("sim_nhppp_thinning() works with linear majorization function", {
 })
 
 
-test_that("sim_nhppp_ct_thinning() works",{
+test_that("sim_nhppp_ct_thinning() works", {
   expect_no_error(
-    df<- sim_nhppp_ct_thinning(
+    df <- sim_nhppp_ct_thinning(
       t_min = 1,
       t_max = 8,
       l_str = "l",
       l_params = 0,
       l_maj_params = c(16, 0),
-      only1 = FALSE)
+      only1 = FALSE
+    )
   )
-  expect_true(max(df)<=10 & length(df) >=1)
+  expect_true(max(df) <= 10 & length(df) >= 1)
 
- expect_no_error(
-    df<- sim_nhppp_ct_thinning(
+  expect_no_error(
+    df <- sim_nhppp_ct_thinning(
       t_min = 1,
       t_max = 8,
       l_str = "l",
       l_params = 0,
       l_maj_params = c(16, 0),
-      only1 = TRUE)
+      only1 = TRUE
+    )
   )
- expect_true(max(df)<=10 & length(df)==1)
+  expect_true(max(df) <= 10 & length(df) == 1)
 
- # positive slope
- expect_no_error(
-   df<- sim_nhppp_ct_thinning(
-     t_min = 1,
-     t_max = 8,
-     l_str = "l",
-     l_params = 0,
-     l_maj_params = c(16, 0.1),
-     only1 = FALSE)
- )
+  # positive slope
+  expect_no_error(
+    df <- sim_nhppp_ct_thinning(
+      t_min = 1,
+      t_max = 8,
+      l_str = "l",
+      l_params = 0,
+      l_maj_params = c(16, 0.1),
+      only1 = FALSE
+    )
+  )
 
- # negative slope
- expect_no_error(
-   df<- sim_nhppp_ct_thinning(
-     t_min = 1,
-     t_max = 8,
-     l_str = "l",
-     l_params = 0,
-     l_maj_params = c(24, -0.1),
-     only1 = FALSE)
- )
+  # negative slope
+  expect_no_error(
+    df <- sim_nhppp_ct_thinning(
+      t_min = 1,
+      t_max = 8,
+      l_str = "l",
+      l_params = 0,
+      l_maj_params = c(24, -0.1),
+      only1 = FALSE
+    )
+  )
 
- # Error in sim_nhppp_ct_thinning(t_min = 1, t_max = 8, l_str = "l", l_params = 0,  :
- # The majorizing function is below the intensity function.
- expect_error(
-   df<- sim_nhppp_ct_thinning(
-     t_min = 1,
-     t_max = 8,
-     l_str = "l",
-     l_params = 0,
-     l_maj_params = c(1, -0.1),
-     only1 = FALSE)
- )
- 
- # Lambda supremum rounding error
- expect_no_error(replicate(10^4, 
-                           sim_nhppp_t_thinning(function(t) 2*t)
-                           )
-                 )
+  # Error in sim_nhppp_ct_thinning(t_min = 1, t_max = 8, l_str = "l", l_params = 0,  :
+  # The majorizing function is below the intensity function.
+  expect_error(
+    df <- sim_nhppp_ct_thinning(
+      t_min = 1,
+      t_max = 8,
+      l_str = "l",
+      l_params = 0,
+      l_maj_params = c(1, -0.1),
+      only1 = FALSE
+    )
+  )
 
+  # Lambda supremum rounding error
+  expect_no_error(replicate(
+    10^4,
+    sim_nhppp_t_thinning(function(t) 2 * t)
+  ))
 })
-
-
