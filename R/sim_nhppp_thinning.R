@@ -28,7 +28,7 @@ sim_nhppp_t_thinning <- function(lambda,
       f = function(x) lambda(x),
       interval = range_t,
       maximum = TRUE
-    )$objective
+    )$objective * 1.2
     beta <- 0
   } else if (length(lambda_maj) == 1) {
     alpha <- lambda_maj[1]
@@ -46,10 +46,10 @@ sim_nhppp_t_thinning <- function(lambda,
   u <- rng_stream_runif(size = num_candidates, minimum = 0, maximum = 1, rng_stream = rng_stream)
   acceptance_prob <- lambda(candidate_times) / (alpha + beta * candidate_times)
   stopifnot(all(acceptance_prob <= 1))
-  if(only1) {
-    return(candidate_times[u<acceptance_prob][1])  
+  if (only1) {
+    return(candidate_times[u < acceptance_prob][1])
   } else {
-    return(candidate_times[u<acceptance_prob])
+    return(candidate_times[u < acceptance_prob])
   }
 }
 
@@ -76,10 +76,10 @@ sim_nhppp_t_thinning <- function(lambda,
 #' @examples
 #' x <- sim_nhppp_t_thinning_1(lambda = function(t) 1 + sin(t))
 sim_nhppp_t_thinning_1 <- function(lambda,
-                                 lambda_maj = NULL,
-                                 range_t = c(0, 10),
-                                 rng_stream = NULL,
-                                 only1 = FALSE) {
+                                   lambda_maj = NULL,
+                                   range_t = c(0, 10),
+                                   rng_stream = NULL,
+                                   only1 = FALSE) {
   # browser()
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
@@ -118,7 +118,3 @@ sim_nhppp_t_thinning_1 <- function(lambda,
   }
   return(X)
 }
-
-
-
-

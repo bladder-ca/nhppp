@@ -117,7 +117,7 @@ NumericVector sim_nhppp_ct_linear(
 
 
 // [[Rcpp::export]]
-NumericVector sim_nhppp_ct_thinning(
+NumericVector sim_nhppp_ct_thinning_1(
   const double t_min, 
   const double t_max,
   std::string l_str  = "l_FAIL",
@@ -176,18 +176,63 @@ NumericVector sim_nhppp_ct_thinning(
   return(times);
 }
 
-/***R
- sim_nhppp_ct_thinning(2, 3, 6, "l", FALSE)
-*/
 
-/***R
- microbenchmark::microbenchmark(
-   sim_nhppp_ct_inv(0, 10, "L", "Linv", TRUE),
-   sim_nhppp_ct_inv(0, 10, "L", "Linv", FALSE)[1],
-   sim_nhppp_ct_thinning(0, 10, 20, "l", TRUE),
-   sim_nhppp_ct_thinning(0, 10, 20, "l", FALSE)[1], 
-   times = 1000
- ) 
-*/
 
+
+// [[Rcpp::export]]
+NumericVector sim_nhppp_ct_thinning(
+  const double t_min, 
+  const double t_max,
+  std::string l_str  = "l_FAIL",
+  NumericVector l_params = (0.0),
+  NumericVector l_maj_params = (0.0),
+  const double tol = 1e-6,
+  bool only1 = false){
+  double alpha, beta, acceptance_prob;
+  int i, num_candidate_times, n_params = l_maj_params.size();  
+  NumericVector candidate_times, U, times; 
+
+  if (n_params == 1){
+    alpha = l_maj_params[0]; 
+    beta  = 0.0;
+  } else if (n_params == 2){
+    alpha = l_maj_params[0]; 
+    beta  = l_maj_params[1]; 
+  } else {
+    stop("need an intercept and an optional slope for the majorizing function");
+  }
+  
+  XPtr<funcPtr> xp_l = putFunPtrInXPtr2(l_str);
+  funcPtr lambda = *xp_l;
+
+  candidate_times = sim_nhppp_ct_linear(
+      alpha,
+      beta,
+      t_min, 
+      t_max, 
+      tol, 
+      false); // only1  
+
+  num_candidate_times = candidate_times.size();
+
+  if (num_candidate_times==0) {
+      return candidate_times;
+  } 
+
+  U = runif(num_candidate_times, 0, 1);
+
+  for(i=0; i<num_candidate_times; i++) {
+    acceptance_prob = lambda(candidate_times[i], l_params) / (alpha + beta * candidate_times[i]);
+    if (acceptance_prob>1) {
+      stop("Error: acceptance_prob > 1 at time %d", candidate_times[i]);
+    }
+    if(U[i]<acceptance_prob){
+      times.push_back(candidate_times[i]);
+      if (only1) {
+        return times; 
+      }
+    }
+  }
+  return times;
+}
 

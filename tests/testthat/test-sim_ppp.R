@@ -45,37 +45,37 @@ test_that("sim_ppp_t() works", {
 })
 
 
-test_that("sim_ppp_cn() works",{
+test_that("sim_ppp_cn() works", {
   expect_no_error(
-    df<- sim_ppp_cn(
-      1,        # rate
-      30,       # n
-      1         # t_min 
+    df <- sim_ppp_cn(
+      1, # rate
+      30, # n
+      1 # t_min
     )
   )
-  expect_true(length(df)==30)
+  expect_true(length(df) == 30)
 })
 
-test_that("sim_ppp_ct() works",{
+test_that("sim_ppp_ct() works", {
   expect_no_error(
-    df<- sim_ppp_ct(
-      100,      # rate
-      3,        # t_min
-      6,        # t_max 
-      10^-6,    # tol
-      FALSE     # only1
+    df <- sim_ppp_ct(
+      100, # rate
+      3, # t_min
+      6, # t_max
+      10^-6, # tol
+      FALSE # only1
     )
   )
-  expect_true(max(df)<=6)
+  expect_true(max(df) <= 6)
 
   expect_no_error(
-    df<- sim_ppp_ct(
-      100,      # rate
-      3,        # t_min
-      6,        # t_max 
-      10^-6,    # tol
-      TRUE      # only1
+    df <- sim_ppp_ct(
+      100, # rate
+      3, # t_min
+      6, # t_max
+      10^-6, # tol
+      TRUE # only1
     )
   )
-  expect_true(length(df)==1)
+  expect_true(length(df) == 1)
 })
