@@ -27,7 +27,7 @@ NumericVector sim_ppp_ct(
   if(only1 == true ){
     n = 1;
   } else {
-    n = R::qpois(1.0 - tol, rate * (t_max - t_min), TRUE, FALSE); 
+    n = R::qpois(1.0 - tol, rate * (t_max - t_min), true, false); 
   }
 
   NumericVector times(n); 
