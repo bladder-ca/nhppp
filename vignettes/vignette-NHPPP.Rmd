@@ -103,13 +103,13 @@ The next step is to ensure that we simulate from a target density $Pois(171.13)$
 # Empirical count distribution
 count <- as.data.frame(lapply(rv, function(x) sapply(x, length)))
 # Target count density
-td <- data.frame(
-  t = as.integer(
+t <- as.integer(
          seq(min(count$Inversion,count$Thinning),
              max(count$Inversion,count$Thinning), length.out = nsim)
-         ), 
-  d = dpois(t, mu)
-)
+         )
+d <- dpois(t, mu)
+td <- data.frame(t, d)
+
 # Target vs. simulated count distributions
 p1 <- ggplot(count) +
   geom_density(aes(x = Inversion, linetype = "Inversion", color = "Inversion")) +
@@ -263,7 +263,7 @@ The \textit{best-arguments scenario} is the one with the least number of steps, 
 # Worse arguments - inversion
 inversion_w_integration <- function(lambda, range_t, only1=FALSE) {
   Lambda_int <- function(t) {
-    simpson_num_integr(f=lambda, a=range_t[1], b=t, n=50)
+    nhppp::simpson_num_integr(f=lambda, a=range_t[1], b=t, n=50)
   }
     nhppp::sim_nhppp_t_inv(Lambda = Lambda_int, range_t = range_t, 
                                        rng_stream = NULL, only1 = only1)  
@@ -272,34 +272,33 @@ inversion_w_integration <- function(lambda, range_t, only1=FALSE) {
 
 ```{r}
 comptimes <- bench::mark(
-  "R: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_t_inv(
-    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL),
-  "R: Inversion (best args, all samples, substream)" = nhppp::sim_nhppp_t_inv(
-    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S),
-  "R: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_t_inv(
+  "(1a) R: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = F),
+  "(1b) R: Inversion (best args, all samples, substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S, only1 = F),
+  "(1c) R: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_t_inv(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T),
-  "R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
-  "C++: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = FALSE),
-  "C++: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = TRUE),
+  "(1d) R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
+  "(1e) C++: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = FALSE),
+  "(1f) C++: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = TRUE),
   
 
-  "R: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(
-    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL),
-  "R: Thinning (best args, all samples, no substream, oblique majorizer)" = nhppp::sim_nhppp_t_thinning(
-    lambda = l, lambda_maj = c(0.1, 2), range_t = tp, rng_stream = NULL),
-  "R: Thinning (best args, all samples, substream)" = nhppp::sim_nhppp_t_thinning(
-    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = S), 
-  "R: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_t_thinning(
+  "(2a) R: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = F),
+  "(2b) R: Thinning (best args, all samples, no substream, oblique majorizer)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = c(1, 2), range_t = tp, rng_stream = NULL, only1 = F),
+  "(2c) R: Thinning (best args, all samples, substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = S, only1 = F),
+  "(2d) R: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_t_thinning(
     lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = T),
-  "R: Thinning (best args, one sample, no substream, oblique majoriser)" = nhppp::sim_nhppp_t_thinning(
-    lambda = l, lambda_maj = c(0.1, 2), range_t = tp, rng_stream = NULL, only1 = T),
-    "R: Thinning (worse args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(lambda = l, range_t = tp, only1 = FALSE),
+  "(2e) R: Thinning (best args, one sample, no substream, oblique majoriser)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = c(1, 2), range_t = tp, rng_stream = NULL, only1 = T),
+  "(2f) R: Thinning (worse args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(lambda = l, lambda_maj = NULL, range_t = tp, only1 = FALSE),
+  "(2g) C++: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = FALSE),
+  "(2j) C++: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = TRUE),
+  "(2k) C++: Thinning (best args, all samples, no substream, oblique majoriser)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(20, 0), l_str = "l", l_params = 0, only1 = FALSE),
+  "(2l) C++: Thinning (best args, one sample, no substream, oblique majorizer)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(20, 0), l_str = "l", l_params = 0, only1 = TRUE),
 
-  "C++: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = FALSE),
-  "C++: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = TRUE),
-  "C++: Thinning (best args, all samples, no substream, oblique majoriser)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(0.1, 2), l_str = "l", l_params = 0, only1 = FALSE),
-  "C++: Thinning (best args, one sample, no substream, oblique majorizer)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(0.1, 2), l_str = "l", l_params = 0, only1 = TRUE),
-  
   
   check = F, filter_gc = T, max_iterations = n_times
 )
@@ -307,24 +306,101 @@ comptimes <- bench::mark(
 
 ```{r}
 # Plot of results
-labpos <- c(10:7, 4:1, 12:11, 6:5)
-xlabel <- paste0("M=", gsub(" ", "", comptimes$median[labpos], fixed = TRUE))
-xpos <- as.numeric(comptimes$median)[labpos]
-xpos[3] <- xpos[3] + 0.007
-xpos[4] <- xpos[4] - 0.002
-
 p3 <- autoplot(comptimes, type = c("ridge")) +
   labs(x="", y="") +
   ggtitle("") +
   theme(axis.text.x = element_text(size=8),
         axis.text.y = element_text(size=8)) +
-  annotate("text", x=xpos, y=c(12:1), 
-           label = xlabel,  
-           size = 3, vjust = 1.5, hjust = 0.5) +
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 50)) +
+  scale_y_discrete(limits=rev,
+                   labels = function(x) str_wrap(x, width = 40)) +
+  annotate("text", 
+           x=0.25, 
+           y=c(length(comptimes$median):1),
+           label = paste0("M=", gsub(" ", "", comptimes$median, 
+                                    fixed = TRUE)),
+          size = 3, vjust = 1.5, hjust = 1) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 10),
-        plot.margin = margin(t = 0, r = 1, b = 0, l = 0, "cm"))
-#ggsave("comptimes.pdf", plot=comptimes_plot, height = 6, width=8)
+        plot.margin = margin(t = 0, r = 1, b = 0, l = 0, "cm")) 
+# ggsave("comptimes.pdf", plot=p3, device=cairo_pdf, height = 7, width=9)
 p3
+```
+
+
+```{r}
+# Computational time across packages
+comptimes2 = bench::mark(
+  "(1a) nhppp R inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T),
+  "(1b) nhppp: R inversion, (best args, all samples, no substream)" =  nhppp::sim_nhppp_t_inv(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = F),
+  "(1c) nhppp: R thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = T),
+   "(1d) nhppp: R thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(
+    lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = F),
+
+   "(2a) IndTestPP: thinning (all)" = IndTestPP::simNHPc(lambda = l(seq(tp[1],tp[2],length.out=10)), fixed.seed=NULL, algor="Thinning")$posNH,
+  "(2b) IndTestPP: inversion (all)" = IndTestPP::simNHPc(lambda = l(seq(tp[1],tp[2],length.out=10)), fixed.seed=NULL, algor="Inversion")$posNH,
+  # NHPoisson returns indices of moments of events instead of actual times! The length of t=375 returns 100 events on average
+  "(3) NHPoisson: inversion (all)" = NHPoisson::simNHP.fun(lambda = l(seq(tp[1],tp[2],length.out=375)))$posNH,
+   "(4) poisson: thinning (all)" = poisson::nhpp.event.times(rate = mean(l(t)), num.events = L(tp[2])-L(tp[1]), prob.func = l, num.sims = 1, t0 = 0),
+  "(5) PtProcess: thinning (all)" = simulate(
+    object = PtProcess::mpp(data = NULL, 
+                            gif = PtProcess::simple_gif, marks = list(NULL, NULL),
+                            # Function: \lambda(t) = a + bt^g
+                            params = c(a=0, b=2, g=1), 
+                            gmap = expression(params), mmap = NULL, TT = tp), 
+    # Expected count of events \Lambda(t_max) - Lambda(t_min)
+    max.rate = PtProcess::simple_gif(NULL, NULL, c(a=0, b=2, g=1), tp)
+             )$data[[1]],
+ "(6a) reda: thinning (one)" = reda::simEvent(rho = l,
+                                         origin = tp[1], endTime = tp[2],
+                                         recurrent = F,
+                                         method = "thinning"),
+ "(6b) reda: inversion (one)" = reda::simEvent(rho = l,
+                                          origin = tp[1], endTime = tp[2],
+                                          recurrent = F,
+                                          method = "inversion"),
+  "(6c) reda: thinning (all)" = reda::simEvent(rho = l,
+                                       origin = tp[1], 
+                                       endTime = tp[2],
+                                       recurrent = T,
+                                       method = "thinning"),
+  "(6d) reda: inversion (all)" = reda::simEvent(rho = l,
+                                         origin = tp[1], 
+                                         endTime = tp[2],
+                                         recurrent = T,
+                                         method = "inversion"),
+  "(7) simEd: thinning (all)" = simEd::thinning(
+                        maxTime = tp[2],
+                        intensityFcn = l ,
+                        majorizingFcn = NULL,
+                        majorizingFcnType = NULL,
+                        seed = NA,
+                        maxTrials = Inf,
+                        plot = F),
+  check = F, filter_gc = T, max_iterations = nsim, memory = F
+)
+```
+
+```{r}
+# Plot of results
+p4 <- autoplot(comptimes2, type = c("ridge")) +
+  labs(x="", y="") +
+  ggtitle("") +
+  theme(axis.text.x = element_text(size=8),
+        axis.text.y = element_text(size=8)) +
+  scale_y_discrete(limits=rev,
+                   labels = function(x) str_wrap(x, width = 40)) +
+ annotate("text",
+         x=0.25,
+         y=c(length(comptimes2$median):1),
+       label = paste0("M=", gsub(" ", "", comptimes2$median,
+                                 fixed = TRUE)),
+      size = 3, vjust = 1.5, hjust = 1) +
+  theme(axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 10),
+        plot.margin = margin(t = 0, r = 1, b = 0, l = 0, "cm")) 
+#ggsave("comptimes2.pdf", plot=p4, device=cairo_pdf, height = 7, width=9)
+p4
 ```
