@@ -72,11 +72,11 @@ sim_nhppp_t_inv <- function(Lambda,
 #' x <- nhppp_t_intensity_linear(alpha = 0, beta = 0.2)
 #'
 nhppp_t_intensity_linear <- function(alpha = 1,
-                               beta = 0,
-                               range_t = c(0, 10),
-                               tol = 10^-6,
-                               rng_stream = NULL,
-                               only1 = FALSE) {
+                                     beta = 0,
+                                     range_t = c(0, 10),
+                                     tol = 10^-6,
+                                     rng_stream = NULL,
+                                     only1 = FALSE) {
   if (beta == 0) {
     stopifnot(alpha > 0)
     return(ppp_t(range_t = range_t, rate = alpha, tol = tol, rng_stream = rng_stream, only1 = only1))

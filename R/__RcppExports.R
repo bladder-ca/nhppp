@@ -2,34 +2,33 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 sim_ppp_cn <- function(rate, n, t_min) {
-    .Call(`_nhppp_sim_ppp_cn`, rate, n, t_min)
+  .Call(`_nhppp_sim_ppp_cn`, rate, n, t_min)
 }
 
 sim_ppp_ct <- function(rate, t_min, t_max, tol = 10E-6, only1 = FALSE) {
-    .Call(`_nhppp_sim_ppp_ct`, rate, t_min, t_max, tol, only1)
+  .Call(`_nhppp_sim_ppp_ct`, rate, t_min, t_max, tol, only1)
 }
 
 sim_nhppp_ct_inv <- function(t_min, t_max, L_str = "L_FAIL", L_params, L_inv_str = "Linv_FAIL", L_inv_params, only1 = FALSE) {
-    .Call(`_nhppp_sim_nhppp_ct_inv`, t_min, t_max, L_str, L_params, L_inv_str, L_inv_params, only1)
+  .Call(`_nhppp_sim_nhppp_ct_inv`, t_min, t_max, L_str, L_params, L_inv_str, L_inv_params, only1)
 }
 
 sim_nhppp_ct_linear <- function(alpha, beta, t_min, t_max, tol = 1e-6, only1 = FALSE) {
-    .Call(`_nhppp_sim_nhppp_ct_linear`, alpha, beta, t_min, t_max, tol, only1)
+  .Call(`_nhppp_sim_nhppp_ct_linear`, alpha, beta, t_min, t_max, tol, only1)
 }
 
 sim_nhppp_ct_thinning <- function(t_min, t_max, l_str = "l_FAIL", l_params, l_maj_params, tol = 1e-6, only1 = FALSE) {
-    .Call(`_nhppp_sim_nhppp_ct_thinning`, t_min, t_max, l_str, l_params, l_maj_params, tol, only1)
+  .Call(`_nhppp_sim_nhppp_ct_thinning`, t_min, t_max, l_str, l_params, l_maj_params, tol, only1)
 }
 
 putFunPtrInXPtr2 <- function(fstr) {
-    .Call(`_nhppp_putFunPtrInXPtr2`, fstr)
+  .Call(`_nhppp_putFunPtrInXPtr2`, fstr)
 }
 
 Lambda_lf <- function(t, params) {
-    .Call(`_nhppp_Lambda_lf`, t, params)
+  .Call(`_nhppp_Lambda_lf`, t, params)
 }
 
 Lambda_inv_lf <- function(z, params) {
-    .Call(`_nhppp_Lambda_inv_lf`, z, params)
+  .Call(`_nhppp_Lambda_inv_lf`, z, params)
 }
-

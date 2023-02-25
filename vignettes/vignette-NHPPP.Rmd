@@ -63,12 +63,12 @@ Consider an example of sinusoidal intensity function with an exponential amplitu
 ```{r}
 r <- 0.2
 tp <- c(0, 6 * pi)
-l <- function(t) {# lambda(t)
+l <- function(t) { # lambda(t)
   exp(r * t) * (1 + sin(t))
-} 
-L <- function(t) {# Lambda(t)
+}
+L <- function(t) { # Lambda(t)
   (exp(r * t) * (r * sin(t) - cos(t))) / (r^2 + 1) + exp(r * t) / r
-} 
+}
 l_sup <- max(sapply(seq(tp[1], tp[2], length.out = 10^4), l)) # lambda(t) supremum
 ```
 
@@ -91,8 +91,10 @@ str(t1)
 ```
 
 ```{r}
-t2 <- nhppp::sim_nhppp_t_thinning(lambda = l, lambda_maj = l_sup, 
-                            range_t = tp, rng_stream = S, only1 = FALSE)
+t2 <- nhppp::sim_nhppp_t_thinning(
+  lambda = l, lambda_maj = l_sup,
+  range_t = tp, rng_stream = S, only1 = FALSE
+)
 str(t2)
 ```
 
@@ -102,8 +104,10 @@ nhppp::sim_nhppp_t_inv(Lambda = L, range_t = tp, rng_stream = S, only1 = TRUE)
 ```
 
 ```{r}
-nhppp::sim_nhppp_t_thinning(lambda = l, lambda_maj = l_sup, 
-                            range_t = tp, rng_stream = S, only1 = TRUE)
+nhppp::sim_nhppp_t_thinning(
+  lambda = l, lambda_maj = l_sup,
+  range_t = tp, rng_stream = S, only1 = TRUE
+)
 ```
 
 # Algorithm bias
@@ -115,26 +119,34 @@ First, we generated $10^4$ NHPPP trajectories.
 # List of trajectories - inversion
 nsim <- 10^4
 nhppp_InvThin <- function() {
-  Inversion <- nhppp::sim_nhppp_t_inv(Lambda = L, 
-                                          range_t = tp,
-                                          rng_stream = S, 
-                                          only1 = FALSE)
+  Inversion <- nhppp::sim_nhppp_t_inv(
+    Lambda = L,
+    range_t = tp,
+    rng_stream = S,
+    only1 = FALSE
+  )
   Thinning <- nhppp::sim_nhppp_t_thinning(
-                     lambda = l,
-                     lambda_maj = l_sup,
-                     range_t = tp,
-                     rng_stream = S,
-                     only1 = FALSE)
-  return(list(Inversion = Inversion,
-              Thinning = Thinning))
+    lambda = l,
+    lambda_maj = l_sup,
+    range_t = tp,
+    rng_stream = S,
+    only1 = FALSE
+  )
+  return(list(
+    Inversion = Inversion,
+    Thinning = Thinning
+  ))
 }
 ```
 
 ```{r}
-nhppp_traj <- parallel::mcmapply(function(i) {nhppp_InvThin()}, 
-                                  1:nsim,
-                                  mc.cores = parallel::detectCores()-1
-                                )
+nhppp_traj <- parallel::mcmapply(
+  function(i) {
+    nhppp_InvThin()
+  },
+  1:nsim,
+  mc.cores = parallel::detectCores() - 1
+)
 ```
 
 The expected number of events in the interval is $Pois(171)$. If algorithms work well, the shapes of count distributions should be aligned.
@@ -150,8 +162,8 @@ d <- dpois(t, mu)
 # Target vs. simulated count distributions
 p1 <- ggplot(NULL) +
   geom_line(aes(x = t, y = d, linetype = "Theoretical", color = "Theoretical")) +
-  geom_density(aes(x = nhppp_count[1,], linetype = "Inversion", color = "Inversion")) +
-  geom_density(aes(x = nhppp_count[2,], linetype = "Thinning", color = "Thinning")) +
+  geom_density(aes(x = nhppp_count[1, ], linetype = "Inversion", color = "Inversion")) +
+  geom_density(aes(x = nhppp_count[2, ], linetype = "Thinning", color = "Thinning")) +
   labs(x = "Count", y = "Density", linetype = "") +
   scale_linetype_manual(
     name = "",
@@ -219,11 +231,11 @@ bias_count <- function(x, digits) {
   wd <- twosamples::wass_test(ed$y, td)
 
   return(c(
-    mu = round(mean_obs, digits), 
-    BiasN = round(bN, digits), 
+    mu = round(mean_obs, digits),
+    BiasN = round(bN, digits),
     RBiasN = round(bNr, digits),
-    V = round(var_obs, digits), 
-    BiasV = round(bV, digits), 
+    V = round(var_obs, digits),
+    BiasV = round(bV, digits),
     RBiasV = round(bVr, digits),
     GOF = paste0(round(GOF, digits), " [", round(GOF_pval, digits), "]"),
     WD = paste0(round(wd[1], digits), " [", round(wd[2], digits), "]"),
@@ -250,50 +262,54 @@ Then, we compared algorithm bias in released R packages simulating from NHPPP. W
 ```{r}
 # Function to generate NHPPP trajectories from released R packages with our parameters
 reNHpoInsi <- function() {
-# reda
-reda_thinning = reda::simEvent(
+  # reda
+  reda_thinning <- reda::simEvent(
     rho = l,
     origin = tp[1], endTime = tp[2],
     recurrent = T,
     method = "thinning"
   )
-reda_thinning_lmax = reda::simEvent(
+  reda_thinning_lmax <- reda::simEvent(
     rho = l,
-    rhoMax = 1.1*l_sup,
+    rhoMax = 1.1 * l_sup,
     origin = tp[1], endTime = tp[2],
     recurrent = T,
     method = "thinning"
   )
-reda_inversion = reda::simEvent(
+  reda_inversion <- reda::simEvent(
     rho = l,
     origin = tp[1], endTime = tp[2],
     recurrent = T,
     method = "inversion"
   )
 
-# NHPoisson returns indexes of moments of events instead of actual times! 
-# The length of times n=570 returns 171 events on average (calibrated)
-t_seq_1 <- seq(tp[1], tp[2], length.out = 570)
-NHPoisson_i <- NHPoisson::simNHP.fun(lambda = l(t_seq_1))$posNH
-NHPoisson_inversion <- t_seq_1[NHPoisson_i]
+  # NHPoisson returns indexes of moments of events instead of actual times!
+  # The length of times n=570 returns 171 events on average (calibrated)
+  t_seq_1 <- seq(tp[1], tp[2], length.out = 570)
+  NHPoisson_i <- NHPoisson::simNHP.fun(lambda = l(t_seq_1))$posNH
+  NHPoisson_inversion <- t_seq_1[NHPoisson_i]
 
-# poisson: fixed count:  num.events = L(tp[2]) - L(tp[1])
-poisson_thinning = poisson::nhpp.event.times(rate = l_sup,  # calibrated rate = 28
-                                             num.events = floor(L(tp[2]) - L(tp[1])), 
-                                             prob.func = function(t) {l(t)/l_sup}, 
-                                             num.sims = 1, t0 = 0)
+  # poisson: fixed count:  num.events = L(tp[2]) - L(tp[1])
+  poisson_thinning <- poisson::nhpp.event.times(
+    rate = l_sup, # calibrated rate = 28
+    num.events = floor(L(tp[2]) - L(tp[1])),
+    prob.func = function(t) {
+      l(t) / l_sup
+    },
+    num.sims = 1, t0 = 0
+  )
 
-# PtProcess: no applicable functional form
+  # PtProcess: no applicable functional form
 
-# IndTestPP
-# t length determines the length of the observed period
-t_seq_2 <- seq(tp[1], tp[2], length.out = tp[2])
-IndTestPP_thinning = IndTestPP::simNHPc(lambda = l(t_seq_2), fixed.seed = NULL, algor = "Thinning")$posNH
-hist(IndTestPP_thinning)
-IndTestPP_inversion = IndTestPP::simNHPc(lambda = l(t_seq_2), fixed.seed = NULL, algor = "Inversion")$posNH
+  # IndTestPP
+  # t length determines the length of the observed period
+  t_seq_2 <- seq(tp[1], tp[2], length.out = tp[2])
+  IndTestPP_thinning <- IndTestPP::simNHPc(lambda = l(t_seq_2), fixed.seed = NULL, algor = "Thinning")$posNH
+  hist(IndTestPP_thinning)
+  IndTestPP_inversion <- IndTestPP::simNHPc(lambda = l(t_seq_2), fixed.seed = NULL, algor = "Inversion")$posNH
 
-# simEd
-simEd_thinning = simEd::thinning(
+  # simEd
+  simEd_thinning <- simEd::thinning(
     maxTime = ceiling(tp[2]), # must be a positive integer value greater than or equal to 1
     intensityFcn = l,
     majorizingFcn = NULL,
@@ -303,34 +319,39 @@ simEd_thinning = simEd::thinning(
     plot = F
   )
 
-simEd_thinning_lmax = simEd::thinning(
+  simEd_thinning_lmax <- simEd::thinning(
     maxTime = ceiling(tp[2]),
     intensityFcn = l,
-    majorizingFcn =  function(x) { 1.2*l_sup },
+    majorizingFcn = function(x) {
+      1.2 * l_sup
+    },
     majorizingFcnType = NULL,
     seed = NA,
     maxTrials = Inf,
     plot = F
   )
-return(list("reda thinning" = reda_thinning,
-            "reda thinning with supremum" = reda_thinning_lmax,
-            "reda inversion" = reda_inversion,
-            "NHPoisson inversion" = NHPoisson_inversion,
-            "poisson thinning" = poisson_thinning,
-            "IndTestPP thinning" = IndTestPP_thinning,
-            "IndTestPP inversion" = IndTestPP_inversion,
-            "simEd thinning"= simEd_thinning,
-            "simEd thinning with supremum" = simEd_thinning_lmax
-            ))
+  return(list(
+    "reda thinning" = reda_thinning,
+    "reda thinning with supremum" = reda_thinning_lmax,
+    "reda inversion" = reda_inversion,
+    "NHPoisson inversion" = NHPoisson_inversion,
+    "poisson thinning" = poisson_thinning,
+    "IndTestPP thinning" = IndTestPP_thinning,
+    "IndTestPP inversion" = IndTestPP_inversion,
+    "simEd thinning" = simEd_thinning,
+    "simEd thinning with supremum" = simEd_thinning_lmax
+  ))
 }
 ```
 
 ```{r}
 # Generate NHPPP trajectories from released packages
 # We use cluster parallel computing to speed up replications
-cl <- parallel::makeCluster(parallel::detectCores()-1)
+cl <- parallel::makeCluster(parallel::detectCores() - 1)
 parallel::clusterExport(cl, c("reNHpoInsi", "l", "L", "tp", "r", "l_sup"))
-reNHpoInsi_traj <- parallel::parSapply(cl, X = 1:10^3, FUN = function(i) {i = reNHpoInsi()})
+reNHpoInsi_traj <- parallel::parSapply(cl, X = 1:10^3, FUN = function(i) {
+  i <- reNHpoInsi()
+})
 ```
 
 NHPPP generation in the package `poisson` requires a user to define a number of generated times. The distribution of the number of events is not random. Thus, we excluded this package from count metrics. 
@@ -339,8 +360,8 @@ NHPPP generation in the package `poisson` requires a user to define a number of 
 # Distributions of event count
 reNHpoInsi_count <- apply(t(reNHpoInsi_traj), 1, function(x) sapply(x, length))
 metrics2 <- apply(reNHpoInsi_count, 1, bias_count, digits = 3)
-metrics2[,1:4]
-metrics2[,6:9]
+metrics2[, 1:4]
+metrics2[, 6:9]
 ```
 
 We compared normalized intensity function over time, $\frac{\lambda{t}}{\Lambda[a,b]}$ and area one histogram of event times for all $K=10^4$ event time draws. For the above plots, we calculated Wasserstein distance between the empirical (histograms) and theoretical (intensity function) density and Goodness of Fit ($GOF_t$) measure. $GOF_t$ compares observed and expected count of events across $m-th$ histogram bins, where $Expected_m = \Lambda[t_m, t_{m+1}]$ and $GOF_t \sim \chi^2_{M-1}$ with $M$ equal to the total number of bins. 
@@ -391,7 +412,7 @@ bias_times <- function(a, traj) {
 
 ```{r}
 # Metrics with respect to the event times: nhppp package
-nhppp_times <- apply(nhppp_traj, 1, unlist)  
+nhppp_times <- apply(nhppp_traj, 1, unlist)
 p2 <- do.call(
   gridExtra::grid.arrange,
   c(lapply(seq_along(nhppp_times), bias_times, traj = nhppp_times), ncol = 2)
@@ -403,7 +424,7 @@ p2
 ```{r}
 # Metrics with respect to the event times: released packages
 reNHpoInsi_times <- apply(reNHpoInsi_traj, 1, unlist)
-#Name <- dimnames(reNHpoInsi_traj)[[1]]
+# Name <- dimnames(reNHpoInsi_traj)[[1]]
 p2_1 <- do.call(
   gridExtra::grid.arrange,
   c(lapply(seq_along(reNHpoInsi_times), bias_times, traj = reNHpoInsi_times), ncol = 2)
@@ -414,34 +435,48 @@ p2_1
 ```{r}
 # Expected time to event: parametric distributions vs. nhppp
 # Exponential (rate = 1)
-r = 1; mu_exp = 1/r
+r <- 1
+mu_exp <- 1 / r
 # Gompertz (shape = 0.1, scale = 1)
-eta = 0.1; b = 1
-Ei <- function(eta, v) {integrate( # exponential integral function
-                         f = function(v) {exp(-v)/v},
-                         lower = -eta,
-                         upper = Inf)$value
+eta <- 0.1
+b <- 1
+Ei <- function(eta, v) {
+  integrate( # exponential integral function
+    f = function(v) {
+      exp(-v) / v
+    },
+    lower = -eta,
+    upper = Inf
+  )$value
 }
-mu_gompertz = (1/b)*exp(eta)*Ei(-eta)
+mu_gompertz <- (1 / b) * exp(eta) * Ei(-eta)
 # Gamma (shape = 1, scale = 2)
-k = 1; theta = 2; mu_gamma = k*theta
+k <- 1
+theta <- 2
+mu_gamma <- k * theta
 
 l_list <- list(
-  l_exp = function (t) { r*exp((-r)*t) },
-  l_gomp = function (t) { b*eta*exp(eta + b*t - eta*exp(b*t)) },
-  l_gamma = function (t) { (t^(k-1)*exp(-t/theta))/(gamma(k)*theta^k) }
+  l_exp = function(t) {
+    r * exp((-r) * t)
+  },
+  l_gomp = function(t) {
+    b * eta * exp(eta + b * t - eta * exp(b * t))
+  },
+  l_gamma = function(t) {
+    (t^(k - 1) * exp(-t / theta)) / (gamma(k) * theta^k)
+  }
 )
 
 # Parametric distributions: plots
 t_seq <- seq(0, 20, by = 1)
-par(mfrow = c(1,3))
+par(mfrow = c(1, 3))
 plot(t_seq, l_exp(t_seq), type = "l", xlab = "time", ylab = "density", main = "Exponential")
 plot(t_seq, l_gomp(t_seq), type = "l", xlab = "time", ylab = "density", main = "Gompertz")
 plot(t_seq, l_gamma(t_seq), type = "l", xlab = "time", ylab = "density", main = "Gamma")
 
 # Empirical distributions
 nsim <- 10^4
-tp <- c(0,20)
+tp <- c(0, 20)
 
 inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
   Lambda_int <- function(t) {
@@ -453,22 +488,36 @@ inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
   )
 }
 
-param_inv <- replicate(nsim,
-                    lapply(seq_along(l_list), 
-                    function(i) {inversion_w_integration(lambda = l_list[[i]], 
-                                                               range_t = tp,
-                                                               only1 = F)})
+param_inv <- replicate(
+  nsim,
+  lapply(
+    seq_along(l_list),
+    function(i) {
+      inversion_w_integration(
+        lambda = l_list[[i]],
+        range_t = tp,
+        only1 = F
+      )
+    }
+  )
 )
-param_thin <- replicate(nsim, 
-                    lapply(seq_along(l_list), 
-                    function(i) {nhppp::sim_nhppp_t_thinning(lambda = l_list[[i]], 
-                                                               range_t = tp,
-                                                               only1 = F)})
+param_thin <- replicate(
+  nsim,
+  lapply(
+    seq_along(l_list),
+    function(i) {
+      nhppp::sim_nhppp_t_thinning(
+        lambda = l_list[[i]],
+        range_t = tp,
+        only1 = F
+      )
+    }
+  )
 )
 
 # Expected time to event between parametric distributions and nhppp
 cbind(
-  theoretical = c(mu_exp=mu_exp, mu_gompertz = mu_gompertz, mu_gamma = mu_gamma),
+  theoretical = c(mu_exp = mu_exp, mu_gompertz = mu_gompertz, mu_gamma = mu_gamma),
   inversion = unlist(lapply(apply(param_inv, 1, unlist), mean)),
   thinning = unlist(lapply(apply(param_thin, 1, unlist), mean))
 )
@@ -483,9 +532,15 @@ We calculated average computational times across $10^4$ iterations for a simple 
 # Computational time
 
 # Parameters -- Computations
-l <- function(t) {2*t}
-L <- function(t) {t^2}
-Li <- function(z) {sqrt(z)}
+l <- function(t) {
+  2 * t
+}
+L <- function(t) {
+  t^2
+}
+Li <- function(z) {
+  sqrt(z)
+}
 tp <- c(0, 10)
 t <- seq(tp[1], tp[2], length.out = 1000)
 l_max <- max(sapply(t, l))
@@ -549,10 +604,10 @@ comptimes <- bench::mark(
 # Plot of results
 xpos <- comptimes$median
 xpos[1] <- xpos[1] - 0.00001
-xpos[c(7,11)] <- xpos[c(7,11)] - 0.00007
+xpos[c(7, 11)] <- xpos[c(7, 11)] - 0.00007
 xpos[8] <- xpos[8] - 0.00009
 xpos[10] <- xpos[10] - 0.00005
-xpos[c(9,12:13,15)] <- xpos[c(9,12,15)] + 0.0002
+xpos[c(9, 12:13, 15)] <- xpos[c(9, 12, 15)] + 0.0002
 p3 <- autoplot(comptimes, type = c("ridge")) +
   labs(x = "", y = "") +
   ggtitle("") +
@@ -586,10 +641,12 @@ p3
 comptimes2 <- bench::mark(
   "(1a) IndTestPP: thinning (all)" = IndTestPP::simNHPc(lambda = l(seq(tp[1], tp[2], length.out = tp[2])), fixed.seed = NULL, algor = "Thinning")$posNH,
   "(1b) IndTestPP: inversion (all)" = IndTestPP::simNHPc(lambda = l(seq(tp[1], tp[2], length.out = tp[2])), fixed.seed = NULL, algor = "Inversion")$posNH,
-  # NHPoisson returns indices of moments of events instead of actual times! 
+  # NHPoisson returns indices of moments of events instead of actual times!
   # The length of t=375 returns 100 events on average
   "(2) NHPoisson: inversion (all)" = NHPoisson::simNHP.fun(lambda = l(seq(tp[1], tp[2], length.out = 375)))$posNH,
-  "(3) poisson: thinning (all)" = poisson::nhpp.event.times(rate = l_max, num.events = L(tp[2]) - L(tp[1]), prob.func = function(t) {l(t)/l_max}, num.sims = 1, t0 = 0),
+  "(3) poisson: thinning (all)" = poisson::nhpp.event.times(rate = l_max, num.events = L(tp[2]) - L(tp[1]), prob.func = function(t) {
+    l(t) / l_max
+  }, num.sims = 1, t0 = 0),
   "(4) PtProcess: thinning (all)" = simulate(
     object = PtProcess::mpp(
       data = NULL,
@@ -642,7 +699,7 @@ comptimes2 <- bench::mark(
 
 ```{r}
 # Plot of results
-xpos <-  comptimes2$median
+xpos <- comptimes2$median
 xpos[6] <- xpos[6] - 0.0005
 xpos[7] <- xpos[7] + 0.0009
 p4 <- autoplot(comptimes2, type = c("ridge")) +

@@ -25,3 +25,27 @@ expect_no_error <- function(expr) {
 read_code <- function(codeFile) {
   paste(readLines(file.path(codeFile)), collapse = "\n")
 }
+
+
+#' Check the validity of a ppp vector.
+#'
+#' @description Standard checks for a vector of ordered times. Check
+#' that the `times` vector is sorted, has unique values, has all values
+#' in [t_min, t_max], and has length `size` (if applicable).
+#'
+#' @param times (vector, double) the times to be checked
+#' @param t_min (double) the start of the time nterval
+#' @param t_max (double) optional: the end of the time interval
+#' @param size (double) optional: the size of the vector
+#' @return NULL
+check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL) {
+  testthat::expect_identical(times, sort(times))
+  testthat::expect_identical(times, unique(times))
+  testthat::expect_true(min(times) >= t_min)
+  if (!is.null(t_max)) {
+    testthat::expect_true(max(times) <= t_max)
+  }
+  if (!is.null(size)) {
+    testthat::expect_equal(length(times), size)
+  }
+}
