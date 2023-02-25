@@ -48,9 +48,6 @@ test_that("ppp_t() works", {
   check_ppp_sample_validity(times = df3, t_min = 0, t_max = 10)
 })
 
-
-
-
 test_that("ppp_n() works", {
   expect_no_error(
     withr::with_seed(
@@ -71,10 +68,6 @@ test_that("ppp_n() works", {
 })
 
 
-
-
-
-#
 # test_that("sim_ppp_cn() works", {
 #   expect_no_error(
 #     df <- sim_ppp_cn(

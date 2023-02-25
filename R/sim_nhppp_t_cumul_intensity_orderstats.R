@@ -16,30 +16,26 @@
 #' @export
 #'
 #' @examples
-#' x <- sim_nhppp_t_order_stats(Lambda = function(t) t + cos(t) - 1)
-sim_nhppp_t_order_stats <- function(Lambda,
-                                    Lambda_inv = NULL,
-                                    range_t = c(0, 10),
-                                    range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-                                    rng_stream = NULL,
-                                    only1 = FALSE) {
+#' x <- nhppp_t_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
+nhppp_t_cumulative_intensity_orderstats <- function(Lambda,
+                                                    Lambda_inv = NULL,
+                                                    range_t = c(0, 10),
+                                                    range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
+                                                    rng_stream = NULL,
+                                                    only1 = FALSE) {
   if (isTRUE(only1)) {
     n <- 1
   } else {
     n <- rng_stream_rpois(size = 1, lambda = range_L[2] - range_L[1], rng_stream = rng_stream)
   }
-
-  tmp_u <- sort.int(rng_stream_runif(size = n, minimum = range_L[1], maximum = range_L[2]), method = "radix")
-
+  tmp_u <- ppp_n(size = n, range_t = range_L, rng_stream = rng_stream)
   if (is.function(Lambda_inv)) {
-    t_ <- Lambda_inv(tmp_u)
-  } else {
-    t_ <- inverse_with_uniroot_sorted(
-      f = Lambda,
-      y = tmp_u,
-      range_x = range_t,
-      range_y = range_L
-    )
+    return(Lambda_inv(tmp_u))
   }
-  return(t_)
+  return(inverse_with_uniroot_sorted(
+    f = Lambda,
+    y = tmp_u,
+    range_x = range_t,
+    range_y = range_L
+  ))
 }

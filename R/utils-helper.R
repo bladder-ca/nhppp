@@ -38,7 +38,7 @@ read_code <- function(codeFile) {
 #' @param t_max (double) optional: the end of the time interval
 #' @param size (double) optional: the size of the vector
 #' @return NULL
-check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL) {
+check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, only1 = FALSE) {
   testthat::expect_identical(times, sort(times))
   testthat::expect_identical(times, unique(times))
   testthat::expect_true(min(times) >= t_min)
@@ -47,5 +47,8 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL) {
   }
   if (!is.null(size)) {
     testthat::expect_equal(length(times), size)
+  }
+  if (only1) {
+    testthat::expect_true(length(times) <= 1)
   }
 }

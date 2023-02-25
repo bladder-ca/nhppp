@@ -4,7 +4,13 @@
 \alias{check_ppp_sample_validity}
 \title{Check the validity of a ppp vector.}
 \usage{
-check_ppp_sample_validity(times, t_min, t_max = NULL, size = NULL)
+check_ppp_sample_validity(
+  times,
+  t_min,
+  t_max = NULL,
+  size = NULL,
+  only1 = FALSE
+)
 }
 \arguments{
 \item{times}{(vector, double) the times to be checked}
