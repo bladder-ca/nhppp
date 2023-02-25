@@ -86,11 +86,11 @@ double Lambda_inv_linear_form(const double &z, const Rcpp::NumericVector params 
 
 
 // The vignette L/lambdas  
-double l_vignette(const double & t, const Rcpp::NumericVector params = (2.0)){
+double l_vignette(const double & t, const Rcpp::NumericVector params = (0.2)){
   const double r = params[0];
   return exp(r*t) * (1 + sin(t));
 }
-double L_vignette(const double & t, const Rcpp::NumericVector params = (2.0)){
+double L_vignette(const double & t, const Rcpp::NumericVector params = (0.2)){
   const double r = params[0];
   return (exp(r*t)*(r*sin(t) - cos(t)) + 1) / (1+r*r) + 
          (exp(r*t) - 1)/r ;
