@@ -19,6 +19,7 @@ test_that("nhppp_t_cumulative_intensity_orderstats() works", {
 
   # works with rstream generator
   expect_no_error(withr::with_preserve_seed(df3 <- nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = c(5, 10), rng_stream = S)))
+  check_ppp_sample_validity(times = df3, t_min = 5, t_max = 10)
 
   # works with only1=TRUE
   expect_no_error(withr::with_preserve_seed(df4 <- nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = c(5, 10), rng_stream = S, only1 = TRUE)))
