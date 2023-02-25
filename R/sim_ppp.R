@@ -9,9 +9,9 @@
 #' @export
 #'
 #' @examples
-#' x <- sim_ppp_n(n = 10, rate = 1, t_min = 0)
+#' x <- ppp_next_n(n = 10, rate = 1, t_min = 0)
 #' @importClassesFrom rstream rstream.mrg32k3a
-sim_ppp_n <- function(n = 1, rate = 1, t_min = 0, rng_stream = NULL) {
+ppp_next_n <- function(n = 1, rate = 1, t_min = 0, rng_stream = NULL) {
   dt_ <- rng_stream_rexp(size = n, rate = rate, rng_stream = rng_stream)
   t_ <- cumsum(dt_) + t_min
   return(t_)
@@ -32,8 +32,8 @@ sim_ppp_n <- function(n = 1, rate = 1, t_min = 0, rng_stream = NULL) {
 #' @export
 #'
 #' @examples
-#' x <- sim_ppp_t(range_t = c(0, 10), rate = 1, tol = 10^-6)
-sim_ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, only1 = FALSE) {
+#' x <- ppp_t(range_t = c(0, 10), rate = 1, tol = 10^-6)
+ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, only1 = FALSE) {
   # we expect lambda = t_max*rate events
   # we will draw n so that the probability that t>t_max is 1-tol
   if (isTRUE(only1)) {
@@ -45,3 +45,22 @@ sim_ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NU
   t_ <- cumsum(dt_) + range_t[1]
   return(t_[t_ <= range_t[2]])
 }
+
+
+
+#' Simulate specific number of points from a homogeneous Poisson Point Process over (t_min, t_max]
+#'
+#' @param size (int) the number of points to be simulated
+#' @param range_t (vector, double) min and max of the time interval
+#' @param rng_stream an `rstream` or `RNGClass` object
+#'
+#' @return a vector of event times of size `size`
+#' @export
+#'
+#' @examples
+#' x <- ppp_n(size=10, range_t = c(0, 10))
+ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
+  U = rng_stream_runif(size = size, minimum=range_t[1], maximum=range_t[1], rng_stream=rng_stream)
+  return(sort(U))
+}
+

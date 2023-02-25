@@ -38,7 +38,7 @@ sim_nhppp_t_thinning <- function(lambda,
     beta <- lambda_maj[2]
   }
 
-  candidate_times <- sim_nhppp_t_linear(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
+  candidate_times <- nhppp_t_intensity_linear(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
   num_candidates <- length(candidate_times)
   if (num_candidates == 0) {
     return(candidate_times)

@@ -23,7 +23,7 @@ sim_nhppp_t_inv <- function(Lambda,
                             range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
                             rng_stream = NULL,
                             only1 = FALSE) {
-  dat_warped_time <- sim_ppp_t(
+  dat_warped_time <- ppp_t(
     range_t = range_L,
     rate = 1,
     rng_stream = rng_stream,
@@ -69,9 +69,9 @@ sim_nhppp_t_inv <- function(Lambda,
 #' @export
 #'
 #' @examples
-#' x <- sim_nhppp_t_linear(alpha = 0, beta = 0.2)
+#' x <- nhppp_t_intensity_linear(alpha = 0, beta = 0.2)
 #'
-sim_nhppp_t_linear <- function(alpha = 1,
+nhppp_t_intensity_linear <- function(alpha = 1,
                                beta = 0,
                                range_t = c(0, 10),
                                tol = 10^-6,
@@ -79,7 +79,7 @@ sim_nhppp_t_linear <- function(alpha = 1,
                                only1 = FALSE) {
   if (beta == 0) {
     stopifnot(alpha > 0)
-    return(sim_ppp_t(range_t = range_t, rate = alpha, tol = tol, rng_stream = rng_stream, only1 = only1))
+    return(ppp_t(range_t = range_t, rate = alpha, tol = tol, rng_stream = rng_stream, only1 = only1))
   }
   stopifnot(alpha + beta * range_t[1] >= 0)
   if (beta < 0) {
