@@ -16,13 +16,12 @@
 #' @export
 #'
 #' @examples
-#' x <- sim_nhppp_t_thinning(lambda = function(t) 1 + sin(t))
-sim_nhppp_t_thinning <- function(lambda,
-                                 lambda_maj = NULL,
-                                 range_t = c(0, 10),
-                                 rng_stream = NULL,
-                                 only1 = FALSE) {
-  # browser()
+#' x <- nhppp_t_intensity(lambda = function(t) 1 + sin(t))
+nhppp_t_intensity <- function(lambda,
+                              lambda_maj = NULL,
+                              range_t = c(0, 10),
+                              rng_stream = NULL,
+                              only1 = FALSE) {
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
       f = function(x) lambda(x),
