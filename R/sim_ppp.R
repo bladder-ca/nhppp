@@ -68,9 +68,9 @@ ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_strea
   if (isTRUE(only1)) {
     n <- 1
   } else {
-    n <- rng_stream_rpois(size = 1, lambda = rate*(range_t[2]-range_t[1]), rng_stream=rng_stream)
+    n <- rng_stream_rpois(size = 1, lambda = rate * (range_t[2] - range_t[1]), rng_stream = rng_stream)
   }
-  return(ppp_n(size = n, range_t = range_t, rng_stream=rng_stream))
+  return(ppp_n(size = n, range_t = range_t, rng_stream = rng_stream))
 }
 
 
