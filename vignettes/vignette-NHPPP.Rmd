@@ -27,7 +27,7 @@ The two approaches are:
 
     *TODO*: **Expand**. The best case for this function requires $\Lambda$, $\Lambda^{-1}$, and the evaluations $\Lambda(a), \Lambda(b)$, which are provided as options `Lambda`, `Lambda_inv`, and `range_L`, respectively. 
     
-2. The *thinning approach*, implemented in `sim_nhppp_t_thinning()`.  
+2. The *thinning approach*, implemented in `nhppp_t_intensity()`.  
 
     *TODO*: **Expand**. The best case for this function requires $\lambda$ and $\lambda_u$, provided as options `lambda` and `lambda_max`, respectively.
 
@@ -84,14 +84,14 @@ mu <- L(tp[2]) - L(tp[1])
 mu
 ```
 
-To generate one NHPPP sequence, we can use `nhppp::nhppp_t_cumulative_intensity_inversion()` or `nhppp::sim_nhppp_t_thinning()` functions:
+To generate one NHPPP sequence, we can use `nhppp::nhppp_t_cumulative_intensity_inversion()` or `nhppp::nhppp_t_intensity()` functions:
 ```{r}
 t1 <- nhppp::nhppp_t_cumulative_intensity_inversion(Lambda = L, range_t = tp, rng_stream = S, only1 = FALSE)
 str(t1)
 ```
 
 ```{r}
-t2 <- nhppp::sim_nhppp_t_thinning(
+t2 <- nhppp::nhppp_t_intensity(
   lambda = l, lambda_maj = l_sup,
   range_t = tp, rng_stream = S, only1 = FALSE
 )
@@ -104,7 +104,7 @@ nhppp::nhppp_t_cumulative_intensity_inversion(Lambda = L, range_t = tp, rng_stre
 ```
 
 ```{r}
-nhppp::sim_nhppp_t_thinning(
+nhppp::nhppp_t_intensity(
   lambda = l, lambda_maj = l_sup,
   range_t = tp, rng_stream = S, only1 = TRUE
 )
@@ -125,7 +125,7 @@ nhppp_InvThin <- function() {
     rng_stream = S,
     only1 = FALSE
   )
-  Thinning <- nhppp::sim_nhppp_t_thinning(
+  Thinning <- nhppp::nhppp_t_intensity(
     lambda = l,
     lambda_maj = l_sup,
     range_t = tp,
@@ -506,7 +506,7 @@ param_thin <- replicate(
   lapply(
     seq_along(l_list),
     function(i) {
-      nhppp::sim_nhppp_t_thinning(
+      nhppp::nhppp_t_intensity(
         lambda = l_list[[i]],
         range_t = tp,
         only1 = F
@@ -576,22 +576,22 @@ comptimes <- bench::mark(
   "(1d) R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
   "(1e) C++: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = FALSE),
   "(1f) C++: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = TRUE),
-  "(2a) R: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(
+  "(2a) R: Thinning (best args, all samples, no substream)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = F
   ),
-  "(2b) R: Thinning (best args, all samples, no substream, oblique majorizer)" = nhppp::sim_nhppp_t_thinning(
+  "(2b) R: Thinning (best args, all samples, no substream, oblique majorizer)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = c(1, 2), range_t = tp, rng_stream = NULL, only1 = F
   ),
-  "(2c) R: Thinning (best args, all samples, substream)" = nhppp::sim_nhppp_t_thinning(
+  "(2c) R: Thinning (best args, all samples, substream)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = S, only1 = F
   ),
-  "(2d) R: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_t_thinning(
+  "(2d) R: Thinning (best args, one sample, no substream)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = T
   ),
-  "(2e) R: Thinning (best args, one sample, no substream, oblique majoriser)" = nhppp::sim_nhppp_t_thinning(
+  "(2e) R: Thinning (best args, one sample, no substream, oblique majoriser)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = c(1, 2), range_t = tp, rng_stream = NULL, only1 = T
   ),
-  "(2f) R: Thinning (worse args, all samples, no substream)" = nhppp::sim_nhppp_t_thinning(lambda = l, lambda_maj = NULL, range_t = tp, only1 = FALSE),
+  "(2f) R: Thinning (worse args, all samples, no substream)" = nhppp::nhppp_t_intensity(lambda = l, lambda_maj = NULL, range_t = tp, only1 = FALSE),
   "(2g) C++: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = FALSE),
   "(2j) C++: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = TRUE),
   "(2k) C++: Thinning (best args, all samples, no substream, oblique majoriser)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(20, 0), l_str = "l", l_params = 0, only1 = FALSE),
