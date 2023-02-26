@@ -23,7 +23,7 @@ $\Lambda^{-1}\big(\Lambda(t)\big) = t$.
 
 The two approaches are: 
 
-1. The *inversion approach*, implemented in `sim_nhppp_t_inv()`.  
+1. The *inversion approach*, implemented in `nhppp_t_cumulative_intensity_inversion()`.  
 
     *TODO*: **Expand**. The best case for this function requires $\Lambda$, $\Lambda^{-1}$, and the evaluations $\Lambda(a), \Lambda(b)$, which are provided as options `Lambda`, `Lambda_inv`, and `range_L`, respectively. 
     
@@ -84,9 +84,9 @@ mu <- L(tp[2]) - L(tp[1])
 mu
 ```
 
-To generate one NHPPP sequence, we can use `nhppp::sim_nhppp_t_inv()` or `nhppp::sim_nhppp_t_thinning()` functions:
+To generate one NHPPP sequence, we can use `nhppp::nhppp_t_cumulative_intensity_inversion()` or `nhppp::sim_nhppp_t_thinning()` functions:
 ```{r}
-t1 <- nhppp::sim_nhppp_t_inv(Lambda = L, range_t = tp, rng_stream = S, only1 = FALSE)
+t1 <- nhppp::nhppp_t_cumulative_intensity_inversion(Lambda = L, range_t = tp, rng_stream = S, only1 = FALSE)
 str(t1)
 ```
 
@@ -100,7 +100,7 @@ str(t2)
 
 The argument `only1 = FALSE` simulates recurrent events and returnes all times within the interval given $\lambda(t)$. If interested in the time to the first event or non-recurrent events, pass `only1 = TRUE`.
 ```{r}
-nhppp::sim_nhppp_t_inv(Lambda = L, range_t = tp, rng_stream = S, only1 = TRUE)
+nhppp::nhppp_t_cumulative_intensity_inversion(Lambda = L, range_t = tp, rng_stream = S, only1 = TRUE)
 ```
 
 ```{r}
@@ -119,7 +119,7 @@ First, we generated $10^4$ NHPPP trajectories.
 # List of trajectories - inversion
 nsim <- 10^4
 nhppp_InvThin <- function() {
-  Inversion <- nhppp::sim_nhppp_t_inv(
+  Inversion <- nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = L,
     range_t = tp,
     rng_stream = S,
@@ -482,7 +482,7 @@ inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
   Lambda_int <- function(t) {
     nhppp::simpson_num_integr(f = lambda, a = range_t[1], b = t, n = 50)
   }
-  nhppp::sim_nhppp_t_inv(
+  nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = Lambda_int, range_t = range_t,
     rng_stream = NULL, only1 = only1
   )
@@ -555,7 +555,7 @@ inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
   Lambda_int <- function(t) {
     nhppp::simpson_num_integr(f = lambda, a = range_t[1], b = t, n = 50)
   }
-  nhppp::sim_nhppp_t_inv(
+  nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = Lambda_int, range_t = range_t,
     rng_stream = NULL, only1 = only1
   )
@@ -564,13 +564,13 @@ inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
 
 ```{r}
 comptimes <- bench::mark(
-  "(1a) R: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_t_inv(
+  "(1a) R: Inversion (best args, all samples, no substream)" = nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = F
   ),
-  "(1b) R: Inversion (best args, all samples, substream)" = nhppp::sim_nhppp_t_inv(
+  "(1b) R: Inversion (best args, all samples, substream)" = nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S, only1 = F
   ),
-  "(1c) R: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_t_inv(
+  "(1c) R: Inversion (best args, one sample, no substream)" = nhppp::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T
   ),
   "(1d) R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),

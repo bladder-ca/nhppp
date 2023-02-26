@@ -141,7 +141,7 @@ plot(t, Li(t))
 # Best case: RNG with no RNG
 res1 <- microbenchmark::microbenchmark(
   # using the rstream random number generator
-  "R: Inversion (substream)" = des.sim.functions::sim_nhppp_t_inv(
+  "R: Inversion (substream)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S
   ),
   "R: Thinning (substream)" = des.sim.functions::sim_nhppp_t_thinning(
@@ -149,7 +149,7 @@ res1 <- microbenchmark::microbenchmark(
   ),
 
   # using the built-in random number generator
-  "R: Inversion (native)" = des.sim.functions::sim_nhppp_t_inv(
+  "R: Inversion (native)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL
   ),
   "R: Thinning (native)" = des.sim.functions::sim_nhppp_t_thinning(
@@ -173,7 +173,7 @@ autoplot(res1, type = c("violin")) +
 # Best case: 1 vs all
 res2 <- microbenchmark::microbenchmark(
   # First time
-  "R: Inversion (1 sample)" = des.sim.functions::sim_nhppp_t_inv(
+  "R: Inversion (1 sample)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T
   ),
   "R: Thinning (1 sample)" = des.sim.functions::sim_nhppp_t_thinning(
@@ -181,7 +181,7 @@ res2 <- microbenchmark::microbenchmark(
   ),
 
   # All times
-  "R: Inversion (all samples)" = des.sim.functions::sim_nhppp_t_inv(
+  "R: Inversion (all samples)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = F
   ),
   "R: Thinning (all samples)" = des.sim.functions::sim_nhppp_t_thinning(
@@ -206,7 +206,7 @@ inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
   Lambda_int <- function(t) {
     des.sim.functions::simpson_num_integr(f = lambda, a = range_t[1], b = t, n = 50)
   }
-  des.sim.functions::sim_nhppp_t_inv(Lambda = Lambda_int, range_t = range_t, rng_stream = NULL, only1 = only1)
+  des.sim.functions::nhppp_t_cumulative_intensity_inversion(Lambda = Lambda_int, range_t = range_t, rng_stream = NULL, only1 = only1)
 }
 
 thinning_with_differentiation <- function(Lambda, range_t, only1 = FALSE) {

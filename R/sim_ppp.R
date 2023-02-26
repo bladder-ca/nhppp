@@ -47,6 +47,34 @@ ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, 
 }
 
 
+#' Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)
+#'
+#' @param range_t (vector, double) min and max of the time interval
+#' @param rate (scalar, double) constant instantaneous rate
+#' @param tol the probability that we will have more than
+#'        the drawn events in (t_min, t_max]
+#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param only1 boolean, draw at most 1 event time
+#'
+#' @return a vector of event times t
+#'         if no events realize, it will have 0 length
+#' @export
+#'
+#' @examples
+#' x <- ppp_t_orderstat(range_t = c(0, 10), rate = 1, tol = 10^-6)
+ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, only1 = FALSE) {
+  # we expect lambda = t_max*rate events
+  # we will draw n so that the probability that t>t_max is 1-tol
+  if (isTRUE(only1)) {
+    n <- 1
+  } else {
+    n <- rng_stream_rpois(size = 1, lambda = rate*(range_t[2]-range_t[1]), rng_stream=rng_stream)
+  }
+  return(ppp_n(size = n, range_t = range_t, rng_stream=rng_stream))
+}
+
+
+
 
 #' Simulate specific number of points from a homogeneous Poisson Point Process over (t_min, t_max]
 #'
