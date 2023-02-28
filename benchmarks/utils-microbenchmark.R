@@ -5,13 +5,16 @@ Li <- function(z) sqrt(z)
 
 
 res <- bench::mark(
-	"ppp_n (1)" = ppp_n(size = 1, range_t = c(0,10)),
+  "ppp_next_n (1)" = ppp_next_n(size = 1, rate = 1, t_min=0 ),
+  "ppp_next_n (100)" = ppp_next_n(size = 100, rate = 1, t_min=0),
+
+  "ppp_n (1)" = ppp_n(size = 1, range_t = c(0,10)),
 	"ppp_n (100)" = ppp_n(size = 100, range_t = c(0,10)),
 
 	"ppp_t (1st)" = ppp_t(rate = 1, range_t = c(0,10), only1=TRUE),
 	"ppp_t (All)" = ppp_t(rate = 1, range_t = c(0,10)),
 
-    "ppp_t_orderstat (1st)" = ppp_t_orderstat(rate =1, range_t=c(0,10), only1=TRUE),
+  "ppp_t_orderstat (1st)" = ppp_t_orderstat(rate =1, range_t=c(0,10), only1=TRUE),
 	"ppp_t_orderstat (All)" = ppp_t_orderstat(rate=1, range_t=c(0,10)),
 
 	"nhppp_n_intensity_linear (1)" = nhppp_n_intensity_linear(size = 1,alpha = 0, beta = 2, range_t = c(0,10)),
