@@ -470,9 +470,9 @@ l_list <- list(
 # Parametric distributions: plots
 t_seq <- seq(0, 20, by = 1)
 par(mfrow = c(1, 3))
-plot(t_seq, l_exp(t_seq), type = "l", xlab = "time", ylab = "density", main = "Exponential")
-plot(t_seq, l_gomp(t_seq), type = "l", xlab = "time", ylab = "density", main = "Gompertz")
-plot(t_seq, l_gamma(t_seq), type = "l", xlab = "time", ylab = "density", main = "Gamma")
+plot(t_seq, l_list[[1]](t_seq), type = "l", xlab = "time", ylab = "density", main = "Exponential")
+plot(t_seq, l_list[[2]](t_seq), type = "l", xlab = "time", ylab = "density", main = "Gompertz")
+plot(t_seq, l_list[[3]](t_seq), type = "l", xlab = "time", ylab = "density", main = "Gamma")
 
 # Empirical distributions
 nsim <- 10^4
@@ -574,8 +574,6 @@ comptimes <- bench::mark(
     Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T
   ),
   "(1d) R: Inversion (worse args, all samples, no substream)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
-  "(1e) C++: Inversion (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = FALSE),
-  "(1f) C++: Inversion (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_inv(t_min = tp[1], t_max = tp[2], L_str = "L", L_params = 0, L_inv_str = "Linv", L_inv_params = 0, only1 = TRUE),
   "(2a) R: Thinning (best args, all samples, no substream)" = nhppp::nhppp_t_intensity(
     lambda = l, lambda_maj = l_max, range_t = tp, rng_stream = NULL, only1 = F
   ),
@@ -592,10 +590,6 @@ comptimes <- bench::mark(
     lambda = l, lambda_maj = c(1, 2), range_t = tp, rng_stream = NULL, only1 = T
   ),
   "(2f) R: Thinning (worse args, all samples, no substream)" = nhppp::nhppp_t_intensity(lambda = l, lambda_maj = NULL, range_t = tp, only1 = FALSE),
-  "(2g) C++: Thinning (best args, all samples, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = FALSE),
-  "(2j) C++: Thinning (best args, one sample, no substream)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = l_max, l_str = "l", l_params = 0, only1 = TRUE),
-  "(2k) C++: Thinning (best args, all samples, no substream, oblique majoriser)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(20, 0), l_str = "l", l_params = 0, only1 = FALSE),
-  "(2l) C++: Thinning (best args, one sample, no substream, oblique majorizer)" = nhppp::sim_nhppp_ct_thinning(t_min = tp[1], t_max = tp[2], l_maj_params = c(20, 0), l_str = "l", l_params = 0, only1 = TRUE),
   check = F, filter_gc = T, max_iterations = n_times
 )
 ```
@@ -603,11 +597,11 @@ comptimes <- bench::mark(
 ```{r}
 # Plot of results
 xpos <- comptimes$median
-xpos[1] <- xpos[1] - 0.00001
-xpos[c(7, 11)] <- xpos[c(7, 11)] - 0.00007
-xpos[8] <- xpos[8] - 0.00009
-xpos[10] <- xpos[10] - 0.00005
-xpos[c(9, 12:13, 15)] <- xpos[c(9, 12, 15)] + 0.0002
+# xpos[1] <- xpos[1] - 0.00001
+# xpos[c(7, 11)] <- xpos[c(7, 11)] - 0.00007
+# xpos[8] <- xpos[8] - 0.00009
+# xpos[10] <- xpos[10] - 0.00005
+# xpos[c(9, 12:13, 15)] <- xpos[c(9, 12, 15)] + 0.0002
 p3 <- autoplot(comptimes, type = c("ridge")) +
   labs(x = "", y = "") +
   ggtitle("") +
