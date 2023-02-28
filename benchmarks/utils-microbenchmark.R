@@ -43,7 +43,7 @@ res <- bench::mark(
 	"nhppp_t_cumulative_intensity_inversion (1st, best)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = c(0, 10), only1 = TRUE),
 	"nhppp_t_cumulative_intensity_inversion (All, best)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = c(0, 10)),
 
-    "nhppp_t_cumulative_intensity_orderstats (1st, worst)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = c(0, 10), only1 = TRUE),
+  "nhppp_t_cumulative_intensity_orderstats (1st, worst)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = c(0, 10), only1 = TRUE),
 	"nhppp_t_cumulative_intensity_orderstats (All, worst)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = c(0, 10)),
 	"nhppp_t_cumulative_intensity_orderstats (1st, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = c(0, 10), only1 = TRUE),
 	"nhppp_t_cumulative_intensity_orderstats (All, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = c(0, 10)),
