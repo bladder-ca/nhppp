@@ -125,6 +125,7 @@ nhppp_InvThin <- function() {
     rng_stream = S,
     only1 = FALSE
   )
+  
   Thinning <- nhppp::nhppp_t_intensity(
     lambda = l,
     lambda_maj = l_sup,
@@ -420,6 +421,31 @@ p2 <- do.call(
 # ggsave("bias_times.pdf", p2, width = 7, height = 7, units = "cm")
 p2
 ```
+
+```{r}
+# Bias metrics with respect to event times in functions sampling N events
+n <- 10^4
+nhppp_times_n <- list(
+  "Inversion [fixed size]" = nhppp::nhppp_n_cumulative_intensity(size = n, 
+                                             Lambda = L,
+                                             range_t = tp,
+                                             rng_stream = S,
+                                             only1 = T),
+  "Thinning [fixed size]" = nhppp::nhppp_n_intensity(size = n,
+                                   lambda = l,
+                                   lambda_maj = l_sup,
+                                   range_t = tp,
+                                   rng_stream = S)
+)
+
+p2_1 <- do.call(
+  gridExtra::grid.arrange,
+  c(lapply(seq_along(nhppp_times_n), bias_times, traj = nhppp_times_n), ncol = 2)
+)
+# ggsave("bias_times_n_functions.pdf", p2_1, width = 7, height = 7, units = "cm")
+p2_1
+```
+
 
 ```{r}
 # Metrics with respect to the event times: released packages
