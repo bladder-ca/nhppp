@@ -20,8 +20,7 @@ nhppp_n_cumulative_intensity <- function(size, Lambda,
                                          Lambda_inv = NULL,
                                          range_t = c(0, 10),
                                          range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-                                         rng_stream = NULL,
-                                         only1 = FALSE) {
+                                         rng_stream = NULL) {
   tmp_u <- ppp_n(size = size, range_t = range_L, rng_stream = rng_stream)
   if (is.function(Lambda_inv)) {
     return(Lambda_inv(tmp_u))
