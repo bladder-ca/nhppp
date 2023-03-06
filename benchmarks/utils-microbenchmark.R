@@ -4,7 +4,7 @@ L <- function(x) x^2
 Li <- function(z) sqrt(z)
 rngt <- c(0, 10)
 hppp_rate <- 1
-
+nsim <- 1000
 
 res <- bench::mark(
   "ppp_next_n (1)" = ppp_next_n(n = 1, rate = hppp_rate, t_min = rngt[1]),
@@ -40,7 +40,7 @@ res <- bench::mark(
   "nhppp_t_cumulative_intensity_orderstats (1st, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
   "nhppp_t_cumulative_intensity_orderstats (All, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt),
   check = FALSE,
-  min_iterations = 500
+  iterations = nsim
 )
 
 autoplot(res, type = "violin")
