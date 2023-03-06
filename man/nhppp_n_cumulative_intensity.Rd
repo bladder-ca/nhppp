@@ -11,8 +11,7 @@ nhppp_n_cumulative_intensity(
   Lambda_inv = NULL,
   range_t = c(0, 10),
   range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-  rng_stream = NULL,
-  only1 = FALSE
+  rng_stream = NULL
 )
 }
 \arguments{

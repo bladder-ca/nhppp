@@ -125,7 +125,7 @@ nhppp_InvThin <- function() {
     rng_stream = S,
     only1 = FALSE
   )
-  
+
   Thinning <- nhppp::nhppp_t_intensity(
     lambda = l,
     lambda_maj = l_sup,
@@ -426,15 +426,19 @@ p2
 # Bias metrics with respect to event times in functions sampling N events
 n <- 10^4
 nhppp_times_n <- list(
-  "Inversion [fixed size]" = nhppp::nhppp_n_cumulative_intensity(size = n, 
-                                             Lambda = L,
-                                             range_t = tp,
-                                             rng_stream = S),
-  "Thinning [fixed size]" = nhppp::nhppp_n_intensity(size = n,
-                                   lambda = l,
-                                   lambda_maj = l_sup,
-                                   range_t = tp,
-                                   rng_stream = S)
+  "Inversion [fixed size]" = nhppp::nhppp_n_cumulative_intensity(
+    size = n,
+    Lambda = L,
+    range_t = tp,
+    rng_stream = S
+  ),
+  "Thinning [fixed size]" = nhppp::nhppp_n_intensity(
+    size = n,
+    lambda = l,
+    lambda_maj = l_sup,
+    range_t = tp,
+    rng_stream = S
+  )
 )
 
 p2_1 <- do.call(

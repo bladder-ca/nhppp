@@ -88,6 +88,7 @@ test_that("ppp_t_orderstat() works", {
 
   # check RNGClass
   expect_no_error(S2 <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
+  expect_no_error(df3 <- ppp_t_orderstat(range_t = c(0, 10), rate = 1, rng_stream = S2))
   check_ppp_sample_validity(times = df3, t_min = 0, t_max = 10)
 })
 

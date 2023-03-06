@@ -11,11 +11,9 @@
 #' @importClassesFrom rstream rstream.mrg32k3a
 rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NULL) {
   if (methods::is(rng_stream, "RNGClass")) {
-    stopifnot(!rng_stream$isPacked())
     rng_stream <- rng_stream$.getPointer()
   }
-  if (methods::is(rng_stream, "rstream")) {
-    stopifnot(!rstream::rstream.packed(rng_stream))
+  if (!is.null(rng_stream)) {
     u <- rstream::r(rng_stream, size) * (maximum - minimum) + minimum
   } else {
     u <- stats::runif(n = size, min = minimum, max = maximum)
@@ -35,6 +33,9 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
+  if (methods::is(rng_stream, "RNGClass")) {
+    rng_stream <- rng_stream$.getPointer()
+  }
   if (!is.null(rng_stream)) {
     p <- rng_stream_runif(size = size, rng_stream = rng_stream)
     dt_ <- stats::qexp(p = p, rate = rate)
@@ -55,6 +56,9 @@ rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
+  if (methods::is(rng_stream, "RNGClass")) {
+    rng_stream <- rng_stream$.getPointer()
+  }
   if (!is.null(rng_stream)) {
     p <- rstream::r(rng_stream, 1)
     x <- stats::qpois(p = p, lambda = lambda)
