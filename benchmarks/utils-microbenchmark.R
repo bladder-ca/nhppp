@@ -43,7 +43,7 @@ res <- bench::mark(
   iterations = nsim
 )
 
-autoplot(res, type = "violin")
+ggplot2::autoplot(res, type = "violin")
 
 
 # _t_ vs _n_ functions for non-recurrent events
@@ -58,12 +58,12 @@ inversion_t <- function() {
   return(t_)
 }
 thinning_n <- function() {
-  nhppp_n_intensity(size = 1, lambda = l, lambda_maj = c(20, 0), range_t = rngt)
+  nhppp_n_intensity(size = 1, lambda = l, lambda_maj = c(0, 2), range_t = rngt)
 }
 thinning_t <- function() {
   t_ <- vector(mode = "numeric")
   while (length(t_) < 1) {
-    t_ <- nhppp_t_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt, only1 = TRUE)
+    t_ <- nhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE)
   }
   return(t_)
 }
