@@ -88,3 +88,16 @@ bench::mark(
   "pois" = rng_stream_rpois(size = 1, lambda = 0.5, rng_stream = NULL),
   check = FALSE, iterations = nsim
 )
+
+bench::mark(
+  "U" = rng_stream_runif(size = 1, minimum = rngt[1], maximum = rngt[2], rng_stream = NULL),
+  "sortintU" = sort.int(rng_stream_runif(size = 1, minimum = rngt[1], maximum = rngt[2], rng_stream = NULL)),
+  "sortU" = sort(rng_stream_runif(size = 1, minimum = rngt[1], maximum = rngt[2], rng_stream = NULL)),
+  "order+U" = c(1)[order(rng_stream_runif(size = 1, minimum = rngt[1], maximum = rngt[2], rng_stream = NULL))],
+  "order+U shell" = c(1)[order(rng_stream_runif(size = 1, minimum = rngt[1], maximum = rngt[2], rng_stream = NULL), method = "shell")],
+  check = FALSE, iterations = nsim
+)
+
+
+
+

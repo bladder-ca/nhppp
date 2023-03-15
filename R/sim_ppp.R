@@ -89,5 +89,8 @@ ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_strea
 #' x <- ppp_n(size = 10, range_t = c(0, 10))
 ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
   U <- rng_stream_runif(size = size, minimum = range_t[1], maximum = range_t[2], rng_stream = rng_stream)
-  return(sort.int(U, method = "radix"))
+  if (size == 1) {
+    return(U)
+  }
+  return(U[order(U, method = "shell")])
 }

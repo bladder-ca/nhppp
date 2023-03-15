@@ -39,7 +39,9 @@ nhppp_n_intensity <- function(size,
   }
   times <- c()
   additional_samples <- size
+  counter = 0
   while (additional_samples > 0) {
+    counter = counter + 1
     candidate_times <-
       nhppp_n_intensity_linear(size = additional_samples, alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream)
 
@@ -51,5 +53,6 @@ nhppp_n_intensity <- function(size,
     additional_samples <- additional_samples - sum(accepted)
   }
 
-  return(sort(times))
+  if(counter == 1 || size == 1) {return(times)}
+  return(times[order(times, method = "shell")])
 }
