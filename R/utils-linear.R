@@ -59,8 +59,9 @@ Lambda_exp_form <- function(t, alpha, beta, t0) {
 #' @param beta (double) the slope
 #' @param t0 (double) the starting time
 Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
-  # add condition for log argument to be >0
-  return((log(exp(beta*t0+alpha) + z*beta) - alpha)/beta)
+  tmp <- exp(beta*t0+alpha)
+  stopifnot(beta > - tmp / z && beta != 0)
+  return((log(tmp + z*beta) - alpha)/beta)
 }
 
 
