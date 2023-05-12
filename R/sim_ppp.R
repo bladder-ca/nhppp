@@ -60,7 +60,7 @@ ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, 
 #' @examples
 #' x <- ztppp_t(range_t = c(0, 10), rate = 0.001)
 ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL) {
-  n <- rng_stream_rzpois(size = size, lambda = rate * (range_t[2]- range_t[1]), rng_stream = rng_stream)
+  n <- rng_stream_rztpois(size = 1, lambda = rate * (range_t[2]- range_t[1]), rng_stream = rng_stream)
   return(ppp_n(size = n, range_t = range_t, rng_stream = rng_stream))
 }
 
