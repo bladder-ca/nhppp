@@ -30,6 +30,10 @@ ztnhppp_t_cumulative_intensity <- function(Lambda,
   # }
 
   tmp_u <- ztppp_t(range_t = range_L, rate = 1, rng_stream = rng_stream)
+  if(only1 == TRUE ) {
+    tmp_u <- tmp_u[1]
+  }
+
   if (is.function(Lambda_inv)) {
     return(Lambda_inv(tmp_u))
   }
