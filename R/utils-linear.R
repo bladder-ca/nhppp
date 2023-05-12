@@ -60,7 +60,7 @@ Lambda_exp_form <- function(t, alpha, beta, t0) {
 #' @param t0 (double) the starting time
 Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
   tmp <- exp(beta*t0+alpha)
-  stopifnot(beta > - tmp / z && beta != 0)
+  #stopifnot(beta > - tmp / z && beta != 0)
   return((log(tmp + z*beta) - alpha)/beta)
 }
 
