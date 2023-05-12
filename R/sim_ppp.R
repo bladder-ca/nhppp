@@ -47,6 +47,24 @@ ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, 
 }
 
 
+
+#' Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]
+#'
+#' @param range_t (vector, double) min and max of the time interval
+#' @param rate (scalar, double) constant instantaneous rate
+#' @param rng_stream an `rstream` or `RNGClass` object
+#'
+#' @return a vector of event times of size `size`
+#' @export
+#'
+#' @examples
+#' x <- ztppp_t(range_t = c(0, 10), rate = 0.001)
+ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL) {
+  n <- rng_stream_rzpois(size = size, lambda = rate * (range_t[2]- range_t[1]), rng_stream = rng_stream)
+  return(ppp_n(size = n, range_t = range_t, rng_stream = rng_stream))
+}
+
+
 #' Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)
 #'
 #' @param range_t (vector, double) min and max of the time interval
@@ -94,3 +112,7 @@ ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
   }
   return(U[order(U, method = "shell")])
 }
+
+
+
+

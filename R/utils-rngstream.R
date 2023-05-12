@@ -67,3 +67,31 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
   }
   return(x)
 }
+
+
+
+#' Zero-truncated Poisson random samples from `rstream` or `RNGClass` objects
+#'
+#' @description Sample from `rstream` or `RNGClass` objects
+#' @param size Integer, number of samples
+#' @param lambda Positive number, the mean of the original 
+#'        (untruncated) Poisson distribution
+#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
+#'
+#' @return a vector of counts of size `size`
+#' @export
+#' @importClassesFrom rstream rstream.mrg32k3a
+rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
+  exp_minus_lambda <- exp(-lambda)
+  if (!is.null(rng_stream)) {
+    if (class(rng_stream)[1] == "RNGClass") {
+      rng_stream <- rng_stream$.getPointer()
+    }
+    p <- rstream::r(rng_stream, size) * (1 - exp_minus_lambda) + exp_minus_lambda
+    
+  } else {
+    p <- stats::runif(n = size, min = exp_minus_lambda, max = 1)
+  }
+  x <- stats::qpois(p = p, lambda = lambda)
+  return(x)
+}
