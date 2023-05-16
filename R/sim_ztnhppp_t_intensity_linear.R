@@ -27,7 +27,7 @@ ztnhppp_t_intensity_linear <- function(alpha = 1,
     return(c())
   }
   if (beta == 0) {
-    return(ztppp_t(range_t = range_t, rate = alpha, rng_stream = rng_stream))
+    return(ztppp_t(range_t = range_t, rate = alpha, rng_stream = rng_stream, only1 = only1))
   }
   if (beta < 0) {
     t_max <- -alpha / beta
