@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rng_stream_runif}
 \alias{rng_stream_runif}
-\title{Uniform random samples from `rstream` or `RGNClass` objects}
+\title{Uniform random samples from `rstream` or `RNGClass` objects}
 \usage{
 rng_stream_runif(size = 1, minimum = 0, maximum = 1, rng_stream = NULL)
 }
@@ -19,5 +19,5 @@ rng_stream_runif(size = 1, minimum = 0, maximum = 1, rng_stream = NULL)
 a vector of uniform variates of size `size`
 }
 \description{
-Sample from `rstream` or `RGNClass` objects
+Sample from `rstream` or `RNGClass` objects
 }

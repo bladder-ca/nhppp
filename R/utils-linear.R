@@ -34,3 +34,32 @@ Lambda_inv_linear_form <- function(z, alpha, beta, t0) {
   }
   return(t_)
 }
+
+
+
+#' Definite integral of `l = exp(alpha + beta*t)` at time `t`
+#' with `L(t0) = 0`
+#'
+#' @description Definite integral of `l = exp(alpha + beta*t)` starting at
+#'              `t0` -- only for `l+`.
+#' @param t (double) the time point
+#' @param alpha (double) the intercept
+#' @param beta (double) the slope
+#' @param t0 (double) the starting time
+Lambda_exp_form <- function(t, alpha, beta, t0) {
+  stopifnot(min(t) >= t0)
+  return((exp(beta * t + alpha) - exp(beta * t0 + alpha)) / beta)
+}
+
+#' Inverse of the definite integral of `l = exp(alpha + beta*t)` at time `t`
+#'
+#' @description Inverse of the definite integral of `l = exp(alpha + beta*t)` only for `l+`.
+#' @param z (double) the value of integrated rate for which you want to find the time
+#' @param alpha (double) the intercept
+#' @param beta (double) the slope
+#' @param t0 (double) the starting time
+Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
+  tmp <- exp(beta * t0 + alpha)
+  # stopifnot(beta > - tmp / z && beta != 0)
+  return((log(tmp + z * beta) - alpha) / beta)
+}

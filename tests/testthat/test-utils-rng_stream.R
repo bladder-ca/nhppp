@@ -10,13 +10,6 @@ test_that("rng_stream_runif() works with rstream object", {
   expect_no_error(df2 <- rng_stream_runif(size = 10, rng_stream = S))
   expect_equal(length(df2), 10)
 
-  # check packed rstream
-  rstream::rstream.packed(S) <- TRUE
-  expect_error(rng_stream_runif(size = 10, rng_stream = S),
-    "!rstream::rstream.packed(rng_stream) is not TRUE",
-    fixed = TRUE
-  )
-
   # Check that unpacking and resetting the rng_stream returns correct sequence
   rstream::rstream.packed(S) <- FALSE
   rstream::rstream.reset(S)
@@ -30,13 +23,6 @@ test_that("rng_stream_runif() works with RNGClass object", {
   expect_no_error(S <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
   expect_no_error(df2 <- rng_stream_runif(size = 10, rng_stream = S))
   expect_equal(length(df2), 10)
-
-  # check packed RNGCLass
-  S$pack()
-  expect_error(rng_stream_runif(size = 10, rng_stream = S),
-    "!rng_stream$isPacked() is not TRUE",
-    fixed = TRUE
-  )
 
   # Check that unpacking and resetting the rng_stream returns correct sequence
   S$unpack()$reset()

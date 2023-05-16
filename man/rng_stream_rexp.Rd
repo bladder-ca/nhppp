@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rng_stream_rexp}
 \alias{rng_stream_rexp}
-\title{Exponential random samples from `rstream` or `RGNClass` objects}
+\title{Exponential random samples from `rstream` or `RNGClass` objects}
 \usage{
 rng_stream_rexp(size = 1, rate = 1, rng_stream = NULL)
 }
@@ -17,5 +17,5 @@ rng_stream_rexp(size = 1, rate = 1, rng_stream = NULL)
 a vector of exponential variates of size `size`
 }
 \description{
-Sample from `rstream` or `RGNClass` objects
+Sample from `rstream` or `RNGClass` objects
 }
