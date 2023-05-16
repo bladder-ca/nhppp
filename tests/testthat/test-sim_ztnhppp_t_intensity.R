@@ -24,7 +24,7 @@ test_that("ztnhppp_t_intensity() works", {
   check_ppp_sample_validity(times = df2, t_min = 5, t_max = 10, zero_truncated = TRUE, only1 = TRUE)
 })
 
-test_that("ztnhppp_t_intensity(only1 = TRUE) returns the first time", {
+test_that("ztnhppp_t_intensity matches nhppp_t_cumulative_intensity_inversion (and linear intensity)", {
   l <- function(t) {
     return(2)
   }

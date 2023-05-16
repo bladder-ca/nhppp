@@ -8,8 +8,6 @@
 #' @param alpha (double) the intercept
 #' @param beta (double) the slope
 #' @param range_t (vector, double) min and max of the time interval
-#' @param tol the probability that we will have more than
-#'        the drawn events in (t_min, t_max]
 #' @param rng_stream (`rstream`) an `rstream` object.
 #' @param only1 boolean, draw at most 1 event time
 #'
@@ -23,14 +21,13 @@
 nhppp_t_intensity_linear <- function(alpha = 1,
                                      beta = 0,
                                      range_t = c(0, 10),
-                                     tol = 10^-6,
                                      rng_stream = NULL,
                                      only1 = FALSE) {
   if ((beta <= 0 && alpha <= 0) || (alpha + beta * range_t[1] < 0)) {
     return(c())
   }
   if (beta == 0) {
-    return(ppp_t_orderstat(range_t = range_t, rate = alpha, tol = tol, rng_stream = rng_stream, only1 = only1))
+    return(ppp_t_orderstat(range_t = range_t, rate = alpha, rng_stream = rng_stream, only1 = only1))
   }
   if (beta < 0) {
     t_max <- -alpha / beta

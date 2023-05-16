@@ -1,7 +1,7 @@
-#' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
+#' Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
 #'    (t_min, t_max) with exponential intensity function (inversion method)
 #'
-#' @description  Sample NHPPP times from an exponential intensity function
+#' @description  Sample zt-NHPPP times from an exponential intensity function
 #' using the inversion method, optionally using an `rstream`
 #' generator or a `Kystis` `RNGClass` object
 #'
@@ -9,31 +9,31 @@
 #' @param beta (double) the slope in the exponent
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rng_stream (`rstream`) an `rstream` object.
-#' @param only1 boolean, draw at most 1 event time
+#' @param only1 boolean, 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
 #' @export
 #'
 #' @examples
-#' x <- nhppp_t_intensity_exponential(alpha = 0, beta = 0.2)
+#' x <- ztnhppp_t_intensity_exponential(alpha = 0, beta = 0.2)
 #'
-nhppp_t_intensity_exponential <- function(alpha = 1,
+ztnhppp_t_intensity_exponential <- function(alpha = 1,
                                           beta = 0,
                                           range_t = c(0, 10),
                                           rng_stream = NULL,
                                           only1 = FALSE) {
   if (beta == 0) {
-    return(ppp_t_orderstat(range_t = range_t, rate = exp(alpha), rng_stream = rng_stream, only1 = only1))
+    return(ztppp_t(range_t = range_t, rate = exp(alpha), rng_stream = rng_stream, only1 = only1))
   }
   return(
     nhppp_t_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = range_t[1]),
       Lambda_inv = function(z) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = range_t[1]),
       range_t = range_t,
+      range_L = Lambda_exp_form(range_t, alpha = alpha, beta = beta, t0 = range_t[1]),
       rng_stream = rng_stream,
       only1 = only1
     )
   )
 }
-

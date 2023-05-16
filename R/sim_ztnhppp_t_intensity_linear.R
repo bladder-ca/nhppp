@@ -9,7 +9,7 @@
 #' @param beta (double) the slope
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rng_stream (`rstream`) an `rstream` object
-#' @param only1 (boolean) draw at most 1 event time
+#' @param only1 (boolean) draw 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0

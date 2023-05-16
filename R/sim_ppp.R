@@ -53,15 +53,20 @@ ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, 
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rate (scalar, double) constant instantaneous rate
 #' @param rng_stream an `rstream` or `RNGClass` object
+#' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times of size `size`
 #' @export
 #'
 #' @examples
 #' x <- ztppp_t(range_t = c(0, 10), rate = 0.001)
-ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL) {
+ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL, only1 = FALSE) {
   n <- rng_stream_rztpois(size = 1, lambda = rate * (range_t[2] - range_t[1]), rng_stream = rng_stream)
-  return(ppp_n(size = n, range_t = range_t, rng_stream = rng_stream))
+  tmp <- ppp_n(size = n, range_t = range_t, rng_stream = rng_stream)
+  if(only1 == TRUE) {
+    return(tmp[1])
+  }
+  return(tmp)
 }
 
 
@@ -69,8 +74,6 @@ ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL) {
 #'
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rate (scalar, double) constant instantaneous rate
-#' @param tol the probability that we will have more than
-#'        the drawn events in (t_min, t_max]
 #' @param rng_stream an `rstream` or `RNGClass` object
 #' @param only1 boolean, draw at most 1 event time
 #'
@@ -79,18 +82,16 @@ ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL) {
 #' @export
 #'
 #' @examples
-#' x <- ppp_t_orderstat(range_t = c(0, 10), rate = 1, tol = 10^-6)
-ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, only1 = FALSE) {
+#' x <- ppp_t_orderstat(range_t = c(0, 10), rate = 1)
+ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL, only1 = FALSE) {
   # we expect lambda = t_max*rate events
-  # we will draw n so that the probability that t>t_max is 1-tol
-  if (isTRUE(only1)) {
-    n <- 1
-  } else {
-    n <- rng_stream_rpois(size = 1, lambda = rate * (range_t[2] - range_t[1]), rng_stream = rng_stream)
+ n <- rng_stream_rpois(size = 1, lambda = rate * (range_t[2] - range_t[1]), rng_stream = rng_stream)
+ tmp <- ppp_n(size = n, range_t = range_t, rng_stream = rng_stream)
+  if(only1 == TRUE) {
+    return(tmp[1])
   }
-  return(ppp_n(size = n, range_t = range_t, rng_stream = rng_stream))
+  return(tmp)
 }
-
 
 
 
