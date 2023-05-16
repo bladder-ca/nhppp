@@ -9,7 +9,6 @@ nhppp_t_intensity_linear(
   alpha = 1,
   beta = 0,
   range_t = c(0, 10),
-  tol = 10^-6,
   rng_stream = NULL,
   only1 = FALSE
 )
@@ -20,9 +19,6 @@ nhppp_t_intensity_linear(
 \item{beta}{(double) the slope}
 
 \item{range_t}{(vector, double) min and max of the time interval}
-
-\item{tol}{the probability that we will have more than
-the drawn events in (t_min, t_max]}
 
 \item{rng_stream}{(`rstream`) an `rstream` object.}
 

@@ -9,7 +9,8 @@ check_ppp_sample_validity(
   t_min,
   t_max = NULL,
   size = NULL,
-  only1 = FALSE
+  only1 = FALSE,
+  zero_truncated = FALSE
 )
 }
 \arguments{
@@ -20,6 +21,10 @@ check_ppp_sample_validity(
 \item{t_max}{(double) optional: the end of the time interval}
 
 \item{size}{(double) optional: the size of the vector}
+
+\item{only1}{(boolean) optional: at most one sample returned}
+
+\item{zero_truncated}{(boolean) optional: at least one sample returned}
 }
 \description{
 Standard checks for a vector of ordered times. Check

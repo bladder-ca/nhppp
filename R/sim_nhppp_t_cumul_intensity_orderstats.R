@@ -23,10 +23,9 @@ nhppp_t_cumulative_intensity_orderstats <- function(Lambda,
                                                     range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
                                                     rng_stream = NULL,
                                                     only1 = FALSE) {
-
   n <- rng_stream_rpois(size = 1, lambda = range_L[2] - range_L[1], rng_stream = rng_stream)
   tmp_u <- ppp_n(size = n, range_t = range_L, rng_stream = rng_stream)
-  if(only1 == TRUE) {
+  if (only1 == TRUE) {
     tmp_u <- tmp_u[1]
   }
   if (is.function(Lambda_inv)) {

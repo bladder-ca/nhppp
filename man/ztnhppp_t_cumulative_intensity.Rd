@@ -26,7 +26,7 @@ which is the integrated rate of the NHPPP}
 
 \item{rng_stream}{(`rstream`) an `rstream`, `RNGClass` object or `NULL`.}
 
-\item{only1}{boolean, draw at most 1 event time}
+\item{only1}{(boolean) draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,
@@ -37,5 +37,5 @@ Sample zero-truncated NHPPP times using the order statistics method,
 optionally using an `rstream` generator or a `Kystis` `RNGClass` object.
 }
 \examples{
-x <- nhppp_t_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
+x <- ztnhppp_t_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
 }

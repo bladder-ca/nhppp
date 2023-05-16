@@ -9,7 +9,7 @@ rng_stream_rztpois(size = 1, lambda = 1, rng_stream = NULL)
 \arguments{
 \item{size}{Integer, number of samples}
 
-\item{lambda}{Positive number, the mean of the original 
+\item{lambda}{Positive number, the mean of the original
 (untruncated) Poisson distribution}
 
 \item{rng_stream}{(`rstream`) an `rstream` object or `NULL`}

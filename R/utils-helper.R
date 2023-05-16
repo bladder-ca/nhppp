@@ -60,46 +60,40 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, o
 
 
 
-#' Check that two ppp vectors Q-Q agree 
+#' Check that two ppp vectors Q-Q agree
 #'
-#' @description Compare that the deciles of two vectors have absolute difference 
+#' @description Compare that the deciles of two vectors have absolute difference
 #' over average ratios less than `threshold`
 #'
 #' @param ppp1 (vector, double) the first vector
 #' @param ppp2 (vector, double) the second vector
 #' @param threshold (double) optional: the cutoff for a large absolute threshold
-#' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the 
+#' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the
 #' Difference vs Average ratio in any decile is bigger than the `threshold`
 #' @return NULL
-compare_ppp_vectors <- function(
-  ppp1, 
-  ppp2, 
-  threshold = 0.15, showQQ = TRUE) {
+compare_ppp_vectors <- function(ppp1,
+                                ppp2,
+                                threshold = 0.15, showQQ = TRUE) {
   res <- qqplot(ppp1, ppp2, plot.it = FALSE)
   r1 <- res[[1]]
   r2 <- res[[2]]
-  step <- floor(length(r1)/10)
+  step <- floor(length(r1) / 10)
 
   decile_check <- logical(0)
-  for(i in 1:9){
-    indices <- ((i-1)*step + 1):(i*step)
-    DvsA <- 2*(r1[indices]-r2[indices])/(r1[indices]+r2[indices])
-    tmp <- t.test(x=DvsA)
-    decile_check[i] <- abs(tmp$estimate)<threshold
+  for (i in 1:9) {
+    indices <- ((i - 1) * step + 1):(i * step)
+    DvsA <- 2 * (r1[indices] - r2[indices]) / (r1[indices] + r2[indices])
+    tmp <- t.test(x = DvsA)
+    decile_check[i] <- abs(tmp$estimate) < threshold
   }
-  indices <- ((9)*step + 1):length(r1)
-  DvsA <- 2*(r1[indices]-r2[indices])/(r1[indices]+r2[indices])
-  tmp <- t.test(x=DvsA)
-  decile_check[10] <- abs(tmp$estimate)<threshold
+  indices <- ((9) * step + 1):length(r1)
+  DvsA <- 2 * (r1[indices] - r2[indices]) / (r1[indices] + r2[indices])
+  tmp <- t.test(x = DvsA)
+  decile_check[10] <- abs(tmp$estimate) < threshold
 
-  if(!all(decile_check)){
+  if (!all(decile_check)) {
     qqplot(r1, r2, plot.it = TRUE)
     lines(rep(min(c(r1, r2)), 2), rep(max(c(r1, r2)), 2))
   }
   expect_true(all(decile_check))
 }
-
-
-
-
-

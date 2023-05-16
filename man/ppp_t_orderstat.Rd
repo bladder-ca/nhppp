@@ -4,21 +4,12 @@
 \alias{ppp_t_orderstat}
 \title{Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)}
 \usage{
-ppp_t_orderstat(
-  range_t = c(0, 10),
-  rate = 1,
-  tol = 10^-6,
-  rng_stream = NULL,
-  only1 = FALSE
-)
+ppp_t_orderstat(range_t = c(0, 10), rate = 1, rng_stream = NULL, only1 = FALSE)
 }
 \arguments{
 \item{range_t}{(vector, double) min and max of the time interval}
 
 \item{rate}{(scalar, double) constant instantaneous rate}
-
-\item{tol}{the probability that we will have more than
-the drawn events in (t_min, t_max]}
 
 \item{rng_stream}{an `rstream` or `RNGClass` object}
 
@@ -32,5 +23,5 @@ a vector of event times t
 Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)
 }
 \examples{
-x <- ppp_t_orderstat(range_t = c(0, 10), rate = 1, tol = 10^-6)
+x <- ppp_t_orderstat(range_t = c(0, 10), rate = 1)
 }

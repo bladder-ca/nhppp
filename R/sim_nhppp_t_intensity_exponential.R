@@ -36,4 +36,3 @@ nhppp_t_intensity_exponential <- function(alpha = 1,
     )
   )
 }
-

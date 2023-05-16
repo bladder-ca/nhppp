@@ -16,7 +16,7 @@ test_that("ztppp_t agrees with ppp_t for low intensities", {
 test_that("zt-NHPPP methods agree on the first time to event with constant rate", {
   l <- function(t) 2
   L <- function(t) 2 * t
-  Li <- function(z) z / 2 
+  Li <- function(z) z / 2
 
   r_ztppp_t <- unlist(lapply(integer(10000), function(x) ztppp_t(range_t = c(1, 13), rate = 2, only1 = TRUE)))
   r_ztnhppp_ci <- unlist(lapply(integer(10000), function(x) ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = c(1, 13), only1 = TRUE)))
@@ -33,14 +33,14 @@ test_that("zt-NHPPP methods agree on the first time to event with constant rate"
 })
 
 test_that("ztNHPPP linear intensity agrees with general methods", {
-  l <- function(t, alpha = 1, beta = 2) alpha + beta * t 
-  L <- function(t, alpha = 1, beta = 2, t0 = 1)  Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = t0)
+  l <- function(t, alpha = 1, beta = 2) alpha + beta * t
+  L <- function(t, alpha = 1, beta = 2, t0 = 1) Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = t0)
   Li <- function(z, alpha = 1, beta = 2, t0 = 1) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = t0)
 
   r_ztnhppp_intens_linear <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity_linear(alpha = 1, beta = 2, range_t = c(1, 13), only1 = TRUE)))
   r_ztnhppp_ci <- unlist(lapply(integer(10000), function(x) ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_linear, ppp2 = r_ztnhppp_ci, threshold = 0.1, showQQ = TRUE)
-  
+
   r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity(lambda = l, lambda_maj = l(13), range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_linear, ppp2 = r_ztnhppp_intens, threshold = 0.1, showQQ = TRUE)
 })
@@ -61,13 +61,13 @@ test_that("ztNHPPP linear intensity agrees with linear intensity for low rates",
 
 test_that("ztNHPPP exponential agrees with general methods", {
   l <- function(t, alpha = .1, beta = .02) exp(alpha + beta * t)
-  L <- function(t, alpha = .1, beta = .02, t0 = 1)  Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = t0)
+  L <- function(t, alpha = .1, beta = .02, t0 = 1) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = t0)
   Li <- function(z, alpha = .1, beta = .02, t0 = 1) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = t0)
 
   r_ztnhppp_intens_exp <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity_exponential(alpha = .1, beta = .02, range_t = c(1, 13), only1 = TRUE)))
   r_ztnhppp_ci <- unlist(lapply(integer(10000), function(x) ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_exp, ppp2 = r_ztnhppp_ci, threshold = 0.1, showQQ = TRUE)
-  
+
   r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity(lambda = l, lambda_maj = l(13), range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_exp, ppp2 = r_ztnhppp_intens, threshold = 0.1, showQQ = TRUE)
 })
