@@ -1,5 +1,5 @@
 #' Simulate `size` samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-#'    (t_min, t_max) with linear intensity function 
+#'    (t_min, t_max) with linear intensity function
 #'
 #' @description  Sample zero-truncated NHPPP times from a linear intensity function
 #' using the inversion method, optionally using an `rstream`
@@ -19,10 +19,10 @@
 #' x <- ztnhppp_t_intensity_linear(alpha = 0, beta = 0.2)
 #'
 ztnhppp_t_intensity_linear <- function(alpha = 1,
-                                     beta = 0,
-                                     range_t = c(0, 10),
-                                     rng_stream = NULL,
-                                     only1 = FALSE) {
+                                       beta = 0,
+                                       range_t = c(0, 10),
+                                       rng_stream = NULL,
+                                       only1 = FALSE) {
   if ((beta <= 0 && alpha <= 0) || (alpha + beta * range_t[1] < 0)) {
     return(c())
   }
@@ -39,7 +39,7 @@ ztnhppp_t_intensity_linear <- function(alpha = 1,
       Lambda_inv = function(z) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = range_t[1]),
       range_t = range_t,
       range_L = Lambda_linear_form(range_t, alpha = alpha, beta = beta, t0 = range_t[1]),
-      rng_stream = rng_stream, 
+      rng_stream = rng_stream,
       only1 = only1
     )
   )

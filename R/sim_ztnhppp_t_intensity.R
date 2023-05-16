@@ -21,7 +21,7 @@
 ztnhppp_t_intensity <- function(lambda,
                                 lambda_maj = NULL,
                                 range_t = c(0, 10),
-                                rng_stream = NULL, 
+                                rng_stream = NULL,
                                 only1 = FALSE) {
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
@@ -38,13 +38,13 @@ ztnhppp_t_intensity <- function(lambda,
     beta <- lambda_maj[2]
   }
 
-  while(TRUE) {
+  while (TRUE) {
     candidate_times <- ztnhppp_t_intensity_linear(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
     u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1, rng_stream = rng_stream)
     acceptance_prob <- lambda(candidate_times) / (alpha + beta * candidate_times)
     stopifnot(all(acceptance_prob <= 1))
     candidate_times <- candidate_times[u < acceptance_prob]
-    if(length(candidate_times)>0) {
+    if (length(candidate_times) > 0) {
       if (only1) {
         return(candidate_times[1])
       } else {
