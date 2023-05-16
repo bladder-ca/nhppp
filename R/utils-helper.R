@@ -78,13 +78,20 @@ compare_ppp_vectors <- function(
   res <- qqplot(ppp1, ppp2, plot.it = FALSE)
   r1 <- res[[1]]
   r2 <- res[[2]]
+  step <- floor(length(r1)/10)
+
   decile_check <- logical(0)
-  for(i in 1:10){
-    indices <- ((i-1)*1000 + 1):(i*1000)
+  for(i in 1:9){
+    indices <- ((i-1)*step + 1):(i*step)
     DvsA <- 2*(r1[indices]-r2[indices])/(r1[indices]+r2[indices])
     tmp <- t.test(x=DvsA)
     decile_check[i] <- abs(tmp$estimate)<threshold
   }
+  indices <- ((9)*step + 1):length(r1)
+  DvsA <- 2*(r1[indices]-r2[indices])/(r1[indices]+r2[indices])
+  tmp <- t.test(x=DvsA)
+  decile_check[10] <- abs(tmp$estimate)<threshold
+
   if(!all(decile_check)){
     qqplot(r1, r2, plot.it = TRUE)
     lines(rep(min(c(r1, r2)), 2), rep(max(c(r1, r2)), 2))
