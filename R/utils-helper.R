@@ -37,6 +37,8 @@ read_code <- function(codeFile) {
 #' @param t_min (double) the start of the time nterval
 #' @param t_max (double) optional: the end of the time interval
 #' @param size (double) optional: the size of the vector
+#' @param only1 (boolean) optional: at most one sample returned
+#' @param zero_truncated (boolean) optional: at least one sample returned
 #' @return NULL
 check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, only1 = FALSE, zero_truncated = FALSE) {
   testthat::expect_identical(times, sort(times))
@@ -55,3 +57,42 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, o
     testthat::expect_true(length(times) >= 1)
   }
 }
+
+
+
+#' Check that two ppp vectors Q-Q agree 
+#'
+#' @description Compare that the deciles of two vectors have absolute difference 
+#' over average ratios less than `threshold`
+#'
+#' @param ppp1 (vector, double) the first vector
+#' @param ppp2 (vector, double) the second vector
+#' @param threshold (double) optional: the cutoff for a large absolute threshold
+#' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the 
+#' Difference vs Average ratio in any decile is bigger than the `threshold`
+#' @return NULL
+compare_ppp_vectors <- function(
+  ppp1, 
+  ppp2, 
+  threshold = 0.15, showQQ = TRUE) {
+  res <- qqplot(ppp1, ppp2, plot.it = FALSE)
+  r1 <- res[[1]]
+  r2 <- res[[2]]
+  decile_check <- logical(0)
+  for(i in 1:10){
+    indices <- ((i-1)*1000 + 1):(i*1000)
+    DvsA <- 2*(r1[indices]-r2[indices])/(r1[indices]+r2[indices])
+    tmp <- t.test(x=DvsA)
+    decile_check[i] <- abs(tmp$estimate)<threshold
+  }
+  if(!all(decile_check)){
+    qqplot(r1, r2, plot.it = TRUE)
+    lines(rep(min(c(r1, r2)), 2), rep(max(c(r1, r2)), 2))
+  }
+  expect_true(all(decile_check))
+}
+
+
+
+
+

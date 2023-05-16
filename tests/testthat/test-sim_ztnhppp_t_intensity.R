@@ -38,11 +38,9 @@ test_that("ztnhppp_t_intensity(only1 = TRUE) returns the first time", {
   lmaj <- 1.01
   S <- methods::new("rstream.mrg32k3a")
 
-  r1 <- lapply(integer(1000), function(x) ztnhppp_t_intensity(lambda = l, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
-  r2 <- lapply(integer(1000), function(x) nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = L_inv, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
-
-  qqplot(unlist(r1), unlist(r2))
-  lines(c(0, 2), c(0, 2))
+  r1 <- lapply(integer(10000), function(x) ztnhppp_t_intensity(lambda = l, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
+  r2 <- lapply(integer(10000), function(x) nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = L_inv, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
+  compare_ppp_vectors(ppp1 = unlist(r1), ppp2 = unlist(r2), threshold = 0.1, showQQ = TRUE)
 })
 
 
