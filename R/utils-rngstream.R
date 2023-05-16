@@ -74,7 +74,7 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 #'
 #' @description Sample from `rstream` or `RNGClass` objects
 #' @param size Integer, number of samples
-#' @param lambda Positive number, the mean of the original 
+#' @param lambda Positive number, the mean of the original
 #'        (untruncated) Poisson distribution
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
@@ -88,7 +88,6 @@ rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
       rng_stream <- rng_stream$.getPointer()
     }
     p <- rstream::r(rng_stream, size) * (1 - exp_minus_lambda) + exp_minus_lambda
-    
   } else {
     p <- stats::runif(n = size, min = exp_minus_lambda, max = 1)
   }

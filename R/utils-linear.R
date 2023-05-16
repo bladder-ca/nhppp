@@ -48,7 +48,7 @@ Lambda_inv_linear_form <- function(z, alpha, beta, t0) {
 #' @param t0 (double) the starting time
 Lambda_exp_form <- function(t, alpha, beta, t0) {
   stopifnot(min(t) >= t0)
-  return( (exp(beta*t + alpha) - exp(beta*t0 + alpha))/beta)
+  return((exp(beta * t + alpha) - exp(beta * t0 + alpha)) / beta)
 }
 
 #' Inverse of the definite integral of `l = exp(alpha + beta*t)` at time `t`
@@ -59,9 +59,7 @@ Lambda_exp_form <- function(t, alpha, beta, t0) {
 #' @param beta (double) the slope
 #' @param t0 (double) the starting time
 Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
-  tmp <- exp(beta*t0+alpha)
-  #stopifnot(beta > - tmp / z && beta != 0)
-  return((log(tmp + z*beta) - alpha)/beta)
+  tmp <- exp(beta * t0 + alpha)
+  # stopifnot(beta > - tmp / z && beta != 0)
+  return((log(tmp + z * beta) - alpha) / beta)
 }
-
-

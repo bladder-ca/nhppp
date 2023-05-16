@@ -20,6 +20,29 @@ test_that("nhppp_n_intensity() works", {
   check_ppp_sample_validity(times = df2, t_min = 5, t_max = 10, size = 23)
 })
 
+test_that("nhppp_n_intensity(size = 1 ) returns the first time", {
+  l <- function(t) {
+    return(2)
+  }
+  L <- function(t) {
+    return(2 * t)
+  }
+  L_inv <- function(z) {
+    return(z / 2)
+  }
+
+  lmaj <- 1.01
+  S <- methods::new("rstream.mrg32k3a")
+
+  r1 <- lapply(integer(1000), function(x) nhppp_n_intensity(size = 1, lambda = l, range_t = c(0, 2), rng_stream = S))
+  r2 <- lapply(integer(1000), function(x) nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = L_inv, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
+  # r3 <- lapply(integer(1000), function(x) nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = L_inv, range_t = c(0, 2), rng_stream = S, only1 = TRUE))
+
+  qqplot(unlist(r1), unlist(r2))
+  lines(c(0, 2), c(0, 2))
+})
+
+
 
 test_that("nhppp_n_intensity() works with linear majorization function", {
   l <- function(t) {
