@@ -29,8 +29,7 @@ which is the integrated rate of the NHPPP}
 \item{only1}{(boolean) draw at most 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP times using the order statistics method,

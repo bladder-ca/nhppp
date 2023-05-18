@@ -11,8 +11,7 @@
 #' @param rng_stream (`rstream`) an `rstream`, `RNGClass` object or `NULL`.
 #' @param only1 (boolean) draw at most 1 event time
 #'
-#' @return a vector of event times (t_); if no events realize,
-#'         a vector of length 0
+#' @return a vector of at least 1 event times
 #' @export
 #'
 #' @examples

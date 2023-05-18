@@ -8,6 +8,7 @@
 ztnhppp_t_intensity(
   lambda,
   lambda_maj = NULL,
+  exp_maj = FALSE,
   range_t = c(0, 10),
   rng_stream = NULL,
   only1 = FALSE
@@ -18,7 +19,9 @@ ztnhppp_t_intensity(
 A continuous function of time.}
 
 \item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
-linear function in `range_t`.}
+linear (if `exp_maj = FALSE`) or exponential linear (if `exp_maj = TRUE`) function in `range_t`.}
+
+\item{exp_maj}{(boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`}
 
 \item{range_t}{(vector, double) min and max of the time interval.}
 
@@ -27,8 +30,7 @@ linear function in `range_t`.}
 \item{only1}{(boolean) draw at most 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP intensity times using the thinning method, optionally using

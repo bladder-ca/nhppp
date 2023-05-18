@@ -25,8 +25,7 @@ ztnhppp_t_intensity_linear(
 \item{only1}{(boolean) draw 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP times from a linear intensity function
