@@ -7,13 +7,13 @@
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param lambda_maj (double, vector) the intercept and optional slope of the majorizing
-#' linear function in `range_t`.
+#' linear (if `exp_maj = FALSE`) or exponential linear (if `exp_maj = TRUE`) function in `range_t`.
+#' @param exp_maj (boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`
 #' @param range_t (vector, double) min and max of the time interval.
 #' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
 #' @param only1 (boolean) draw at most 1 event time
 #'
-#' @return a vector of event times (t_); if no events realize,
-#'         a vector of length 0
+#' @return a vector of at least 1 event times
 #' @export
 #'
 #' @examples
@@ -38,10 +38,18 @@ ztnhppp_t_intensity <- function(lambda,
     beta <- lambda_maj[2]
   }
 
+  if (isTRUE(exp_maj)) {
+    ztnhppp_t <- ztnhppp_t_intensity_exponential
+    link <- exp
+  } else {
+    ztnhppp_t <- ztnhppp_t_intensity_linear
+    link <- identity
+  }  
+
   while (TRUE) {
-    candidate_times <- ztnhppp_t_intensity_linear(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
+    candidate_times <- ztnhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
     u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1, rng_stream = rng_stream)
-    acceptance_prob <- lambda(candidate_times) / (alpha + beta * candidate_times)
+    acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
     stopifnot(all(acceptance_prob <= 1))
     candidate_times <- candidate_times[u < acceptance_prob]
     if (length(candidate_times) > 0) {
