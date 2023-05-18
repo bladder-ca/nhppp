@@ -20,6 +20,7 @@
 #' x <- ztnhppp_t_intensity(lambda = function(t) 1 + sin(t))
 ztnhppp_t_intensity <- function(lambda,
                                 lambda_maj = NULL,
+                                exp_maj = FALSE,
                                 range_t = c(0, 10),
                                 rng_stream = NULL,
                                 only1 = FALSE) {
@@ -44,7 +45,7 @@ ztnhppp_t_intensity <- function(lambda,
   } else {
     ztnhppp_t <- ztnhppp_t_intensity_linear
     link <- identity
-  }  
+  }
 
   while (TRUE) {
     candidate_times <- ztnhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)

@@ -25,8 +25,7 @@ ztnhppp_t_intensity_exponential(
 \item{only1}{boolean, 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of at least 1 event times
 }
 \description{
 Sample zt-NHPPP times from an exponential intensity function
