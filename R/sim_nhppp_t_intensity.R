@@ -54,7 +54,7 @@ nhppp_t_intensity <- function(lambda,
   }
   u <- rng_stream_runif(size = num_candidates, minimum = 0, maximum = 1, rng_stream = rng_stream)
   acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
-  stopifnot(all(acceptance_prob) <= 1 + 10^-6)
+  stopifnot(all(acceptance_prob <= 1 + 10^-6))
   if (only1) {
     return(candidate_times[u < acceptance_prob][1])
   } else {
