@@ -56,8 +56,10 @@ nhppp_t_intensity <- function(lambda,
   acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
   stopifnot(all(acceptance_prob <= 1 + 10^-6))
   if (only1) {
-    return(candidate_times[u < acceptance_prob][1])
+    t <- candidate_times[u < acceptance_prob][1]
+    if (is.na(t)) {t <- numeric(0)}
   } else {
-    return(candidate_times[u < acceptance_prob])
+   t <- candidate_times[u < acceptance_prob]
   }
+  return(t)
 }

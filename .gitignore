@@ -50,3 +50,4 @@ vignettes/*.log
 
 # R Environment Variables
 .Renviron
+.Rproj.user
