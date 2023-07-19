@@ -92,8 +92,8 @@ nhppp_t_intensity <- function(lambda,
 #' @examples
 #' x <- nhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
 nhppp_t_intensity_piecewise <- function(lambda,
-                                        lambda_maj_vector = 1,
-                                        times_vector = c(0, 10),
+                                        lambda_maj_vector = lambda(1:10),
+                                        times_vector = 0:10,
                                         rng_stream = NULL,
                                         only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
