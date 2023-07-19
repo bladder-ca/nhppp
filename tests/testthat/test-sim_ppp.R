@@ -111,3 +111,36 @@ test_that("ztppp_t() arguments work", {
   expect_no_error(df3 <- ppp_t(range_t = c(0, 10), rate = 1, rng_stream = S2))
   check_ppp_sample_validity(times = df3, t_min = 0, t_max = 10, zero_truncated = TRUE)
 })
+
+
+test_that("ppp_t_piecewise() arguments work", {
+  expect_no_error(df0 <- ppp_t_piecewise(times_vector = c(0, 10), rates_vector = 1, only1 = TRUE))
+  check_ppp_sample_validity(times = df0, t_min = 0, t_max = 10, only1 = TRUE)
+
+  expect_no_error(df0 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10), only1 = TRUE))
+  check_ppp_sample_validity(times = df0, t_min = 0, t_max = 10, only1 = TRUE)
+
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0, 10), rates_vector = 1))
+  check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10)
+
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)))
+  check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10)
+
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)/1000, zero_truncated = TRUE))
+  check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10, zero_truncated = TRUE)
+
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)/1000, only1= TRUE, zero_truncated = TRUE))
+  check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10, only1 = TRUE, zero_truncated = TRUE)
+
+  # check rstream
+  S1 <- methods::new("rstream.mrg32k3a")
+  expect_no_error(df2 <- ppp_t_piecewise(times_vector = c(0, 10), rates_vector = 1, rng_stream = S1))
+  check_ppp_sample_validity(times = df2, t_min = 0, t_max = 10)
+
+  # check RNGClass
+  expect_no_error(S2 <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
+  expect_no_error(df3 <- ppp_t_piecewise(times_vector = c(0, 10), rates_vector = 1, rng_stream = S2))
+  check_ppp_sample_validity(times = df3, t_min = 0, t_max = 10)
+})
+
+

@@ -13,8 +13,8 @@ test_that("ztppp_t agrees with ppp_t for low intensities", {
   compare_ppp_vectors(ppp1 = r_ppp_t_low, ppp2 = r_ztppp_t_low, threshold = 0.1, showQQ = TRUE)
 })
 
-test_that("zt-NHPPP methods agree on the first time to event with constant rate", {
-  l <- function(t) 2
+test_that("ztNHPPP methods agree on the first time to event with constant rate", {
+  l <- function(t) rep(2, length(t))
   L <- function(t) 2 * t
   Li <- function(z) z / 2
 
@@ -29,6 +29,9 @@ test_that("zt-NHPPP methods agree on the first time to event with constant rate"
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_exp, ppp2 = r_ztppp_t, threshold = 0.1, showQQ = TRUE)
 
   r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity(lambda = l, lambda_maj = 2.1, range_t = c(1, 13), only1 = TRUE)))
+  compare_ppp_vectors(ppp1 = r_ztnhppp_intens, ppp2 = r_ztppp_t, threshold = 0.1, showQQ = TRUE)
+
+  r_ztnhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) ztnhppp_t_intensity_piecewise(lambda = l, lambda_maj_vector = l(2:13), times_vector = c(1:13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens, ppp2 = r_ztppp_t, threshold = 0.1, showQQ = TRUE)
 })
 

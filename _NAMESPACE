@@ -1,0 +1,4 @@
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+importClassesFrom(rstream,rstream.mrg32k3a)
+useDynLib(nhppp, .registration = TRUE)
