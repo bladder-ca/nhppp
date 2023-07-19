@@ -134,8 +134,8 @@ ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
 #' @examples
 #' x <- ppp_t_piecewise(rates_vector = rep(1, 5), times_vector = c(0:5))
 #' @export
-ppp_t_piecewise <- function(rates_vector = 1,
-                            times_vector = c(0, 10),
+ppp_t_piecewise <- function(rates_vector = rep(1, 5),
+                            times_vector = c(0:5),
                             rng_stream = NULL,
                             only1 = FALSE,
                             zero_truncated = FALSE) {
@@ -147,7 +147,6 @@ ppp_t_piecewise <- function(rates_vector = 1,
   } else {
     ppp_t_fun <- ztppp_t
   }
-
 
   if (len_times_vector == 2) {
     return(ppp_t_fun(range_t = times_vector, rate = rates_vector, rng_stream = rng_stream, only1 = only1))
@@ -164,22 +163,22 @@ ppp_t_piecewise <- function(rates_vector = 1,
   time_warped_L <- c(0, time_warped_H[1:(len_times_vector - 1)]) # data.table::shift(time_warped_H, n=1, type = "lag", fill = 0)
 
   times_warped <- ppp_t_fun(rate = 1, range_t = c(0, time_warped_H[len_times_vector]), rng_stream = rng_stream, only1 = only1)
+
   num_times <- length(times_warped)
-  if (num_times == 0 || is.na(times_warped)) {
+  if (num_times == 0 || any(is.na(times_warped))) {
     return(numeric(0))
   }
 
   x_index <- rep(1:len_times_vector, num_times)
-  t_index <- as.vector(t(sapply(1:len_times_vector, function(x) 1:num_times)))
+  t_index <- rep(1:num_times, each = len_times_vector)
   to_keep <- times_warped[t_index] >= time_warped_L[x_index] &
     times_warped[t_index] < time_warped_H[x_index]
-
   x_to_keep <- x_index[to_keep]
   t_to_keep <- t_index[to_keep]
-  return(
-    ((times_warped[t_to_keep] - time_warped_L[x_to_keep]) /
+  t_ <- ((times_warped[t_to_keep] - time_warped_L[x_to_keep]) /
       Lambda[x_to_keep]) * dtime[x_to_keep] + time_L[x_to_keep]
-  )
+
+  return(t_[!is.na(t_)])
 }
 
 
