@@ -57,9 +57,11 @@ nhppp_t_intensity <- function(lambda,
   stopifnot(all(acceptance_prob <= 1 + 10^-6))
   if (only1) {
     t <- candidate_times[u < acceptance_prob][1]
-    if (is.na(t)) {t <- numeric(0)}
+    if (is.na(t)) {
+      t <- numeric(0)
+    }
   } else {
-   t <- candidate_times[u < acceptance_prob]
+    t <- candidate_times[u < acceptance_prob]
   }
   return(t)
 }
@@ -88,13 +90,12 @@ nhppp_t_intensity <- function(lambda,
 #' @export
 #'
 #' @examples
-#' x <- nhppp_t_intensity_piecewise(lambda = function(t) exp(.02*t))
+#' x <- nhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
 nhppp_t_intensity_piecewise <- function(lambda,
-                              lambda_maj_vector = 1,
-                              times_vector = c(0, 10),
-                              rng_stream = NULL,
-                              only1 = FALSE) {
-
+                                        lambda_maj_vector = 1,
+                                        times_vector = c(0, 10),
+                                        rng_stream = NULL,
+                                        only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
   candidate_times <- ppp_t_piecewise(rates_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, only1 = FALSE)
   num_candidates <- length(candidate_times)
@@ -103,13 +104,17 @@ nhppp_t_intensity_piecewise <- function(lambda,
   }
   u <- rng_stream_runif(size = num_candidates, minimum = 0, maximum = 1, rng_stream = rng_stream)
   acceptance_prob <- lambda(candidate_times) /
-    approx(x = times_vector[1:len_lambda],
-           y = lambda_maj_vector,
-           xout = candidate_times, method = "constant", rule = 2, f = 0)$y
+    approx(
+      x = times_vector[1:len_lambda],
+      y = lambda_maj_vector,
+      xout = candidate_times, method = "constant", rule = 2, f = 0
+    )$y
   stopifnot(all(acceptance_prob <= 1 + 10^-6))
   if (only1) {
     t <- candidate_times[u < acceptance_prob][1]
-    if (is.na(t)) {t <- numeric(0)}
+    if (is.na(t)) {
+      t <- numeric(0)
+    }
   } else {
     t <- candidate_times[u < acceptance_prob]
   }

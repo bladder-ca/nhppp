@@ -126,10 +126,10 @@ test_that("ppp_t_piecewise() arguments work", {
   expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)))
   check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10)
 
-  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)/1000, zero_truncated = TRUE))
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10) / 1000, zero_truncated = TRUE))
   check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10, zero_truncated = TRUE)
 
-  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10)/1000, only1= TRUE, zero_truncated = TRUE))
+  expect_no_error(df1 <- ppp_t_piecewise(times_vector = c(0:10), rates_vector = runif(10) / 1000, only1 = TRUE, zero_truncated = TRUE))
   check_ppp_sample_validity(times = df1, t_min = 0, t_max = 10, only1 = TRUE, zero_truncated = TRUE)
 
   # check rstream
@@ -142,5 +142,3 @@ test_that("ppp_t_piecewise() arguments work", {
   expect_no_error(df3 <- ppp_t_piecewise(times_vector = c(0, 10), rates_vector = 1, rng_stream = S2))
   check_ppp_sample_validity(times = df3, t_min = 0, t_max = 10)
 })
-
-

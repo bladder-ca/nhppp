@@ -132,7 +132,7 @@ ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
 #' @export
 #'
 #' @examples
-#' x <- ppp_t_piecewise(rates_vector = rep(1,5), times_vector = c(0:5))
+#' x <- ppp_t_piecewise(rates_vector = rep(1, 5), times_vector = c(0:5))
 #' @export
 ppp_t_piecewise <- function(rates_vector = 1,
                             times_vector = c(0, 10),
@@ -140,7 +140,7 @@ ppp_t_piecewise <- function(rates_vector = 1,
                             only1 = FALSE,
                             zero_truncated = FALSE) {
   len_times_vector <- length(times_vector)
-  stopifnot(len_times_vector == (length(rates_vector)+1) )
+  stopifnot(len_times_vector == (length(rates_vector) + 1))
 
   if (zero_truncated == FALSE) {
     ppp_t_fun <- ppp_t_orderstat
@@ -149,36 +149,36 @@ ppp_t_piecewise <- function(rates_vector = 1,
   }
 
 
-  if(len_times_vector == 2) {
+  if (len_times_vector == 2) {
     return(ppp_t_fun(range_t = times_vector, rate = rates_vector, rng_stream = rng_stream, only1 = only1))
   }
   stopifnot(!is.unsorted(times_vector))
 
   time_H <- times_vector
   lambda <- c(0, rates_vector)
-  time_L <- c(NA, time_H[1:(len_times_vector-1)]) #data.table::shift(time_H)
-  dtime <-  time_H - time_L
+  time_L <- c(NA, time_H[1:(len_times_vector - 1)]) # data.table::shift(time_H)
+  dtime <- time_H - time_L
   Lambda <- lambda * dtime
   Lambda[1] <- 0
   time_warped_H <- cumsum(Lambda)
-  time_warped_L <- c(0, time_warped_H[1:(len_times_vector-1)]) #data.table::shift(time_warped_H, n=1, type = "lag", fill = 0)
+  time_warped_L <- c(0, time_warped_H[1:(len_times_vector - 1)]) # data.table::shift(time_warped_H, n=1, type = "lag", fill = 0)
 
-  times_warped <- ppp_t_fun(rate = 1, range_t = c(0, time_warped_H[len_times_vector]), rng_stream = rng_stream, only1 = only1 )
+  times_warped <- ppp_t_fun(rate = 1, range_t = c(0, time_warped_H[len_times_vector]), rng_stream = rng_stream, only1 = only1)
   num_times <- length(times_warped)
-  if( num_times == 0 || is.na(times_warped)) {
+  if (num_times == 0 || is.na(times_warped)) {
     return(numeric(0))
   }
 
   x_index <- rep(1:len_times_vector, num_times)
   t_index <- as.vector(t(sapply(1:len_times_vector, function(x) 1:num_times)))
   to_keep <- times_warped[t_index] >= time_warped_L[x_index] &
-             times_warped[t_index] <  time_warped_H[x_index]
+    times_warped[t_index] < time_warped_H[x_index]
 
   x_to_keep <- x_index[to_keep]
   t_to_keep <- t_index[to_keep]
   return(
     ((times_warped[t_to_keep] - time_warped_L[x_to_keep]) /
-       Lambda[x_to_keep]) * dtime[x_to_keep] + time_L[x_to_keep]
+      Lambda[x_to_keep]) * dtime[x_to_keep] + time_L[x_to_keep]
   )
 }
 
