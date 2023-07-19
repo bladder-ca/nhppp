@@ -82,21 +82,22 @@ ztnhppp_t_intensity <- function(lambda,
 #' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
 #' @param only1 boolean, draw at most 1 event time
 #'
-#' @return a vector of event times (t_) with at least one element 
+#' @return a vector of event times (t_) with at least one element
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02*t))
+#' x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
 ztnhppp_t_intensity_piecewise <- function(lambda,
-                              lambda_maj_vector = 1,
-                              times_vector = c(0, 10),
-                              rng_stream = NULL,
-                              only1 = FALSE) {
-
+                                          lambda_maj_vector = 1,
+                                          times_vector = c(0, 10),
+                                          rng_stream = NULL,
+                                          only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
 
-  lambda_maj_fun <- approxfun(x = times_vector[1:len_lambda],
-           y = lambda_maj_vector, method = "constant", rule = 2, f = 0)
+  lambda_maj_fun <- approxfun(
+    x = times_vector[1:len_lambda],
+    y = lambda_maj_vector, method = "constant", rule = 2, f = 0
+  )
 
   while (TRUE) {
     candidate_times <- ppp_t_piecewise(rates_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, only1 = FALSE, zero_truncated = TRUE)
@@ -113,5 +114,3 @@ ztnhppp_t_intensity_piecewise <- function(lambda,
     }
   }
 }
-
-
