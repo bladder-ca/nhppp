@@ -2,7 +2,9 @@ Package: nhppp
 Type: Package
 Title: Simulating from NHPPP
 Version: 0.1.0
-Author: Thomas Trikalinos
+Authors@R: 
+    person("Thomas", "Trikalinos", , "ttrikalin@mac.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3990-1848"))
 Maintainer: The package maintainer <thomas_trikalinos@brown.edu>
 Description: 
     The package simulates event times from arbitrary NHPPPs with 
