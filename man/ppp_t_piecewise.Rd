@@ -5,8 +5,8 @@
 \title{Simulate a piecewise constant-rate Poisson Point Process over (t_min, t_max] (inversion method)}
 \usage{
 ppp_t_piecewise(
-  rates_vector = 1,
-  times_vector = c(0, 10),
+  rates_vector = rep(1, 5),
+  times_vector = c(0:5),
   rng_stream = NULL,
   only1 = FALSE,
   zero_truncated = FALSE

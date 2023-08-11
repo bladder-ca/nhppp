@@ -180,33 +180,3 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
 
   return(t_[!is.na(t_)])
 }
-
-
-# ppp_t_piecewise_SLOW <- function(range_t = c(0, 10), rates_vector = 1, times_vector = NULL, tol = 10^-6, rng_stream = NULL, only1 = FALSE) {
-#   #browser()
-#   stopifnot(length(times_vector) == (length(rates_vector)-1) )
-#   if(is.null(times_vector)) {
-#     return(ppp_t(range_t = range_t, rate = rates_vector, tol = tol, rng_stream = rng_stream, only1 = only1))
-#   }
-#   stopifnot(!is.unsorted(times_vector))
-#   stopifnot(times_vector[1] >= range_t[1] &&
-#             times_vector[length(times_vector)] <= range_t[2])
-#
-#   X <- data.table::data.table(time_H = c(range_t[1], times_vector, range_t[2]),
-#                               lambda = c(0, rates_vector))
-#   X[, time_L := data.table::shift(time_H)][, dtime := time_H - time_L]
-#   X[, Lambda := lambda * dtime][is.na(Lambda), Lambda := 0]
-#   X[, time_warped_H := cumsum(Lambda)]
-#   X[, time_warped_L := data.table::shift(time_warped_H, n=1, type = "lag", fill = 0)]
-#   times_warped <- ppp_t(rate = 1, range_t = c(0, X[.N, time_warped_H]))
-#   times_warped <-  data.table::data.table(times_warped = times_warped)
-#   ind <- data.table::CJ(X_index = 1:nrow(X), t_index = 1:nrow(times_warped))
-#   X <- X[ind[,X_index]][,times_warped := times_warped[ind[,t_index]]]
-#   X[, tokeep := times_warped >= time_warped_L &
-#        times_warped < time_warped_H]
-#   X <- X[tokeep == TRUE]
-#   X[,t_ := ((times_warped - time_warped_L) / Lambda) * dtime + time_L]
-#   X[,t_]
-#
-# }
-#

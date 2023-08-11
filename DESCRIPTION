@@ -1,18 +1,20 @@
 Package: nhppp
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Simulating from NHPPP
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Thomas Trikalinos
+Maintainer: The package maintainer <thomas_trikalinos@brown.edu>
+Description: 
+    The package simulates event times from arbitrary NHPPPs with 
+    two methods: (i) Time warping recovers the target NHPPP with 
+    an appropriate time-transformation of samples drawn from a 
+    time-homogeneous Poisson PP. (ii) An acceptance-rejection 
+    algorithm thins out a “denser” homogeneous Poisson PP to 
+    obtain event times from the target NHPPP.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    data.table,
-    microbenchmark,
-    Rcpp,
     rstream
 LinkingTo: Rcpp
 RoxygenNote: 7.2.3
