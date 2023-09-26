@@ -1,7 +1,7 @@
 Package: nhppp
 Type: Package
 Title: Simulating from NHPPP
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Thomas", "Trikalinos", , "ttrikalin@mac.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3990-1848"))
