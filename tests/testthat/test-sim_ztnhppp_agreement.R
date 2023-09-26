@@ -1,4 +1,3 @@
-
 test_that("ztppp_t agrees with ppp_t for high intensities", {
   # High intensity, there are practically no zero event trajectories
   r_ppp_t <- unlist(lapply(integer(10000), function(x) ppp_t(range_t = c(1, 3), rate = 10, only1 = TRUE)))

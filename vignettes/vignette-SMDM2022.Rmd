@@ -169,7 +169,6 @@ autoplot(res1, type = c("violin")) +
 
 ### `R` code: Best case arguments: 1 sample vs all samples
 ```{r}
-
 # Best case: 1 vs all
 res2 <- microbenchmark::microbenchmark(
   # First time

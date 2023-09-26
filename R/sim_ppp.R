@@ -176,7 +176,7 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
   x_to_keep <- x_index[to_keep]
   t_to_keep <- t_index[to_keep]
   t_ <- ((times_warped[t_to_keep] - time_warped_L[x_to_keep]) /
-      Lambda[x_to_keep]) * dtime[x_to_keep] + time_L[x_to_keep]
+    Lambda[x_to_keep]) * dtime[x_to_keep] + time_L[x_to_keep]
 
   return(t_[!is.na(t_)])
 }
