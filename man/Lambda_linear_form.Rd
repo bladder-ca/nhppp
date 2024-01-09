@@ -2,8 +2,8 @@
 % Please edit documentation in R/utils-linear.R
 \name{Lambda_linear_form}
 \alias{Lambda_linear_form}
-\title{Definite integral of `l = alpha + beta*t` at time `t`
-with `L(t0) = 0`}
+\title{Definite integral of \code{l = alpha + beta*t} at time \code{t}
+with \code{L(t0) = 0}}
 \usage{
 Lambda_linear_form(t, alpha, beta, t0)
 }
@@ -17,6 +17,6 @@ Lambda_linear_form(t, alpha, beta, t0)
 \item{t0}{(double) the starting time}
 }
 \description{
-Definite integral of `l = alpha + beta*t` starting at
-             `t0` -- only for `l+`.
+Definite integral of \code{l = alpha + beta*t} starting at
+\code{t0} -- only for \verb{l+}.
 }

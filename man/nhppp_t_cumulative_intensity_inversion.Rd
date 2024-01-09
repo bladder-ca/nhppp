@@ -3,7 +3,7 @@
 \name{nhppp_t_cumulative_intensity_inversion}
 \alias{nhppp_t_cumulative_intensity_inversion}
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-   (t_min, t_max) (inversion method)}
+(t_min, t_max) (inversion method)}
 \usage{
 nhppp_t_cumulative_intensity_inversion(
   Lambda,
@@ -18,23 +18,23 @@ nhppp_t_cumulative_intensity_inversion(
 \item{Lambda}{(function, double vector) a continuous increasing R to R map
 which is the integrated rate of the NHPPP}
 
-\item{Lambda_inv}{(function, double vector) the inverse of `Lambda()`}
+\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}}
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
 \item{range_L}{(vector, double) min and max of the transformed time interval}
 
-\item{rng_stream}{(`rstream`) an `rstream` object.}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object.}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of length 0
 }
 \description{
 Sample NHPPP times using the inversion method,
-optionally using an `rstream` generator or a `Kystis` `RNGClass` object.
+optionally using an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
 }
 \examples{
 x <- nhppp_t_cumulative_intensity_inversion(Lambda = function(t) t + cos(t) - 1)

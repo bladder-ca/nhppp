@@ -3,7 +3,7 @@
 \name{ztnhppp_t_cumulative_intensity}
 \alias{ztnhppp_t_cumulative_intensity}
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-   (t_min, t_max) (order statistics method)}
+(t_min, t_max) (order statistics method)}
 \usage{
 ztnhppp_t_cumulative_intensity(
   Lambda,
@@ -18,13 +18,13 @@ ztnhppp_t_cumulative_intensity(
 \item{Lambda}{(function, double vector) a continuous increasing R to R map
 which is the integrated rate of the NHPPP}
 
-\item{Lambda_inv}{(function, double vector) the inverse of `Lambda()`}
+\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}}
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
 \item{range_L}{(vector, double) min and max of the transformed time interval}
 
-\item{rng_stream}{(`rstream`) an `rstream`, `RNGClass` object or `NULL`.}
+\item{rng_stream}{(\code{rstream}) an \code{rstream}, \code{RNGClass} object or \code{NULL}.}
 
 \item{only1}{(boolean) draw at most 1 event time}
 }
@@ -33,8 +33,8 @@ a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP times using the order statistics method,
-optionally using an `rstream` generator or a `Kystis` `RNGClass` object.
+optionally using an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
 }
 \examples{
-x <- ztnhppp_t_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
+x <- ztnhppp_t_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
 }

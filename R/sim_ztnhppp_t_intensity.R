@@ -88,13 +88,13 @@ ztnhppp_t_intensity <- function(lambda,
 #' @examples
 #' x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
 ztnhppp_t_intensity_piecewise <- function(lambda,
-                                          lambda_maj_vector = 1,
-                                          times_vector = c(0, 10),
+                                          lambda_maj_vector = lambda(1:10),
+                                          times_vector = 0:10,
                                           rng_stream = NULL,
                                           only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
 
-  lambda_maj_fun <- approxfun(
+  lambda_maj_fun <- stats::approxfun(
     x = times_vector[1:len_lambda],
     y = lambda_maj_vector, method = "constant", rule = 2, f = 0
   )

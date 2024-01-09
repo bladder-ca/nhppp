@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
+#' x <- ztnhppp_t_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
 ztnhppp_t_cumulative_intensity <- function(Lambda,
                                            Lambda_inv = NULL,
                                            range_t = c(0, 10),

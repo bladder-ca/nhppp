@@ -13,7 +13,7 @@ ppp_next_n(n = 1, rate = 1, t_min = 0, rng_stream = NULL)
 
 \item{t_min}{scalar for the starting time value}
 
-\item{rng_stream}{an `rstream` or `RNGClass` object}
+\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
 }
 \value{
 a vector with event times t (starting from t_min)

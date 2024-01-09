@@ -11,10 +11,10 @@ ppp_n(size, range_t = c(0, 10), rng_stream = NULL)
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
-\item{rng_stream}{an `rstream` or `RNGClass` object}
+\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
 }
 \value{
-a vector of event times of size `size`
+a vector of event times of size \code{size}
 }
 \description{
 Simulate specific number of points from a homogeneous Poisson Point Process over (t_min, t_max]

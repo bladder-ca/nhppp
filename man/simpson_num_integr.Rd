@@ -25,7 +25,7 @@ simpson_num_integr(sin, 0, pi/2, 100)
 }
 \description{
 Simpson's method to integrate a univariate continuous function.
-Faster that R's `integrate()` and precise enough, but does not do any checks.
-The error is at most `M (b-a)^5/(180 n^4)` where `M` is the maximum of
-the fourth derivative of the integrand in the interval `[a, b]`.
+Faster that R's \code{integrate()} and precise enough, but does not do any checks.
+The error is at most \verb{M (b-a)^5/(180 n^4)} where \code{M} is the maximum of
+the fourth derivative of the integrand in the interval \verb{[a, b]}.
 }

@@ -13,15 +13,15 @@ ppp_t_piecewise(
 )
 }
 \arguments{
-\item{rates_vector}{(scalar, double) `K` constant rates, one per interval}
+\item{rates_vector}{(scalar, double) \code{K} constant rates, one per interval}
 
-\item{times_vector}{(vector, double) `K+1` time points defining `K` intervals
+\item{times_vector}{(vector, double) \code{K+1} time points defining \code{K} intervals
 of constant rates:
-     `[t_1 = range_t[1],       t_2)`: the first interval
-     `[t_k,                t_{k+1})`: the `k`-th interval
-     `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval}
+\verb{[t_1 = range_t[1],       t_2)}: the first interval
+\verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
+\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
 
-\item{rng_stream}{an `rstream` or `RNGClass` object}
+\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
 
 \item{only1}{boolean, draw at most 1 event time}
 
@@ -29,7 +29,7 @@ of constant rates:
 }
 \value{
 a vector of event times t
-        if no events realize, it will have 0 length
+if no events realize, it will have 0 length
 }
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over (t_min, t_max] (inversion method)

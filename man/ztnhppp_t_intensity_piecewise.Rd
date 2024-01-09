@@ -3,12 +3,12 @@
 \name{ztnhppp_t_intensity_piecewise}
 \alias{ztnhppp_t_intensity_piecewise}
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-   (t0, t_max) (thinning method) with piecewise constant_majorizer}
+(t0, t_max) (thinning method) with piecewise constant_majorizer}
 \usage{
 ztnhppp_t_intensity_piecewise(
   lambda,
-  lambda_maj_vector = 1,
-  times_vector = c(0, 10),
+  lambda_maj_vector = lambda(1:10),
+  times_vector = 0:10,
   rng_stream = NULL,
   only1 = FALSE
 )
@@ -17,15 +17,15 @@ ztnhppp_t_intensity_piecewise(
 \item{lambda}{(function) the instantaneous rate of the NHPPP.
 A continuous function of time.}
 
-\item{lambda_maj_vector}{(scalar, double) `K` constant majorizing rates, one per interval}
+\item{lambda_maj_vector}{(scalar, double) \code{K} constant majorizing rates, one per interval}
 
-\item{times_vector}{(vector, double) `K+1` time points defining `K` intervals
+\item{times_vector}{(vector, double) \code{K+1} time points defining \code{K} intervals
 of constant rates:
-     `[t_1 = range_t[1],       t_2)`: the first interval
-     `[t_k,                t_{k+1})`: the `k`-th interval
-     `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval}
+\verb{[t_1 = range_t[1],       t_2)}: the first interval
+\verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
+\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
 
-\item{rng_stream}{(`rstream`) an `rstream` or `RNGClass` object, or `NULL`}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} or \code{RNGClass} object, or \code{NULL}}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
@@ -34,7 +34,7 @@ a vector of event times (t_) with at least one element
 }
 \description{
 Sample zero-truncated NHPPP times using the thinning method, optionally using
-an `rstream` generator or a `Kystis` `RNGClass` object.
+an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
 }
 \examples{
 x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))

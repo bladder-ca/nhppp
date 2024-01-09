@@ -11,8 +11,8 @@ expect_no_error(expr)
 }
 \description{
 helper function that augments
-`test_that::expect_no_error()` to expect no error.
-Copied from the `R6` source code.
+\code{test_that::expect_no_error()} to expect no error.
+Copied from the \code{R6} source code.
 }
 \details{
 Small utility functions. Not to be exported to the user.

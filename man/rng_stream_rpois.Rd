@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rng_stream_rpois}
 \alias{rng_stream_rpois}
-\title{Poisson random samples from `rstream` or `RNGClass` objects}
+\title{Poisson random samples from \code{rstream} or \code{RNGClass} objects}
 \usage{
 rng_stream_rpois(size = 1, lambda = 1, rng_stream = NULL)
 }
@@ -11,11 +11,11 @@ rng_stream_rpois(size = 1, lambda = 1, rng_stream = NULL)
 
 \item{lambda}{Positive number, the mean}
 
-\item{rng_stream}{(`rstream`) an `rstream` object or `NULL`}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 }
 \value{
-a vector of counts of size `size`
+a vector of counts of size \code{size}
 }
 \description{
-Sample from `rstream` or `RNGClass` objects
+Sample from \code{rstream} or \code{RNGClass} objects
 }
