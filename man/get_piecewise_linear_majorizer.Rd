@@ -4,14 +4,14 @@
 \alias{get_piecewise_linear_majorizer}
 \title{Piecewise linear majorizer for K-Lipschitz functions over an interval}
 \usage{
-get_piecewise_linear_majorizer(fun, breaks, is_monotonic = TRUE, K = 0)
+get_piecewise_linear_majorizer(fun, breaks, is_monotone = TRUE, K = 0)
 }
 \arguments{
 \item{fun}{A function object with a single argument \code{x}}
 
 \item{breaks}{(vector) The set of \code{M+1} boundaries for the \code{M} subintervals in \code{x}}
 
-\item{is_monotonic}{(boolean) Is the function monotonic? (Default is \code{TRUE}.)}
+\item{is_monotone}{(boolean) Is the function monotone? (Default is \code{TRUE}.)}
 
 \item{K}{(double) A non-negative number for the Lipschitz cone. (Default is 0.)}
 }

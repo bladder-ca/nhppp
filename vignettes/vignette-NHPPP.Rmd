@@ -48,7 +48,7 @@ library(nhppp) # NHPPP in C++
 library(reda) # Alternative NHPPP packages - start
 library(IndTestPP)
 library(NHPoisson)
-library(poisson)
+#library(poisson)
 library(PtProcess)
 library(simEd) # Alternative NHPPP packages - end
 library(rstream) # Random streams

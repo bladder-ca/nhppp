@@ -68,14 +68,14 @@ Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
 #'              over an interval. 
 #' @param fun A function object with a single argument `x`
 #' @param breaks (vector) The set of `M+1` boundaries for the `M` subintervals in `x`
-#' @param is_monotonic (boolean) Is the function monotonic? (Default is `TRUE`.)
+#' @param is_monotone (boolean) Is the function monotone? (Default is `TRUE`.)
 #' @param K (double) A non-negative number for the Lipschitz cone. (Default is 0.) 
 #' @export
-get_piecewise_linear_majorizer <- function(fun, breaks, is_monotonic = TRUE, K = 0) {
+get_piecewise_linear_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
   stopifnot(K >= 0)
   M <- length(breaks) - 1 
   f_breaks <- fun(breaks)
   lambda_star <- pmax(f_breaks[1:M], f_breaks[2:(M+1)])
-  if(isTRUE(is_monotonic)) return(lambda_star)  
+  if(isTRUE(is_monotone)) return(lambda_star)  
   else return(lambda_star + K * abs(breaks[1:M] - breaks[2:(M+1)])/2)
 }
