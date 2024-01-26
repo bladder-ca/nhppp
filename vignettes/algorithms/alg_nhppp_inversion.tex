@@ -1,0 +1,11 @@
+\begin{algorithm}[h!]
+\caption{The time transformation or inversion algorithm for sampling given $\Lambda(t), \Lambda^{-1}(z)$~\citep{Cinlar1975inversion, cox1965theory}. The notation $\textrm{PoissonProcess}_1$ indicates sampling event times from a constant rate one Poisson point process.}\label{alg:NHPPP_inversion}
+\begin{algorithmic}[1]
+\Require{$\Lambda(t), \Lambda^{-1}(z), t \in (a, b]$} \Comment{$\Lambda^{-1}(z)$ possibly numerically}
+\State $\tau_a \gets \Lambda(a), \tau_b \gets \Lambda(b)$
+\State $\mathcal{C} \gets \mathcal{C} \sim \textrm{PoissonProcess}_{1}(\tau_a, \tau_b)$ \Comment{From Algorithm~\ref{alg:PPP_t} (or~\ref{alg:PPP_conditional} for conditional sampling)} 
+\State $\mathcal{Z} \gets \Lambda^{-1}(\mathcal{C})$ \Comment{$\Lambda^{-1}(\cdot)$ as set function, meant elementwise}
+\State
+\Return{$\mathcal{Z}$} 
+\end{algorithmic}
+\end{algorithm}

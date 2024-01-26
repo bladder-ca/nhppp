@@ -1,0 +1,18 @@
+\begin{algorithm}[h!]
+\caption{Sampling with constant intensity $\lambda$ conditional that at least $m$ events occurred in interval $(a, b]$. Relies on generating order statistics analogously to Algorithm~\ref{alg:PPP_order_stats}.}\label{alg:PPP_conditional}
+\begin{algorithmic}[1]
+\Require $t \in (a, b]$
+\State $N \gets N \sim \textrm{TruncatedPoisson}_{N \ge m}\big(\lambda (b-a)\big)$ \Comment{$(m-1)$-truncated Poisson}
+\State $t \gets a$
+\State $\mathcal{Z} \gets \emptyset$ \Comment{$\mathcal{Z}$ is an ordered set}
+\If{N > 0}
+    \For{$i \in [N]$}:
+        \State $U_i \gets  U_i \sim \textrm{Uniform(0, 1)}$ \Comment{Generate order statistics}
+        \State $\mathcal{Z} \gets \mathcal{Z} \cup \{a + (b-a) U_i\} $ 
+    \EndFor
+    \State $\mathcal{Z} \gets \textrm{sort}(\mathcal{Z})$ 
+\EndIf
+\State
+\Return{$\mathcal{Z}$} \Comment{Up to $k$ earliest points: \textbf{return} $\{Z_{(i)} \ | \ i \le k\ , Z_{(i)} \in \mathcal{Z} \}$}
+\end{algorithmic}
+\end{algorithm}

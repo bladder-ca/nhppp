@@ -1,7 +1,57 @@
 %%%%%%#%#!TEX root = nhppp.tex
 % !Rnw weave = knitr
 
-\documentclass[article,nojss]{jss}
+\documentclass[article,nojss]{jss}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 % \documentclass[article]{jss}
 
 %% -- LaTeX packages and custom commands ---------------------------------------
@@ -90,72 +140,10 @@
   RI 02912, USA\\
   E-mail: \email{thomas\_trikalinos@brown.edu}
 }
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-<<setup-block, echo=FALSE, message=FALSE, results='hide'>>=
-suppressPackageStartupMessages({library("ggplot2")})
-library("bench")
-library("latex2exp")
-library("nhppp")
 
-options(prompt = "R> ", continue = "+  ", width = 70,
-        useFancyQuotes = FALSE, out.extra = "")
-#knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-set.seed(2024)
-
-# helper functions and options for the live report generation
-full_results <- FALSE
-n_simulations <- 10^4
-n_bins_wasserstein <- NULL
-n_samples_wasserstein <- 1000
-if(!full_results){
-  n_simulations <- 100
-  n_bins_wasserstein <- 5
-  n_samples_wasserstein <- 500
-}
-
-
-sanitize_lambdas <- function(x) {
-  x <- gsub(pattern = "l_\\*", replacement = "$\\\\lambda_*$", x = x)
-  x <- gsub(pattern = "l_max*", replacement = "$\\\\lambda_{*a}$", x = x)
-  x <- gsub(pattern = "l_m2", replacement = "$\\\\lambda_{*c}$", x = x)
-  x <- gsub(pattern = "l_m", replacement = "$\\\\lambda_{*b}$", x = x)
-  x <- gsub(pattern = "Li_", replacement = "$\\\\Lambda^{-1}$",  x = x)
-  x <- gsub(pattern = "L_", replacement = "$\\\\Lambda$",  x = x)
-  return(x)
-}
-
-
-sanitize_strings_for_figures <- function(x) {
-  sanitize_lambdas(x)
-}
-
-
-sanitize_strings_for_tables <- function(x) {
-  pkglist <- c("nhppp", "reda", "simEd", "NHPoisson", "poisson",
-               "IndTestPP", "PtProcess", "spatstat.random")
-  for(pkg in pkglist){
-    x <- gsub(pattern = pkg, replacement = paste0("\\\\pkg{", pkg, "}"), x = x)
-  }
-  x <- sanitize_lambdas(x)
-  return(x)
-}
-
-pprint <- function(x, digits = 2, use_lt = FALSE) {
-  i <- 0
-  for(x1 in x) {
-    i <- i + 1
-    if(use_lt && x1 < 0.5*10^(-digits)) {
-      x1 <- paste0("<0.", paste0(rep("0", digits-1), collapse=""), "1")
-    } else {
-      x1 <- format(round(x1, digits=digits), nsmall=digits)
-    }
-    x[i] <- x1
-  }
-  return(x)
-}
-@
 
 \section{Introduction} \label{sec:intro}
 
@@ -264,20 +252,37 @@ Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the i
 
 The package's \fct{ppp\_t} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \texttt{range\_t} is a two-values vector with the bounds $a, b$. The optional \texttt{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \texttt{only1} to \texttt{TRUE} from its default value of \texttt{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
 
-<<demo-pppt>>=
-library("nhppp")
-library("rstream")
-ppp_t(range_t = c(0, 10), rate = 1, tol = 10^-6, only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(}\hlstr{"nhppp"}\hlstd{)}
+\hlkwd{library}\hlstd{(}\hlstr{"rstream"}\hlstd{)}
+\hlkwd{ppp_t}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.6738851 1.6505024 2.0112290 2.4075753 3.3888714 4.2948551
+##  [7] 4.3773730 4.7348883 5.5044973 5.5953475 8.8805621
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 All \pkg{nhppp} functions can accept a user provided random number stream object via the \texttt{rng\_stream} option.
 
-<<demo-pppt-rstream>>=
-library("rstream")
-S <- new("rstream.mrg32k3a")
-ppp_t(range_t = c(0, 10), rate = 1, tol = 10^-6, only1 = FALSE,
-  rng_stream = S)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(}\hlstr{"rstream"}\hlstd{)}
+\hlstd{S} \hlkwb{<-} \hlkwd{new}\hlstd{(}\hlstr{"rstream.mrg32k3a"}\hlstd{)}
+\hlkwd{ppp_t}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+  \hlkwc{rng_stream} \hlstd{= S)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.5523636 1.3252434 3.0543734 3.1806449 3.6117704 4.2341124
+##  [7] 4.4722203 4.5647487 4.5940170 5.9303886 6.3370899 6.6552857
+## [13] 6.8732172 7.6076871
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Sampling using order statistics}\label{sec:PPP_order_stats}
@@ -291,9 +296,16 @@ Algorithm~\ref{alg:PPP_order_stats} first draws the number of events in $(a, b]$
 
 The \fct{ppp\_t\_orderstat} function implements constant-rate sampling via the order-statistics algorithm.
 
-<<demo-ppp_t_orderstat>>=
-ppp_t_orderstat(range_t = c(3.14, 6.28), rate = 1, only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ppp_t_orderstat}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{3.14}\hlstd{,} \hlnum{6.28}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.202501 3.742638 4.573200 5.387799
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \subsection{Sampling conditional on observing at least $m$ events}\label{sec:PPP_order_stats}
 
@@ -307,14 +319,28 @@ $N \gets m$.
 \end{center}
 
 Function \fct{ztppp\_t} simulates times conditional on drawing at least one event - i.e., setting $m=1$ in Algorithm~\ref{alg:PPP_conditional}.
-<<demo-ztppp_t>>=
-ztppp_t(range_t = c(0, 10), rate = 0.001, only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ztppp_t}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{0.001}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.749629
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 Function \fct{ppp\_n} simulates times conditional on drawing exactly $m$ events.
-<<demo-ppp_n>>=
-ppp_n(size = 4, range_t = c(0, 10))
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ppp_n}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{4}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.066808 3.724638 4.265913 6.394102
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \section[The general sampling algorithms used in nhppp]{The general sampling algorithms used in \pkg{nhppp}}\label{sec:general-sampling}
 
@@ -340,17 +366,30 @@ In practice, $\lambda_*(t)$ can be chosen as one of the special cases in Section
 
 The \pkg{nhppp} package has two functions that sample from time-varying intensity functions. The first function, \fct{nhppp\_t\_intensity}, expects a user-provided linear ($\lambda_*(t) = \alpha + \beta t$) or log-linear ($\lambda_*(t) = e^{\alpha + \beta t}$) majorizer function.
 
-<<demo-nhppp_t_intensity>>=
-lambda_fun <- function(t) exp(0.02*t)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{lambda_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlnum{0.02}\hlopt{*}\hlstd{t)}
 
-nhppp_t_intensity(lambda = lambda_fun,         # linear majorizer
-  lambda_maj = c(intercept = 1.01, slope = 0.03),
-  exp_maj = FALSE, range_t = c(0, 10), only1 = FALSE)
-
-nhppp_t_intensity(lambda = lambda_fun,         # log-linear majorizer
-  lambda_maj = c(intercept = 0.01, slope = 0.03),
-  exp_maj = TRUE, range_t = c(0, 10), only1 = FALSE)
-@
+\hlkwd{nhppp_t_intensity}\hlstd{(}\hlkwc{lambda} \hlstd{= lambda_fun,}         \hlcom{# linear majorizer}
+  \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{1.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
+  \hlkwc{exp_maj} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.6177427 0.8252861 1.6297224 1.9148740 3.7182662 3.9530368
+##  [7] 5.4636496 7.8776401 8.1428660 9.3368776 9.8801922
+\end{verbatim}
+\begin{alltt}
+\hlkwd{nhppp_t_intensity}\hlstd{(}\hlkwc{lambda} \hlstd{= lambda_fun,}         \hlcom{# log-linear majorizer}
+  \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{0.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
+  \hlkwc{exp_maj} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.3536498 0.7209948 3.1111677 6.1739616 6.3389803 6.4033085
+##  [7] 7.3063134 7.9334919 8.0546288 8.9819021 9.8787307
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 The second function, \fct{nhppp\_t\_intensity\_piecewise}, expects a user-provided piecewise linear majorizer
@@ -366,12 +405,21 @@ The second function, \fct{nhppp\_t\_intensity\_piecewise}, expects a user-provid
 which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{m=1}^M)$ and a vector of length $M$ with the values $[\lambda_m]_{m=1}^M$ in each subinterval of $(a, b]$. For example, the following code splits the interval $(0, 10]$ into $M=10$ subintervals of length one. Because \fct{lambda\_fun} is strictly increasing, its value at the upper bound of each subinterval is the supremum of the interval (Appendix~\ref{app:piecewise_majorizer}, Algorithm~\ref{alg:lambda_majorizer}).
 
 
-<<demo-nhppp_t_intensity_piecewise>>=
-nhppp_t_intensity_piecewise(lambda = lambda_fun,
-  lambda_maj_vector = lambda_fun(1:10),         # 1:10 (10 intensity values)
-  times_vector = 0:10,                          # 0:10 (11 interval bounds)
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{nhppp_t_intensity_piecewise}\hlstd{(}\hlkwc{lambda} \hlstd{= lambda_fun,}
+  \hlkwc{lambda_maj_vector} \hlstd{=} \hlkwd{lambda_fun}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{10}\hlstd{),}         \hlcom{# 1:10 (10 intensity values)}
+  \hlkwc{times_vector} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,}                          \hlcom{# 0:10 (11 interval bounds)}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 1.071966 1.125137 1.390700 1.578353 3.081168 4.452380 4.756992
+##  [8] 4.861953 5.214528 5.812922 6.681137 8.217985 8.507356 8.802966
+## [15] 8.861287 9.015354
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \subsection{The time transformation or inversion algorithm}\label{sec:inversion}
 Algorithm~\ref{alg:NHPPP_inversion} implements the time transformation or inversion algorithm from~\citet{Cinlar1975inversion} and also~\citet[par. 4.2]{cox1965theory}. As mentioned in Section~\ref{sec:properties}, strictly monotonic transformations of the carrier space (here, time) of a Poisson Point Process yield another Poisson Point Process. In equation~\eqref{eq:transform}, choosing the transformation $\tau = u(t) = \Lambda(t)$, so that $\der{u(t)}{t} = \lambda(t)$, results in $\rho(\tau) = 1$.
@@ -380,16 +428,23 @@ This means (proof sketched in~\citet[par. 4.2]{cox1965theory}) that we can sampl
 
 Function \fct{nhppp\_t\_cumulative\_intensity\_inversion} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost~\citep{brent-bisection}.
 
-<<demo-nhppp_t_cumulative_intensity_inversion>>=
-Lambda_fun <- function(t) 50 * exp(0.02 * t) - 50
-Lambda_inv_fun <- function(z) 50 * log((z + 50) / 50)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Lambda_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlnum{50} \hlopt{*} \hlkwd{exp}\hlstd{(}\hlnum{0.02} \hlopt{*} \hlstd{t)} \hlopt{-} \hlnum{50}
+\hlstd{Lambda_inv_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{z}\hlstd{)} \hlnum{50} \hlopt{*} \hlkwd{log}\hlstd{((z} \hlopt{+} \hlnum{50}\hlstd{)} \hlopt{/} \hlnum{50}\hlstd{)}
 
-nhppp_t_cumulative_intensity_inversion(Lambda = Lambda_fun,
-  Lambda_inv = Lambda_inv_fun,
-  range_t = c(5, 10.5),
-  range_L = Lambda_fun(c(5, 10.5)),
-  only1 = FALSE)
-@
+\hlkwd{nhppp_t_cumulative_intensity_inversion}\hlstd{(}\hlkwc{Lambda} \hlstd{= Lambda_fun,}
+  \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
+  \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10.5}\hlstd{),}
+  \hlkwc{range_L} \hlstd{=} \hlkwd{Lambda_fun}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10.5}\hlstd{)),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 6.140340 8.761101 9.740207
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \input{algorithms/alg_nhppp_inversion}
 
@@ -416,19 +471,33 @@ $N \gets N \sim \mathrm{TruncatedPoisson}_{N \ge m}\big(\Lambda(b) - \Lambda(a)\
 Function \fct{nhppp\_t\_cumulative\_intensity\_orderstats} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available.
 Function \fct{ztnhppp\_t\_cumulative\_intensity} conditions that at least one event is sampled in the interval. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost.
 
-<<demo-nhppp_t_cumulative_intensity_orderstats>>=
-nhppp_t_cumulative_intensity_orderstats(Lambda = Lambda_fun,
-  Lambda_inv = Lambda_inv_fun,
-  range_t = c(4.1, 7.6),
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{nhppp_t_cumulative_intensity_orderstats}\hlstd{(}\hlkwc{Lambda} \hlstd{= Lambda_fun,}
+  \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
+  \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 4.800305 4.818495 7.446173 7.559730
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-<<demo-ztnhppp_t_cumulative_intensity>>=
-ztnhppp_t_cumulative_intensity(Lambda = Lambda_fun,
-  Lambda_inv = Lambda_inv_fun,
-  range_t = c(4.1, 7.6),
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ztnhppp_t_cumulative_intensity}\hlstd{(}\hlkwc{Lambda} \hlstd{= Lambda_fun,}
+  \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
+  \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 4.306474 4.514905
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 
@@ -441,10 +510,19 @@ The \pkg{nhppp} package implements several special cases where the intensity fun
 \subsection{Sampling a piecewise constant NHPPP}\label{sec:sample-nhppp-pc}
 
 Function {\fct{sim\_ppp\_piecewise}} samples a piecewise constant intensity function based on Algorithm~\ref{alg:NHPPP_inversion}.
-<<demo-ppp_t_piecewise>>=
-ppp_t_piecewise(rates_vector = 1:5, times_vector = 0:5, only1 = FALSE,
-  zero_truncated = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ppp_t_piecewise}\hlstd{(}\hlkwc{rates_vector} \hlstd{=} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{times_vector} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+  \hlkwc{zero_truncated} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.575812 1.297171 1.391110 2.064422 2.823853 2.910616 3.617285
+##  [8] 3.704217 3.854409 4.128308 4.303018 4.418660 4.574796 4.875933
+## [15] 4.878091 4.959683 4.964334
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Sampling NHPPPs with linear and log-linear intensities}\label{sec:sample-nhppp-special}
@@ -458,12 +536,27 @@ Functions \fct{nhppp\_t\_intensity\_linear} and \fct{ztnhppp\_t\_intensity\_line
     \end{cases}.
 \end{align*}
 
-<<demo-zt-nhppp_t_intensity_linear>>=
-nhppp_t_intensity_linear(alpha = 3, beta = -0.5, range_t = c(0, 10),
-  only1 = FALSE)
-ztnhppp_t_intensity_linear(alpha = 0.5, beta = 0.2, range_t = c(0, 10),
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{nhppp_t_intensity_linear}\hlstd{(}\hlkwc{alpha} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.5}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.1596133 0.1974242 0.6364452 0.8716057 1.0611200 1.0970888
+##  [7] 1.2050477 1.7254505 3.1582454 3.2684247 3.8177822
+\end{verbatim}
+\begin{alltt}
+\hlkwd{ztnhppp_t_intensity_linear}\hlstd{(}\hlkwc{alpha} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlnum{0.2}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 3.802533 4.786135 5.189913 5.225686 5.470304 5.595804 6.751780
+##  [8] 6.795299 7.046356 7.173759 7.334077 7.720558 8.057371 8.484735
+## [15] 8.567989 8.886969 8.898501 9.233502 9.340012 9.517540
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_exponential}) samples from log-linear intensity functions
 
@@ -475,15 +568,30 @@ An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_exponential})
     \end{cases}.
 \end{align*}
 The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as described in~\citet{lewis1976linear}. Example usage follows.
-<<demo-nhppp_t_intensity_exponential>>=
-nhppp_t_intensity_exponential(alpha = 1, beta = -0.02, range_t = c(8, 10),
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{nhppp_t_intensity_exponential}\hlstd{(}\hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{8}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 8.222066 9.179042 9.267952 9.428405 9.649748 9.932890
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-<<demo-ztnhppp_t_intensity_exponential>>=
-ztnhppp_t_intensity_exponential(alpha = 1, beta = -0.02, range_t = c(5, 10),
-  only1 = FALSE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ztnhppp_t_intensity_exponential}\hlstd{(}\hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 5.328486 5.710963 6.362618 6.524670 6.701590 7.284602 7.471489
+##  [8] 7.989470 8.179929 8.961542 9.001102 9.275039
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \section[Comparisons with other R packages]{Comparisons with other \proglang{R} packages}\label{sec:other-R-packages}
@@ -528,75 +636,46 @@ Consider the example
 \end{equation}
 of a sinusoidal intensity function $\lambda(t)$ scaled to have an exponential amplitude and one of its antiderivatives $\Lambda(t)$, with such a constant term that $\Lambda(0)=0$.  For the numerical study we set $r=0.2$, $w=1$, and $t \in (0, 6\pi]$. There is no  analytic inverse function for this example.
 However, we can precompute \fct{Li}, a good numerical approximation to $\Lambda^{-1}(z)$. We will use it in Section~\ref{sec:example-time-performance} to compare the time performance of functions that use the inversion and order statistics algorithms when $\Lambda^{-1}$ is available versus not.
-<<example-functions>>=
-l <- function(t) (1+sin(t)) * exp(0.2 * t)
-L <- function(t) exp(0.2 * t) * (0.2 * sin(t) -  cos(t)) / 1.04 +
- exp(0.2 * t) / 0.2 - 4.038462
-Li <- approxfun(x = L(seq(1, 6 * pi, 10^-3)), y = seq(1, 6 * pi, 10^-3))
-@
-
-<<example-K-Lipschitz-value, echo=FALSE, include=FALSE>>=
-# to get a bound for K
-abs_l_prime_fun <- function(t, w = 1) abs((0.2 + 0.2 * sin(w*t) + w*cos(w*t))) * exp(0.2 * t)
-K_lipschitz <- abs_l_prime_fun(6*pi)
-@
-
-<<example-majorizers, echo=FALSE, include=FALSE>>=
-M <- 20
-t_breaks <- seq(0, 6 * pi, length.out = M+1)
-l_m <- get_piecewise_linear_majorizer(fun = l, breaks = t_breaks,
-                                     is_monotone = FALSE, K = K_lipschitz)
-l_star <- stats::approxfun(x = t_breaks[1:M], y = l_m, method = "constant",
-                           rule = 2)
-
-l_m2 <- c()
-for(m in 1:M){
-  t_tmp <- seq(t_breaks[m], t_breaks[m+1], length.out = 10000)
-  y_tmp <- l(t_tmp)
-  l_m2 <- c(l_m2, y_tmp[which(y_tmp == max(y_tmp))] + K_lipschitz * (t_tmp[2]-t_tmp[1])/2)
-}
-l_star2 <- stats::approxfun(x = t_breaks[1:M], y = l_m2, method = "constant",
-  rule = 2)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{l} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{) (}\hlnum{1}\hlopt{+}\hlkwd{sin}\hlstd{(t))} \hlopt{*} \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)}
+\hlstd{L} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{*} \hlstd{(}\hlnum{0.2} \hlopt{*} \hlkwd{sin}\hlstd{(t)} \hlopt{-}  \hlkwd{cos}\hlstd{(t))} \hlopt{/} \hlnum{1.04} \hlopt{+}
+ \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{/} \hlnum{0.2} \hlopt{-} \hlnum{4.038462}
+\hlstd{Li} \hlkwb{<-} \hlkwd{approxfun}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{L}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{)),} \hlkwc{y} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 
-<<example-function-plot, fig.cap="The $\\lambda(t)$ (left) and $\\Lambda(t)$ used in the illustration. Also shown three majorizing functions (left panel, marked a, b, c) that are used with the thinning algorithm in the analyses.", fig.height=4, fig.width=8, echo=FALSE>>=
-plot_base <- ggplot(data = data.frame(x = seq(0, 6 * pi, length.out =200)), aes(x)) + xlab("Time")  + theme_bw() + theme(text = element_text(size=18))
-plot_l <- plot_base +
-  geom_function(fun = l, xlim = c(0, 6 * pi), color = "red") +
-  geom_function(fun = function(x) l(6 * pi),
-                xlim = c(0, 6 * pi), n = 200, color = "blue", linetype = "longdash") +
-  geom_step(data = data.frame(x = t_breaks, l_m = l_m[c(1:M, M)]), aes(y=l_m),
-            color = "black") +
-  geom_step(data = data.frame(x = t_breaks, l_m2 = l_m2[c(1:M, M)]), aes(y=l_m2),
-            color = "black", linewidth = 1) +
-  geom_text(aes(x = 1, y = l(6*pi)+3, label = "a")) +
-  geom_text(aes(x = 1, y = l_star(1)+3, label = "b")) +
-  geom_text(aes(x = 1, y = l_star2(1)+3, label = "c")) +
-  ylab("Intensity")
-plot_L <- plot_base +
-  geom_function(fun = L, xlim = c(0, 6 * pi), color = "red") +
-  ylab("Integrated intensity")
-gridExtra::grid.arrange(plot_l, plot_L, nrow = 1)
-@
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/example-function-plot-1} \caption[The $\lambda(t)$ (left) and $\Lambda(t)$ used in the illustration]{The $\lambda(t)$ (left) and $\Lambda(t)$ used in the illustration. Also shown three majorizing functions (left panel, marked a, b, c) that are used with the thinning algorithm in the analyses.}\label{fig:example-function-plot}
+\end{figure}
+
+\end{knitrout}
 
 Figure~\ref{fig:example-function-plot} graphs the intensity function and three majorizing functions over the interval of interest, which will be needed for the thinning algorithm.
 
-The first, $\lambda_{*a}(t) = \Sexpr{pprint(l(6*pi), 2)}$, shown as a dashed blue line, is is a constant majorizer equal to the maximum of the intensity function. A constant majorizer may be a practical choice when only an upper bound is known for $\lambda(t)$.
+The first, $\lambda_{*a}(t) = 43.38$, shown as a dashed blue line, is is a constant majorizer equal to the maximum of the intensity function. A constant majorizer may be a practical choice when only an upper bound is known for $\lambda(t)$.
 From~\eqref{eq:thinning-efficiency}, the efficiency of the thinning algorithm using this majorizer is
-$\Sexpr{ pprint(L(6*pi)/(l(6*pi)*6*pi), 3) }$.
+$0.209$.
 
-The second, $\lambda_{*b}(t)$, shown as a thin black line, is a piecewise constant envelope generated automatically from Algorithm~\ref{alg:lambda_majorizer} (Appendix~\ref{app:piecewise_majorizer}) with $\Sexpr{M}$ equal-length subintervals and ${K = \Sexpr{pprint(K_lipschitz, 2)}}$, where the Lipschitz cone coefficient $K$ is equal to the maximum value of $|\der{\lambda(t)}{t}|$ in the interval, attained at $6\pi$.
+The second, $\lambda_{*b}(t)$, shown as a thin black line, is a piecewise constant envelope generated automatically from Algorithm~\ref{alg:lambda_majorizer} (Appendix~\ref{app:piecewise_majorizer}) with $20$ equal-length subintervals and ${K = 52.05}$, where the Lipschitz cone coefficient $K$ is equal to the maximum value of $|\der{\lambda(t)}{t}|$ in the interval, attained at $6\pi$.
 The efficiency of the thinning algorithm using this majorizer is
-$\Sexpr{pprint(L(6*pi)/sum(l_star(t_breaks[1:M])*(6*pi / M)), 3) }$.
+$0.245$.
 
-The third, $\lambda_{*c}(t)$, shown as a thicker black line, is a tighter piecewise constant majorizer with the same $\Sexpr{M}$ equal-length subintervals that is constructed by finding a least upper bound in each subinterval. The efficiency of the thinning algorithm with the third
+The third, $\lambda_{*c}(t)$, shown as a thicker black line, is a tighter piecewise constant majorizer with the same $20$ equal-length subintervals that is constructed by finding a least upper bound in each subinterval. The efficiency of the thinning algorithm with the third
 majorizer is
-$\Sexpr{pprint(L(6*pi)/sum(l_star2(t_breaks[1:M])*(6*pi / M)), 3) }$.
+$0.718$.
 
 \subsection{Simulation functions and algorithms}\label{sec:methods-sim}
 
-We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $\Sexpr{n_simulations}$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware (Apple M1 Max laptop with 64 megabytes of random access memory).
+We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $100$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware (Apple M1 Max laptop with 64 megabytes of random access memory).
 
 From the \pkg{nhppp} package we use
 \begin{enumerate}
@@ -617,582 +696,211 @@ We calculated the absolute and relative bias in the first two moments of the emp
 
 \input{table/tab_simulation_metrics}
 
-<<define-functions-for-counts,echo=FALSE, include=FALSE, cache=TRUE>>=
-get_chi2_counts <- function(x, mu) {
-  # O, E counts
-  Q <- seq(0.0001, 0.9999, length.out = 100)
-  E <- qpois(Q, mu)
-  O <- quantile(x, Q)
-  # Goodness of Fit p value
-  GOF <- sum(((O - E)^2) / E)
-  pval <- pchisq(GOF, length(O) - 1, lower.tail = F)
-  return(list(chi2 = GOF, pval=pval))
-}
-get_CIs_counts <- function(x, mu, CIs = c(95, 90, 75, 50)){
-  pct <- c()
-  for(CI in CIs){
-    pr <- 1 - CI / 100
-    pct <- c(pct, pr/2, 1 - pr/2)
-  }
-  theoretical <- matrix(stats::qpois(pct, mu), byrow = TRUE, ncol =2)
-  empirical <-  matrix(as.integer(quantile(x, pct)), byrow = TRUE, ncol =2)
-  return(list(theoretical = theoretical, empirical = empirical))
-}
-get_wasserstein_counts <- function(x, mu, tmp_seed = 123, B = 1000, L = NULL) {
-  # theoretical distribution XL, XU counts
-  XL <- stats::qpois(p = 0.00001, lambda  = mu)
-  XU <- stats::qpois(p = 0.99999, lambda  = mu)
 
-  # empirical distribution PMF
-  tabx <- table(x)
-  the_ints <- as.integer(names(tabx))
-  xl <- min(the_ints)
-  xu <- max(the_ints)
-  empirical_pmf <- c()
-  for(xi in min(xl, XL):max(xu, XU)){
-    tmp <- tabx[which(the_ints == xi)]
-    if(length(tmp)==0) tmp <- 0
-    empirical_pmf <- c(empirical_pmf, tmp)
-  }
-  empirical_pmf <- matrix(empirical_pmf / sum(empirical_pmf), ncol = 1)
-  theoretical_pmf <- matrix(stats::dpois(x = min(xl, XL):max(XU,xu), lambda = mu), ncol = 1)
-  theoretical_pmf <- theoretical_pmf / sum(theoretical_pmf)
-
-  cost_mat <- as.matrix(stats::dist(arrayInd(1:nrow(theoretical_pmf), .dim = nrow(theoretical_pmf))))
-  w1 <- otinference::wassDist(a = empirical_pmf[,1], b = theoretical_pmf[,1], distMat = cost_mat, p = 1)
-
-  L <- if(!is.null(L)) as.integer(L) else nrow(theoretical_pmf)
-  current_seed <- .Random.seed
-  set.seed(tmp_seed)
-  pval <- otinference::binWDTest(x = empirical_pmf, y = theoretical_pmf, L = L, B = B)
-  set.seed(current_seed)
-  return(list(w1 = w1, pval = pval))
-}
-
-performance_metrics_counts <- function(x, mu, digits = 3, tmp_seed = 123, B = 500, L = 20) {
-  mean_x <- mean(x)
-  B_mu <- mean_x - mu
-  var_x <- var(x)
-  B_V <- var_x - mu
-  gof <- get_chi2_counts(x = x, mu = mu)
-  cis <- get_CIs_counts(x, mu, CIs = c(95, 90, 75, 50))
-  WD <- get_wasserstein_counts(x = x , mu = mu, tmp_seed = tmp_seed, B = B, L = L)
-
-  values <- c(
-    `Sample mean` = pprint(mean_x, digits),
-    `$B_\\mu$`     = pprint(B_mu, digits),
-    `$B_{\\mu, rel}$` = pprint(100 * B_mu / mu, digits),
-    `Sample variance` = pprint(var_x, digits),
-    `$B_V$` = pprint(B_V, digits),
-    `$B_{V, rel}$` = pprint(100 * B_V / mu, digits),
-    `Goodness of fit, $\\chi^2$ [$p$~value]` = paste0(pprint(gof$chi2, digits), " [", pprint(gof$pval, digits, use_lt=T), "]"),
-    `$W_1$ [$p$~value]` = paste0(pprint(WD$w1, digits, use_lt=T), " [", pprint(WD$pval, digits, use_lt=T), "]"),
-    `Bounds 95\\% CI` = paste0("[", paste0(cis$empirical[1,], collapse = ", "), "]"),
-    `Bounds 90\\% CI` = paste0("[", paste0(cis$empirical[2,], collapse = ", "), "]"),
-    `Bounds 75\\% CI` = paste0("[", paste0(cis$empirical[3,], collapse = ", "), "]"),
-    `Bounds 50\\% CI` = paste0("[", paste0(cis$empirical[4,], collapse = ", "), "]")
-  )
-  names(values)[length(values)-3] <- paste0("Equal tail 95\\% CI = [", paste0(cis$theoretical[1,], collapse = ", "), "]")
-  names(values)[length(values)-2] <- paste0("Equal tail 90\\% CI = [", paste0(cis$theoretical[2,], collapse = ", "), "]")
-  names(values)[length(values)-1] <- paste0("Equal tail 75\\% CI = [", paste0(cis$theoretical[3,], collapse = ", "), "]")
-  names(values)[length(values)-0] <- paste0("Equal tail 50\\% CI = [", paste0(cis$theoretical[4,], collapse = ", "), "]")
-
-  return(values)
-}
-
-@
 
 The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts} and Figure~\ref{fig:ecdf-nhppp-pkg-counts} suggest excellent simulation performance.
 
-<<simulate-nhppp-pkg, include=FALSE, echo=FALSE>>=
-simulate_nhppp_pkg <- function() {
-  Thinning_const <- nhppp::nhppp_t_intensity(
-    lambda = l,
-    lambda_maj = l(6 * pi),
-    range_t = c(0, 6 * pi),
-    only1 = FALSE
-  )
-  Thinning_star <- nhppp::nhppp_t_intensity_piecewise(
-    lambda = l,
-    lambda_maj_vector = l_star(t_breaks[1:M]),
-    times_vector = t_breaks,
-    only1 = FALSE
-  )
-  Thinning_star2 <- nhppp::nhppp_t_intensity_piecewise(
-    lambda = l,
-    lambda_maj_vector = l_star2(t_breaks[1:M]),
-    times_vector = t_breaks,
-    only1 = FALSE
-  )
-  Inversion <- nhppp::nhppp_t_cumulative_intensity_inversion(
-    Lambda = L,
-    Lambda_inv = Li, # numbers same with this NULL
-    range_t = c(0, 6*pi),
-    only1 = FALSE
-  )
-  OrderStats <- nhppp::nhppp_t_cumulative_intensity_orderstats(
-    Lambda = L,
-    Lambda_inv = Li,  # numbers same with this NULL
-    range_t = c(0, 6*pi),
-    only1 = FALSE
-  )
-  return(list(
-    "Thinning l_*=l_max" = Thinning_const,
-    "Thinning l_*=l_m" = Thinning_star,
-    "Thinning l_*=l_m2" = Thinning_star2,
-    "Inversion" = Inversion,
-    "Order statistics" = OrderStats
-  ))
+
+
+
+% latex table generated in R 4.3.1 by xtable 1.8-4 package
+% Fri Jan 26 08:35:49 2024
+\begin{table}[ht]
+\centering
+\scalebox{0.77}{
+\begin{tabular}{rlllll}
+  \hline
+ & Thinning $\lambda_*$=$\lambda_{*a}$ & Thinning $\lambda_*$=$\lambda_{*b}$ & Thinning $\lambda_*$=$\lambda_{*c}$ & Inversion & Order statistics \\ 
+  \hline
+Sample mean & 169.610 & 170.710 & 170.450 & 172.600 & 172.510 \\ 
+  $B_\mu$ & -1.525 & -0.425 & -0.685 & 1.465 & 1.375 \\ 
+  $B_{\mu, rel}$ & -0.891 & -0.248 & -0.400 & 0.856 & 0.804 \\ 
+  Sample variance & 168.341 & 147.157 & 205.785 & 168.323 & 170.919 \\ 
+  $B_V$ & -2.793 & -23.977 & 34.651 & -2.811 & -0.216 \\ 
+  $B_{V, rel}$ & -1.632 & -14.011 & 20.248 & -1.643 & -0.126 \\ 
+  Goodness of fit, $\chi^2$ [$p$~value] & 6.033 [1.000] & 5.164 [1.000] & 3.308 [1.000] & 6.281 [1.000] & 4.103 [1.000] \\ 
+  $W_1$ [$p$~value] & 1.718 [0.012] & 1.209 [0.060] & 1.419 [0.102] & 1.839 [0.176] & 1.690 [0.506] \\ 
+  Equal tail 95\% CI = [146, 197] & [141, 193] & [148, 194] & [144, 198] & [145, 194] & [150, 198] \\ 
+  Equal tail 90\% CI = [150, 193] & [145, 191] & [150, 188] & [146, 192] & [149, 193] & [152, 195] \\ 
+  Equal tail 75\% CI = [156, 186] & [156, 184] & [159, 184] & [155, 185] & [157, 189] & [157, 186] \\ 
+  Equal tail 50\% CI = [162, 180] & [163, 176] & [162, 179] & [160, 181] & [164, 182] & [165, 181] \\ 
+   \hline
+\end{tabular}
 }
-
-nhppp_pkg_event_series <- parallel::mcmapply(
-  function(ni) {
-    simulate_nhppp_pkg()
-  },
-  1:n_simulations,
-  mc.cores = parallel::detectCores() - 1
-)
-
-nhppp_simulated_counts <- apply(nhppp_pkg_event_series, 2, function(x) sapply(x, length))
-
-metrics_counts_nhppp_pkg <- apply(nhppp_simulated_counts, 1, performance_metrics_counts,
-                 mu = L(6*pi) - L(0) , digits = 3,
-                 B = n_samples_wasserstein, L = n_bins_wasserstein)
-@
-
-
-<<performance-nhppp-pkg-counts, results='asis', echo=FALSE>>=
-print(xtable::xtable(metrics_counts_nhppp_pkg, type="latex",
-      caption = "Simulated total number of events with \\pkg{nhppp} functions for the illustration example. Equal tail $p$\\% CI: a confidence interval whose bounds are the $p/2$ and $(1-p/2)$ count percentiles of the respective cumulative distribution function.",
-      label="tab:nhppp-results-counts"),
-      math.style.negative = TRUE,
-      sanitize.text.function = sanitize_strings_for_tables,
-      scalebox = .77)
-@
-
-
-<<functions-to-plot-ecdfs, echo=FALSE, include=FALSE>>=
-plot_ecdf <- function(index, simulated_counts, Lambda = L){
-  x <- simulated_counts[[index]]
-
-  t_vec <- as.integer(seq(stats::qpois(0.0001, Lambda(6*pi)-Lambda(0)), stats::qpois(0.9999,  L(6*pi)-L(0)), length.out = 1000))
-  density_vec <- stats::dpois(t_vec,  Lambda(6*pi)-Lambda(0))
-  pct_vec <- stats::ppois(t_vec,  Lambda(6*pi)-Lambda(0))
-
-  p <- ggplot(NULL) +
-    geom_step(aes(x = t_vec, y = pct_vec), linetype = "solid", color = "red", linewidth=0.5) +
-    labs(x = "Count", y = "Cumulative density") +
-    coord_cartesian(xlim= c(120, 225)) +
-    theme_bw() + theme(text = element_text(size=15)) +
-    stat_ecdf(aes(x = simulated_counts[index, ]), linetype = "solid", color = "black") +
-    ggtitle(TeX(sanitize_strings_for_figures(rownames(simulated_counts)[index])))
-  return(p)
-}
-@
-
-
-<<ecdf-nhppp-pkg-counts, fig.cap="Theoretical (red) and empirical (black) cumulative distribution functions for event counts in the illustration example with \\pkg{nhppp} functions. The unsigned area between the theoretical and empirical curves equals the Wasserstein-1 distance in Table~\\ref{tab:nhppp-results-counts}.", fig.height=8, fig.width=12, echo=FALSE>>=
-
-epdf_nhppp_counts <- gridExtra::grid.arrange(
-  grobs = lapply(1:nrow(nhppp_simulated_counts),
-              plot_ecdf,
-              simulated_counts = nhppp_simulated_counts),
-  ncol = 3)
-@
+\caption{Simulated total number of events with \pkg{nhppp} functions for the illustration example. Equal tail $p$\% CI: a confidence interval whose bounds are the $p/2$ and $(1-p/2)$ count percentiles of the respective cumulative distribution function.} 
+\label{tab:nhppp-results-counts}
+\end{table}
 
 
 
-<<simulate-R-packages, echo=FALSE, cache=TRUE>>=
-simulate_r_pkgs <- function() {
-  start <- 0
-  stop  <- 6*pi
-
-  reda_thinning_lmax <- reda::simEvent(
-    rho = l,
-    rhoMax = l(stop),
-    origin = start, endTime = stop,
-    recurrent = TRUE,
-    method = "thinning")
-
-  reda_inversion <- reda::simEvent(
-    rho = l,
-    origin = start, endTime = stop,
-    recurrent = TRUE,
-    method = "inversion")
-
-  simEd_thinning_lmax <- simEd::thinning(
-    maxTime = ceiling(stop),
-    intensityFcn = l,
-    majorizingFcn = function(x) l(stop),
-    majorizingFcnType = NULL,
-    seed = NA,
-    maxTrials = Inf,
-    plot = FALSE)
-
-  t_seq_2 <- seq(start, stop, length.out = ceiling(stop))
-
-  IndTestPP_thinning <- IndTestPP::simNHPc(
-    lambda = l(t_seq_2),
-    fixed.seed = NULL,
-    algor = "Thinning")$posNH
-
-  IndTestPP_inversion <- IndTestPP::simNHPc(
-    lambda = l(t_seq_2),
-    fixed.seed = NULL,
-    algor = "Inversion")$posNH
 
 
-  return(list(
-    "reda thinning (l_*=l_max)" = reda_thinning_lmax,
-    "reda inversion" = reda_inversion,
-    "simEd thinning (l_*=l_max)" = simEd_thinning_lmax,
-    "IndTestPP thinning (no l_*)" = IndTestPP_thinning,
-    "IndTestPP inversion" = IndTestPP_inversion)
-    )
-}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/ecdf-nhppp-pkg-counts-1} \caption{Theoretical (red) and empirical (black) cumulative distribution functions for event counts in the illustration example with \pkg{nhppp} functions. The unsigned area between the theoretical and empirical curves equals the Wasserstein-1 distance in Table~\ref{tab:nhppp-results-counts}.}\label{fig:ecdf-nhppp-pkg-counts}
+\end{figure}
+
+\end{knitrout}
 
 
-old_seed <- .Random.seed
-set.seed(2024)
-cl <- parallel::makeCluster(parallel::detectCores() - 1)
-start <-  0; stop <- 6 * pi;
-parallel::clusterExport(cl, c("simulate_r_pkgs", "l"))
-r_pkg_event_series <- parallel::parSapply(cl,
-  X = 1:n_simulations,
-  FUN = function(i) {
-    i <- simulate_r_pkgs()
-  }
-)
-parallel::stopCluster(cl)
-set.seed(.Random.seed)
-r_pkg_times <- apply(r_pkg_event_series, 1, unlist)
 
-r_pkgs_simulated_counts <- apply(t(r_pkg_event_series), 1, function(x) sapply(x, length))
-metrics_counts_r_pkgs <- apply(r_pkgs_simulated_counts, 1, performance_metrics_counts,
-                               mu = L(6*pi) - L(0) , digits = 3,
-                               B = n_samples_wasserstein, L = n_bins_wasserstein)
-colnames(metrics_counts_r_pkgs) <- c(
-    "reda thinning, l_*=l_max",
-    "reda inversion",
-    "simEd thinning, l_*=l_max",
-    "IndTestPP thinning, no l_*",
-    "IndTestPP inversion"
-  )
-@
+
 
 The respective results for the \proglang{R} packages are in Figure~\ref{fig:r-pkgs-pkg-counts} and Table~\ref{tab:r-packages-results-counts1}. The simulation performance with the \pkg{reda} functions is excellent. Performance with \pkg{simEd} and \pkg{IndTestPP} functions depends on the adequacy with which they approximate the target density. In this example, the approximation accuracy is not ideal for either package, but is somewhat worse for \pkg{IndTestPP}.
 
-<<r-pkgs-pkg-counts, fig.cap="Theoretical (red) and empirical (black) cumulative distribution functions for event counts in the illustration example with the \\proglang{R} packages in Table~\\ref{tab:R-packages}. The unsigned area between the theoretical and empirical curves equals the Wasserstein-1 distance in Table~\\ref{tab:nhppp-results-counts}.", fig.height=8, fig.width=12, echo=FALSE>>=
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/r-pkgs-pkg-counts-1} \caption{Theoretical (red) and empirical (black) cumulative distribution functions for event counts in the illustration example with the \proglang{R} packages in Table~\ref{tab:R-packages}. The unsigned area between the theoretical and empirical curves equals the Wasserstein-1 distance in Table~\ref{tab:nhppp-results-counts}.}\label{fig:r-pkgs-pkg-counts}
+\end{figure}
 
-epdf_r_pkgs_counts <- gridExtra::grid.arrange(
-  grobs = lapply(1:nrow(r_pkgs_simulated_counts),
-              plot_ecdf,
-              simulated_counts = r_pkgs_simulated_counts),
-  ncol = 3)
-@
+\end{knitrout}
 
 
 
 
-<<performance-r-packages-1, results='asis', echo=FALSE>>=
-print(xtable::xtable(metrics_counts_r_pkgs[,1:5], type="latex",
-      caption = "Simulated total number of events with the \\proglang{R} packages of Table~\\ref{tab:R-packages} for the illustration example. Equal tail $p$\\% CI: a confidence interval whose bounds are the $p/2$ and $(1-p/2)$ count percentiles of the respective cumulative distribution function.",
-      label="tab:r-packages-results-counts1",
-      align = c("r", "p{1in}", "p{1in}", "p{1in}", "p{1in}", "p{1.1in}")
-      ),
-      math.style.negative = TRUE,
-      sanitize.text.function = identity,
-      sanitize.colnames.function = sanitize_strings_for_tables,
-      sanitize.rownames.function = identity,
-      scalebox = 0.77)
-@
+% latex table generated in R 4.3.1 by xtable 1.8-4 package
+% Fri Jan 26 08:35:50 2024
+\begin{table}[ht]
+\centering
+\scalebox{0.77}{
+\begin{tabular}{rp{1in}p{1in}p{1in}p{1in}p{1.1in}}
+  \hline
+ & \pkg{reda} thinning, $\lambda_*$=$\lambda_{*a}$ & \pkg{reda} inversion & \pkg{simEd} thinning, $\lambda_*$=$\lambda_{*a}$ & \pkg{IndTestPP} thinning, no $\lambda_*$ & \pkg{IndTestPP} inversion \\ 
+  \hline
+Sample mean & 173.120 & 171.650 & 176.650 & 192.770 & 190.400 \\ 
+  $B_\mu$ & 1.985 & 0.515 & 5.515 & 21.635 & 19.265 \\ 
+  $B_{\mu, rel}$ & 1.160 & 0.301 & 3.223 & 12.642 & 11.257 \\ 
+  Sample variance & 177.884 & 180.210 & 303.341 & 161.411 & 178.364 \\ 
+  $B_V$ & 6.750 & 9.075 & 132.206 & -9.723 & 7.229 \\ 
+  $B_{V, rel}$ & 3.944 & 5.303 & 77.253 & -5.682 & 4.224 \\ 
+  Goodness of fit, $\chi^2$ [$p$~value] & 6.974 [1.000] & 3.407 [1.000] & 37.847 [1.000] & 282.531 [<0.001] & 224.760 [<0.001] \\ 
+  $W_1$ [$p$~value] & 2.201 [0.086] & 0.958 [0.276] & 5.864 [<0.001] & 21.636 [0.152] & 19.266 [0.106] \\ 
+  Equal tail 95\% CI = [146, 197] & [146, 198] & [147, 199] & [148, 215] & [171, 220] & [165, 216] \\ 
+  Equal tail 90\% CI = [150, 193] & [148, 193] & [150, 194] & [148, 215] & [175, 213] & [166, 213] \\ 
+  Equal tail 75\% CI = [156, 186] & [159, 188] & [155, 186] & [161, 198] & [179, 207] & [173, 205] \\ 
+  Equal tail 50\% CI = [162, 180] & [165, 181] & [163, 180] & [167, 183] & [183, 202] & [180, 199] \\ 
+   \hline
+\end{tabular}
+}
+\caption{Simulated total number of events with the \proglang{R} packages of Table~\ref{tab:R-packages} for the illustration example. Equal tail $p$\% CI: a confidence interval whose bounds are the $p/2$ and $(1-p/2)$ count percentiles of the respective cumulative distribution function.} 
+\label{tab:r-packages-results-counts1}
+\end{table}
+
 
 
 \subsection{Event times}\label{sec:example-event-times}
 
-We compared the theoretical and empirical distribution of event times for all $J=\Sexpr{n_simulations}$ event time draws. We calculated a goodness of fit statistic by binning realized times in $70$ bins and its $p$~value, by comparing the statistic against the $\chi^2_{69}$ distribution. We also calculated the $W_1$ distance between these distributions and its associated $p$~value.
+We compared the theoretical and empirical distribution of event times for all $J=100$ event time draws. We calculated a goodness of fit statistic by binning realized times in $70$ bins and its $p$~value, by comparing the statistic against the $\chi^2_{69}$ distribution. We also calculated the $W_1$ distance between these distributions and its associated $p$~value.
 
 Figure~\ref{fig:epdf-nhppp-pkg-times} and Table~\ref{tab:nhppp-gof-times} indicate excellent simulation performance with the \pkg{nhppp} functions.
 
 Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate excellent simulation performance with the \pkg{reda} functions. The simulation performance with the \pkg{simEd} and \pkg{IndTestPP} functions, which rely on approximations, is not as good.
 
-<<define-functions-for-times, echo=FALSE, include=TRUE>>=
-get_chi2_times <- function(x, Lambda) {
-  n_breaks <- 70
-  xmids <- hist(x, breaks = n_breaks, plot = FALSE)$mids # histogram time breaks
-  E <- sapply(seq_along(xmids), function(i) {
-    (Lambda(xmids[i + 1]) - Lambda(xmids[i])) / (Lambda(6*pi) - Lambda(0))
-  })
-  E <- E[-length(E)]
-  O <- sapply(seq_along(xmids), function(i) {
-    sum(x >= xmids[i] & x <= xmids[i + 1]) / length(x)
-  })
-  O <- O[-length(O)]
-  gof <- sum(((O - E)^2) / E)
-  pval <- pchisq(gof, length(O) - 1, lower.tail = FALSE)
-  return(list(gof=gof, pval = pval, O = O, E = E))
+
+
+
+
+
+
+% latex table generated in R 4.3.1 by xtable 1.8-4 package
+% Fri Jan 26 08:35:51 2024
+\begin{table}[ht]
+\centering
+\scalebox{1}{
+\begin{tabular}{rll}
+  \hline
+ & Goodness of fit, $\chi^2$ [$p$~value] & $W_1$ [$p$~value] \\ 
+  \hline
+Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.528 [0.992] \\ 
+  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.011 [1.000] & 0.603 [1.000] \\ 
+  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.008 [1.000] & 0.320 [0.996] \\ 
+  Inversion & 0.007 [1.000] & 0.388 [0.992] \\ 
+  Order statistics & 0.006 [1.000] & 0.226 [0.970] \\ 
+   \hline
+\end{tabular}
 }
-get_wasserstein_times <- function(O, E, tmp_seed = 123, B = 1000, n_breaks = NULL) {
-  # empirical distribution PMF
-  empirical_pmf <- matrix(O / sum(O), ncol = 1)
-  theoretical_pmf <- matrix(E / sum(E), ncol = 1)
+\caption{Goodness of fit of simulated event times with \pkg{nhppp} functions for the example.} 
+\label{tab:nhppp-gof-times}
+\end{table}
 
-  cost_mat <- as.matrix(stats::dist(arrayInd(1:nrow(theoretical_pmf), .dim = nrow(theoretical_pmf))))
-  w1 <- otinference::wassDist(a = empirical_pmf[,1], b = theoretical_pmf[,1], distMat = cost_mat, p = 1)
 
-  if (is.null(n_breaks)) {
-    n_breaks <- length(O)
-  }
-  current_seed <- .Random.seed
-  set.seed(tmp_seed)
-  pval <- otinference::binWDTest(x = empirical_pmf, y = theoretical_pmf, L = n_breaks, B = B)
-  set.seed(current_seed)
-  return(list(w1 = w1, pval = pval))
+% latex table generated in R 4.3.1 by xtable 1.8-4 package
+% Fri Jan 26 08:35:51 2024
+\begin{table}[ht]
+\centering
+\scalebox{1}{
+\begin{tabular}{rll}
+  \hline
+ & Goodness of fit, $\chi^2$ [$p$~value] & $W_1$ [$p$~value] \\ 
+  \hline
+\pkg{reda} thinning ($\lambda_*$=$\lambda_{*a}$) & 0.008 [1.000] & 0.416 [1.000] \\ 
+  \pkg{reda} inversion & 0.009 [1.000] & 0.283 [0.972] \\ 
+  \pkg{simEd} thinning ($\lambda_*$=$\lambda_{*a}$) & 0.052 [1.000] & 0.227 [0.922] \\ 
+  \pkg{IndTestPP} thinning (no $\lambda_*$) & 0.403 [1.000] & 2.315 [0.940] \\ 
+  \pkg{IndTestPP} inversion & 0.483 [1.000] & 2.587 [0.684] \\ 
+   \hline
+\end{tabular}
 }
+\caption{Goodness of fit of simulated event times with \proglang{R} functions in Table~\ref{tab:R-packages}.} 
+\label{tab:r-pkgs-gof-times}
+\end{table}
 
-performance_metrics_times <- function(index, simulated_times, Lambda = L, digits = 3, tmp_seed = 123, B = 500, n_breaks = 5) {
-  x <- simulated_times[[index]]
-  x <- x[!is.na(x)]
 
-  chi2 <- get_chi2_times(x = x, Lambda = Lambda)
-  WD <- get_wasserstein_times(O = chi2$O, E = chi2$E, B = B, n_breaks = n_breaks)
 
-  return(c(
-    `Goodness of fit, $\\chi^2$ [$p$~value]` = paste0(pprint(chi2$gof, digits), " [", pprint(chi2$pval, digits, use_lt=T), "]"),
-    `$W_1$ [$p$~value]` = paste0(pprint(WD$w1, digits, use_lt=T), " [", pprint(WD$pval, digits, use_lt=T), "]")
-  ))
-}
 
-nhppp_pkg_times <- apply(nhppp_pkg_event_series, 1, unlist)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
 
-times_hist <- function(index, simulated_times, lambda = l, Lambda = L){
-  x <- simulated_times[[index]]
-  x<- x[!is.na(x)]
-  p <- ggplot(NULL) +
-  geom_histogram(aes(x = x, y = after_stat(density)), bins = 50, color = "black", fill = "grey") +
-  geom_line(aes(x = x, y = lambda(x) / (Lambda(6*pi) - Lambda(0))), linewidth = 0.5, color = "red") +
-  theme_bw() + theme(text = element_text(size=15)) +
-  labs(y = "Density", x = "Time",
-       title = TeX(sanitize_strings_for_figures(names(simulated_times)[index])))
-  return(p)
+{\centering \includegraphics[width=\maxwidth,height=\textheight,keepaspectratio=true]{figure/epdf-nhppp-pkg-times-1} 
+
 }
 
+\caption{Simulated event times with \pkg{nhppp}. Left column: histogram (gray) and theoretical distribution (red) of event times; right column: empirical (black) and theoretical (red) cumulative distribution function. The unsigned area between the empirical and cumulative distribution functions is the $W_1$ distance in Table~\ref{tab:nhppp-gof-times}.}\label{fig:epdf-nhppp-pkg-times}
+\end{figure}
 
-times_ecdf <- function(index, simulated_times, lambda = l, Lambda = L){
-  x <- simulated_times[[index]]
-  x<- x[!is.na(x)]
-  p <- ggplot(NULL) +
-  stat_ecdf(aes(x = x), linetype = "solid", color = "black") +
-  geom_line(aes(x = x, y = Lambda(x) / (Lambda(6*pi) - Lambda(0))), linewidth = 0.5, color = "red") +
-  labs(x = "Count", y = "Cumulative density") +
-  coord_cartesian(xlim= c(0, 6*pi)) +
-  ggtitle(TeX(sanitize_strings_for_figures(names(simulated_times)[index])))+
-  theme_bw() + theme(text = element_text(size=15))
-  return(p)
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth,height=\textheight,keepaspectratio=true]{figure/epdf-r-pkgs-times-1} 
+
 }
 
+\caption{Simulated event times with the \proglang{R} packages in Table~\ref{tab:R-packages}. Left column: histogram (gray) and theoretical distribution (red) of event times; right column: empirical (black) and theoretical (red) cumulative distribution function. The unsigned area between the empirical and cumulative distribution functions is the $W_1$ distance in Table~\ref{tab:r-pkgs-gof-times}.}\label{fig:epdf-r-pkgs-times}
+\end{figure}
 
-@
-
-
-<<get-metrics-for-times, echo=FALSE, include=FALSE>>=
-metrics_times_nhppp_pkg <- t(
-  sapply(seq_along(nhppp_pkg_times),
-        performance_metrics_times,
-        simulated_times = nhppp_pkg_times,
-        n_breaks = n_bins_wasserstein,
-        B = n_samples_wasserstein))
-rownames(metrics_times_nhppp_pkg) <- names(nhppp_pkg_times)
-
-metrics_times_r_pkgs <- t(
-  sapply(seq_along(r_pkg_times),
-        performance_metrics_times,
-        simulated_times = r_pkg_times,
-        n_breaks = n_bins_wasserstein,
-        B = n_samples_wasserstein))
-rownames(metrics_times_r_pkgs) <- names(r_pkg_times)
-
-@
-
-
-<<performance-nhppp-pkg-times, results='asis', echo=FALSE>>=
-print(xtable::xtable(metrics_times_nhppp_pkg, type="latex",
-      caption = "Goodness of fit of simulated event times with \\pkg{nhppp} functions for the example.",
-      label="tab:nhppp-gof-times"),
-      math.style.negative = TRUE,
-      sanitize.text.function = sanitize_strings_for_tables,
-      scalebox = 1)
-@
-
-<<performance-r-pkg-times, results='asis', echo=FALSE>>=
-print(xtable::xtable(metrics_times_r_pkgs, type="latex",
-      caption = "Goodness of fit of simulated event times with \\proglang{R} functions in Table~\\ref{tab:R-packages}.",
-      label="tab:r-pkgs-gof-times"),
-      math.style.negative = TRUE,
-      sanitize.text.function = sanitize_strings_for_tables,
-      scalebox = 1)
-@
-
-
-
-<<epdf-nhppp-pkg-times,fig.cap="Simulated event times with \\pkg{nhppp}. Left column: histogram (gray) and theoretical distribution (red) of event times; right column: empirical (black) and theoretical (red) cumulative distribution function. The unsigned area between the empirical and cumulative distribution functions is the $W_1$ distance in Table~\\ref{tab:nhppp-gof-times}.", fig.width=8, fig.height=20, fig.align='center', out.height = "\\textheight", out.extra = "keepaspectratio=true", echo=FALSE>>=
-epdf_nhppp_pkg_times <- gridExtra::grid.arrange(
-  grobs = c(lapply(seq_along(nhppp_pkg_times),
-              times_hist,
-              simulated_times = nhppp_pkg_times),
-            lapply(seq_along(nhppp_pkg_times),
-              times_ecdf,
-              simulated_times = nhppp_pkg_times)),
-  as.table = FALSE,
-  ncol = 2)
-@
-
-
-<<epdf-r-pkgs-times,fig.cap="Simulated event times with the \\proglang{R} packages in Table~\\ref{tab:R-packages}. Left column: histogram (gray) and theoretical distribution (red) of event times; right column: empirical (black) and theoretical (red) cumulative distribution function. The unsigned area between the empirical and cumulative distribution functions is the $W_1$ distance in Table~\\ref{tab:r-pkgs-gof-times}.", fig.width=8, fig.height=20, fig.align='center', out.height = "\\textheight", out.extra = "keepaspectratio=true", echo=FALSE>>=
-epdf_r_pkg_times <- gridExtra::grid.arrange(
-  grobs = c(lapply(seq_along(r_pkg_times),
-              times_hist,
-              simulated_times = r_pkg_times),
-            lapply(seq_along(r_pkg_times),
-             times_ecdf,
-             simulated_times = r_pkg_times)),
-  as.table = FALSE,
-  ncol = 2)
-@
+\end{knitrout}
 
 
 \subsection{Time performance}\label{sec:example-time-performance}
 
 To indicate time performance, we benchmarked functions by recording execution times when drawing a series of points (Figure~\ref{fig:comptimes_all_samples}). We also benchmarked functions for drawing the first-occurring event, because \pkg{nhppp} functions can sample the first time more efficiently when the inversion algorithm is used (Figure~\ref{fig:comptimes_one_sample}).
 
-We provided functions with the arguments they need to run fastest. For example, functions that use the inversion or order statistics algorithm execute faster when the inverse function $\Lambda^{-1}(z)$ is provided, rather than numerically calculated, as shown in both Figures for the \pkg{nhppp} package. (Functions in other packages do not take $\Lambda(t)$ and $\Lambda^{-1}(z)$ arguments.) The fastest functions are \pkg{nhppp} functions that rely on the inversion or order statistics algorithms given $\Lambda^{-1}(z)$.
+We provided functions with the arguments they need to run fastest. For example, functions that use the inversion or order statistics algorithm execute faster when the inverse function $\Lambda^{-1}(z)$ is provided, rather than numerically calculated, as shown in both Figures for the \pkg{nhppp} package. (Functions in other packages do not have this option). The fastest functions are \pkg{nhppp} functions that rely on the inversion or order statistics algorithms given $\Lambda^{-1}(z)$.
 
-According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{nhppp\_t\_intensity}, the function that uses constant majorizers, has a more-efficient implementation than \fct{nhppp\_t\_intensity\_piecewise}, the function that use piecewise constant majorizers. This happens to be the case in the example, and is not universally true.
+The thinning algorithm has higher efficiency per~\eqref{eq:thinning-efficiency}, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. The execution times are longer with majorizer `c' compared to `a' however, because, \fct{nhppp\_t\_intensity}, the function that uses constant majorizers, has a somewhat more-efficient implementation than \fct{nhppp\_t\_intensity\_piecewise}, the function that use piecewise constant majorizers. This happens to be the case in the example, and is not universal.
 
 Finally, note that \pkg{nhppp} functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. To see exactly why, refer to the algorithm descriptions. This efficiency does not appear to be implemented in the other packages.
 
-<<compute-times, echo=FALSE, include=FALSE, cache=TRUE>>=
-comptimes_all_samples <- bench::mark(
-  "(1a) nhppp: thinning (majorizer a)" = nhppp::nhppp_t_intensity(
-    lambda = l, lambda_maj = l(6*pi), range_t =  c(0, 6*pi), only1 = FALSE),
-  "(1b) nhppp: thinning (majorizer b)" = nhppp::nhppp_t_intensity_piecewise(
-    lambda = l, lambda_maj_vector = l_star(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = FALSE),
-  "(1c) nhppp: thinning (majorizer c)" = nhppp::nhppp_t_intensity_piecewise(
-    lambda = l, lambda_maj_vector = l_star2(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = FALSE),
-
-  "(1d) nhppp: inversion (with inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_inversion(
-    Lambda = L, Lambda_inv = Li, range_t = c(0, 6*pi), only1 = FALSE),
-  "(1e) nhppp: inversion (no inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_inversion(
-    Lambda = L, Lambda_inv = NULL, range_t = c(0, 6*pi), only1 = FALSE),
-
-  "(1f) nhppp: order statistics (with inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_orderstats(
-    Lambda = L, Lambda_inv = Li, range_t = c(0, 6*pi), only1 = FALSE),
-  "(1g) nhppp: order statistics (no inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_orderstats(
-    Lambda = L, Lambda_inv = NULL, range_t = c(0, 6*pi), only1 = FALSE),
-
-  "(2a) reda: inversion" = reda::simEvent(rho = l, origin = 0,
-    endTime = 6*pi, recurrent = TRUE, method = "inversion"),
-  "(2b) reda: thinning (majorizer a)" = reda::simEvent(rho = l, rhoMax = l(6*pi), origin = 0,
-    endTime = 6*pi, recurrent = TRUE, method = "thinning"),
-
-  "(3a) IndTestPP: inversion" = IndTestPP::simNHPc(lambda =
-    l(seq(0, 6*pi, length.out = ceiling(6*pi))), fixed.seed = NULL,
-    algor = "Inversion")$posNH,
-  "(3b) IndTestPP: thinning (no majorizer)" = IndTestPP::simNHPc(lambda =
-    l(seq(0, 6*pi, length.out = ceiling(6*pi))), fixed.seed = NULL,
-    algor = "Thinning")$posNH,
-
-  "(4) simEd: thinning (majorizer a)" = simEd::thinning(maxTime = ceiling(6*pi),
-    intensityFcn = l, majorizingFcn = function(i) l(6*pi), majorizingFcnType = NULL,
-    seed = 2024, maxTrials = Inf, plot = FALSE),
-  check = FALSE, filter_gc = TRUE,
-    max_iterations = n_simulations, memory = FALSE)
-
-comptimes_one_sample <- bench::mark(
-  "(1a) nhppp: thinning (majorizer a)" = nhppp::nhppp_t_intensity(
-    lambda = l, lambda_maj = l(6*pi), range_t =  c(0, 6*pi), only1 = TRUE),
-  "(1b) nhppp: thinning (majorizer b)" = nhppp::nhppp_t_intensity_piecewise(
-    lambda = l, lambda_maj_vector = l_star(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = TRUE),
-  "(1c) nhppp: thinning (majorizer c)" = nhppp::nhppp_t_intensity_piecewise(
-    lambda = l, lambda_maj_vector = l_star2(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = TRUE),
-
-  "(1d) nhppp: inversion (with inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_inversion(
-    Lambda = L, Lambda_inv = Li, range_t = c(0, 6*pi), only1 = TRUE),
-  "(1e) nhppp: inversion (no inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_inversion(
-    Lambda = L, Lambda_inv = NULL, range_t = c(0, 6*pi), only1 = TRUE),
-
-  "(1f) nhppp: order statistics (with inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_orderstats(
-    Lambda = L, Lambda_inv = Li, range_t = c(0, 6*pi), only1 = TRUE),
-  "(1g) nhppp: order statistics (no inverse)" =
-    nhppp::nhppp_t_cumulative_intensity_orderstats(
-    Lambda = L, Lambda_inv = NULL, range_t = c(0, 6*pi), only1 = TRUE),
-
-  "(2a) reda: inversion" = reda::simEvent(rho = l, origin = 0,
-    endTime = 6*pi, recurrent = FALSE, method = "inversion"),
-  "(2b) reda: thinning (majorizer a)" = reda::simEvent(rho = l, rhoMax = l(6*pi), origin = 0,
-    endTime = 6*pi, recurrent = FALSE, method = "thinning"),
-
-  "(3a) IndTestPP: inversion" = IndTestPP::simNHPc(lambda =
-    l(seq(0, 6*pi, length.out = ceiling(6*pi))), fixed.seed = NULL,
-    algor = "Inversion")$posNH[1],
-  "(3b) IndTestPP: thinning (no majorizer)" = IndTestPP::simNHPc(lambda =
-    l(seq(0, 6*pi, length.out = ceiling(6*pi))), fixed.seed = NULL,
-    algor = "Thinning")$posNH[1],
-
-  "(4) simEd: thinning (majorizer a)" = simEd::thinning(maxTime = ceiling(6*pi),
-    intensityFcn = l, majorizingFcn = function(i) l(6*pi), majorizingFcnType = NULL,
-    seed = 2024, maxTrials = Inf, plot = FALSE)[1],
-  check = FALSE, filter_gc = TRUE,
-    max_iterations = n_simulations, memory = FALSE)
-
-plot_comptimes <- function(benchdata, title = ""){
-  autoplot(benchdata, type = c("ridge")) +
-  labs(x = "", y = "") +
-  ggtitle("") +
-  theme(
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8)
-  ) +
-  #scale_x_log10(limits = c(10^-6, 0.150), expand = c(0, 0)) +
-  scale_y_discrete(
-    limits = rev,
-    labels = function(x) stringr::str_wrap(sanitize_strings_for_figures(x), width = 45)
-  ) +
-  annotate("text",
-    x = benchdata$median,
-    y = c(length(benchdata$median):1),
-    label = gsub(" ", "", benchdata$median, fixed = TRUE),
-    size = 3, vjust = 1.5, hjust = 0.5
-  ) +
-  ggtitle(title) +
-  theme(
-    axis.text.x = element_text(size = 15),
-    axis.text.y = element_text(size = 15),
-    plot.margin = margin(t = 0, r = 1, b = 0, l = 0, "cm")
-  )
-}
-
-@
-
-<<comptimes_all_samples,fig.cap="Computation times when drawing all events in interval. Unit \\texttt{us} is $\\mu s$ (microsecond).", fig.height=7, fig.width=10, echo=FALSE, warning=FALSE, message=FALSE>>=
-plot_comptimes(comptimes_all_samples)
-@
 
 
-<<comptimes_one_sample,fig.cap="Computation times when drawing the first event in interval. Unit \\texttt{us} is $\\mu s$ (microsecond).", fig.height=7, fig.width=10, echo=FALSE, warning=FALSE, message=FALSE>>=
-plot_comptimes(comptimes_one_sample)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/comptimes_all_samples-1} \caption[Computation times when drawing all events in interval]{Computation times when drawing all events in interval. Unit \texttt{us} is $\mu s$ (microsecond).}\label{fig:comptimes_all_samples}
+\end{figure}
+
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/comptimes_one_sample-1} \caption[Computation times when drawing the first event in interval]{Computation times when drawing the first event in interval. Unit \texttt{us} is $\mu s$ (microsecond).}\label{fig:comptimes_one_sample}
+\end{figure}
+
+\end{knitrout}
 
 %% -- Summary/conclusions/discussion -------------------------------------------
 
@@ -1209,21 +917,21 @@ A \proglang{C++} implementation is also forthcoming.
 
 \section*{Computational details and credits}
 
-\proglang{R}~\Sexpr{paste0(version$major, ".",version$minor)}~\citep{R-program}
+\proglang{R}~4.3.1~\citep{R-program}
 was used for all analyses.
 Packages
-\pkg{xtable}~{\Sexpr{utils::packageVersion("xtable")}}~\citep{xtable-package} and
-\pkg{knitr}~{\Sexpr{utils::packageVersion("knitr")}}~\citep{knitr-package}
+\pkg{xtable}~{1.8.4}~\citep{xtable-package} and
+\pkg{knitr}~{1.45}~\citep{knitr-package}
 were used for automatic report generation. Packages
-\pkg{ggplot2}~{\Sexpr{utils::packageVersion("ggplot2")}}~\citep{ggplot2-package},
-\pkg{ggridges}~{\Sexpr{utils::packageVersion("ggridges")}}~\citep{ggridges-package}, and
-\pkg{latex2exp}~{\Sexpr{utils::packageVersion("latex2exp")}}~\citep{latex2exp-package}
+\pkg{ggplot2}~{3.4.4}~\citep{ggplot2-package},
+\pkg{ggridges}~{0.5.5}~\citep{ggridges-package}, and
+\pkg{latex2exp}~{0.9.6}~\citep{latex2exp-package}
 were used for plot generation and \LaTeX formatting.
 Packages
-\pkg{bench}~{\Sexpr{utils::packageVersion("bench")}}~\citep{bench-package},
-\pkg{rstream}~{\Sexpr{utils::packageVersion("rstream")}}~\citep{rstream-package},
-\pkg{otinference}~{\Sexpr{utils::packageVersion("otinference")}}~\citep{otinference-package}, and
-\pkg{parallel}~{\Sexpr{utils::packageVersion("parallel")}}
+\pkg{bench}~{1.1.3}~\citep{bench-package},
+\pkg{rstream}~{1.3.7}~\citep{rstream-package},
+\pkg{otinference}~{0.1.0}~\citep{otinference-package}, and
+\pkg{parallel}~{4.3.1}
 were used in the examples and the analyses.
 %
 \proglang{R} itself
@@ -1266,10 +974,17 @@ The algorithm should be started with a good partitioning of the time interval. I
 
 The \pkg{nhppp}
 function \fct{get\_piecewise\_linear\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_piecewise} and \fct{nhppp\_t\_piecewise} expect the majorizer function values as an argument.
-<<app-majorizer>>=
-get_piecewise_linear_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE,
-                               K = 1)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{get_piecewise_linear_majorizer}\hlstd{(}\hlkwc{fun} \hlstd{= abs,} \hlkwc{breaks} \hlstd{=} \hlopt{-}\hlnum{5}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{is_monotone} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+                               \hlkwc{K} \hlstd{=} \hlnum{1}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 5.5 4.5 3.5 2.5 1.5 1.5 2.5 3.5 4.5 5.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \input{algorithms/alg_majorizer}

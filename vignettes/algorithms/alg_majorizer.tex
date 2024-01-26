@@ -1,0 +1,21 @@
+ \begin{algorithm}[h!]
+\caption{Pick a majorizing piecewise constant function $\lambda_*(t)$. Partition the interval and find an upper bound for $\lambda(t)$ in each partition.}\label{alg:lambda_majorizer}
+\begin{algorithmic}[1]
+\Require{
+\begin{itemize}
+\item[] { $ $ }
+\item[] { $\lambda(t)$ is $K$-Lipschitz in $(a, b]$ } 
+\item[] { Partition interval: $[a, b) = \bigcup_{m=1}^{M} [a_m, b_m) $  \Comment{$a=a_1, b_M = b, a_{m} = b_{m-1} \ (m>1)$}} 
+\end{itemize}}
+\State $c \gets K$ \Comment{Fastest possible slope}
+\If{ $\lambda(t)$ is monotonic}  \Comment{Then $\sup_{t\in [a_m, b_m)} (\lambda(t))= \max\big(\lambda(a_m), \lambda(b_m)\big)$}  
+\State $c \gets 0$    
+\EndIf
+\For{$m \in [M]$}:
+    \State $\lambda^*_m \gets \max\big(\lambda(a_m), \lambda(b_m)\big) + c(b_m - a_m)/2$ \Comment{Upper bound for $\lambda(t)$ in $[a_m, b_m)$}
+\EndFor
+\State{$\lambda_*(t) \gets \bigcup_{m=1}^{M} \{ \big( [a_m, b_m), \lambda_m \big) \} $} \Comment{Piecewise constant map: $\lambda: [a_m, b_m) \mapsto \lambda_m$}
+\State
+\Return{ $\lambda_*(t)$  }
+\end{algorithmic}
+\end{algorithm}

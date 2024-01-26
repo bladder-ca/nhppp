@@ -140,7 +140,7 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
                             only1 = FALSE,
                             zero_truncated = FALSE) {
   len_times_vector <- length(times_vector)
-  stopifnot(len_times_vector == (length(rates_vector) + 1))
+  if(len_times_vector != (length(rates_vector) + 1)) stop("incompatible `times_vector` and `rates_vector` lengths")
 
   if (zero_truncated == FALSE) {
     ppp_t_fun <- ppp_t_orderstat
@@ -151,7 +151,6 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
   if (len_times_vector == 2) {
     return(ppp_t_fun(range_t = times_vector, rate = rates_vector, rng_stream = rng_stream, only1 = only1))
   }
-  stopifnot(!is.unsorted(times_vector))
 
   time_H <- times_vector
   lambda <- c(0, rates_vector)
@@ -180,3 +179,6 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
 
   return(t_[!is.na(t_)])
 }
+
+
+

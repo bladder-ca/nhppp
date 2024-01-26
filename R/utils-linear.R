@@ -8,7 +8,7 @@
 #' @param beta (double) the slope
 #' @param t0 (double) the starting time
 Lambda_linear_form <- function(t, alpha, beta, t0) {
-  stopifnot(min(t) >= t0)
+  if(min(t) < t0) stop()
   if (beta < 0) {
     t[t > -alpha / beta] <- -alpha / beta
   }
@@ -23,11 +23,11 @@ Lambda_linear_form <- function(t, alpha, beta, t0) {
 #' @param beta (double) the slope
 #' @param t0 (double) the starting time
 Lambda_inv_linear_form <- function(z, alpha, beta, t0) {
-  stopifnot(beta != 0 || alpha != 0)
+  if(beta == 0 & alpha == 0) stop()
   if (beta != 0) {
     L0 <- -alpha * t0 - beta / 2 * t0^2
     Delta <- alpha^2 - 2 * beta * (L0 - z)
-    stopifnot(all(Delta >= 0))
+    if(!all(Delta >= 0)) stop()
     t_ <- (-alpha + sqrt(Delta)) / beta
   } else if (beta == 0) {
     t_ <- z / alpha + t0
@@ -45,7 +45,7 @@ Lambda_inv_linear_form <- function(z, alpha, beta, t0) {
 #' @param beta (double) the slope
 #' @param t0 (double) the starting time
 Lambda_exp_form <- function(t, alpha, beta, t0) {
-  stopifnot(min(t) >= t0)
+  if(min(t) < t0) stop()
   return((exp(beta * t + alpha) - exp(beta * t0 + alpha)) / beta)
 }
 
@@ -58,7 +58,6 @@ Lambda_exp_form <- function(t, alpha, beta, t0) {
 #' @param t0 (double) the starting time
 Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
   tmp <- exp(beta * t0 + alpha)
-  # stopifnot(beta > - tmp / z && beta != 0)
   return((log(tmp + z * beta) - alpha) / beta)
 }
 
@@ -72,7 +71,7 @@ Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
 #' @param K (double) A non-negative number for the Lipschitz cone. (Default is 0.) 
 #' @export
 get_piecewise_linear_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
-  stopifnot(K >= 0)
+  if(K < 0) stop()
   M <- length(breaks) - 1 
   f_breaks <- fun(breaks)
   lambda_star <- pmax(f_breaks[1:M], f_breaks[2:(M+1)])
