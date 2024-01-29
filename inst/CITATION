@@ -1,0 +1,5 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "nhppp: Simulating Nonhomogeneous Poisson Point Processes in R",
+  author   = "Thomas A. Trikalinos, Yuliia Sereda",
+  year     = 2024)
