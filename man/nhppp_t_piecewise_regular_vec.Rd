@@ -10,22 +10,18 @@ where the intervals have the same length (are "regular").}
 nhppp_t_piecewise_regular_vec(
   Lambda_matrix,
   range_t = c(0, 10),
-  rng_stream = NULL,
   tol = 10^-6,
-  only1 = FALSE,
-  zero_truncated = FALSE
+  only1 = FALSE
 )
 }
 \arguments{
-\item{Lambda_matrix}{(scalar, double) \code{K} integrated rates, one per interval}
+\item{Lambda_matrix}{(matrix) integrated rates, one per interval}
 
 \item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 
-\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
+\item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{only1}{boolean, draw at most 1 event time}
-
-\item{zero_truncated}{boolean, draw at least 1 event time}
 }
 \value{
 a vector of event times t
@@ -38,5 +34,5 @@ Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_ma
 where the intervals have the same length (are "regular").
 }
 \examples{
-x <- nhppp_t_piecewise_regular_vec(Lambda_vector = 1:5)
+x <- nhppp_t_piecewise_regular_vec(Lambda_matrix = matrix(1:5, nrow = 1))
 }

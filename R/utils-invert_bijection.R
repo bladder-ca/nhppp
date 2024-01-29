@@ -49,7 +49,7 @@ inverse_with_uniroot_sorted <- function(f, y,
                                         range_x = c(0, 10),
                                         range_y = c(f(range_x[1]), f(range_x[2]))) {
   len <- length(y)
-  if(y[1] < range_y[1] || y[len] > range_y[2]) stop()
+  if (y[1] < range_y[1] || y[len] > range_y[2]) stop()
 
   x <- rep(NA, len)
   x[1] <- inverse_with_uniroot(

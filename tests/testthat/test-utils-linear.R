@@ -36,10 +36,11 @@ test_that("Lambda_inv_linear_form works", {
 
 
 test_that("get_piecewise_linear_majorizer() works", {
-  expect_no_error(l1 <- get_piecewise_linear_majorizer(fun = abs,
-                          breaks = -10:10, is_monotone = FALSE, K = 1))
+  expect_no_error(l1 <- get_piecewise_linear_majorizer(
+    fun = abs,
+    breaks = -10:10, is_monotone = FALSE, K = 1
+  ))
   l1_fun <- stats::approxfun(y = l1, x = -10:9, method = "constant", rule = 2)
   x <- seq(-10, 10, length.out = 1000)
-  expect_true(sum(l1_fun(x) < abs(x))  == 0)
-
+  expect_true(sum(l1_fun(x) < abs(x)) == 0)
 })

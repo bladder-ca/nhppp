@@ -43,5 +43,3 @@ nhppp_t_intensity_linear <- function(alpha = 1,
     )
   )
 }
-
-

@@ -54,7 +54,7 @@ nhppp_t_intensity <- function(lambda,
   }
   u <- rng_stream_runif(size = num_candidates, minimum = 0, maximum = 1, rng_stream = rng_stream)
   acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
-  if(!all(acceptance_prob <= 1 + 10^-6)) {
+  if (!all(acceptance_prob <= 1 + 10^-6)) {
     stop("lambda > lambda_maj\n")
   }
   if (only1) {
@@ -111,7 +111,7 @@ nhppp_t_intensity_piecewise <- function(lambda,
       y = lambda_maj_vector,
       xout = candidate_times, method = "constant", rule = 2, f = 0
     )$y
-  if(!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
+  if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
   if (only1) {
     t <- candidate_times[u < acceptance_prob][1]
     if (is.na(t)) {

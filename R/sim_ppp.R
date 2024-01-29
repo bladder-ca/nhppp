@@ -113,5 +113,3 @@ ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {
   }
   return(U[order(U, method = "shell")])
 }
-
-

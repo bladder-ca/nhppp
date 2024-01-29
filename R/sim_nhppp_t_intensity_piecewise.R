@@ -1,5 +1,5 @@
 #' Simulate a piecewise constant-rate Poisson Point Process over `(t_min, t_max]` (inversion method)
-#' The intervals need not have the same length. 
+#' The intervals need not have the same length.
 #'
 #' @param times_vector (vector, double) `K+1` time points defining `K` intervals
 #'        of constant rates:
@@ -24,7 +24,7 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
                             only1 = FALSE,
                             zero_truncated = FALSE) {
   len_times_vector <- length(times_vector)
-  if(len_times_vector != (length(rates_vector) + 1)) stop("incompatible `times_vector` and `rates_vector` lengths")
+  if (len_times_vector != (length(rates_vector) + 1)) stop("incompatible `times_vector` and `rates_vector` lengths")
 
   if (zero_truncated == FALSE) {
     ppp_t_fun <- ppp_t_orderstat
@@ -63,5 +63,3 @@ ppp_t_piecewise <- function(rates_vector = rep(1, 5),
 
   return(t_[!is.na(t_)])
 }
-
-
