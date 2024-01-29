@@ -16,3 +16,4 @@ RoxygenNote: 7.2.3
 Suggests: 
     testthat,
     withr
+Config/Needs/website: rmarkdown

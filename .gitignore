@@ -41,7 +41,14 @@ vignettes/*.gz
 vignettes/*.bbl
 vignettes/cache/
 
-
+# produced articles
+vignettes/articles/*.html
+vignettes/articles/*.pdf
+vignettes/articles/*.log
+vignettes/articles/*.aux
+vignettes/articles/*.gz
+vignettes/articles/*.bbl
+vignettes/articles/cache/
 
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
