@@ -31,7 +31,7 @@ a vector of length 0
 \description{
 Sample NHPPP times from a linear intensity function
 using the inversion method, optionally using an \code{rstream}
-generator or a \code{Kystis} \code{RNGClass} object
+generator
 }
 \examples{
 x <- draw_intensity_linear(alpha = 0, beta = 0.2)

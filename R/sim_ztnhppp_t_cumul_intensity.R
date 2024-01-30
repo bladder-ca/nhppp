@@ -2,13 +2,13 @@
 #'    (t_min, t_max) (order statistics method)
 #'
 #' @description  Sample zero-truncated NHPPP times using the order statistics method,
-#' optionally using an `rstream` generator or a `Kystis` `RNGClass` object.
+#' optionally using an `rstream` generator
 #' @param Lambda (function, double vector) a continuous increasing R to R map
 #'               which is the integrated rate of the NHPPP
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
 #' @param range_t (vector, double) min and max of the time interval
 #' @param range_L (vector, double) min and max of the transformed time interval
-#' @param rng_stream (`rstream`) an `rstream`, `RNGClass` object or `NULL`.
+#' @param rng_stream (`rstream`) an `rstream` object or `NULL`.
 #' @param only1 (boolean) draw at most 1 event time
 #'
 #' @return a vector of at least 1 event times

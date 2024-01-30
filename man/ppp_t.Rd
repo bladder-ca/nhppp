@@ -20,7 +20,7 @@ ppp_t(
 \item{tol}{the probability that we will have more than
 the drawn events in (t_min, t_max]}
 
-\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
+\item{rng_stream}{an \code{rstream} object}
 
 \item{only1}{boolean, draw at most 1 event time}
 }

@@ -3,7 +3,7 @@
 #' @param rate scalar instantaneous rate
 #' @param n scalar number of samples
 #' @param t_min scalar for the starting time value
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #'
 #' @return a vector with event times t (starting from t_min)
 #' @export
@@ -24,7 +24,7 @@ ppp_next_n <- function(n = 1, rate = 1, t_min = 0, rng_stream = NULL) {
 #' @param rate (scalar, double) constant instantaneous rate
 #' @param tol the probability that we will have more than
 #'        the drawn events in (t_min, t_max]
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times t
@@ -52,7 +52,7 @@ ppp_t <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, 
 #'
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rate (scalar, double) constant instantaneous rate
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times of size `size`
@@ -74,7 +74,7 @@ ztppp_t <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL, only1 = FAL
 #'
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rate (scalar, double) constant instantaneous rate
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times t
@@ -99,7 +99,7 @@ ppp_t_orderstat <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL, onl
 #'
 #' @param size (int) the number of points to be simulated
 #' @param range_t (vector, double) min and max of the time interval
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #'
 #' @return a vector of event times of size `size`
 #' @export

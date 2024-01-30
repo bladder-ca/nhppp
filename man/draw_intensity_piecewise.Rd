@@ -25,7 +25,7 @@ of constant rates:
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
 \verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} or \code{RNGClass} object, or \code{NULL}}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
@@ -35,7 +35,7 @@ a vector of length 0
 }
 \description{
 Sample NHPPP times using the thinning method, optionally using
-an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
+an \code{rstream} generator
 }
 \examples{
 x <- draw_intensity_piecewise(lambda = function(t) exp(.02 * t))

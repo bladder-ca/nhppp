@@ -15,7 +15,13 @@ get_piecewise_linear_majorizer(fun, breaks, is_monotone = TRUE, K = 0)
 
 \item{K}{(double) A non-negative number for the Lipschitz cone. (Default is 0.)}
 }
+\value{
+A vector of length \code{M} with the values of the piecewise linear majorizer
+}
 \description{
 Return a piecewise linear majorizer for K-Lipschitz functions
 over an interval.
+}
+\examples{
+get_piecewise_linear_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
 }

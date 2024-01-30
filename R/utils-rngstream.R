@@ -1,6 +1,6 @@
-#' Uniform random samples from `rstream` or `RNGClass` objects
+#' Uniform random samples from `rstream` objects
 #'
-#' @description Sample from `rstream` or `RNGClass` objects
+#' @description Sample from `rstream` objects
 #' @param size Integer, number of samples
 #' @param minimum Lower bound
 #' @param maximum Upper bound
@@ -9,6 +9,8 @@
 #' @return a vector of uniform variates of size `size`
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
+#' @examples
+#' rng_stream_runif(10)
 rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NULL) {
   if (!is.null(rng_stream)) {
     if (class(rng_stream)[1] == "RNGClass") {
@@ -22,9 +24,10 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
 }
 
 
-#' Exponential random samples from `rstream` or `RNGClass` objects
+#' Exponential random samples from `rstream` objects
 #'
-#' @description Sample from `rstream` or `RNGClass` objects
+#' @description Sample from `rstream` objects
+
 #' @param size Integer, number of samples
 #' @param rate Positive number, the rate (i.e., 1/mean)
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
@@ -32,6 +35,8 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
 #' @return a vector of exponential variates of size `size`
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
+#' @examples
+#' rng_stream_rexp(10)
 rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
   if (!is.null(rng_stream)) {
     if (class(rng_stream)[1] == "RNGClass") {
@@ -45,9 +50,9 @@ rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
   return(dt_)
 }
 
-#' Poisson random samples from `rstream` or `RNGClass` objects
+#' Poisson random samples from `rstream` objects
 #'
-#' @description Sample from `rstream` or `RNGClass` objects
+#' @description Sample from `rstream` objects
 #' @param size Integer, number of samples
 #' @param lambda Positive number, the mean
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
@@ -55,6 +60,8 @@ rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
 #' @return a vector of counts of size `size`
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
+#' @examples
+#' rng_stream_rpois(10)
 rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
   if (!is.null(rng_stream)) {
     if (class(rng_stream)[1] == "RNGClass") {
@@ -70,17 +77,19 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 
 
 
-#' Zero-truncated Poisson random samples from `rstream` or `RNGClass` objects
+#' Zero-truncated Poisson random samples from `rstream` objects
 #'
-#' @description Sample from `rstream` or `RNGClass` objects
+#' @description Sample from `rstream` objects
 #' @param size Integer, number of samples
 #' @param lambda Positive number, the mean of the original
 #'        (untruncated) Poisson distribution
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
-#' @return a vector of counts of size `size`
+#' @return a vector of non zero counts of size `size`
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
+#' @examples
+#' rng_stream_rztpois(10)
 rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
   exp_minus_lambda <- exp(-lambda)
   if (!is.null(rng_stream)) {

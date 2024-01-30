@@ -7,12 +7,12 @@
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param lambda_maj (double, vector) the intercept and optional slope of the majorizing
-#' linear (if `exp_maj = FALSE`) or exponential linear (if `exp_maj = TRUE`) function in `range_t`.
+#' linear (if `exp_maj = FALSE`) or log-linear (if `exp_maj = TRUE`) function in `range_t`.
 #' @param Lambda (function, double vector) a continuous increasing R to R map
 #'               which is the integrated rate of the NHPPP
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
 #' @param range_t (vector, double) min and max of the time interval.
-#' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
+#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #' @param only1 boolean, draw at most 1 event time
 #' @param atleast1 boolean, draw at least 1 event time in interval
 #'

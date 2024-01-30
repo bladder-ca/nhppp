@@ -11,7 +11,7 @@ ppp_n(size, range_t = c(0, 10), rng_stream = NULL)
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
-\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
+\item{rng_stream}{an \code{rstream} object}
 }
 \value{
 a vector of event times of size \code{size}

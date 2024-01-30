@@ -3,7 +3,7 @@
 #'
 #' @description  Sample zero-truncated NHPPP times from a linear intensity function
 #' using the inversion method, optionally using an `rstream`
-#' generator or a `Kystis` `RNGClass` object
+#' generator
 #'
 #' @param alpha (double) the intercept
 #' @param beta (double) the slope

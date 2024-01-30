@@ -26,6 +26,9 @@ check_ppp_sample_validity(
 
 \item{zero_truncated}{(boolean) optional: at least one sample returned}
 }
+\value{
+None
+}
 \description{
 Standard checks for a vector of ordered times. Check
 that the \code{times} vector is sorted, has unique values, has all values

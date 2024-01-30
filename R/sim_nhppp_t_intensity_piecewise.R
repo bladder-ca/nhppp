@@ -7,7 +7,7 @@
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
 #' @param rates_vector (scalar, double) `K` constant rates, one per interval
-#' @param rng_stream an `rstream` or `RNGClass` object
+#' @param rng_stream an `rstream` object
 #' @param only1 boolean, draw at most 1 event time
 #' @param zero_truncated boolean, draw at least 1 event time
 #'

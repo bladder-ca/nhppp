@@ -2,14 +2,14 @@
 #'    (t0, t_max) (thinning method)
 #'
 #' @description Sample NHPPP times using the thinning method, optionally using
-#' an `rstream` generator or a `Kystis` `RNGClass` object.
+#' an `rstream` generator
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param lambda_maj (double, vector) the intercept and optional slope of the majorizing
-#' linear (if `exp_maj = FALSE`) or exponential linear (if `exp_maj = TRUE`) function in `range_t`.
+#' linear (if `exp_maj = FALSE`) or log-linear (if `exp_maj = TRUE`) function in `range_t`.
 #' @param exp_maj (boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`
 #' @param range_t (vector, double) min and max of the time interval.
-#' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
+#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
@@ -40,7 +40,7 @@ draw_intensity <- function(lambda,
   }
 
   if (isTRUE(exp_maj)) {
-    nhppp_t <- draw_intensity_exponential
+    nhppp_t <- draw_intensity_loglinear
     link <- exp
   } else {
     nhppp_t <- draw_intensity_linear
@@ -75,7 +75,7 @@ draw_intensity <- function(lambda,
 #'    (t0, t_max) (thinning method) with piecewise constant_majorizer
 #'
 #' @description Sample NHPPP times using the thinning method, optionally using
-#' an `rstream` generator or a `Kystis` `RNGClass` object.
+#' an `rstream` generator
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param lambda_maj_vector (scalar, double) `K` constant majorizing rates, one per interval
@@ -84,7 +84,7 @@ draw_intensity <- function(lambda,
 #'             `[t_1 = range_t[1],       t_2)`: the first interval
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
-#' @param rng_stream (`rstream`) an `rstream` or `RNGClass` object, or `NULL`
+#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #' @param only1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,

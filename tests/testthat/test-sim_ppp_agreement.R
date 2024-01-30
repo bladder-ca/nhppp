@@ -58,7 +58,7 @@ test_that("NHPPP methods agree on the first time to event with constant rate", {
   r_nhppp_intens_linear <- unlist(lapply(integer(10000), function(x) draw_intensity_linear(alpha = 2, beta = 0, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_linear, ppp2 = r_ppp_t, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_intensity_exponential(alpha = log(2), beta = 0, range_t = c(1, 13), only1 = TRUE)))
+  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_intensity_loglinear(alpha = log(2), beta = 0, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_ppp_t, threshold = 0.1, showQQ = TRUE)
 
   r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity(lambda = l, lambda_maj = 2.1, range_t = c(1, 13), only1 = TRUE)))
@@ -92,7 +92,7 @@ test_that("NHPPP exponential agrees with general methods", {
   L <- function(t, alpha = .1, beta = .02, t0 = 1) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = t0)
   Li <- function(z, alpha = .1, beta = .02, t0 = 1) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = t0)
 
-  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_intensity_exponential(alpha = .1, beta = .02, range_t = c(1, 13), only1 = TRUE)))
+  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_intensity_loglinear(alpha = .1, beta = .02, range_t = c(1, 13), only1 = TRUE)))
   r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_nhppp_ci_inv, threshold = 0.1, showQQ = TRUE)
 

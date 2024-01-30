@@ -1,9 +1,9 @@
 #' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-#'    (t_min, t_max) with exponential intensity function (inversion method)
+#'    (t_min, t_max) with log-linear intensity function (inversion method)
 #'
-#' @description  Sample NHPPP times from an exponential intensity function
+#' @description  Sample NHPPP times from an log linear intensity function
 #' using the inversion method, optionally using an `rstream`
-#' generator or a `Kystis` `RNGClass` object
+#' generator
 #'
 #' @param alpha (double) the intercept in the exponent
 #' @param beta (double) the slope in the exponent
@@ -16,13 +16,13 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_intensity_exponential(alpha = 0, beta = 0.2)
+#' x <- draw_intensity_loglinear(alpha = 0, beta = 0.2)
 #'
-draw_intensity_exponential <- function(alpha = 1,
-                                       beta = 0,
-                                       range_t = c(0, 10),
-                                       rng_stream = NULL,
-                                       only1 = FALSE) {
+draw_intensity_loglinear <- function(alpha = 1,
+                                     beta = 0,
+                                     range_t = c(0, 10),
+                                     rng_stream = NULL,
+                                     only1 = FALSE) {
   if (beta == 0) {
     return(ppp_t_orderstat(range_t = range_t, rate = exp(alpha), rng_stream = rng_stream, only1 = only1))
   }

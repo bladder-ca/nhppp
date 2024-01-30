@@ -45,12 +45,13 @@ Consider the time varying intensity function $\lambda(t) = e^{(0.2t)} (1 + \sin 
 
 ```{r example_lambda}
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
-nhppp::draw(lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi))
+nhppp::draw(lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi)) |>
+  head(n = 20)
 ```
 
 where `lambda_maj` is a majorizer constant. 
 
-When available, the integrated intensity function $\Lambda(t) = \int_0^t \lambda(s) \ ds$ and it's inverse $\Lambda^{-1}(z)$ result in faster simulation times. For this example, $\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}$; $\Lambda^{-1}(z)$ is constructed numerically upfront (or can be calculated numerically by the function, at a computational cost). 
+When available, the integrated intensity function $\Lambda(t) = \int_0^t \lambda(s) \ ds$ and its inverse $\Lambda^{-1}(z)$ result in faster simulation times. For this example, $\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}$; $\Lambda^{-1}(z)$ is constructed numerically upfront (or can be calculated numerically by the function, at a computational cost). 
 
 ```{r example_big_lambda}
 L <- function(t) {
@@ -59,6 +60,7 @@ L <- function(t) {
 }
 Li <- stats::approxfun(x = L(seq(0, 6 * pi, 10^-3)), y = seq(0, 6 * pi, 10^-3), rule = 2)
 
-nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi))
+nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
+  head(n = 20)
 ```
 

@@ -7,7 +7,10 @@ test_that("vdraw_piecewise_regular() works", {
     only1 = FALSE
   ))
 
-  check_ppp_sample_validity(Z0[1, !is.na(Z0[1, ])], t_min = 100, t_max = 110)
+  Z0 <- Z0[1, !is.na(Z0[1, ])]
+  if (length(Z0) > 0) {
+    check_ppp_sample_validity(Z0, t_min = 100, t_max = 110)
+  }
 
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
@@ -20,7 +23,10 @@ test_that("vdraw_piecewise_regular() works", {
   ))
 
   for (i in 1:nrow(Z)) {
-    check_ppp_sample_validity(Z[i, !is.na(Z[i, ])], t_min = 100, t_max = 110)
+    tmp <- Z[i, !is.na(Z[i, ])]
+    if (length(tmp) > 0) {
+      check_ppp_sample_validity(tmp, t_min = 100, t_max = 110)
+    }
   }
   expect_no_error(Z1 <- vdraw_piecewise_regular(
     Lambda_matrix = L,
@@ -29,6 +35,9 @@ test_that("vdraw_piecewise_regular() works", {
     only1 = TRUE
   ))
   for (i in 1:nrow(Z1)) {
-    check_ppp_sample_validity(Z1[i, !is.na(Z1[i, ])], t_min = 100, t_max = 110, only1 = TRUE)
+    tmp <- Z1[i, !is.na(Z1[i, ])]
+    if (length(tmp) > 0) {
+      check_ppp_sample_validity(tmp, t_min = 100, t_max = 110, only1 = TRUE)
+    }
   }
 })

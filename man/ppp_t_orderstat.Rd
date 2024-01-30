@@ -11,7 +11,7 @@ ppp_t_orderstat(range_t = c(0, 10), rate = 1, rng_stream = NULL, only1 = FALSE)
 
 \item{rate}{(scalar, double) constant instantaneous rate}
 
-\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
+\item{rng_stream}{an \code{rstream} object}
 
 \item{only1}{boolean, draw at most 1 event time}
 }

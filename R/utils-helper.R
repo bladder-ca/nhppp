@@ -39,7 +39,7 @@ read_code <- function(codeFile) {
 #' @param size (double) optional: the size of the vector
 #' @param only1 (boolean) optional: at most one sample returned
 #' @param zero_truncated (boolean) optional: at least one sample returned
-#' @return NULL
+#' @return None
 check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, only1 = FALSE, zero_truncated = FALSE) {
   testthat::expect_identical(times, sort(times))
   testthat::expect_identical(times, unique(times))
@@ -70,7 +70,7 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, o
 #' @param threshold (double) optional: the cutoff for a large absolute threshold
 #' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the
 #' Difference vs Average ratio in any decile is bigger than the `threshold`
-#' @return NULL
+#' @return None
 compare_ppp_vectors <- function(ppp1,
                                 ppp2,
                                 threshold = 0.15, showQQ = TRUE) {

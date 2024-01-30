@@ -24,7 +24,7 @@ which is the integrated rate of the NHPPP}
 
 \item{range_L}{(vector, double) min and max of the transformed time interval}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream}, \code{RNGClass} object or \code{NULL}.}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}.}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
@@ -34,7 +34,7 @@ a vector of length 0
 }
 \description{
 Sample NHPPP times using the order statistics method,
-optionally using an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
+optionally using an \code{rstream} generator object.
 }
 \examples{
 x <- draw_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)

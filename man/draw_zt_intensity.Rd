@@ -19,13 +19,13 @@ draw_zt_intensity(
 A continuous function of time.}
 
 \item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
-linear (if \code{exp_maj = FALSE}) or exponential linear (if \code{exp_maj = TRUE}) function in \code{range_t}.}
+linear (if \code{exp_maj = FALSE}) or log-linear (if \code{exp_maj = TRUE}) function in \code{range_t}.}
 
 \item{exp_maj}{(boolean) if \code{TRUE} the majorizer is \code{exp(alpha + beta * t)}}
 
 \item{range_t}{(vector, double) min and max of the time interval.}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} or \code{RNGClass} object, or \code{NULL}}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 
 \item{only1}{(boolean) draw at most 1 event time}
 }
@@ -34,7 +34,7 @@ a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP intensity times using the thinning method, optionally using
-an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
+an \code{rstream} generator
 }
 \examples{
 x <- draw_zt_intensity(lambda = function(t) 1 + sin(t))

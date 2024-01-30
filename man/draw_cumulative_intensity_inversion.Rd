@@ -34,7 +34,7 @@ a vector of length 0
 }
 \description{
 Sample NHPPP times using the inversion method,
-optionally using an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
+optionally using an \code{rstream} generator object
 }
 \examples{
 x <- draw_cumulative_intensity_inversion(Lambda = function(t) t + cos(t) - 1)
