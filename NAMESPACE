@@ -3,6 +3,7 @@
 export(get_piecewise_linear_majorizer)
 export(inverse_with_uniroot)
 export(inverse_with_uniroot_sorted)
+export(nhppp)
 export(nhppp_t_cumulative_intensity_inversion)
 export(nhppp_t_cumulative_intensity_orderstats)
 export(nhppp_t_intensity)
