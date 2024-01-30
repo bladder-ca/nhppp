@@ -1,2 +1,11 @@
 *.html
 *.R
+/cache/
+*.aux
+*.bbl
+*.log
+*.gz
+*.swp
+*.RData
+*.rdb
+*.rdx
