@@ -15,13 +15,13 @@
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_intensity_linear(alpha = 0, beta = 0.2)
+#' x <- draw_zt_intensity_linear(alpha = 0, beta = 0.2)
 #'
-ztnhppp_t_intensity_linear <- function(alpha = 1,
-                                       beta = 0,
-                                       range_t = c(0, 10),
-                                       rng_stream = NULL,
-                                       only1 = FALSE) {
+draw_zt_intensity_linear <- function(alpha = 1,
+                                     beta = 0,
+                                     range_t = c(0, 10),
+                                     rng_stream = NULL,
+                                     only1 = FALSE) {
   if ((beta <= 0 && alpha <= 0) || (alpha + beta * range_t[1] < 0)) {
     return(c())
   }
@@ -33,7 +33,7 @@ ztnhppp_t_intensity_linear <- function(alpha = 1,
     range_t[2] <- min(range_t[2], t_max)
   }
   return(
-    ztnhppp_t_cumulative_intensity(
+    draw_zt_cumulative_intensity(
       Lambda = function(t) Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = range_t[1]),
       Lambda_inv = function(z) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = range_t[1]),
       range_t = range_t,

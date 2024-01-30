@@ -15,12 +15,12 @@
 #' @export
 #'
 #' @examples
-#' x <- nhppp_t_piecewise_regular_vec(Lambda_matrix = matrix(1:5, nrow = 1))
+#' x <- vdraw_piecewise_regular(Lambda_matrix = matrix(1:5, nrow = 1))
 #' @export
-nhppp_t_piecewise_regular_vec <- function(Lambda_matrix,
-                                          range_t = c(0, 10),
-                                          tol = 10^-6,
-                                          only1 = FALSE) {
+vdraw_piecewise_regular <- function(Lambda_matrix,
+                                    range_t = c(0, 10),
+                                    tol = 10^-6,
+                                    only1 = FALSE) {
   # browser()
   n_draws <- nrow(Lambda_matrix)
   n_intervals <- ncol(Lambda_matrix)

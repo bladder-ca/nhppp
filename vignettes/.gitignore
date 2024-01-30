@@ -1,6 +1,6 @@
 *.html
 *.R
-/cache/
+*/cache/*
 *.aux
 *.bbl
 *.log
@@ -9,3 +9,4 @@
 *.RData
 *.rdb
 *.rdx
+__packages

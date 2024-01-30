@@ -103,7 +103,8 @@ library("nhppp")
 
 options(
   prompt = "R> ", continue = "+  ", width = 70,
-  useFancyQuotes = FALSE, out.extra = ""
+  useFancyQuotes = FALSE, out.extra = "",
+  cache = TRUE
 )
 # knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 set.seed(2024)
@@ -564,8 +565,10 @@ L <- function(t) {
   exp(0.2 * t) * (0.2 * sin(t) - cos(t)) / 1.04 +
     exp(0.2 * t) / 0.2 - 4.038462
 }
-Li <- approxfun(x = L(seq(0, 6 * pi, 10^-3)),
-  y = seq(0, 6 * pi, 10^-3), rule = 2)
+Li <- approxfun(
+  x = L(seq(0, 6 * pi, 10^-3)),
+  y = seq(0, 6 * pi, 10^-3), rule = 2
+)
 @
 
 <<example-K-Lipschitz-value, echo=FALSE, include=FALSE>>=
