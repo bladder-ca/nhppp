@@ -18,7 +18,7 @@
 #'
 #' @return a vector of event times
 #' @export
-nhppp <- function(
+draw <- function(
     lambda = NULL,
     lambda_maj = NULL,
     Lambda = NULL,

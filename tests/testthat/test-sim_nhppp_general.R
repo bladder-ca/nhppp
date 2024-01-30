@@ -1,19 +1,19 @@
-test_that("nhppp() works with lambda option", {
+test_that("draw() works with lambda option", {
   l <- function(t) {
     return(2)
   }
   lmaj <- 2.2
 
-  expect_no_error(withr::with_preserve_seed(df <- nhppp(lambda = l, lambda_maj = lmaj)))
+  expect_no_error(withr::with_preserve_seed(df <- draw(lambda = l, lambda_maj = lmaj)))
   check_ppp_sample_validity(times = df, t_min = 0, t_max = 10)
 
-  expect_no_error(withr::with_preserve_seed(df <- nhppp(lambda = l, lambda_maj = lmaj, atleast1 = TRUE)))
+  expect_no_error(withr::with_preserve_seed(df <- draw(lambda = l, lambda_maj = lmaj, atleast1 = TRUE)))
   check_ppp_sample_validity(times = df, t_min = 0, t_max = 10, zero_truncated = TRUE)
 })
 
 
 
-test_that("nhppp() works with Lambda option", {
+test_that("draw() works with Lambda option", {
   L <- function(t) {
     return(2 * t)
   }
@@ -21,9 +21,9 @@ test_that("nhppp() works with Lambda option", {
     return(z / 2)
   }
 
-  expect_no_error(withr::with_preserve_seed(df <- nhppp(Lambda = L, Lambda_inv = Li)))
+  expect_no_error(withr::with_preserve_seed(df <- draw(Lambda = L, Lambda_inv = Li)))
   check_ppp_sample_validity(times = df, t_min = 0, t_max = 10)
 
-  expect_no_error(withr::with_preserve_seed(df <- nhppp(Lambda = L, Lambda_inv = Li, atleast1 = TRUE)))
+  expect_no_error(withr::with_preserve_seed(df <- draw(Lambda = L, Lambda_inv = Li, atleast1 = TRUE)))
   check_ppp_sample_validity(times = df, t_min = 0, t_max = 10, zero_truncated = TRUE)
 })
