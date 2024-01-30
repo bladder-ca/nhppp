@@ -30,7 +30,7 @@ test_that("ztNHPPP methods agree on the first time to event with constant rate",
   r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) draw_zt_intensity(lambda = l, lambda_maj = 2.1, range_t = c(1, 13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens, ppp2 = r_ztppp_t, threshold = 0.1, showQQ = TRUE)
 
-  r_ztnhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) draw_zt_intensity_piecewise(lambda = l, lambda_maj_vector = l(2:13), times_vector = c(1:13), only1 = TRUE)))
+  r_ztnhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) draw_zt_intensity_step(lambda = l, lambda_maj_vector = l(2:13), times_vector = c(1:13), only1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens, ppp2 = r_ztppp_t, threshold = 0.1, showQQ = TRUE)
 })
 

@@ -1,16 +1,17 @@
 \begin{sidewaystable}
 \footnotesize
 \centering
-\begin{tabular}{llllllll}
+\begin{tabular}{lllllllll}
 \toprule
 \textbf{\proglang{R} package} &
 \textbf{Function} &
 \multicolumn{3}{c}{\textbf{Algorithms (inputs)}} & 
 \begin{tabular}[c]{@{}l@{}}\textbf{Sample only} \\\textbf{earliest event}\end{tabular} & 
 \begin{tabular}[c]{@{}l@{}}\textbf{Custom} \\\textbf{RNG}\end{tabular}& 
-\begin{tabular}[c]{@{}l@{}}\textbf{Simulate} \\\textbf{given} $N>0$\end{tabular}\\
+\begin{tabular}[c]{@{}l@{}}\textbf{Simulate} \\\textbf{given} $N>0$\end{tabular}&
+\begin{tabular}[c]{@{}l@{}}\textbf{Vectorized} \\\textbf{functions}\end{tabular}\\
 \cmidrule(lr){3-5} 
-  &  & \textbf{Thinning} & \textbf{Inversion} & \textbf{Order statistics} &  &  \\
+  &  & \textbf{Thinning} & \textbf{Inversion} & \textbf{Order statistics}& & &\\
 \midrule
 %
 \pkg{nhppp} &
@@ -20,7 +21,8 @@ $\Lambda(t), \Lambda^{-1}(z)$ &
 $\Lambda(t), \Lambda^{-1}(z)$ &
 Yes &  
 \begin{tabular}[c]{@{}l@{}}\pkg{rstream} \\objects\end{tabular} & 
-Yes \\
+Yes &
+\begin{tabular}[c]{@{}l@{}}For piecewise \\constant\\ intensity\end{tabular}\\
 \addlinespace[0.5em]
 %
 \pkg{reda} & 
@@ -30,6 +32,7 @@ $\lambda(t)$ (no $\Lambda(t), \Lambda^{-1}(z)$) &
 No &
 Yes &
 No &
+No &
 No \\
 \addlinespace[0.5em]
 %
@@ -37,6 +40,7 @@ No \\
 \fct{thinning}  &
 $\lambda(t)$, $[\lambda_{*m}]_{m=1}^M$ &
 No & 
+No &
 No &
 No &
 No &
@@ -50,6 +54,7 @@ $[\lambda_m]_{m=1}^M$ (no $\Lambda(t), \Lambda^{-1}(z)$) &
 No &
 No & 
 No & 
+No &
 No \\
 \addlinespace[0.5em]
 %
@@ -57,6 +62,7 @@ No \\
 \fct{simNHP.fun} &
 No &
 $\lambda(t)$, (no $\Lambda(t), \Lambda^{-1}(z)$) &
+No &
 No &
 No &
 No &

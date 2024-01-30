@@ -1,7 +1,6 @@
 #' Vectorized sampling of piecewise constant cumulative intensities
 #' with same interval lengths
-
-
+#'
 #' Simulate a piecewise constant-rate Poisson Point Process over `(t_min, t_max]` (inversion method)
 #' where the intervals have the same length (are "regular").
 #'

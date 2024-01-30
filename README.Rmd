@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+set.seed(2024)
 ```
 
 # nhppp
@@ -64,3 +65,6 @@ nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
   head(n = 20)
 ```
 
+```{r, include=FALSE}
+# set.seed(current_seed)
+```

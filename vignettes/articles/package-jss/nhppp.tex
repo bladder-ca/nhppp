@@ -279,8 +279,9 @@ All \pkg{nhppp} functions can accept a user provided random number stream object
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.9601832 1.1141512 1.5315781 1.7808161 3.2221494 4.9702280
-##  [7] 5.4538223 5.8022242 6.0911841 6.2891723 8.4670210 8.6033976
+##  [1] 0.0187461 1.2691613 1.6429431 3.7074842 3.8310289 4.2353237
+##  [7] 4.3193662 4.9724223 5.2379720 5.9995066 6.7245855 7.1703006
+## [13] 9.0663856 9.1217061
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -319,7 +320,7 @@ To sample exactly $m$ events, change line 1 of Algorithm~\ref{alg:PPP_conditiona
 $N \gets m$.
 \end{center}
 
-Function \fct{ztppp\_t} simulates times conditional on drawing at least one event - i.e., setting $m=1$ in Algorithm~\ref{alg:PPP_conditional}.
+Function \fct{ztppp\_t} simulates times conditional on drawing at least one event - i.e., setting $m=1$ in Algorithm~\ref{alg:PPP_conditional} to sample from a zero truncated Poisson distribution in line 1.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -347,6 +348,39 @@ Function \fct{ppp\_n} simulates times conditional on drawing exactly $m$ events.
 
 The \pkg{nhppp} package uses three well known general sampling algorithms, namely thinning, time transformation or inversion, and order-statistics. These algorithms are efficiently combined to sample from special cases, including cases where the intensity function is a piecewise constant, linear, or log-linear function of time, as described in Section~\ref{sec:sample-nhppp-special}.
 
+The thinning algorithm works with the intensity function $\lambda(t)$, which is commonly available. The inversion and order statistics algorithms have smaller computational cost than the thinning algorithm, but work with the integrated intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, which may not be easily available. The generic function \fct{draw} is a wrapper function that dispatches to specialized functions depending on the provided arguments. It is useful for general use but the specialized functions are usually faster.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{l} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{) t}
+\hlstd{L} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlnum{0.5} \hlopt{*} \hlstd{t}\hlopt{^}\hlnum{2}
+\hlstd{Li} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{z}\hlstd{)} \hlkwd{sqrt}\hlstd{(}\hlnum{2} \hlopt{*} \hlstd{z)}
+
+\hlkwd{draw}\hlstd{(}
+  \hlkwc{lambda} \hlstd{= l,} \hlkwc{lambda_maj} \hlstd{=} \hlkwd{l}\hlstd{(}\hlnum{10}\hlstd{),} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
+\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{20}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 5.088108 5.197488 5.578401 5.760426 5.841001 5.916301 6.109621
+##  [8] 6.226782 6.239840 6.303556 6.420387 6.436196 6.448025 6.544486
+## [15] 6.561641 7.027645 7.220043 7.414564 7.435004 7.533949
+\end{verbatim}
+\begin{alltt}
+\hlkwd{draw}\hlstd{(}
+  \hlkwc{Lambda} \hlstd{= L,} \hlkwc{Lambda_inv} \hlstd{= Li,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
+  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
+\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{20}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 5.031636 5.467510 5.556208 5.889774 5.971826 6.041089 6.267354
+##  [8] 6.833528 7.330811 7.613152 7.782012 7.784715 7.788021 7.955658
+## [15] 8.291194 8.372332 8.407120 8.441751 8.465296 8.537526
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 \subsection{The thinning algorithm}\label{sec:thinning}
 The thinning algorithm relies on the decomposability of NHPPPs (Section~\ref{sec:properties}) and is described in~\citet{lewis1979thinning}. Let the target NHPPP have intensity function $\lambda(t)$ and $\lambda_*(t) \ge \lambda(t)$ for all $t \in (a, b]$ be a majorizing intensity function. Think of the majorizing function as an easy-to-sample function which is the sum of the intensity of the target point process $\lambda(t)$ and the intensity $\lambda_{reject}(t)$ of its complementary point-process,
 $$\lambda_*(t) = \lambda(t) + \lambda_{reject}(t).$$
@@ -365,39 +399,39 @@ on average. Thus, the closer $\lambda_*(t)$ is to $\lambda(t)$, the more efficie
 
 In practice, $\lambda_*(t)$ can be chosen as one of the special cases in Section~\ref{sec:special_cases}, for which we have fast sampling algorithms. For example, it can be a piecewise constant majorizer. Algorithm~\ref{alg:lambda_majorizer} in Appendix~\ref{app:piecewise_majorizer} can be automatically generate a piecewise constant majorizer function for the general case of a $K$-Lipschitz continuous intensity function.
 
-The \pkg{nhppp} package has two functions that sample from time-varying intensity functions. The first function, \fct{nhppp\_t\_intensity}, expects a user-provided linear ($\lambda_*(t) = \alpha + \beta t$) or log-linear ($\lambda_*(t) = e^{\alpha + \beta t}$) majorizer function.
+The \pkg{nhppp} package has two functions that sample from time-varying intensity functions. The first function, \fct{draw\_intensity}, expects a user-provided linear ($\lambda_*(t) = \alpha + \beta t$) or log-linear ($\lambda_*(t) = e^{\alpha + \beta t}$) majorizer function.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{lambda_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlnum{0.02} \hlopt{*} \hlstd{t)}
 
-\hlkwd{nhppp_t_intensity}\hlstd{(}
+\hlkwd{draw_intensity}\hlstd{(}
   \hlkwc{lambda} \hlstd{= lambda_fun,} \hlcom{# linear majorizer}
   \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{1.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
   \hlkwc{exp_maj} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.6177427 0.8252861 1.6297224 1.9148740 3.7182662 3.9530368
-##  [7] 5.4636496 7.8776401 8.1428660 9.3368776 9.8801922
+## [1] 0.2581614 1.3983756 3.7431439 3.8796828 4.4741099
 \end{verbatim}
 \begin{alltt}
-\hlkwd{nhppp_t_intensity}\hlstd{(}
+\hlkwd{draw_intensity}\hlstd{(}
   \hlkwc{lambda} \hlstd{= lambda_fun,} \hlcom{# log-linear majorizer}
   \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{0.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
   \hlkwc{exp_maj} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.3536498 0.7209948 3.1111677 6.1739616 6.3389803 6.4033085
-##  [7] 7.3063134 7.9334919 8.0546288 8.9819021 9.8787307
+##  [1] 0.3562703 0.8397360 1.4451052 2.1072677 2.2543554 3.2642303
+##  [7] 3.6010669 4.0846178 4.1001892 5.0753928 5.3104299 5.8952167
+## [13] 8.6209589 8.9008607
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 
-The second function, \fct{nhppp\_t\_intensity\_piecewise}, expects a user-provided piecewise linear majorizer
+The second function, \fct{draw\_intensity\_piecewise}, expects a user-provided piecewise linear majorizer
 \begin{align*}
     \lambda_*(t) = \begin{cases}
     \lambda_1 &\textrm{ for } t \in [a_1, b_1) = [a, b_1), \\
@@ -413,7 +447,7 @@ which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{nhppp_t_intensity_piecewise}\hlstd{(}
+\hlkwd{draw_intensity_piecewise}\hlstd{(}
   \hlkwc{lambda} \hlstd{= lambda_fun,}
   \hlkwc{lambda_maj_vector} \hlstd{=} \hlkwd{lambda_fun}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{10}\hlstd{),} \hlcom{# 1:10 (10 intensity values)}
   \hlkwc{times_vector} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlcom{# 0:10 (11 interval bounds)}
@@ -421,9 +455,8 @@ which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 1.071966 1.125137 1.390700 1.578353 3.081168 4.452380 4.756992
-##  [8] 4.861953 5.214528 5.812922 6.681137 8.217985 8.507356 8.802966
-## [15] 8.861287 9.015354
+##  [1] 0.03343148 2.61586529 2.63676775 3.07384008 3.38281065 6.77061576
+##  [7] 7.31728627 7.58168410 8.33557589 9.86127604 9.87429700 9.93368963
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -433,7 +466,7 @@ Algorithm~\ref{alg:NHPPP_inversion} implements the time transformation or invers
 
 This means (proof sketched in~\citet[par. 4.2]{cox1965theory}) that we can sample points from a Poisson point process with intensity one over the interval $(\tau_a, \tau_b] = (\Lambda(a), \Lambda(b)]$. Via a similar argument, we transform event times sampled on the transformed scale back to the original scale using $g(t)=\Lambda^{-1}(\tau)$. The transformations $u(\cdot), g(\cdot)$ are not unique -- at least up to the group of affine transformations.
 
-Function \fct{nhppp\_t\_cumulative\_intensity\_inversion} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost~\citep{brent-bisection}.
+Function \fct{draw\_cumulative\_intensity\_inversion} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost~\citep{brent-bisection}.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -441,7 +474,7 @@ Function \fct{nhppp\_t\_cumulative\_intensity\_inversion} works with a cumulativ
 \hlstd{Lambda_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{t}\hlstd{)} \hlnum{50} \hlopt{*} \hlkwd{exp}\hlstd{(}\hlnum{0.02} \hlopt{*} \hlstd{t)} \hlopt{-} \hlnum{50}
 \hlstd{Lambda_inv_fun} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{z}\hlstd{)} \hlnum{50} \hlopt{*} \hlkwd{log}\hlstd{((z} \hlopt{+} \hlnum{50}\hlstd{)} \hlopt{/} \hlnum{50}\hlstd{)}
 
-\hlkwd{nhppp_t_cumulative_intensity_inversion}\hlstd{(}
+\hlkwd{draw_cumulative_intensity_inversion}\hlstd{(}
   \hlkwc{Lambda} \hlstd{= Lambda_fun,}
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10.5}\hlstd{),}
@@ -450,7 +483,8 @@ Function \fct{nhppp\_t\_cumulative\_intensity\_inversion} works with a cumulativ
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 6.140340 8.761101 9.740207
+## [1]  5.096645  5.390107  5.408923  6.705197  6.870329  7.329849
+## [7]  8.088067  9.244232 10.304507
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -477,13 +511,13 @@ $N \gets N \sim \mathrm{TruncatedPoisson}_{N \ge m}\big(\Lambda(b) - \Lambda(a)\
 \end{center}
 
 
-Function \fct{nhppp\_t\_cumulative\_intensity\_orderstats} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available.
-Function \fct{ztnhppp\_t\_cumulative\_intensity} conditions that at least one event is sampled in the interval. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost.
+Function \fct{draw\_cumulative\_intensity\_orderstats} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available.
+Function \fct{draw\_zt\_cumulative\_intensity} conditions that at least one event is sampled in the interval. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{nhppp_t_cumulative_intensity_orderstats}\hlstd{(}
+\hlkwd{draw_cumulative_intensity_orderstats}\hlstd{(}
   \hlkwc{Lambda} \hlstd{= Lambda_fun,}
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
@@ -491,7 +525,7 @@ Function \fct{ztnhppp\_t\_cumulative\_intensity} conditions that at least one ev
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 4.800305 4.818495 7.446173 7.559730
+## [1] 4.553782 5.441297 6.180854 6.856586 7.133086 7.308007
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -499,7 +533,7 @@ Function \fct{ztnhppp\_t\_cumulative\_intensity} conditions that at least one ev
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ztnhppp_t_cumulative_intensity}\hlstd{(}
+\hlkwd{draw_zt_cumulative_intensity}\hlstd{(}
   \hlkwc{Lambda} \hlstd{= Lambda_fun,}
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
@@ -507,7 +541,7 @@ Function \fct{ztnhppp\_t\_cumulative\_intensity} conditions that at least one ev
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 4.306474 4.514905
+## [1] 4.753191 5.126775 5.644922 5.820607 7.313658 7.500967
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -532,9 +566,9 @@ Function {\fct{sim\_ppp\_piecewise}} samples a piecewise constant intensity func
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.575812 1.297171 1.391110 2.064422 2.823853 2.910616 3.617285
-##  [8] 3.704217 3.854409 4.128308 4.303018 4.418660 4.574796 4.875933
-## [15] 4.878091 4.959683 4.964334
+##  [1] 0.6117174 0.8658968 1.1712685 1.4820555 2.5121386 2.9530717
+##  [7] 3.1312008 3.2222634 3.5954809 3.6031767 3.6316299 3.7770464
+## [13] 4.4097896 4.5426366 4.5654930 4.5668200 4.5842898 4.8743233
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -542,7 +576,7 @@ Function {\fct{sim\_ppp\_piecewise}} samples a piecewise constant intensity func
 
 \subsection{Sampling NHPPPs with linear and log-linear intensities}\label{sec:sample-nhppp-special}
 
-Functions \fct{nhppp\_t\_intensity\_linear} and \fct{ztnhppp\_t\_intensity\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{only1}) returns the first event only.
+Functions \fct{draw\_intensity\_linear} and \fct{draw\_zt\_intensity\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{only1}) returns the first event only.
 \begin{align*}
     \lambda(t) =
     \begin{cases}
@@ -554,30 +588,29 @@ Functions \fct{nhppp\_t\_intensity\_linear} and \fct{ztnhppp\_t\_intensity\_line
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{nhppp_t_intensity_linear}\hlstd{(}
+\hlkwd{draw_intensity_linear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.5}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
   \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.1596133 0.1974242 0.6364452 0.8716057 1.0611200 1.0970888
-##  [7] 1.2050477 1.7254505 3.1582454 3.2684247 3.8177822
+##  [1] 0.2311816 0.5178676 0.8101145 1.0564966 1.5484745 1.7726614
+##  [7] 2.4914561 2.9230957 3.2361246 3.4040629 3.8544306
 \end{verbatim}
 \begin{alltt}
-\hlkwd{ztnhppp_t_intensity_linear}\hlstd{(}
+\hlkwd{draw_zt_intensity_linear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlnum{0.2}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
   \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 3.802533 4.786135 5.189913 5.225686 5.470304 5.595804 6.751780
-##  [8] 6.795299 7.046356 7.173759 7.334077 7.720558 8.057371 8.484735
-## [15] 8.567989 8.886969 8.898501 9.233502 9.340012 9.517540
+##  [1] 1.762243 2.992713 6.111781 6.769033 7.221942 7.270455 7.562740
+##  [8] 8.376361 8.601551 8.987046 9.470917
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_exponential}) samples from log-linear intensity functions
+An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_loglinear}) samples from log-linear intensity functions
 
 \begin{align*}
     \lambda(t) =
@@ -590,13 +623,13 @@ The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{nhppp_t_intensity_exponential}\hlstd{(}
+\hlkwd{draw_intensity_loglinear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{8}\hlstd{,} \hlnum{10}\hlstd{),}
   \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 8.222066 9.179042 9.267952 9.428405 9.649748 9.932890
+## [1] 8.198292 8.449475 8.923722 8.997701 9.615823
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -604,14 +637,15 @@ The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ztnhppp_t_intensity_exponential}\hlstd{(}
+\hlkwd{draw_zt_intensity_loglinear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
   \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 5.328486 5.710963 6.362618 6.524670 6.701590 7.284602 7.471489
-##  [8] 7.989470 8.179929 8.961542 9.001102 9.275039
+##  [1] 5.122366 5.335996 5.574879 5.883224 6.014186 6.512154 6.696824
+##  [8] 6.775650 7.046179 7.193295 7.382858 7.798465 7.912472 8.094498
+## [15] 8.225813 8.551112 9.835851
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -629,14 +663,12 @@ Package \pkg{IndTestPP}~\citep{IndTestPP-package} provides a framework for explo
 
 Package \pkg{NHPoisson}~\citep{NHPoisson-jss, NHPoisson-package} fits NHPPP models to data and is not really geared towards mathematical simulation. Its \fct{simNHP.fun} function provides the ability for simulation-based inference via an implementation of the inversion algorithm. This function is designed to work with the package's inference machinery and is not practical to use for simulation. This is because the user has no direct control over the function's rescaling of the time axis.
 
-%This is because the intensity function is given as piecewise constant approximation via a vector $[\lambda_m]_{m=1}^M$, but the length of the time subintervals cannot be specified directly. Instead, the correct vector length $M$ for the application must first be found. In the example, one would have to set $M=570$ to get correct results. Because of this complication in its use, we do not consider it in the analysis in Section~\ref{sec:illustrations}.
-
 The claimed advantage of \pkg{nhppp} over the existing packages is that
 \begin{itemize}
 \item it samples from the target NHPPP and not from a numerical approximation thereof, e.g., as \pkg{IndTestPP} does.
 \item It can  sample conditional on observing at least one event in the interval, which no other package implement.
 \item It accepts user-provided random number stream objects, which is useful for implementing simulation variance reduction techniques such as common random numbers~\citep{wright1979crn} and antithetic variates~\citep{hammersley1956av}.
-\item It is fast, even though it is currently implemented in \proglang{R}-only code. It has specialized functions to leverage additional information about the process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage.
+\item It is fast, even though it is currently implemented primarily in \proglang{R}-only code. It has specialized functions to leverage additional information about the process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage. It includes one vectorized function, \fct{vdraw\_intensity\_piecewise} which draws from piecewise constant intensity functions. More functions will be vectorized in future releases.
 \end{itemize}
 
 \input{table/tab_other_R_packages}
@@ -659,6 +691,7 @@ Consider the example
 \end{equation}
 of a sinusoidal intensity function $\lambda(t)$ scaled to have an exponential amplitude and one of its antiderivatives $\Lambda(t)$, with such a constant term that $\Lambda(0)=0$.  For the numerical study we set $r=0.2$, $w=1$, and $t \in (0, 6\pi]$. There is no  analytic inverse function for this example.
 However, we can precompute \fct{Li}, a good numerical approximation to $\Lambda^{-1}(z)$. We will use it in Section~\ref{sec:example-time-performance} to compare the time performance of functions that use the inversion and order statistics algorithms when $\Lambda^{-1}$ is available versus not.
+\newpage
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -667,8 +700,10 @@ However, we can precompute \fct{Li}, a good numerical approximation to $\Lambda^
   \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{*} \hlstd{(}\hlnum{0.2} \hlopt{*} \hlkwd{sin}\hlstd{(t)} \hlopt{-} \hlkwd{cos}\hlstd{(t))} \hlopt{/} \hlnum{1.04} \hlopt{+}
     \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{/} \hlnum{0.2} \hlopt{-} \hlnum{4.038462}
 \hlstd{\}}
-\hlstd{Li} \hlkwb{<-} \hlkwd{approxfun}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{L}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{)),}
-  \hlkwc{y} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{),} \hlkwc{rule} \hlstd{=} \hlnum{2}\hlstd{)}
+\hlstd{Li} \hlkwb{<-} \hlkwd{approxfun}\hlstd{(}
+  \hlkwc{x} \hlstd{=} \hlkwd{L}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{)),}
+  \hlkwc{y} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{),} \hlkwc{rule} \hlstd{=} \hlnum{2}
+\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -705,9 +740,9 @@ We sampled series of events from the target NHPPP using the packages and functio
 
 From the \pkg{nhppp} package we use
 \begin{enumerate}
-\item  two functions that take as argument the intensity function and are based on Algorithm~\ref{alg:NHPPP_thinning} (thinning): \fct{nhppp\_t\_intensity}, which uses linear majorizers such as $\lambda_{*a}$, and \fct{nhppp\_t\_intensity\_piecewise}, which uses piecewise constant majorizers such as $\lambda_{*b}$ and $\lambda_{*c}$ in the example.
-\item  Function \fct{nhppp\_t\_cumulative\_intensity\_inversion}, which takes as argument the cumulative intensity function $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_inversion} (time transformation/inversion), and
-\item  function \fct{nhppp\_t\_cumulative\_intensity\_orderstats}, which also uses $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_order_stats} (order statistics).
+\item  two functions that take as argument the intensity function and are based on Algorithm~\ref{alg:NHPPP_thinning} (thinning): \fct{draw\_intensity}, which uses linear majorizers such as $\lambda_{*a}$, and \fct{draw\_intensity\_piecewise}, which uses piecewise constant majorizers such as $\lambda_{*b}$ and $\lambda_{*c}$ in the example.
+\item  Function \fct{draw\_cumulative\_intensity\_inversion}, which takes as argument the cumulative intensity function $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_inversion} (time transformation/inversion), and
+\item  function \fct{draw\_cumulative\_intensity\_orderstats}, which also uses $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_order_stats} (order statistics).
 \end{enumerate}
 
 Regarding the other \proglang{R} packages in Table~\ref{tab:R-packages}, we used all except for \pkg{NHPoisson}, whose simulation function is tailored to supporting simulation based inference for data analysis and is not practical to use as a standalone function.%
@@ -730,7 +765,7 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 20:40:44 2024
+% Tue Jan 30 19:26:50 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -738,18 +773,18 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
   \hline
  & Thinning $\lambda_*$=$\lambda_{*a}$ & Thinning $\lambda_*$=$\lambda_{*b}$ & Thinning $\lambda_*$=$\lambda_{*c}$ & Inversion & Order statistics \\ 
   \hline
-Sample mean & 172.000 & 168.140 & 171.360 & 169.910 & 169.780 \\ 
-  $B_\mu$ & 0.865 & -2.995 & 0.225 & -1.225 & -1.355 \\ 
-  $B_{\mu, rel}$ & 0.506 & -1.750 & 0.132 & -0.716 & -0.792 \\ 
-  Sample variance & 156.101 & 157.879 & 159.950 & 179.376 & 180.295 \\ 
-  $B_V$ & -15.034 & -13.256 & -11.185 & 8.241 & 9.160 \\ 
-  $B_{V, rel}$ & -8.785 & -7.746 & -6.536 & 4.815 & 5.352 \\ 
-  Goodness of fit, $\chi^2$ [$p$~value] & 4.871 [1.000] & 10.894 [1.000] & 4.107 [1.000] & 3.595 [1.000] & 3.370 [1.000] \\ 
-  $W_1$ [$p$~value] & 1.289 [0.116] & 3.162 [0.284] & 0.988 [0.126] & 1.339 [0.042] & 1.381 [0.562] \\ 
-  Equal tail 95\% CI = [146, 197] & [149, 193] & [145, 193] & [150, 195] & [145, 196] & [145, 196] \\ 
-  Equal tail 90\% CI = [150, 193] & [150, 193] & [148, 190] & [151, 193] & [146, 192] & [147, 190] \\ 
-  Equal tail 75\% CI = [156, 186] & [158, 185] & [152, 181] & [158, 185] & [156, 185] & [153, 184] \\ 
-  Equal tail 50\% CI = [162, 180] & [162, 182] & [158, 176] & [160, 179] & [160, 178] & [161, 179] \\ 
+Sample mean & 169.370 & 169.570 & 170.220 & 170.330 & 172.330 \\ 
+  $B_\mu$ & -1.765 & -1.565 & -0.915 & -0.805 & 1.195 \\ 
+  $B_{\mu, rel}$ & -1.031 & -0.914 & -0.534 & -0.470 & 0.698 \\ 
+  Sample variance & 144.639 & 220.813 & 146.476 & 154.405 & 212.163 \\ 
+  $B_V$ & -26.495 & 49.679 & -24.658 & -16.730 & 41.028 \\ 
+  $B_{V, rel}$ & -15.482 & 29.029 & -14.409 & -9.776 & 23.974 \\ 
+  Goodness of fit, $\chi^2$ [$p$~value] & 7.096 [1.000] & 3.482 [1.000] & 5.876 [1.000] & 5.507 [1.000] & 2.986 [1.000] \\ 
+  $W_1$ [$p$~value] & 1.868 [0.226] & 2.156 [0.124] & 1.621 [0.090] & 1.136 [0.054] & 1.556 [0.062] \\ 
+  Equal tail 95\% CI = [146, 197] & [147, 192] & [143, 199] & [148, 196] & [147, 193] & [144, 198] \\ 
+  Equal tail 90\% CI = [150, 193] & [149, 188] & [147, 196] & [152, 190] & [150, 191] & [151, 195] \\ 
+  Equal tail 75\% CI = [156, 186] & [156, 183] & [154, 186] & [158, 184] & [156, 186] & [156, 188] \\ 
+  Equal tail 50\% CI = [162, 180] & [161, 176] & [159, 178] & [162, 177] & [162, 178] & [162, 182] \\ 
    \hline
 \end{tabular}
 }
@@ -786,7 +821,7 @@ The respective results for the \proglang{R} packages are in Figure~\ref{fig:r-pk
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 20:40:45 2024
+% Tue Jan 30 19:26:50 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -830,7 +865,7 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 20:40:46 2024
+% Tue Jan 30 19:26:51 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
@@ -838,11 +873,11 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
   \hline
  & Goodness of fit, $\chi^2$ [$p$~value] & $W_1$ [$p$~value] \\ 
   \hline
-Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.470 [0.992] \\ 
-  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.010 [1.000] & 0.360 [0.996] \\ 
-  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.008 [1.000] & 0.460 [1.000] \\ 
-  Inversion & 0.010 [1.000] & 0.608 [0.968] \\ 
-  Order statistics & 0.009 [1.000] & 0.506 [1.000] \\ 
+Thinning $\lambda_*$=$\lambda_{*a}$ & 0.009 [1.000] & 0.378 [1.000] \\ 
+  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.009 [1.000] & 0.494 [0.968] \\ 
+  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.008 [1.000] & 0.340 [1.000] \\ 
+  Inversion & 0.010 [1.000] & 0.484 [1.000] \\ 
+  Order statistics & 0.010 [1.000] & 0.399 [1.000] \\ 
    \hline
 \end{tabular}
 }
@@ -852,7 +887,7 @@ Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.470 [0.992] \\
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 20:40:46 2024
+% Tue Jan 30 19:26:51 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
@@ -907,9 +942,11 @@ To indicate time performance, we benchmarked functions by recording execution ti
 
 We provided functions with the arguments they need to run fastest. For example, functions that use the inversion or order statistics algorithm execute faster when the inverse function $\Lambda^{-1}(z)$ is provided, rather than numerically calculated, as shown in both Figures for the \pkg{nhppp} package. (Functions in other packages do not take $\Lambda(t)$ and $\Lambda^{-1}(z)$ arguments.) The fastest functions are \pkg{nhppp} functions that rely on the inversion or order statistics algorithms given $\Lambda^{-1}(z)$.
 
-According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{nhppp\_t\_intensity}, the function that uses constant majorizers, has a more-efficient implementation than \fct{nhppp\_t\_intensity\_piecewise}, the function that use piecewise constant majorizers. This happens to be the case in the example, and is not universally true.
+According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{draw\_intensity}, the function that uses constant majorizers, has a more-efficient implementation than \fct{draw\_intensity\_piecewise}, the function that use piecewise constant majorizers. This happens to be the case in the example, and is not universally true.
 
-Finally, note that \pkg{nhppp} functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. To see exactly why, refer to the algorithm descriptions. This efficiency does not appear to be implemented in the other packages.
+\pkg{nhppp} functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. To see exactly why, refer to the algorithm descriptions. This efficiency does not appear to be implemented in the other packages.
+
+In \proglang{R}, `vectorized' computation, where operations are done in columns, is faster than using \code{for} loops or \fct{apply} functions. All  \pkg{nhppp} includes a vectorized version
 
 
 
@@ -999,7 +1036,7 @@ If $\lambda(t)$ is monotonic, the least upper bound (supremum) is always found a
 The algorithm should be started with a good partitioning of the time interval. In practice, it is generally easy to specify equispaced intervals that are fine enough and impose little computational penalty for the application.
 
 The \pkg{nhppp}
-function \fct{get\_piecewise\_linear\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_piecewise} and \fct{nhppp\_t\_piecewise} expect the majorizer function values as an argument.
+function \fct{get\_piecewise\_linear\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_piecewise} and \fct{draw\_piecewise} expect the majorizer function values as an argument.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}

@@ -16,13 +16,13 @@
 #' @export
 #'
 #' @examples
-#' x <- ppp_t_piecewise(rates_vector = rep(1, 5), times_vector = c(0:5))
+#' x <- ppp_t_step(rates_vector = rep(1, 5), times_vector = c(0:5))
 #' @export
-ppp_t_piecewise <- function(rates_vector = rep(1, 5),
-                            times_vector = c(0:5),
-                            rng_stream = NULL,
-                            only1 = FALSE,
-                            zero_truncated = FALSE) {
+ppp_t_step <- function(rates_vector = rep(1, 5),
+                       times_vector = c(0:5),
+                       rng_stream = NULL,
+                       only1 = FALSE,
+                       zero_truncated = FALSE) {
   len_times_vector <- length(times_vector)
   if (len_times_vector != (length(rates_vector) + 1)) stop("incompatible `times_vector` and `rates_vector` lengths")
 

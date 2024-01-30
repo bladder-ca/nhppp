@@ -3,9 +3,7 @@
 \name{vdraw_piecewise_regular}
 \alias{vdraw_piecewise_regular}
 \title{Vectorized sampling of piecewise constant cumulative intensities
-with same interval lengths
-Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
-where the intervals have the same length (are "regular").}
+with same interval lengths}
 \usage{
 vdraw_piecewise_regular(
   Lambda_matrix,
@@ -28,8 +26,6 @@ a vector of event times t
 if no events realize, it will have 0 length
 }
 \description{
-Vectorized sampling of piecewise constant cumulative intensities
-with same interval lengths
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 where the intervals have the same length (are "regular").
 }
