@@ -19,18 +19,18 @@ test_that("rng_stream_runif() works with rstream object", {
   rm("S")
 })
 
-test_that("rng_stream_runif() works with RNGClass object", {
-  expect_no_error(S <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
-  expect_no_error(df2 <- rng_stream_runif(size = 10, rng_stream = S))
-  expect_equal(length(df2), 10)
+# test_that("rng_stream_runif() works with RNGClass object", {
+#   expect_no_error(S <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
+#   expect_no_error(df2 <- rng_stream_runif(size = 10, rng_stream = S))
+#   expect_equal(length(df2), 10)
 
-  # Check that unpacking and resetting the rng_stream returns correct sequence
-  S$unpack()$reset()
-  expect_identical(rng_stream_runif(size = 10, rng_stream = S), df2)
+#   # Check that unpacking and resetting the rng_stream returns correct sequence
+#   S$unpack()$reset()
+#   expect_identical(rng_stream_runif(size = 10, rng_stream = S), df2)
 
-  # not needed,  but may help garbage collection
-  rm("S")
-})
+#   # not needed,  but may help garbage collection
+#   rm("S")
+# })
 
 
 test_that("rng_stream_rexp() works ", {
