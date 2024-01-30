@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # nhppp
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/bladder-ca/nhppp-fast/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bladder-ca/nhppp-fast?branch=main)
 <!-- badges: end -->
 
 nhppp is a package for simulating events from one dimensional nonhomogeneous Poisson point processes (NHPPPs). Its functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function; the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme. 
