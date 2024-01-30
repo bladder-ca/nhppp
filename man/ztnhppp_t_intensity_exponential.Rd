@@ -3,7 +3,7 @@
 \name{ztnhppp_t_intensity_exponential}
 \alias{ztnhppp_t_intensity_exponential}
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-   (t_min, t_max) with exponential intensity function (inversion method)}
+(t_min, t_max) with exponential intensity function (inversion method)}
 \usage{
 ztnhppp_t_intensity_exponential(
   alpha = 1,
@@ -20,7 +20,7 @@ ztnhppp_t_intensity_exponential(
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
-\item{rng_stream}{(`rstream`) an `rstream` object.}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object.}
 
 \item{only1}{boolean, 1 event time}
 }
@@ -29,8 +29,8 @@ a vector of at least 1 event times
 }
 \description{
 Sample zt-NHPPP times from an exponential intensity function
-using the inversion method, optionally using an `rstream`
-generator or a `Kystis` `RNGClass` object
+using the inversion method, optionally using an \code{rstream}
+generator or a \code{Kystis} \code{RNGClass} object
 }
 \examples{
 x <- ztnhppp_t_intensity_exponential(alpha = 0, beta = 0.2)

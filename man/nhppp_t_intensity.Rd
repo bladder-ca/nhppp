@@ -3,7 +3,7 @@
 \name{nhppp_t_intensity}
 \alias{nhppp_t_intensity}
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-   (t0, t_max) (thinning method)}
+(t0, t_max) (thinning method)}
 \usage{
 nhppp_t_intensity(
   lambda,
@@ -19,23 +19,23 @@ nhppp_t_intensity(
 A continuous function of time.}
 
 \item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
-linear (if `exp_maj = FALSE`) or exponential linear (if `exp_maj = TRUE`) function in `range_t`.}
+linear (if \code{exp_maj = FALSE}) or exponential linear (if \code{exp_maj = TRUE}) function in \code{range_t}.}
 
-\item{exp_maj}{(boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`}
+\item{exp_maj}{(boolean) if \code{TRUE} the majorizer is \code{exp(alpha + beta * t)}}
 
 \item{range_t}{(vector, double) min and max of the time interval.}
 
-\item{rng_stream}{(`rstream`) an `rstream` or `RNGClass` object, or `NULL`}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} or \code{RNGClass} object, or \code{NULL}}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of length 0
 }
 \description{
 Sample NHPPP times using the thinning method, optionally using
-an `rstream` generator or a `Kystis` `RNGClass` object.
+an \code{rstream} generator or a \code{Kystis} \code{RNGClass} object.
 }
 \examples{
 x <- nhppp_t_intensity(lambda = function(t) 1 + sin(t))

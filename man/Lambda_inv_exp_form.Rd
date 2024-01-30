@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-linear.R
 \name{Lambda_inv_exp_form}
 \alias{Lambda_inv_exp_form}
-\title{Inverse of the definite integral of `l = exp(alpha + beta*t)` at time `t`}
+\title{Inverse of the definite integral of \code{l = exp(alpha + beta*t)} at time \code{t}}
 \usage{
 Lambda_inv_exp_form(z, alpha, beta, t0)
 }
@@ -16,5 +16,5 @@ Lambda_inv_exp_form(z, alpha, beta, t0)
 \item{t0}{(double) the starting time}
 }
 \description{
-Inverse of the definite integral of `l = exp(alpha + beta*t)` only for `l+`.
+Inverse of the definite integral of \code{l = exp(alpha + beta*t)} only for \verb{l+}.
 }

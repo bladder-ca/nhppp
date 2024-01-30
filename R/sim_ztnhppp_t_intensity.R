@@ -51,7 +51,7 @@ ztnhppp_t_intensity <- function(lambda,
     candidate_times <- ztnhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
     u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1, rng_stream = rng_stream)
     acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
-    stopifnot(all(acceptance_prob <= 1 + 10^-6))
+    if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
     candidate_times <- candidate_times[u < acceptance_prob]
     if (length(candidate_times) > 0) {
       if (only1) {
@@ -88,13 +88,13 @@ ztnhppp_t_intensity <- function(lambda,
 #' @examples
 #' x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
 ztnhppp_t_intensity_piecewise <- function(lambda,
-                                          lambda_maj_vector = 1,
-                                          times_vector = c(0, 10),
+                                          lambda_maj_vector = lambda(1:10),
+                                          times_vector = 0:10,
                                           rng_stream = NULL,
                                           only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
 
-  lambda_maj_fun <- approxfun(
+  lambda_maj_fun <- stats::approxfun(
     x = times_vector[1:len_lambda],
     y = lambda_maj_vector, method = "constant", rule = 2, f = 0
   )
@@ -103,7 +103,7 @@ ztnhppp_t_intensity_piecewise <- function(lambda,
     candidate_times <- ppp_t_piecewise(rates_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, only1 = FALSE, zero_truncated = TRUE)
     u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1, rng_stream = rng_stream)
     acceptance_prob <- lambda(candidate_times) / lambda_maj_fun(candidate_times)
-    stopifnot(all(acceptance_prob <= 1 + 10^-6))
+    if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
     candidate_times <- candidate_times[u < acceptance_prob]
     if (length(candidate_times) > 0) {
       if (only1) {

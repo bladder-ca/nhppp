@@ -1,25 +1,19 @@
 Package: nhppp
-Type: Package
-Title: Simulating from NHPPP
-Version: 0.1.1
+Title: What the Package Does (One Line, Title Case)
+Version: 0.1.2
 Authors@R: 
     person("Thomas", "Trikalinos", , "ttrikalin@mac.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3990-1848"))
-Maintainer: The package maintainer <thomas_trikalinos@brown.edu>
-Description: 
-    The package simulates event times from arbitrary NHPPPs with 
-    two methods: (i) Time warping recovers the target NHPPP with 
-    an appropriate time-transformation of samples drawn from a 
-    time-homogeneous Poisson PP. (ii) An acceptance-rejection 
-    algorithm thins out a “denser” homogeneous Poisson PP to 
-    obtain event times from the target NHPPP.
-License: What license is it under?
-Encoding: UTF-8
-LazyData: true
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
 Imports: 
+    lifecycle,
     rstream
-LinkingTo: Rcpp
+Encoding: UTF-8
+Language: es
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
+    testthat,
+    withr
+Config/Needs/website: rmarkdown

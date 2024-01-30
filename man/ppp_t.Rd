@@ -20,13 +20,13 @@ ppp_t(
 \item{tol}{the probability that we will have more than
 the drawn events in (t_min, t_max]}
 
-\item{rng_stream}{an `rstream` or `RNGClass` object}
+\item{rng_stream}{an \code{rstream} or \code{RNGClass} object}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times t
-        if no events realize, it will have 0 length
+if no events realize, it will have 0 length
 }
 \description{
 Simulate a homogeneous Poisson Point Process over (t_min, t_max]

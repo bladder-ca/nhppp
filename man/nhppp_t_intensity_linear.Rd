@@ -3,7 +3,7 @@
 \name{nhppp_t_intensity_linear}
 \alias{nhppp_t_intensity_linear}
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-   (t_min, t_max) with linear intensity function (inversion method)}
+(t_min, t_max) with linear intensity function (inversion method)}
 \usage{
 nhppp_t_intensity_linear(
   alpha = 1,
@@ -20,18 +20,18 @@ nhppp_t_intensity_linear(
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
-\item{rng_stream}{(`rstream`) an `rstream` object.}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object.}
 
 \item{only1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,
-        a vector of length 0
+a vector of length 0
 }
 \description{
 Sample NHPPP times from a linear intensity function
-using the inversion method, optionally using an `rstream`
-generator or a `Kystis` `RNGClass` object
+using the inversion method, optionally using an \code{rstream}
+generator or a \code{Kystis} \code{RNGClass} object
 }
 \examples{
 x <- nhppp_t_intensity_linear(alpha = 0, beta = 0.2)

@@ -28,6 +28,6 @@ check_ppp_sample_validity(
 }
 \description{
 Standard checks for a vector of ordered times. Check
-that the `times` vector is sorted, has unique values, has all values
-in [t_min, t_max], and has length `size` (if applicable).
+that the \code{times} vector is sorted, has unique values, has all values
+in \verb{[t_min, t_max]}, and has length \code{size} (if applicable).
 }

@@ -1,0 +1,63 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# nhppp
+
+<!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/bladder-ca/nhppp-fast/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bladder-ca/nhppp-fast?branch=main)
+<!-- badges: end -->
+
+nhppp is a package for simulating events from one dimensional nonhomogeneous Poisson point processes (NHPPPs). Its functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function; the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme. 
+
+## Installation
+
+You can install the release version of nhppp from [CRAN](https://cran.r-project.org) with:
+
+``` r
+install.packages("nhppp")
+```
+
+You can install the development version of nhppp from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("bladder-ca/nhppp-fast")
+```
+
+## Example
+
+These examples use the generic function `draw()`, which is a wrapper for the packages specific functions. 
+
+Consider the time varying intensity function $\lambda(t) = e^{(0.2t)} (1 + \sin t)$, which is a sinusoidal intensity function with an exponential amplitude. To draw samples over the interval $(0, 6\pi]$ execute 
+
+```{r example_lambda}
+l <- function(t) (1 + sin(t)) * exp(0.2 * t)
+nhppp::draw(lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi))
+```
+
+where `lambda_maj` is a majorizer constant. 
+
+When available, the integrated intensity function $\Lambda(t) = \int_0^t \lambda(s) \ ds$ and it's inverse $\Lambda^{-1}(z)$ result in faster simulation times. For this example, $\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}$; $\Lambda^{-1}(z)$ is constructed numerically upfront (or can be calculated numerically by the function, at a computational cost). 
+
+```{r example_big_lambda}
+L <- function(t) {
+  exp(0.2 * t) * (0.2 * sin(t) - cos(t)) / 1.04 +
+    exp(0.2 * t) / 0.2 - 4.038462
+}
+Li <- stats::approxfun(x = L(seq(0, 6 * pi, 10^-3)), y = seq(0, 6 * pi, 10^-3), rule = 2)
+
+nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi))
+```
+

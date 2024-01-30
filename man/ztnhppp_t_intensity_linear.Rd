@@ -2,8 +2,8 @@
 % Please edit documentation in R/sim_ztnhppp_t_intensity_linear.R
 \name{ztnhppp_t_intensity_linear}
 \alias{ztnhppp_t_intensity_linear}
-\title{Simulate `size` samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-   (t_min, t_max) with linear intensity function}
+\title{Simulate \code{size} samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
+(t_min, t_max) with linear intensity function}
 \usage{
 ztnhppp_t_intensity_linear(
   alpha = 1,
@@ -20,7 +20,7 @@ ztnhppp_t_intensity_linear(
 
 \item{range_t}{(vector, double) min and max of the time interval}
 
-\item{rng_stream}{(`rstream`) an `rstream` object}
+\item{rng_stream}{(\code{rstream}) an \code{rstream} object}
 
 \item{only1}{(boolean) draw 1 event time}
 }
@@ -29,8 +29,8 @@ a vector of at least 1 event times
 }
 \description{
 Sample zero-truncated NHPPP times from a linear intensity function
-using the inversion method, optionally using an `rstream`
-generator or a `Kystis` `RNGClass` object
+using the inversion method, optionally using an \code{rstream}
+generator or a \code{Kystis} \code{RNGClass} object
 }
 \examples{
 x <- ztnhppp_t_intensity_linear(alpha = 0, beta = 0.2)
