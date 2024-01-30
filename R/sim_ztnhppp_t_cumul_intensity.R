@@ -15,13 +15,13 @@
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
-ztnhppp_t_cumulative_intensity <- function(Lambda,
-                                           Lambda_inv = NULL,
-                                           range_t = c(0, 10),
-                                           range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-                                           rng_stream = NULL,
-                                           only1 = FALSE) {
+#' x <- draw_zt_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
+draw_zt_cumulative_intensity <- function(Lambda,
+                                         Lambda_inv = NULL,
+                                         range_t = c(0, 10),
+                                         range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
+                                         rng_stream = NULL,
+                                         only1 = FALSE) {
   tmp_u <- ztppp_t(range_t = range_L, rate = 1, rng_stream = rng_stream)
   if (only1 == TRUE) {
     tmp_u <- tmp_u[1]

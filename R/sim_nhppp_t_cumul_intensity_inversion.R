@@ -16,13 +16,13 @@
 #' @export
 #'
 #' @examples
-#' x <- nhppp_t_cumulative_intensity_inversion(Lambda = function(t) t + cos(t) - 1)
-nhppp_t_cumulative_intensity_inversion <- function(Lambda,
-                                                   Lambda_inv = NULL,
-                                                   range_t = c(0, 10),
-                                                   range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-                                                   rng_stream = NULL,
-                                                   only1 = FALSE) {
+#' x <- draw_cumulative_intensity_inversion(Lambda = function(t) t + cos(t) - 1)
+draw_cumulative_intensity_inversion <- function(Lambda,
+                                                Lambda_inv = NULL,
+                                                range_t = c(0, 10),
+                                                range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
+                                                rng_stream = NULL,
+                                                only1 = FALSE) {
   dat_warped_time <- ppp_t(
     range_t = range_L,
     rate = 1,

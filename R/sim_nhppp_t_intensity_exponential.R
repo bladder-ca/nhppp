@@ -16,18 +16,18 @@
 #' @export
 #'
 #' @examples
-#' x <- nhppp_t_intensity_exponential(alpha = 0, beta = 0.2)
+#' x <- draw_intensity_exponential(alpha = 0, beta = 0.2)
 #'
-nhppp_t_intensity_exponential <- function(alpha = 1,
-                                          beta = 0,
-                                          range_t = c(0, 10),
-                                          rng_stream = NULL,
-                                          only1 = FALSE) {
+draw_intensity_exponential <- function(alpha = 1,
+                                       beta = 0,
+                                       range_t = c(0, 10),
+                                       rng_stream = NULL,
+                                       only1 = FALSE) {
   if (beta == 0) {
     return(ppp_t_orderstat(range_t = range_t, rate = exp(alpha), rng_stream = rng_stream, only1 = only1))
   }
   return(
-    nhppp_t_cumulative_intensity_inversion(
+    draw_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = range_t[1]),
       Lambda_inv = function(z) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = range_t[1]),
       range_t = range_t,

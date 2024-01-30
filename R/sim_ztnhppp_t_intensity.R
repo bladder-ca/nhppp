@@ -17,13 +17,13 @@
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_intensity(lambda = function(t) 1 + sin(t))
-ztnhppp_t_intensity <- function(lambda,
-                                lambda_maj = NULL,
-                                exp_maj = FALSE,
-                                range_t = c(0, 10),
-                                rng_stream = NULL,
-                                only1 = FALSE) {
+#' x <- draw_zt_intensity(lambda = function(t) 1 + sin(t))
+draw_zt_intensity <- function(lambda,
+                              lambda_maj = NULL,
+                              exp_maj = FALSE,
+                              range_t = c(0, 10),
+                              rng_stream = NULL,
+                              only1 = FALSE) {
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
       f = function(x) lambda(x),
@@ -40,10 +40,10 @@ ztnhppp_t_intensity <- function(lambda,
   }
 
   if (isTRUE(exp_maj)) {
-    ztnhppp_t <- ztnhppp_t_intensity_exponential
+    ztnhppp_t <- draw_zt_intensity_exponential
     link <- exp
   } else {
-    ztnhppp_t <- ztnhppp_t_intensity_linear
+    ztnhppp_t <- draw_zt_intensity_linear
     link <- identity
   }
 
@@ -86,12 +86,12 @@ ztnhppp_t_intensity <- function(lambda,
 #' @export
 #'
 #' @examples
-#' x <- ztnhppp_t_intensity_piecewise(lambda = function(t) exp(.02 * t))
-ztnhppp_t_intensity_piecewise <- function(lambda,
-                                          lambda_maj_vector = lambda(1:10),
-                                          times_vector = 0:10,
-                                          rng_stream = NULL,
-                                          only1 = FALSE) {
+#' x <- draw_zt_intensity_piecewise(lambda = function(t) exp(.02 * t))
+draw_zt_intensity_piecewise <- function(lambda,
+                                        lambda_maj_vector = lambda(1:10),
+                                        times_vector = 0:10,
+                                        rng_stream = NULL,
+                                        only1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
 
   lambda_maj_fun <- stats::approxfun(

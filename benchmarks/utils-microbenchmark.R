@@ -17,30 +17,30 @@ res <- bench::mark(
   "ztppp_t (All)" = ztppp_t(rate = hppp_rate, range_t = rngt),
   "ppp_t_orderstat (1st)" = ppp_t_orderstat(rate = hppp_rate, range_t = rngt, only1 = TRUE),
   "ppp_t_orderstat (All)" = ppp_t_orderstat(rate = hppp_rate, range_t = rngt),
-  "nhppp_t_intensity_linear (1st)" = nhppp_t_intensity_linear(alpha = 0, beta = 2, range_t = rngt, only1 = TRUE),
-  "nhppp_t_intensity_linear (All)" = nhppp_t_intensity_linear(alpha = 0, beta = 2, range_t = rngt),
-  "ztnhppp_t_intensity_linear (1st)" = ztnhppp_t_intensity_linear(alpha = 0, beta = 2, range_t = rngt, only1 = TRUE),
-  "ztnhppp_t_intensity_linear (All)" = ztnhppp_t_intensity_linear(alpha = 0, beta = 2, range_t = rngt),
-  "nhppp_t_intensity (1st, constmaj)" = nhppp_t_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt, only1 = TRUE),
-  "nhppp_t_intensity (100, constmaj)" = nhppp_t_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt),
-  "nhppp_t_intensity (1st, linemaj)" = nhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE),
-  "nhppp_t_intensity (100, linemaj)" = nhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
-  "ztnhppp_t_intensity (1st, constmaj)" = ztnhppp_t_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt, only1 = TRUE),
-  "ztnhppp_t_intensity (100, constmaj)" = ztnhppp_t_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt),
-  "ztnhppp_t_intensity (1st, linemaj)" = ztnhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE),
-  "ztnhppp_t_intensity (100, linemaj)" = ztnhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
-  "nhppp_t_cumulative_intensity_inversion (1st, worst)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
-  "nhppp_t_cumulative_intensity_inversion (All, worst)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = NULL, range_t = rngt),
-  "nhppp_t_cumulative_intensity_inversion (1st, best)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
-  "nhppp_t_cumulative_intensity_inversion (All, best)" = nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt),
-  "nhppp_t_cumulative_intensity_orderstats (1st, worst)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
-  "nhppp_t_cumulative_intensity_orderstats (All, worst)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = rngt),
-  "nhppp_t_cumulative_intensity_orderstats (1st, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
-  "nhppp_t_cumulative_intensity_orderstats (All, best)" = nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt),
-  "ztnhppp_t_cumulative_intensity (1st, worst)" = ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
-  "ztnhppp_t_cumulative_intensity (All, worst)" = ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = NULL, range_t = rngt),
-  "ztnhppp_t_cumulative_intensity (1st, best)" = ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
-  "ztnhppp_t_cumulative_intensity (All, best)" = ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt),
+  "draw_intensity_linear (1st)" = draw_intensity_linear(alpha = 0, beta = 2, range_t = rngt, only1 = TRUE),
+  "draw_intensity_linear (All)" = draw_intensity_linear(alpha = 0, beta = 2, range_t = rngt),
+  "draw_zt_intensity_linear (1st)" = draw_zt_intensity_linear(alpha = 0, beta = 2, range_t = rngt, only1 = TRUE),
+  "draw_zt_intensity_linear (All)" = draw_zt_intensity_linear(alpha = 0, beta = 2, range_t = rngt),
+  "draw_intensity (1st, constmaj)" = draw_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt, only1 = TRUE),
+  "draw_intensity (100, constmaj)" = draw_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt),
+  "draw_intensity (1st, linemaj)" = draw_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE),
+  "draw_intensity (100, linemaj)" = draw_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
+  "draw_zt_intensity (1st, constmaj)" = draw_zt_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt, only1 = TRUE),
+  "draw_zt_intensity (100, constmaj)" = draw_zt_intensity(lambda = l, lambda_maj = c(20, 0), range_t = rngt),
+  "draw_zt_intensity (1st, linemaj)" = draw_zt_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE),
+  "draw_zt_intensity (100, linemaj)" = draw_zt_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
+  "draw_cumulative_intensity_inversion (1st, worst)" = draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
+  "draw_cumulative_intensity_inversion (All, worst)" = draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = NULL, range_t = rngt),
+  "draw_cumulative_intensity_inversion (1st, best)" = draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
+  "draw_cumulative_intensity_inversion (All, best)" = draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt),
+  "draw_cumulative_intensity_orderstats (1st, worst)" = draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
+  "draw_cumulative_intensity_orderstats (All, worst)" = draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = NULL, range_t = rngt),
+  "draw_cumulative_intensity_orderstats (1st, best)" = draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
+  "draw_cumulative_intensity_orderstats (All, best)" = draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt),
+  "draw_zt_cumulative_intensity (1st, worst)" = draw_zt_cumulative_intensity(Lambda = L, Lambda_inv = NULL, range_t = rngt, only1 = TRUE),
+  "draw_zt_cumulative_intensity (All, worst)" = draw_zt_cumulative_intensity(Lambda = L, Lambda_inv = NULL, range_t = rngt),
+  "draw_zt_cumulative_intensity (1st, best)" = draw_zt_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt, only1 = TRUE),
+  "draw_zt_cumulative_intensity (All, best)" = draw_zt_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt),
   check = FALSE,
   iterations = nsim
 )
@@ -60,26 +60,26 @@ ppp_t_loop <- function(rate = 1, range_t = c(0, 0.01)) {
   return(t_)
 }
 
-nhppp_t_cumul_intensity_inversion_loop <- function() {
+draw_cumul_intensity_inversion_loop <- function() {
   t_ <- vector(mode = "numeric")
   while (length(t_) == 0) {
-    t_ <- nhppp_t_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE)
+    t_ <- draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE)
   }
   return(t_)
 }
 
-nhppp_t_cumul_intensity_orderstats_loop <- function() {
+draw_cumul_intensity_orderstats_loop <- function() {
   t_ <- vector(mode = "numeric")
   while (length(t_) == 0) {
-    t_ <- nhppp_t_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE)
+    t_ <- draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE)
   }
   return(t_)
 }
 
-nhppp_t_intensity_loop <- function() {
+draw_intensity_loop <- function() {
   t_ <- vector(mode = "numeric")
   while (length(t_) == 0) {
-    t_ <- nhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE)
+    t_ <- draw_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt, only1 = TRUE)
   }
   return(t_)
 }
@@ -87,11 +87,11 @@ nhppp_t_intensity_loop <- function() {
 zt_res_low <- bench::mark(
   "01 ztppp_t" = ztppp_t(rate = 0.1, range_t = rngt, only1 = TRUE),
   "01 ppp_t loop" = ppp_t_loop(),
-  "02 ztnhppp_t_cumulative_intensity" = ztnhppp_t_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE),
-  "02 nhppp_t_cumulative_intensity_inversion loop" = nhppp_t_cumul_intensity_inversion_loop(),
-  "02 nhppp_t_cumulative_intensity_orderstats loop" = nhppp_t_cumul_intensity_orderstats_loop(),
-  "03 ztnhppp_t_intensity" = ztnhppp_t_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
-  "03 nhppp_t_intensity loop" = nhppp_t_intensity_loop(),
+  "02 draw_zt_cumulative_intensity" = draw_zt_cumulative_intensity(Lambda = L, Lambda_inv = Li, range_t = rngt, range_L = L(rngt), only1 = TRUE),
+  "02 draw_cumulative_intensity_inversion loop" = draw_cumul_intensity_inversion_loop(),
+  "02 draw_cumulative_intensity_orderstats loop" = draw_cumul_intensity_orderstats_loop(),
+  "03 draw_zt_intensity" = draw_zt_intensity(lambda = l, lambda_maj = c(0, 2), range_t = rngt),
+  "03 draw_intensity loop" = draw_intensity_loop(),
   check = FALSE, iterations = nsim
 )
 

@@ -29,9 +29,9 @@ draw <- function(
     atleast1 = FALSE) {
   if (!is.null(lambda)) {
     if (atleast1) {
-      func <- ztnhppp_t_intensity
+      func <- draw_zt_intensity
     } else {
-      func <- nhppp_t_intensity
+      func <- draw_intensity
     }
     return(func(
       lambda = lambda,
@@ -45,9 +45,9 @@ draw <- function(
 
   if (!is.null(Lambda)) {
     if (atleast1) {
-      func <- ztnhppp_t_cumulative_intensity
+      func <- draw_zt_cumulative_intensity
     } else {
-      func <- nhppp_t_cumulative_intensity_inversion
+      func <- draw_cumulative_intensity_inversion
     }
     return(func(
       Lambda = Lambda,
