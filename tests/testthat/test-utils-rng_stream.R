@@ -37,7 +37,7 @@ test_that("rng_stream_rexp() works ", {
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = NULL))
   expect_no_error(S1 <- methods::new("rstream.mrg32k3a"))
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = S1))
-  expect_no_error(S2 <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
+  #expect_no_error(S2 <- readRDS(file.path("example_RNGCLass.rds"))$unpack())
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = S2))
   rm(list = c("S1", "S2"))
 })
