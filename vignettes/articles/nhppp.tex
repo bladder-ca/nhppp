@@ -279,8 +279,8 @@ All \pkg{nhppp} functions can accept a user provided random number stream object
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.6915438 2.4806410 3.0176305 4.5046973 5.1085566 7.1457364
-## [7] 7.5804602
+##  [1] 0.9601832 1.1141512 1.5315781 1.7808161 3.2221494 4.9702280
+##  [7] 5.4538223 5.8022242 6.0911841 6.2891723 8.4670210 8.6033976
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -667,7 +667,8 @@ However, we can precompute \fct{Li}, a good numerical approximation to $\Lambda^
   \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{*} \hlstd{(}\hlnum{0.2} \hlopt{*} \hlkwd{sin}\hlstd{(t)} \hlopt{-} \hlkwd{cos}\hlstd{(t))} \hlopt{/} \hlnum{1.04} \hlopt{+}
     \hlkwd{exp}\hlstd{(}\hlnum{0.2} \hlopt{*} \hlstd{t)} \hlopt{/} \hlnum{0.2} \hlopt{-} \hlnum{4.038462}
 \hlstd{\}}
-\hlstd{Li} \hlkwb{<-} \hlkwd{approxfun}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{L}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{)),} \hlkwc{y} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{))}
+\hlstd{Li} \hlkwb{<-} \hlkwd{approxfun}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{L}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{)),}
+  \hlkwc{y} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{6} \hlopt{*} \hlstd{pi,} \hlnum{10}\hlopt{^-}\hlnum{3}\hlstd{),} \hlkwc{rule} \hlstd{=} \hlnum{2}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -729,7 +730,7 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 17:15:27 2024
+% Mon Jan 29 20:40:44 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -737,18 +738,18 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
   \hline
  & Thinning $\lambda_*$=$\lambda_{*a}$ & Thinning $\lambda_*$=$\lambda_{*b}$ & Thinning $\lambda_*$=$\lambda_{*c}$ & Inversion & Order statistics \\ 
   \hline
-Sample mean & 172.040 & 170.170 & 172.800 & 169.800 & 171.630 \\ 
-  $B_\mu$ & 0.905 & -0.965 & 1.665 & -1.335 & 0.495 \\ 
-  $B_{\mu, rel}$ & 0.529 & -0.564 & 0.973 & -0.780 & 0.289 \\ 
-  Sample variance & 174.705 & 183.516 & 187.051 & 147.293 & 168.781 \\ 
-  $B_V$ & 3.571 & 12.382 & 15.916 & -23.842 & -2.354 \\ 
-  $B_{V, rel}$ & 2.087 & 7.235 & 9.300 & -13.932 & -1.375 \\ 
-  Goodness of fit, $\chi^2$ [$p$~value] & 5.281 [1.000] & 4.166 [1.000] & 5.613 [1.000] & 6.044 [1.000] & 4.835 [1.000] \\ 
-  $W_1$ [$p$~value] & 1.509 [0.138] & 1.137 [0.078] & 1.834 [0.056] & 1.682 [0.092] & 1.075 [0.176] \\ 
-  Equal tail 95\% CI = [146, 197] & [145, 196] & [147, 196] & [146, 199] & [147, 195] & [150, 194] \\ 
-  Equal tail 90\% CI = [150, 193] & [148, 193] & [147, 194] & [150, 197] & [149, 189] & [150, 190] \\ 
-  Equal tail 75\% CI = [156, 186] & [155, 186] & [153, 185] & [158, 188] & [156, 182] & [156, 187] \\ 
-  Equal tail 50\% CI = [162, 180] & [164, 182] & [162, 179] & [163, 181] & [162, 178] & [162, 181] \\ 
+Sample mean & 172.000 & 168.140 & 171.360 & 169.910 & 169.780 \\ 
+  $B_\mu$ & 0.865 & -2.995 & 0.225 & -1.225 & -1.355 \\ 
+  $B_{\mu, rel}$ & 0.506 & -1.750 & 0.132 & -0.716 & -0.792 \\ 
+  Sample variance & 156.101 & 157.879 & 159.950 & 179.376 & 180.295 \\ 
+  $B_V$ & -15.034 & -13.256 & -11.185 & 8.241 & 9.160 \\ 
+  $B_{V, rel}$ & -8.785 & -7.746 & -6.536 & 4.815 & 5.352 \\ 
+  Goodness of fit, $\chi^2$ [$p$~value] & 4.871 [1.000] & 10.894 [1.000] & 4.107 [1.000] & 3.595 [1.000] & 3.370 [1.000] \\ 
+  $W_1$ [$p$~value] & 1.289 [0.116] & 3.162 [0.284] & 0.988 [0.126] & 1.339 [0.042] & 1.381 [0.562] \\ 
+  Equal tail 95\% CI = [146, 197] & [149, 193] & [145, 193] & [150, 195] & [145, 196] & [145, 196] \\ 
+  Equal tail 90\% CI = [150, 193] & [150, 193] & [148, 190] & [151, 193] & [146, 192] & [147, 190] \\ 
+  Equal tail 75\% CI = [156, 186] & [158, 185] & [152, 181] & [158, 185] & [156, 185] & [153, 184] \\ 
+  Equal tail 50\% CI = [162, 180] & [162, 182] & [158, 176] & [160, 179] & [160, 178] & [161, 179] \\ 
    \hline
 \end{tabular}
 }
@@ -785,7 +786,7 @@ The respective results for the \proglang{R} packages are in Figure~\ref{fig:r-pk
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 17:15:32 2024
+% Mon Jan 29 20:40:45 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -829,7 +830,7 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 17:15:34 2024
+% Mon Jan 29 20:40:46 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
@@ -837,11 +838,11 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
   \hline
  & Goodness of fit, $\chi^2$ [$p$~value] & $W_1$ [$p$~value] \\ 
   \hline
-Thinning $\lambda_*$=$\lambda_{*a}$ & 0.009 [1.000] & 0.489 [0.992] \\ 
-  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.008 [1.000] & 0.323 [0.998] \\ 
-  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.009 [1.000] & 0.262 [1.000] \\ 
-  Inversion & 0.012 [1.000] & 0.640 [0.978] \\ 
-  Order statistics & 0.009 [1.000] & 0.408 [0.992] \\ 
+Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.470 [0.992] \\ 
+  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.010 [1.000] & 0.360 [0.996] \\ 
+  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.008 [1.000] & 0.460 [1.000] \\ 
+  Inversion & 0.010 [1.000] & 0.608 [0.968] \\ 
+  Order statistics & 0.009 [1.000] & 0.506 [1.000] \\ 
    \hline
 \end{tabular}
 }
@@ -851,7 +852,7 @@ Thinning $\lambda_*$=$\lambda_{*a}$ & 0.009 [1.000] & 0.489 [0.992] \\
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Jan 29 17:15:34 2024
+% Mon Jan 29 20:40:46 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
