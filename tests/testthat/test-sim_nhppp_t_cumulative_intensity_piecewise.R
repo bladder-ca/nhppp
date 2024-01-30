@@ -7,7 +7,7 @@ test_that("nhppp_t_piecewise_regular_vec() works", {
     only1 = FALSE
   ))
 
-  check_ppp_sample_validity(Z0[1, ], t_min = 100, t_max = 110)
+  check_ppp_sample_validity(Z0[1, !is.na(Z0[1, ])], t_min = 100, t_max = 110)
 
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
