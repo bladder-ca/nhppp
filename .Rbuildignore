@@ -4,3 +4,4 @@
 ^\.gitignore$
 ^benchmarks$
 ^vignettes/articles$
+^\.github$
