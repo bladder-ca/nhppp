@@ -5,3 +5,5 @@
 ^benchmarks$
 ^vignettes/articles$
 ^\.github$
+^cran-comments\.md$
+^README\.Rmd$
