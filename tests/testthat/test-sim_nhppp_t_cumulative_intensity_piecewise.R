@@ -1,6 +1,6 @@
-test_that("vdraw_piecewise_regular() works", {
+test_that("vppp_regularstep() works", {
   # 1 row matrix
-  expect_no_error(Z0 <- vdraw_piecewise_regular(
+  expect_no_error(Z0 <- vppp_regularstep(
     Lambda_matrix = matrix(1:5, nrow = 1),
     range_t = c(100, 110),
     tol = 10^-6,
@@ -15,7 +15,7 @@ test_that("vdraw_piecewise_regular() works", {
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
 
-  expect_no_error(Z <- vdraw_piecewise_regular(
+  expect_no_error(Z <- vppp_regularstep(
     Lambda_matrix = L,
     range_t = c(100, 110),
     tol = 10^-6,
@@ -28,7 +28,7 @@ test_that("vdraw_piecewise_regular() works", {
       check_ppp_sample_validity(tmp, t_min = 100, t_max = 110)
     }
   }
-  expect_no_error(Z1 <- vdraw_piecewise_regular(
+  expect_no_error(Z1 <- vppp_regularstep(
     Lambda_matrix = L,
     range_t = c(100, 110),
     tol = 10^-6,
