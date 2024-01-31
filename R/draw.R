@@ -13,7 +13,7 @@
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
 #' @param range_t (vector, double) min and max of the time interval.
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
-#' @param only1 boolean, draw at most 1 event time
+#' @param atmost1 boolean, draw at most 1 event time
 #' @param atleast1 boolean, draw at least 1 event time in interval
 #'
 #' @return a vector of event times
@@ -25,11 +25,11 @@ draw <- function(
     Lambda_inv = NULL,
     range_t = c(0, 10),
     rng_stream = NULL,
-    only1 = FALSE,
+    atmost1 = FALSE,
     atleast1 = FALSE) {
   if (!is.null(lambda)) {
     if (atleast1) {
-      func <- draw_zt_intensity
+      func <- ztdraw_intensity
     } else {
       func <- draw_intensity
     }
@@ -39,13 +39,13 @@ draw <- function(
       exp_maj = FALSE,
       range_t = range_t,
       rng_stream = rng_stream,
-      only1 = only1
+      atmost1 = atmost1
     ))
   }
 
   if (!is.null(Lambda)) {
     if (atleast1) {
-      func <- draw_zt_cumulative_intensity
+      func <- ztdraw_cumulative_intensity
     } else {
       func <- draw_cumulative_intensity_inversion
     }
@@ -55,7 +55,7 @@ draw <- function(
       range_t = range_t,
       range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
       rng_stream = rng_stream,
-      only1 = only1
+      atmost1 = atmost1
     ))
   }
 }

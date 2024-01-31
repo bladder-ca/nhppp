@@ -11,7 +11,7 @@ draw_cumulative_intensity_orderstats(
   range_t = c(0, 10),
   range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
   rng_stream = NULL,
-  only1 = FALSE
+  atmost1 = FALSE
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ which is the integrated rate of the NHPPP}
 
 \item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}.}
 
-\item{only1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,

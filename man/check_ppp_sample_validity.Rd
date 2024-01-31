@@ -9,8 +9,8 @@ check_ppp_sample_validity(
   t_min,
   t_max = NULL,
   size = NULL,
-  only1 = FALSE,
-  zero_truncated = FALSE
+  atmost1 = FALSE,
+  atleast1 = FALSE
 )
 }
 \arguments{
@@ -22,9 +22,9 @@ check_ppp_sample_validity(
 
 \item{size}{(double) optional: the size of the vector}
 
-\item{only1}{(boolean) optional: at most one sample returned}
+\item{atmost1}{(boolean) optional: at most one sample returned}
 
-\item{zero_truncated}{(boolean) optional: at least one sample returned}
+\item{atleast1}{(boolean) optional: at least one sample returned}
 }
 \value{
 None

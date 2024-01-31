@@ -10,7 +10,7 @@ draw_intensity_step(
   lambda_maj_vector = lambda(1:10),
   times_vector = 0:10,
   rng_stream = NULL,
-  only1 = FALSE
+  atmost1 = FALSE
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ of constant rates:
 
 \item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 
-\item{only1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, draw at most 1 event time}
 }
 \value{
 a vector of event times (t_); if no events realize,

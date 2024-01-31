@@ -10,7 +10,7 @@
 #' @param exp_maj (boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`
 #' @param range_t (vector, double) min and max of the time interval.
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
-#' @param only1 boolean, draw at most 1 event time
+#' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
@@ -23,7 +23,7 @@ draw_intensity <- function(lambda,
                            exp_maj = FALSE,
                            range_t = c(0, 10),
                            rng_stream = NULL,
-                           only1 = FALSE) {
+                           atmost1 = FALSE) {
   if (is.null(lambda_maj)) {
     alpha <- stats::optimize(
       f = function(x) lambda(x),
@@ -40,14 +40,14 @@ draw_intensity <- function(lambda,
   }
 
   if (isTRUE(exp_maj)) {
-    nhppp_t <- draw_intensity_loglinear
+    nhppp_t <- draw_sc_loglinear
     link <- exp
   } else {
-    nhppp_t <- draw_intensity_linear
+    nhppp_t <- draw_sc_linear
     link <- identity
   }
 
-  candidate_times <- nhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, only1 = FALSE)
+  candidate_times <- nhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, atmost1 = FALSE)
   num_candidates <- length(candidate_times)
   if (num_candidates == 0) {
     return(candidate_times)
@@ -57,7 +57,7 @@ draw_intensity <- function(lambda,
   if (!all(acceptance_prob <= 1 + 10^-6)) {
     stop("lambda > lambda_maj\n")
   }
-  if (only1) {
+  if (atmost1) {
     t <- candidate_times[u < acceptance_prob][1]
     if (is.na(t)) {
       t <- numeric(0)

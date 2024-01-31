@@ -12,7 +12,7 @@
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
-#' @param only1 boolean, draw at most 1 event time
+#' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
@@ -24,9 +24,9 @@ draw_intensity_step <- function(lambda,
                                 lambda_maj_vector = lambda(1:10),
                                 times_vector = 0:10,
                                 rng_stream = NULL,
-                                only1 = FALSE) {
+                                atmost1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
-  candidate_times <- ppp_t_step(rates_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, only1 = FALSE)
+  candidate_times <- draw_sc_step(lambda_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, atmost1 = FALSE)
   num_candidates <- length(candidate_times)
   if (num_candidates == 0) {
     return(candidate_times)
@@ -39,7 +39,7 @@ draw_intensity_step <- function(lambda,
       xout = candidate_times, method = "constant", rule = 2, f = 0
     )$y
   if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
-  if (only1) {
+  if (atmost1) {
     t <- candidate_times[u < acceptance_prob][1]
     if (is.na(t)) {
       t <- numeric(0)

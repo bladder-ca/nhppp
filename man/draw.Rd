@@ -12,7 +12,7 @@ draw(
   Lambda_inv = NULL,
   range_t = c(0, 10),
   rng_stream = NULL,
-  only1 = FALSE,
+  atmost1 = FALSE,
   atleast1 = FALSE
 )
 }
@@ -32,7 +32,7 @@ which is the integrated rate of the NHPPP}
 
 \item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 
-\item{only1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, draw at most 1 event time}
 
 \item{atleast1}{boolean, draw at least 1 event time in interval}
 }

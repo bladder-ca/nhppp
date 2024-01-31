@@ -269,12 +269,12 @@ Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the i
 \textbf{while} {$t <b  \ \& \  |\mathcal{Z}| < k$} \textbf{do}.
 \end{center}
 
-The package's \fct{ppp\_t} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \texttt{range\_t} is a two-values vector with the bounds $a, b$. The optional \texttt{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \texttt{only1} to \texttt{TRUE} from its default value of \texttt{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
+The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{atmost1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
 
 <<demo-pppt>>=
 library("nhppp")
 library("rstream")
-ppp_t(range_t = c(0, 10), rate = 1, tol = 10^-6, only1 = FALSE)
+ppp_sequential(range_t = c(0, 10), rate = 1, tol = 10^-6, atmost1 = FALSE)
 @
 
 All \pkg{nhppp} functions can accept a user provided random number stream object via the \texttt{rng\_stream} option.
@@ -282,8 +282,8 @@ All \pkg{nhppp} functions can accept a user provided random number stream object
 <<demo-pppt-rstream>>=
 library("rstream")
 S <- new("rstream.mrg32k3a")
-ppp_t(
-  range_t = c(0, 10), rate = 1, tol = 10^-6, only1 = FALSE,
+ppp_sequential(
+  range_t = c(0, 10), rate = 1, tol = 10^-6, atmost1 = FALSE,
   rng_stream = S
 )
 @
@@ -298,10 +298,10 @@ Algorithm~\ref{alg:PPP_order_stats} first draws the number of events in $(a, b]$
 \end{center}
 
 
-The \fct{ppp\_t\_orderstat} function implements constant-rate sampling via the order-statistics algorithm.
+The \fct{ppp\_orderstat} function implements constant-rate sampling via the order-statistics algorithm.
 
-<<demo-ppp_t_orderstat>>=
-ppp_t_orderstat(range_t = c(3.14, 6.28), rate = 1, only1 = FALSE)
+<<demo-ppp_orderstat>>=
+ppp_orderstat(range_t = c(3.14, 6.28), rate = 1, atmost1 = FALSE)
 @
 
 \subsection{Sampling conditional on observing at least $m$ events}\label{sec:PPP_order_stats}
@@ -315,9 +315,9 @@ To sample exactly $m$ events, change line 1 of Algorithm~\ref{alg:PPP_conditiona
 $N \gets m$.
 \end{center}
 
-Function \fct{ztppp\_t} simulates times conditional on drawing at least one event - i.e., setting $m=1$ in Algorithm~\ref{alg:PPP_conditional} to sample from a zero truncated Poisson distribution in line 1.
-<<demo-ztppp_t>>=
-ztppp_t(range_t = c(0, 10), rate = 0.001, only1 = FALSE)
+Function \fct{ztppp} simulates times conditional on drawing at least one event - i.e., setting $m=1$ in Algorithm~\ref{alg:PPP_conditional} to sample from a zero truncated Poisson distribution in line 1.
+<<demo-ztppp>>=
+ztppp(range_t = c(0, 10), rate = 0.001, atmost1 = FALSE)
 @
 
 Function \fct{ppp\_n} simulates times conditional on drawing exactly $m$ events.
@@ -338,12 +338,12 @@ Li <- function(z) sqrt(2 * z)
 
 draw(
   lambda = l, lambda_maj = l(10), range_t = c(5, 10),
-  only1 = FALSE, atleast1 = FALSE
+  atmost1 = FALSE, atleast1 = FALSE
 ) |> head(n = 20)
 
 draw(
   Lambda = L, Lambda_inv = Li, range_t = c(5, 10),
-  only1 = FALSE, atleast1 = FALSE
+  atmost1 = FALSE, atleast1 = FALSE
 ) |> head(n = 20)
 @
 
@@ -365,7 +365,7 @@ on average. Thus, the closer $\lambda_*(t)$ is to $\lambda(t)$, the more efficie
 
 In practice, $\lambda_*(t)$ can be chosen as one of the special cases in Section~\ref{sec:special_cases}, for which we have fast sampling algorithms. For example, it can be a piecewise constant majorizer. Algorithm~\ref{alg:lambda_majorizer} in Appendix~\ref{app:piecewise_majorizer} can be automatically generate a piecewise constant majorizer function for the general case of a $K$-Lipschitz continuous intensity function.
 
-The \pkg{nhppp} package has two functions that sample from time-varying intensity functions. The first function, \fct{draw\_intensity}, expects a user-provided linear ($\lambda_*(t) = \alpha + \beta t$) or log-linear ($\lambda_*(t) = e^{\alpha + \beta t}$) majorizer function.
+The \pkg{nhppp} package has functions that sample from time-varying intensity functions. The first function, \fct{draw\_intensity}, expects a user-provided linear ($\lambda_*(t) = \alpha + \beta t$) or log-linear ($\lambda_*(t) = e^{\alpha + \beta t}$) majorizer function.
 
 <<demo-draw_intensity>>=
 lambda_fun <- function(t) exp(0.02 * t)
@@ -373,18 +373,18 @@ lambda_fun <- function(t) exp(0.02 * t)
 draw_intensity(
   lambda = lambda_fun, # linear majorizer
   lambda_maj = c(intercept = 1.01, slope = 0.03),
-  exp_maj = FALSE, range_t = c(0, 10), only1 = FALSE
+  exp_maj = FALSE, range_t = c(0, 10), atmost1 = FALSE
 )
 
 draw_intensity(
   lambda = lambda_fun, # log-linear majorizer
   lambda_maj = c(intercept = 0.01, slope = 0.03),
-  exp_maj = TRUE, range_t = c(0, 10), only1 = FALSE
+  exp_maj = TRUE, range_t = c(0, 10), atmost1 = FALSE
 )
 @
 
 
-The second function, \fct{draw\_intensity\_piecewise}, expects a user-provided piecewise linear majorizer
+The second function, \fct{draw\_intensity\_step}, expects a user-provided piecewise linear majorizer
 \begin{align*}
     \lambda_*(t) = \begin{cases}
     \lambda_1 &\textrm{ for } t \in [a_1, b_1) = [a, b_1), \\
@@ -397,12 +397,12 @@ The second function, \fct{draw\_intensity\_piecewise}, expects a user-provided p
 which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{m=1}^M)$ and a vector of length $M$ with the values $[\lambda_m]_{m=1}^M$ in each subinterval of $(a, b]$. For example, the following code splits the interval $(0, 10]$ into $M=10$ subintervals of length one. Because \fct{lambda\_fun} is strictly increasing, its value at the upper bound of each subinterval is the supremum of the interval (Appendix~\ref{app:piecewise_majorizer}, Algorithm~\ref{alg:lambda_majorizer}).
 
 
-<<demo-draw_intensity_piecewise>>=
-draw_intensity_piecewise(
+<<demo-draw_intensity_step>>=
+draw_intensity_step(
   lambda = lambda_fun,
   lambda_maj_vector = lambda_fun(1:10), # 1:10 (10 intensity values)
   times_vector = 0:10, # 0:10 (11 interval bounds)
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
@@ -422,7 +422,7 @@ draw_cumulative_intensity_inversion(
   Lambda_inv = Lambda_inv_fun,
   range_t = c(5, 10.5),
   range_L = Lambda_fun(c(5, 10.5)),
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
@@ -449,23 +449,23 @@ $N \gets N \sim \mathrm{TruncatedPoisson}_{N \ge m}\big(\Lambda(b) - \Lambda(a)\
 
 
 Function \fct{draw\_cumulative\_intensity\_orderstats} works with a cumulative intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, if available.
-Function \fct{draw\_zt\_cumulative\_intensity} conditions that at least one event is sampled in the interval. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost.
+Function \fct{ztdraw\_cumulative\_intensity} conditions that at least one event is sampled in the interval. If the inverse function is not available (argument \texttt{Lambda\_inv = NULL}), the Brent bisection algorithm is used to invert $\Lambda(t)$ numerically, at a performance cost.
 
 <<demo-draw_cumulative_intensity_orderstats>>=
 draw_cumulative_intensity_orderstats(
   Lambda = Lambda_fun,
   Lambda_inv = Lambda_inv_fun,
   range_t = c(4.1, 7.6),
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
-<<demo-draw_zt_cumulative_intensity>>=
-draw_zt_cumulative_intensity(
+<<demo-ztdraw_cumulative_intensity>>=
+ztdraw_cumulative_intensity(
   Lambda = Lambda_fun,
   Lambda_inv = Lambda_inv_fun,
   range_t = c(4.1, 7.6),
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
@@ -479,18 +479,32 @@ The \pkg{nhppp} package implements several special cases where the intensity fun
 
 \subsection{Sampling a piecewise constant NHPPP}\label{sec:sample-nhppp-pc}
 
-Function {\fct{sim\_ppp\_piecewise}} samples a piecewise constant intensity function based on Algorithm~\ref{alg:NHPPP_inversion}.
-<<demo-ppp_t_piecewise>>=
-ppp_t_piecewise(
-  rates_vector = 1:5, times_vector = 0:5, only1 = FALSE,
-  zero_truncated = FALSE
+Functions \fct{draw\_sc\_step} and \fct{draw\_sc\_step\_regular} sample piecewise constant intensity functions based on Algorithm~\ref{alg:NHPPP_inversion}. The first can work with unequal-length subintervals $(a_m, b_m]$. The second results in a small computational time improvement when all subintervals are of equal length.
+<<demo-draw_sc_step>>=
+draw_sc_step(
+  lambda_vector = 1:5, times_vector = c(0.5, 1, 2.4, 3.1, 4.9, 5.9),
+  atmost1 = FALSE, atleast1 = FALSE
+)
+
+draw_sc_step_regular(
+  lambda_vector = 1:5, range_t = c(0.5, 5.9), atmost1 = FALSE,
+  atleast1 = FALSE
 )
 @
 
 
+Function \fct{vdraw\_sc\_step\_regular} is a vectorized version of \fct{draw\_sc\_step\_regular}. It returns a matrix with one event series per row, and as many columns as the maximum number of events across all draws.
+
+<<demo-vdraw_sc_step_regular>>=
+vdraw_sc_step_regular(
+  lambda_matrix = matrix(runif(20), ncol = 5), range_t = c(1, 4),
+  atmost1 = FALSE
+)
+@
+
 \subsection{Sampling NHPPPs with linear and log-linear intensities}\label{sec:sample-nhppp-special}
 
-Functions \fct{draw\_intensity\_linear} and \fct{draw\_zt\_intensity\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{only1}) returns the first event only.
+Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{atmost1}) returns the first event only.
 \begin{align*}
     \lambda(t) =
     \begin{cases}
@@ -499,18 +513,18 @@ Functions \fct{draw\_intensity\_linear} and \fct{draw\_zt\_intensity\_linear} sa
     \end{cases}.
 \end{align*}
 
-<<demo-zt-draw_intensity_linear>>=
-draw_intensity_linear(
+<<demo-zt-draw_sc_linear>>=
+draw_sc_linear(
   alpha = 3, beta = -0.5, range_t = c(0, 10),
-  only1 = FALSE
+  atmost1 = FALSE
 )
-draw_zt_intensity_linear(
+ztdraw_sc_linear(
   alpha = 0.5, beta = 0.2, range_t = c(0, 10),
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
-An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_loglinear}) samples from log-linear intensity functions
+An analogous set of functions (\fct{[nhppp|ztnhppp]\_sc\_loglinear}) samples from log-linear intensity functions
 
 \begin{align*}
     \lambda(t) =
@@ -520,17 +534,17 @@ An analogous set of functions (\fct{[nhppp|ztnhppp]\_t\_intensity\_loglinear}) s
     \end{cases}.
 \end{align*}
 The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as described in~\citet{lewis1976linear}. Example usage follows.
-<<demo-draw_intensity_loglinear>>=
-draw_intensity_loglinear(
+<<demo-draw_sc_loglinear>>=
+draw_sc_loglinear(
   alpha = 1, beta = -0.02, range_t = c(8, 10),
-  only1 = FALSE
+  atmost1 = FALSE
 )
 @
 
-<<demo-draw_zt_intensity_loglinear>>=
-draw_zt_intensity_loglinear(
-  alpha = 1, beta = -0.02, range_t = c(5, 10),
-  only1 = FALSE
+<<demo-ztdraw_sc_loglinear>>=
+ztdraw_sc_loglinear(
+  alpha = 1, beta = -0.02, range_t = c(9.8, 10),
+  atmost1 = FALSE
 )
 @
 
@@ -552,12 +566,13 @@ The claimed advantage of \pkg{nhppp} over the existing packages is that
 \item it samples from the target NHPPP and not from a numerical approximation thereof, e.g., as \pkg{IndTestPP} does.
 \item It can  sample conditional on observing at least one event in the interval, which no other package implement.
 \item It accepts user-provided random number stream objects, which is useful for implementing simulation variance reduction techniques such as common random numbers~\citep{wright1979crn} and antithetic variates~\citep{hammersley1956av}.
-\item It is fast, even though it is currently implemented primarily in \proglang{R}-only code. It has specialized functions to leverage additional information about the process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage. It also includes a vectorized function, \fct{vdraw\_intensity\_piecewise}, which draws from piecewise constant intensity functions. More functions will be vectorized in future releases.
+\item It is fast, even though it is currently implemented primarily in \proglang{R}-only code. It has specialized functions to leverage additional information about the process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage. It also includes a vectorized function, \fct{vdraw\_sc\_step\_regular}, which draws from piecewise constant intensity functions.%
+\footnote{More functions will be vectorized in future releases.}
 \end{itemize}
 
 \input{table/tab_other_R_packages}
 
-
+\newpage
 \section{Illustrations} \label{sec:illustrations}
 
 Depending on the application, we may have access to the intensity function
@@ -575,7 +590,6 @@ Consider the example
 \end{equation}
 of a sinusoidal intensity function $\lambda(t)$ scaled to have an exponential amplitude and one of its antiderivatives $\Lambda(t)$, with such a constant term that $\Lambda(0)=0$.  For the numerical study we set $r=0.2$, $w=1$, and $t \in (0, 6\pi]$. There is no  analytic inverse function for this example.
 However, we can precompute \fct{Li}, a good numerical approximation to $\Lambda^{-1}(z)$. We will use it in Section~\ref{sec:example-time-performance} to compare the time performance of functions that use the inversion and order statistics algorithms when $\Lambda^{-1}$ is available versus not.
-\newpage
 <<example-functions>>=
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
 L <- function(t) {
@@ -597,7 +611,7 @@ K_lipschitz <- abs_l_prime_fun(6 * pi)
 <<example-majorizers, echo=FALSE, include=FALSE>>=
 M <- 20
 t_breaks <- seq(0, 6 * pi, length.out = M + 1)
-l_m <- get_piecewise_linear_majorizer(
+l_m <- get_step_majorizer(
   fun = l, breaks = t_breaks,
   is_monotone = FALSE, K = K_lipschitz
 )
@@ -662,13 +676,14 @@ The third, $\lambda_{*c}(t)$, shown as a thicker black line, is a tighter piecew
 majorizer is
 $\Sexpr{pprint(L(6*pi)/sum(l_star2(t_breaks[1:M])*(6*pi / M)), 3) }$.
 
+\newpage
 \subsection{Simulation functions and algorithms}\label{sec:methods-sim}
 
-We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $\Sexpr{n_simulations}$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware (Apple M1 Max laptop with 64 megabytes of random access memory).
+We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $\Sexpr{n_simulations}$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware.
 
 From the \pkg{nhppp} package we use
 \begin{enumerate}
-\item  two functions that take as argument the intensity function and are based on Algorithm~\ref{alg:NHPPP_thinning} (thinning): \fct{draw\_intensity}, which uses linear majorizers such as $\lambda_{*a}$, and \fct{draw\_intensity\_piecewise}, which uses piecewise constant majorizers such as $\lambda_{*b}$ and $\lambda_{*c}$ in the example.
+\item  two functions that take as argument the intensity function and are based on Algorithm~\ref{alg:NHPPP_thinning} (thinning): \fct{draw\_intensity}, which uses linear majorizers such as $\lambda_{*a}$, and \fct{draw\_intensity\_step}, which uses piecewise constant majorizers such as $\lambda_{*b}$ and $\lambda_{*c}$ in the example.
 \item  Function \fct{draw\_cumulative\_intensity\_inversion}, which takes as argument the cumulative intensity function $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_inversion} (time transformation/inversion), and
 \item  function \fct{draw\_cumulative\_intensity\_orderstats}, which also uses $\Lambda(t)$ and is based on Algorithm~\ref{alg:NHPPP_order_stats} (order statistics).
 \end{enumerate}
@@ -777,31 +792,31 @@ simulate_nhppp_pkg <- function() {
     lambda = l,
     lambda_maj = l(6 * pi),
     range_t = c(0, 6 * pi),
-    only1 = FALSE
+    atmost1 = FALSE
   )
-  Thinning_star <- nhppp::draw_intensity_piecewise(
+  Thinning_star <- nhppp::draw_intensity_step(
     lambda = l,
     lambda_maj_vector = l_star(t_breaks[1:M]),
     times_vector = t_breaks,
-    only1 = FALSE
+    atmost1 = FALSE
   )
-  Thinning_star2 <- nhppp::draw_intensity_piecewise(
+  Thinning_star2 <- nhppp::draw_intensity_step(
     lambda = l,
     lambda_maj_vector = l_star2(t_breaks[1:M]),
     times_vector = t_breaks,
-    only1 = FALSE
+    atmost1 = FALSE
   )
   Inversion <- nhppp::draw_cumulative_intensity_inversion(
     Lambda = L,
     Lambda_inv = Li, # numbers same with this NULL
     range_t = c(0, 6 * pi),
-    only1 = FALSE
+    atmost1 = FALSE
   )
   OrderStats <- nhppp::draw_cumulative_intensity_orderstats(
     Lambda = L,
     Lambda_inv = Li, # numbers same with this NULL
     range_t = c(0, 6 * pi),
-    only1 = FALSE
+    atmost1 = FALSE
   )
   return(list(
     "Thinning l_*=l_max" = Thinning_const,
@@ -1171,44 +1186,47 @@ epdf_r_pkg_times <- gridExtra::grid.arrange(
 
 \subsection{Time performance}\label{sec:example-time-performance}
 
+\subsubsection{Time performance of nonvectorized functions}\label{sec:nonvectorized-functions}
+
 To indicate time performance, we benchmarked functions by recording execution times when drawing a series of points (Figure~\ref{fig:comptimes_all_samples}). We also benchmarked functions for drawing the first-occurring event, because \pkg{nhppp} functions can sample the first time more efficiently when the inversion algorithm is used (Figure~\ref{fig:comptimes_one_sample}).
 
 We provided functions with the arguments they need to run fastest. For example, functions that use the inversion or order statistics algorithm execute faster when the inverse function $\Lambda^{-1}(z)$ is provided, rather than numerically calculated, as shown in both Figures for the \pkg{nhppp} package. (Functions in other packages do not take $\Lambda(t)$ and $\Lambda^{-1}(z)$ arguments.) The fastest functions are \pkg{nhppp} functions that rely on the inversion or order statistics algorithms given $\Lambda^{-1}(z)$.
 
-According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{draw\_intensity}, the function that uses constant majorizers, has a more-efficient implementation than \fct{draw\_intensity\_piecewise}, the function that use piecewise constant majorizers. This happens to be the case in the example, and is not universally true.
+According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{draw\_intensity}, the function that uses constant majorizers, has a different implementation than \fct{draw\_intensity\_step}, the function that use piecewise constant majorizers. \fct{draw\_intensity} happens to be faster in this example, but this is not always the case.
 
-\pkg{nhppp} functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. To see exactly why, refer to the algorithm descriptions. This efficiency does not appear to be implemented in the other packages.
+In \pkg{nhppp}, functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. This efficiency does not appear to be implemented in the other packages.
 
-In \proglang{R}, `vectorized' computation, where operations are done in columns, is faster than using \code{for} loops or \fct{apply} functions. All  \pkg{nhppp} includes a vectorized version
+
+
 
 <<compute-times, echo=FALSE, include=FALSE, cache=TRUE>>=
 comptimes_all_samples <- bench::mark(
   "(1a) nhppp: thinning (majorizer a)" = nhppp::draw_intensity(
-    lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi), only1 = FALSE
+    lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi), atmost1 = FALSE
   ),
-  "(1b) nhppp: thinning (majorizer b)" = nhppp::draw_intensity_piecewise(
+  "(1b) nhppp: thinning (majorizer b)" = nhppp::draw_intensity_step(
     lambda = l, lambda_maj_vector = l_star(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = FALSE
+    times_vector = t_breaks, atmost1 = FALSE
   ),
-  "(1c) nhppp: thinning (majorizer c)" = nhppp::draw_intensity_piecewise(
+  "(1c) nhppp: thinning (majorizer c)" = nhppp::draw_intensity_step(
     lambda = l, lambda_maj_vector = l_star2(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = FALSE
+    times_vector = t_breaks, atmost1 = FALSE
   ),
   "(1d) nhppp: inversion (with inverse)" =
     nhppp::draw_cumulative_intensity_inversion(
-      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), only1 = FALSE
+      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), atmost1 = FALSE
     ),
   "(1e) nhppp: inversion (no inverse)" =
     nhppp::draw_cumulative_intensity_inversion(
-      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), only1 = FALSE
+      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), atmost1 = FALSE
     ),
   "(1f) nhppp: order statistics (with inverse)" =
     nhppp::draw_cumulative_intensity_orderstats(
-      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), only1 = FALSE
+      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), atmost1 = FALSE
     ),
   "(1g) nhppp: order statistics (no inverse)" =
     nhppp::draw_cumulative_intensity_orderstats(
-      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), only1 = FALSE
+      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), atmost1 = FALSE
     ),
   "(2a) reda: inversion" = reda::simEvent(
     rho = l, origin = 0,
@@ -1239,31 +1257,31 @@ comptimes_all_samples <- bench::mark(
 
 comptimes_one_sample <- bench::mark(
   "(1a) nhppp: thinning (majorizer a)" = nhppp::draw_intensity(
-    lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi), only1 = TRUE
+    lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi), atmost1 = TRUE
   ),
-  "(1b) nhppp: thinning (majorizer b)" = nhppp::draw_intensity_piecewise(
+  "(1b) nhppp: thinning (majorizer b)" = nhppp::draw_intensity_step(
     lambda = l, lambda_maj_vector = l_star(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = TRUE
+    times_vector = t_breaks, atmost1 = TRUE
   ),
-  "(1c) nhppp: thinning (majorizer c)" = nhppp::draw_intensity_piecewise(
+  "(1c) nhppp: thinning (majorizer c)" = nhppp::draw_intensity_step(
     lambda = l, lambda_maj_vector = l_star2(t_breaks[1:M]),
-    times_vector = t_breaks, only1 = TRUE
+    times_vector = t_breaks, atmost1 = TRUE
   ),
   "(1d) nhppp: inversion (with inverse)" =
     nhppp::draw_cumulative_intensity_inversion(
-      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), only1 = TRUE
+      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), atmost1 = TRUE
     ),
   "(1e) nhppp: inversion (no inverse)" =
     nhppp::draw_cumulative_intensity_inversion(
-      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), only1 = TRUE
+      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), atmost1 = TRUE
     ),
   "(1f) nhppp: order statistics (with inverse)" =
     nhppp::draw_cumulative_intensity_orderstats(
-      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), only1 = TRUE
+      Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi), atmost1 = TRUE
     ),
   "(1g) nhppp: order statistics (no inverse)" =
     nhppp::draw_cumulative_intensity_orderstats(
-      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), only1 = TRUE
+      Lambda = L, Lambda_inv = NULL, range_t = c(0, 6 * pi), atmost1 = TRUE
     ),
   "(2a) reda: inversion" = reda::simEvent(
     rho = l, origin = 0,
@@ -1329,15 +1347,43 @@ plot_comptimes(comptimes_all_samples)
 plot_comptimes(comptimes_one_sample)
 @
 
+
+\newpage
+\subsubsection{Time performance of vectorized functions}\label{sec:vectorized-functions}
+
+<<vectorized-vs-not, include=FALSE, echo=FALSE, cache=TRUE>>=
+non_vec_fun <- function(x = n_simulations, atmost1 = FALSE) {
+  lapply(X = 1:x, FUN = function(x) draw_sc_step_regular(lambda_vector = l_star(t_breaks[1:M]), range_t = c(0, 6 * pi), atmost1 = atmost1))
+}
+Lmat <- matrix(rep(l_star(t_breaks[1:M]), n_simulations), nrow = n_simulations, byrow = TRUE)
+Lmat <- nhppp:::mat_cumsum_columns(Lmat)
+
+comptimes_vec <- bench::mark(
+  nonvectorized_all = non_vec_fun(x = n_simulations, atmost1 = FALSE),
+  vectorized_all = vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(0, 6 * pi), atmost1 = FALSE),
+  nonvectorized_one = non_vec_fun(x = n_simulations, atmost1 = TRUE),
+  vectorized_one = vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(0, 6 * pi), atmost1 = TRUE),
+  check = FALSE, filter_gc = TRUE,
+  max_iterations = n_simulations, memory = FALSE
+)
+@
+
+In \proglang{R}, `vectorized' computation, where operations are done in columns, is faster than using \code{for} loops or \fct{apply} functions. As of this writing, the only vectorized \pkg{nhppp} function is \fct{vdraw\_sc\_step\_regular}, which samples from an array of piecewise constant intensity functions provided that all constant-rate time intervals have equal length (are `regular'). It is the vectorized analogue of \fct{draw\_sc\_step\_regular}.
+
+We compared the execution speed of non-vectorized and vectorized functions for sampling $\Sexpr{n_simulations}$ times from the piecewise constant `b' majorizer ($\lambda_{*b}$) in Figure~\ref{fig:example-function-plot}.
+%
+When drawing only the earliest event, the vectorized function is approximately
+$\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) / as.numeric(comptimes_vec[[4,"median"]]), 0) }$ times faster than the non-vectorized function ($\Sexpr{pprint(as.numeric(comptimes_vec[[4,"median"]]) *10^6/n_simulations )} \mu s$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) *10^6/n_simulations )} \mu s$ per sample drawn.)
+%
+However, when drawing all events, the order changes: the vectorized function is approximately $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) / as.numeric(comptimes_vec[[1,"median"]]), 1) }$ times slower than the non-vectorized function ($\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) *10^3/n_simulations )} ms$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) *10^3/n_simulations )} ms$ per set of event times drawn.) The reversal in apparent performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
+$\Sexpr{pprint(Lmat[1,M], 2)}$.)
+
+
 %% -- Summary/conclusions/discussion -------------------------------------------
 
 \section{Summary and next developments} \label{sec:summary}
 
-The \pkg{nhppp} is developed to aid the simulation of NHPPPs from general intensity or cumulative intensity functions. It contains specialized functions to ensure speed.
-
-The next steps are a vectorized implementation of some functions, to allow fast simulation over vectors of arguments.
-
-A \proglang{C++} implementation is also forthcoming.
+The \pkg{nhppp} is developed to aid the simulation of NHPPPs from general intensity or cumulative intensity functions. Its claimed advantages are that (i) it has functions that can simulate correctly from a target density, not just from an approximation; (ii) can sample conditional on observing at least one event; (iii) can use user provided random number stream objects; and it is fast. The current version includes only one vectorized function, for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also porting a \proglang{C++} dynamically linked library that implements the algorithms and functions we described.
 
 
 %% -- Optional special unnumbered sections -------------------------------------
@@ -1360,6 +1406,8 @@ Packages
 \pkg{otinference}~{\Sexpr{utils::packageVersion("otinference")}}~\citep{otinference-package}, and
 \pkg{parallel}~{\Sexpr{utils::packageVersion("parallel")}}
 were used in the examples and the analyses.
+
+All computations were done on an Apple M1 Max machine with 64 megabytes of random access memory.
 %
 \proglang{R} itself
 and all aforementioned packages are available from the Comprehensive
@@ -1368,7 +1416,7 @@ and all aforementioned packages are available from the Comprehensive
 
 
 \section*{Acknowledgments}
-This work was funded from grant U01CA265750  from the National Cancer Institute.
+This work was funded from grant U01CA265750 from the National Cancer Institute.
 We thank the investigators of the Cancer Incidence and Surveillance Modeling Network (CISNET)
 Bladder Cancer Site Stavroula Chrysanthopoulou, Jonah Popp, Fernando Alarid-Escudero,
 Hawre Jalal, and David Garibay for useful discussions.
@@ -1400,9 +1448,9 @@ If $\lambda(t)$ is monotonic, the least upper bound (supremum) is always found a
 The algorithm should be started with a good partitioning of the time interval. In practice, it is generally easy to specify equispaced intervals that are fine enough and impose little computational penalty for the application.
 
 The \pkg{nhppp}
-function \fct{get\_piecewise\_linear\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_piecewise} and \fct{draw\_piecewise} expect the majorizer function values as an argument.
+function \fct{get\_step\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_step} and \fct{draw\_intensity\_step} expect the majorizer function values as an argument.
 <<app-majorizer>>=
-get_piecewise_linear_majorizer(
+get_step_majorizer(
   fun = abs, breaks = -5:5, is_monotone = FALSE,
   K = 1
 )
