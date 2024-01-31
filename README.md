@@ -77,3 +77,35 @@ nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
 #> [13] 6.68283108 6.76577784 7.12919141 7.29249262 7.38665270 7.92953383
 #> [19] 7.94791744 7.96591106
 ```
+
+## Function naming conventions
+
+1.  All functions whose name contains `ppp` sample from constant or
+    piecewise constant intensity functions, as described below:
+
+- Functions whose names start with `ppp_t_...` sample event times in an
+  interval with constant or piecewise constant (step) intensity
+  functions.
+
+- Function `ztppp_t()` samples one or more event times in an interval
+  with constant intensity, i.e., from zero-truncated Poisson process.
+
+- Functions `ppp_n()` and `ppp_next_n()` sample `n` and the next `n`
+  event times (without an upper interval limit).
+
+- Functions starting with `vppp` are vectorized.
+
+2.  All functions whose name starts with `draw` or `draw_zt` sample from
+    NHPPPs.
+
+- Functions with names starting with `draw_zt` sample at least one event
+  in the interval, i.e., from a zero-truncated NHPPP.
+
+- Functions with names starting with `draw_intensity[_majorizer]` expect
+  an intensity argument. The third part (`[_majorizer]`) denotes what,
+  if any, majorizer function is used.
+
+- Functions with names starting with
+  `draw_cumulative_intensity[_algorithm]` expect a cumulative
+  (integrated) intensity argument. The third part (`[_algorithm]`)
+  denotes the algorithm used, if more than one algorithms are pertinent.
