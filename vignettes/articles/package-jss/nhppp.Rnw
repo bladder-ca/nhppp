@@ -104,13 +104,13 @@ library("nhppp")
 options(
   prompt = "R> ", continue = "+  ", width = 70,
   useFancyQuotes = FALSE, out.extra = "",
-  cache = TRUE
+  cache = TRUE, cache.extra = rand_seed
 )
 # knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 set.seed(2024)
 
 # helper functions and options for the live report generation
-full_results <- FALSE
+full_results <- TRUE
 n_simulations <- 10^4
 n_bins_wasserstein <- NULL
 n_samples_wasserstein <- 1000
@@ -166,10 +166,10 @@ pprint <- function(x, digits = 2, use_lt = FALSE) {
 
 \section{Introduction} \label{sec:intro}
 
-It is often desirable to simulate series of events (stochastic point processes) so that the intensity of their occurrence varies over time. Examples include events such as the occurrence of death or occurrences of symptoms, infections, or tumors over a person's lifetime. The nonhomogeneous Poisson point process (NHPPP), which generalizes the simpler homogeneous-Poisson, Weibull, and Gompertz point processes, is a widely used model for such series of events. NHPPPs can model complicated event patterns given a suitable intensity function. They are therefore a very useful tool in statistical and mathematical model simulation.
+It is often desirable to simulate series of events (stochastic point processes) so that the intensity of their occurrence varies over time. Examples include events such as the occurrence of death and occurrences of symptoms, infections, or tumors over a person's lifetime. The nonhomogeneous Poisson point process (NHPPP), which generalizes the simpler homogeneous-Poisson, Weibull, and Gompertz point processes, is a widely used model for such series of events. NHPPPs can model complicated event patterns given a suitable intensity function. They are therefore useful in statistical and mathematical model simulation.
 
 A NHPPP has the properties that the number of events in all non-overlapping time intervals are independent random variables and that, within each time interval, the number of events is Poisson distributed. Thus an NHPPP is a memoryless point process. A large number of phenomena may reasonably conform with these properties.%
-\footnote{Other phenomena are not well described by a memoryless point process. An example is new infection events during an epidemic wave, where the number of new infections over time depends on the number of infections in the previous time interval.  Thus, at least in its early phase, an epidemic wave may be better described by, e.g., self-exciting point processes that transiently increase the intensity function after a first event.}
+\footnote{Other phenomena are not well described by a memoryless point process. An example is new infection events during an epidemic wave, where the number of new infections over time depends on the number of infections in the previous time interval. At least in its early phase, an epidemic wave may be better described by, e.g., self-exciting point processes that transiently increase the intensity function after a first event.}
 
 The \pkg{nhppp} package in \proglang{R} contains functions for the simulation of NHPPPs over a one-dimensional carrier space, which we will take to represent time.
 
@@ -201,12 +201,12 @@ Assume that the next event after time $t_0$ happens at time $t_0 + X$. It follow
 \begin{equation}\label{eq:X_PPP}
 X \sim \text{Exponential}(\lambda),
 \end{equation}
-and that, over the compact interval $(a, b]$ the number of events is Poisson distributed
+and that the number of events is Poisson distributed over the compact interval $(a, b]$, i.e.,
 \begin{equation}\label{eq:N_PPP}
 N(a, b) \sim \text{Poisson}(\lambda (b-a)).
 \end{equation}
 
-Equation~\eqref{eq:X_PPP} generates the homogeneous Poisson point process ${Z_1 = t_0 + X_1, Z_2 = Z_1 + X_2, \dots}$, where $Z_i$ is the time of arrival of event $i$ and the inter-arrival times $X_i$ follow~\eqref{eq:X_PPP}. We will use $Z_{(i)}$ to denote the event $i$ when event are ordered in increasing time.
+Equation~\eqref{eq:X_PPP} generates the homogeneous Poisson point process ${Z_1 = t_0 + X_1, Z_2 = Z_1 + X_2, \dots}$, where $Z_i$ is the time of arrival of event $i$ and $X_i$ the inter-arrival times. We will use $Z_{(j)}$ to denote the event in position $j$ when events are ordered in increasing time.
 %
 Equation \eqref{eq:N_PPP} describes the corresponding (dual) counting process
 ${N_1 = N(t_0, Z_1)}, {N_2 = N(t_0, Z_2), \dots}$, where $N_i$ is the total number of events from time $t_0$ to time $Z_i$. The point process (the sequence $[Z_i]$ of event times) and the counting process (the sequence $[N_i]$ of cumulants) are two sides of the same coin.
@@ -276,11 +276,10 @@ Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the i
 
 \input{algorithms/alg_ppp_sequential}
 
-The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{atmost1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
+The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with zero or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{atmost1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
 
 <<demo-pppt>>=
 library("nhppp")
-library("rstream")
 ppp_sequential(range_t = c(0, 10), rate = 1, tol = 10^-6, atmost1 = FALSE)
 @
 
@@ -336,7 +335,7 @@ ppp_n(size = 4, range_t = c(0, 10))
 
 The \pkg{nhppp} package uses three well known general sampling algorithms, namely thinning, time transformation or inversion, and order-statistics. These algorithms are efficiently combined to sample from special cases, including cases where the intensity function is a piecewise constant, linear, or log-linear function of time, as described in Section~\ref{sec:sample-nhppp-special}.
 
-The thinning algorithm works with the intensity function $\lambda(t)$, which is commonly available. The inversion and order statistics algorithms have smaller computational cost than the thinning algorithm, but work with the integrated intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, which may not be easily available. The generic function \fct{draw} is a wrapper function that dispatches to specialized functions depending on the provided arguments. It is useful for general use but the specialized functions are usually faster.
+The thinning algorithm works with the intensity function $\lambda(t)$, which is commonly available. The inversion and order statistics algorithms have smaller computational cost than the thinning algorithm, but work with the integrated intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, which may not be easily available. The generic function \fct{draw} is a wrapper function that dispatches to specialized functions depending on the provided arguments. It is useful for general tasks but the specialized functions are probably faster.
 
 <<generic-function-example>>=
 l <- function(t) t
@@ -401,7 +400,7 @@ The second function, \fct{draw\_intensity\_step}, expects a user-provided piecew
     \lambda_M &\textrm{ for } t \in [a_M, b_M) = [a_M, b),
     \end{cases}
 \end{align*}
-which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{m=1}^M)$ and a vector of length $M$ with the values $[\lambda_m]_{m=1}^M$ in each subinterval of $(a, b]$. For example, the following code splits the interval $(0, 10]$ into $M=10$ subintervals of length one. Because \fct{lambda\_fun} is strictly increasing, its value at the upper bound of each subinterval is the supremum of the interval (Appendix~\ref{app:piecewise_majorizer}, Algorithm~\ref{alg:lambda_majorizer}).
+which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{m=1}^M)$ and a vector of length $M$ with the values $[\lambda_m]_{m=1}^M$ in each subinterval of $(a, b]$. For example, the following code splits the interval $(0, 10]$ into $M=10$ subintervals of length one. Because \fct{lambda\_fun} is strictly increasing, its value at the upper bound of each subinterval is the supremum of the interval. See Appendix~\ref{app:piecewise_majorizer}, Algorithm~\ref{alg:lambda_majorizer}, on how to automatically generate a piecewise constant majorizer for $K$-Lipschitz functions.
 
 
 <<demo-draw_intensity_step>>=
@@ -414,7 +413,7 @@ draw_intensity_step(
 @
 
 \subsection{The time transformation or inversion algorithm}\label{sec:inversion}
-Algorithm~\ref{alg:NHPPP_inversion} implements the time transformation or inversion algorithm from~\citet{Cinlar1975inversion} and also~\citet[par. 4.2]{cox1965theory}. As mentioned in Section~\ref{sec:properties}, strictly monotonic transformations of the carrier space (here, time) of a Poisson Point Process yield another Poisson Point Process. In equation~\eqref{eq:transform}, choosing the transformation $\tau = u(t) = \Lambda(t)$, so that $\der{u(t)}{t} = \lambda(t)$, results in $\rho(\tau) = 1$.
+Algorithm~\ref{alg:NHPPP_inversion} implements the time transformation or inversion algorithm from~\citet{Cinlar1975inversion} and~\citet[par. 4.2]{cox1965theory}. As mentioned in Section~\ref{sec:properties}, strictly monotonic transformations of the carrier space (here, time) of a Poisson Point Process yield another Poisson Point Process. In equation~\eqref{eq:transform}, choosing the transformation $\tau = u(t) = \Lambda(t)$, so that $\der{u(t)}{t} = \lambda(t)$, results in $\rho(\tau) = 1$.
 
 This means (proof sketched in~\citet[par. 4.2]{cox1965theory}) that we can sample points from a Poisson point process with intensity one over the interval $(\tau_a, \tau_b] = (\Lambda(a), \Lambda(b)]$. Via a similar argument, we transform event times sampled on the transformed scale back to the original scale using $g(t)=\Lambda^{-1}(\tau)$. The transformations $u(\cdot), g(\cdot)$ are not unique -- at least up to the group of affine transformations.
 
@@ -560,21 +559,21 @@ ztdraw_sc_loglinear(
 
 Table~\ref{tab:R-packages} lists five \proglang{R} packages that simulate from NHPPPs, including \pkg{nhppp}.
 
-Package \pkg{reda}~\citep{reda-package} focuses on recurrent event data analysis and can simulate NHPPPs with the inversion and the thinning algorithms using the \fct{simEvent} function. It can take function object arguments for $\lambda(t)$. When using the thinning algorithm, it takes a constant majorizer. For the inversion algorithm, it approximates $\Lambda(t)$ and its inverse numerically, at a computational cost.
+Package \pkg{reda}~\citep{reda-package} focuses on recurrent event data analysis and can simulate NHPPPs with the inversion and thinning algorithms using the \fct{simEvent} function. It can take function object arguments for $\lambda(t)$. When using the thinning algorithm, it takes a constant majorizer. For the inversion algorithm, it approximates $\Lambda(t)$ and its inverse numerically, at a computational cost.
 
 Package \pkg{simEd}~\citep{simEd-package} includes various functions for simulation education. Function \fct{thinning} implements the homonymous algorithm for drawing points from an NHPPP. Users can specify the intensity function and a piecewise constant or linear majorizer function.
 
 Package \pkg{IndTestPP}~\citep{IndTestPP-package} provides a framework for exploring the dependence between two or more realizations of point processes. It includes the ancillary function~\fct{simNHPc} for simulating NHPPPs with the inversion or thinning algorithms. The function's argument is a piecewise constant approximation of the intensity function via a vector of evaluations, each corresponding to unit length subintervals. This resolution may not be adequate to simulate processes that change fast over a unit time interval.
 
-Package \pkg{NHPoisson}~\citep{NHPoisson-jss, NHPoisson-package} fits NHPPP models to data and is not really geared towards mathematical simulation. Its \fct{simNHP.fun} function provides the ability for simulation-based inference via an implementation of the inversion algorithm. This function is designed to work with the package's inference machinery and is not practical to use for simulation. This is because the user has no direct control over the function's rescaling of the time axis.
+Package \pkg{NHPoisson}~\citep{NHPoisson-jss, NHPoisson-package} fits NHPPP models to data and is not really geared towards mathematical simulation. Its \fct{simNHP.fun} function provides the ability for simulation-based inference via an implementation of the inversion algorithm. This function is designed to work with the package's inference machinery and is not practical to use for simulation, because the user has no direct control over the function's rescaling of the time axis.
 
 The claimed advantage of \pkg{nhppp} over the existing packages is that
 \begin{itemize}
 \item it samples from the target NHPPP and not from a numerical approximation thereof, e.g., as \pkg{IndTestPP} does.
 \item It can  sample conditional on observing at least one event in the interval, which no other package implement.
 \item It accepts user-provided random number stream objects, which is useful for implementing simulation variance reduction techniques such as common random numbers~\citep{wright1979crn} and antithetic variates~\citep{hammersley1956av}.
-\item It is fast, even though it is currently implemented primarily in \proglang{R}-only code. It has specialized functions to leverage additional information about the process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage. It also includes a vectorized function, \fct{vdraw\_sc\_step\_regular}, which draws from piecewise constant intensity functions.%
-\footnote{More functions will be vectorized in future releases.}
+\item It is fast, even though it is currently implemented primarily in \proglang{R}-only code. It has specialized functions to leverage additional information about the point process, such as $\Lambda(t), \Lambda^{-1}(z)$, when available, which can result in faster simulation  use the cumulative intensity function and its inverse, often at a computational speed advantage. It also includes a vectorized function, \fct{vdraw\_sc\_step\_regular}, which draws from piecewise constant intensity functions.%
+\footnote{More functions will be vectorized in future releases of \pkg{nhppp}.}
 \end{itemize}
 
 \input{table/tab_other_R_packages}
@@ -789,7 +788,7 @@ performance_metrics_counts <- function(x, mu, digits = 3, tmp_seed = 123, B = 50
 }
 @
 
-The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts} and Figure~\ref{fig:ecdf-nhppp-pkg-counts} suggest excellent simulation performance.
+The results for the~\pkg{nhppp} functions in Figure~\ref{fig:ecdf-nhppp-pkg-counts} and Table~\ref{tab:nhppp-results-counts} suggest excellent simulation performance.
 
 <<simulate-nhppp-pkg, include=FALSE, echo=FALSE>>=
 simulate_nhppp_pkg <- function() {
@@ -1197,7 +1196,7 @@ To indicate time performance, we benchmarked functions by recording execution ti
 
 We provided functions with the arguments they need to run fastest. For example, functions that use the inversion or order statistics algorithm execute faster when the inverse function $\Lambda^{-1}(z)$ is provided, rather than numerically calculated, as shown in both Figures for the \pkg{nhppp} package. (Functions in other packages do not take $\Lambda(t)$ and $\Lambda^{-1}(z)$ arguments.) The fastest functions are \pkg{nhppp} functions that rely on the inversion or order statistics algorithms given $\Lambda^{-1}(z)$.
 
-According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{draw\_intensity}, the function that uses constant majorizers, has a different implementation than \fct{draw\_intensity\_step}, the function that use piecewise constant majorizers. \fct{draw\_intensity} happens to be faster in this example, but this is not always the case.
+According to~\eqref{eq:thinning-efficiency}, the thinning algorithm has higher efficiency, and is expected to execute faster, for majorizer functions that envelop the intensity function more closely. Observe that $\lambda_{*a} \succ \lambda_{*c}$ and $\lambda_{*b} \succ \lambda_{*c}$ in Figure~\ref{fig:example-function-plot}. As expected, the execution times are indeed shorter for majorizer `c' compared to `b' in Figures~\ref{fig:comptimes_all_samples} and~\ref{fig:comptimes_one_sample}. However, the execution times are longer with majorizer `c' compared to `a' because \fct{draw\_intensity}, the function that uses constant majorizers, and \fct{draw\_intensity\_step}, the function that use piecewise constant majorizers, are implemented differently. \fct{draw\_intensity} happens to be faster in this example, but this is not always true.
 
 In \pkg{nhppp}, functions that use the inversion or order statistics algorithms can exit earlier when only the first event is requested. This is not possible, however, for the thinning algorithm. This efficiency does not appear to be implemented in the other packages.
 
@@ -1377,9 +1376,9 @@ In \proglang{R}, `vectorized' computation, where operations are done in columns,
 We compared the execution speed of non-vectorized and vectorized functions for sampling $\Sexpr{n_simulations}$ times from the piecewise constant `b' majorizer ($\lambda_{*b}$) in Figure~\ref{fig:example-function-plot}.
 %
 When drawing only the earliest event, the vectorized function is approximately
-$\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) / as.numeric(comptimes_vec[[4,"median"]]), 0) }$ times faster than the non-vectorized function ($\Sexpr{pprint(as.numeric(comptimes_vec[[4,"median"]]) *10^6/n_simulations )} \mu s$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) *10^6/n_simulations )} \mu s$ per sample drawn.)
+$\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) / as.numeric(comptimes_vec[[4,"median"]]), 0) }$ times faster than the non-vectorized function (median $\Sexpr{pprint(as.numeric(comptimes_vec[[4,"median"]]) *10^6)} \mu s$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) *10^6 )} \mu s$ over $\Sexpr{n_simulations}$ simulations).
 %
-However, when drawing all events, the order changes: the vectorized function is approximately $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) / as.numeric(comptimes_vec[[1,"median"]]), 1) }$ times slower than the non-vectorized function ($\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) *10^3/n_simulations )} ms$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) *10^3/n_simulations )} ms$ per set of event times drawn.) The reversal in apparent performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
+However, when drawing all events, the order changes: the vectorized function is approximately $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) / as.numeric(comptimes_vec[[1,"median"]]), 1) }$ times slower than the non-vectorized function (median $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) *10^3)} ms$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) *10^3)} ms$ over $\Sexpr{n_simulations}$ simulations). The reversal in performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
 $\Sexpr{pprint(Lmat[1,M], 2)}$.)
 
 
@@ -1387,7 +1386,7 @@ $\Sexpr{pprint(Lmat[1,M], 2)}$.)
 
 \section{Summary and next developments} \label{sec:summary}
 
-The \pkg{nhppp} facilitates the simulation of NHPPPs from time-varying intensity or cumulative intensity functions. Its claim is that it (i) simulates correctly from a target density, not just from an approximation; (ii) samples conditional on observing at least one event in an interval; (iii) accomodates user provided random number stream objects; and (iv) is fast. The current version includes one vectorized function for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also linking our \proglang{C++} dynamic (shared) library that implements the algorithms and functions described here.
+The \pkg{nhppp} facilitates the simulation of NHPPPs from time-varying intensity or cumulative intensity functions. Its claim is that it (i) simulates correctly from a target density, not just from an approximation; (ii) samples conditional on observing at least one event in an interval; (iii) accomodates user provided random number stream objects; and (iv) is fast. The current version includes one vectorized function for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also linking our \proglang{C++} library that implements the algorithms and functions described here.
 
 
 %% -- Optional special unnumbered sections -------------------------------------
@@ -1405,6 +1404,7 @@ were used for automatic report generation. Packages
 \pkg{latex2exp}~{\Sexpr{utils::packageVersion("latex2exp")}}~\citep{latex2exp-package}
 were used for plot generation and \LaTeX formatting.
 Packages
+\pkg{nhppp}~{\Sexpr{utils::packageVersion("nhppp")}}, %~\citep{nhppp-package},
 \pkg{bench}~{\Sexpr{utils::packageVersion("bench")}}~\citep{bench-package},
 \pkg{rstream}~{\Sexpr{utils::packageVersion("rstream")}}~\citep{rstream-package},
 \pkg{otinference}~{\Sexpr{utils::packageVersion("otinference")}}~\citep{otinference-package}, and
@@ -1452,7 +1452,7 @@ If $\lambda(t)$ is monotonic, the least upper bound (supremum) is always found a
 The algorithm should be started with a good partitioning of the time interval. In practice, it is generally easy to specify equispaced intervals that are fine enough and impose little computational penalty for the application.
 
 The \pkg{nhppp}
-function \fct{get\_step\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{ppp\_t\_step} and \fct{draw\_intensity\_step} expect the majorizer function values as an argument.
+function \fct{get\_step\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{draw\_intensity\_step}, \fct{draw\_sc\_step}, \fct{draw\_sc\_step\_regular} and \fct{vdraw\_sc\_step\_regular} expect the majorizer function values as an argument.
 <<app-majorizer>>=
 get_step_majorizer(
   fun = abs, breaks = -5:5, is_monotone = FALSE,
@@ -1465,7 +1465,7 @@ get_step_majorizer(
 
 \newpage
 \section{Conditional sampling from NHPPPs} \label{app:conditional_sampling}
-Algorithm~\ref{alg:NHPPP_conditional} is a direct modification of the order statistics Algorithm~\ref{alg:NHPPP_order_stats} (Line 1 modified, in red font).
+Algorithm~\ref{alg:NHPPP_conditional} is a direct modification of the order statistics Algorithm~\ref{alg:NHPPP_order_stats} to sample conditional on observing $m$ events in $(a,b]$. (The modification is in line 1 in red font.)
 To sample exactly $m$ points, change line 1 of Algorithm~\ref{alg:NHPPP_conditional} to
 \begin{center}
 $N \gets m$.

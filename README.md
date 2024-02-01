@@ -80,32 +80,34 @@ nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
 
 ## Function naming conventions
 
-1.  All functions whose name contains `ppp` sample from constant or
-    piecewise constant intensity functions, as described below:
+1.  All functions whose name start with `ppp` or `ztppp` sample from
+    constant or piecewise constant intensity functions, as described
+    below:
 
-- Functions whose names start with `ppp_t_...` sample event times in an
-  interval with constant or piecewise constant (step) intensity
-  functions.
+- Functions whose names start with `ppp_[sequential|orderstats]` sample
+  event times in an interval with constant intensity functions with the
+  sequential and order statsitic
 
-- Function `ztppp_t()` samples one or more event times in an interval
-  with constant intensity, i.e., from zero-truncated Poisson process.
+- Function `ztppp()` samples one or more event times in an interval with
+  constant intensity, i.e., from zero-truncated Poisson process.
 
-- Functions `ppp_n()` and `ppp_next_n()` sample `n` and the next `n`
-  event times (without an upper interval limit).
+- Functions `ppp_n()` and `ppp_next_n()` sample `n` events in an
+  interval and the next `n` event times after a time `t0`.
 
-- Functions starting with `vppp` are vectorized.
-
-2.  All functions whose name starts with `draw` or `draw_zt` sample from
+2.  All functions whose name starts with `draw` or `vdraw` sample from
     NHPPPs.
 
 - Functions with names starting with `draw_zt` sample at least one event
   in the interval, i.e., from a zero-truncated NHPPP.
 
-- Functions with names starting with `draw_intensity[_majorizer]` expect
-  an intensity argument. The third part (`[_majorizer]`) denotes what,
-  if any, majorizer function is used.
+- Functions with names starting with
+  `[draw|draw_zt]_intensity[_majorizer]` expect an intensity argument.
+  The third part (`[_majorizer]`) denotes what, if any, majorizer
+  function is used.
 
 - Functions with names starting with
-  `draw_cumulative_intensity[_algorithm]` expect a cumulative
+  `[draw|draw_zt]_cumulative_intensity[_algorithm]` expect a cumulative
   (integrated) intensity argument. The third part (`[_algorithm]`)
   denotes the algorithm used, if more than one algorithms are pertinent.
+
+- Functions with names starting with `vdraw` are vectorized.
