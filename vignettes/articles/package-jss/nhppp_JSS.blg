@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: nhppp_JSS.aux
+The style file: jss.bst
+Database file #1: refs.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--can't use both volume and number fields in hammersley1956av
+You've used 22 entries,
+            3215 wiz_defined-function locations,
+            784 strings with 9028 characters,
+and the built_in function-call counts, 18021 in all, are:
+= -- 1735
+> -- 404
+< -- 20
++ -- 154
+- -- 130
+* -- 1227
+:= -- 2244
+add.period$ -- 84
+call.type$ -- 22
+change.case$ -- 146
+chr.to.int$ -- 23
+cite$ -- 23
+duplicate$ -- 1868
+empty$ -- 1491
+format.name$ -- 190
+if$ -- 3667
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 203
+newline$ -- 128
+num.names$ -- 90
+pop$ -- 897
+preamble$ -- 1
+purify$ -- 130
+quote$ -- 0
+skip$ -- 413
+stack$ -- 0
+substring$ -- 1616
+swap$ -- 484
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 189
+warning$ -- 1
+while$ -- 125
+width$ -- 0
+write$ -- 310
+(There was 1 warning)
