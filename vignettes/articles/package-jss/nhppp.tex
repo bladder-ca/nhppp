@@ -156,6 +156,17 @@ The \pkg{nhppp} package in \proglang{R} contains functions for the simulation of
 
 We review NHPPPs in Section~\ref{sec:review} and algorithms for sampling from constant rate Poisson point processes in Section~\ref{sec:sample-ppp}. We introduce the three sampling algorithms that are implemented in the package in Section~\ref{sec:general-sampling}. We discuss special functional forms for the intensity function (constant, piecewise constant, linear, and log-linear) in Section~\ref{sec:special_cases}. We describe \pkg{nhppp} versus other \proglang{R} packages that can simulate from one dimensional NHPPPs in Section~\ref{sec:other-R-packages} and present a numerical study in Section~\ref{sec:illustrations}. We summarize in Section~\ref{sec:summary}.
 
+You can install the release and development version of \pkg{nhppp} by running
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{install.packages}\hlstd{(}\hlstr{"nhppp"}\hlstd{)} \hlcom{# CRAN}
+
+\hlcom{# install.packages("devtools")}
+\hlstd{devtools}\hlopt{::}\hlkwd{install_github}\hlstd{(}\hlstr{"bladder-ca/nhppp-fast"}\hlstd{)} \hlcom{# GitHub}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \section{The Poisson point process} \label{sec:review}
 \subsection{Definition}
@@ -240,24 +251,24 @@ Table~\ref{tab:simtasks} summarizes the common simulation tasks, such as simulat
 
 Sampling the constant rate Poisson process is straightforward. Algorithms~\ref{alg:PPP_t} and~\ref{alg:PPP_order_stats} are two ways to sample event times in interval $(a, b]$ with constant intensity $\lambda$. Algorithm~\ref{alg:PPP_conditional} describes sampling event times conditional on observing at least $k$ events within the interval of interest.
 
-
+\newpage
 \subsection{Sequential sampling}\label{sec:PPP_t}
-
-\input{algorithms/alg_ppp_sequential}
 
 Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the inter-event times $X_i$ are exponentially distributed with mean $\lambda^{-1}$~\citep[par. 4.1]{cox1965theory}. It involves generation only of exponential random variates, which is cheap on modern hardware. To sample at most $k$ events, change the condition for the while loop in line 3 to
 \begin{center}
 \textbf{while} {$t <b  \ \& \  |\mathcal{Z}| < k$} \textbf{do}.
 \end{center}
 
-The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{only1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
+\input{algorithms/alg_ppp_sequential}
+
+The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{atmost1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(}\hlstr{"nhppp"}\hlstd{)}
 \hlkwd{library}\hlstd{(}\hlstr{"rstream"}\hlstd{)}
-\hlkwd{ppp_sequential}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{ppp_sequential}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ##  [1] 0.6738851 1.6505024 2.0112290 2.4075753 3.3888714 4.2948551
@@ -274,13 +285,13 @@ All \pkg{nhppp} functions can accept a user provided random number stream object
 \hlkwd{library}\hlstd{(}\hlstr{"rstream"}\hlstd{)}
 \hlstd{S} \hlkwb{<-} \hlkwd{new}\hlstd{(}\hlstr{"rstream.mrg32k3a"}\hlstd{)}
 \hlkwd{ppp_sequential}\hlstd{(}
-  \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+  \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{tol} \hlstd{=} \hlnum{10}\hlopt{^-}\hlnum{6}\hlstd{,} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
   \hlkwc{rng_stream} \hlstd{= S}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 0.7234174 0.8906377 1.2697303 2.0712702 3.5018199 5.1034342
-##  [7] 6.1769168 6.9603373 8.8045769 9.1952462
+## [1] 1.070175 2.999962 4.556199 6.067591 6.425538 6.455548 6.631434
+## [8] 7.475695 9.349623
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -300,7 +311,7 @@ The \fct{ppp\_orderstat} function implements constant-rate sampling via the orde
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ppp_orderstat}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{3.14}\hlstd{,} \hlnum{6.28}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{ppp_orderstat}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{3.14}\hlstd{,} \hlnum{6.28}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 3.202501 3.742638 4.573200 5.387799
@@ -323,7 +334,7 @@ Function \fct{ztppp} simulates times conditional on drawing at least one event -
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ztppp}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{0.001}\hlstd{,} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{ztppp}\hlstd{(}\hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{rate} \hlstd{=} \hlnum{0.001}\hlstd{,} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.749629
@@ -358,24 +369,20 @@ The thinning algorithm works with the intensity function $\lambda(t)$, which is 
 
 \hlkwd{draw}\hlstd{(}
   \hlkwc{lambda} \hlstd{= l,} \hlkwc{lambda_maj} \hlstd{=} \hlkwd{l}\hlstd{(}\hlnum{10}\hlstd{),} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
-\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{20}\hlstd{)}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
+\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{5}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 5.088108 5.197488 5.578401 5.760426 5.841001 5.916301 6.109621
-##  [8] 6.226782 6.239840 6.303556 6.420387 6.436196 6.448025 6.544486
-## [15] 6.561641 7.027645 7.220043 7.414564 7.435004 7.533949
+## [1] 5.088108 5.197488 5.578401 5.760426 5.841001
 \end{verbatim}
 \begin{alltt}
 \hlkwd{draw}\hlstd{(}
   \hlkwc{Lambda} \hlstd{= L,} \hlkwc{Lambda_inv} \hlstd{= Li,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
-\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{20}\hlstd{)}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
+\hlstd{) |>} \hlkwd{head}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{5}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##  [1] 5.031636 5.467510 5.556208 5.889774 5.971826 6.041089 6.267354
-##  [8] 6.833528 7.330811 7.613152 7.782012 7.784715 7.788021 7.955658
-## [15] 8.291194 8.372332 8.407120 8.441751 8.465296 8.537526
+## [1] 5.031636 5.467510 5.556208 5.889774 5.971826
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -408,7 +415,7 @@ The \pkg{nhppp} package has functions that sample from time-varying intensity fu
 \hlkwd{draw_intensity}\hlstd{(}
   \hlkwc{lambda} \hlstd{= lambda_fun,} \hlcom{# linear majorizer}
   \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{1.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
-  \hlkwc{exp_maj} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{exp_maj} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -418,7 +425,7 @@ The \pkg{nhppp} package has functions that sample from time-varying intensity fu
 \hlkwd{draw_intensity}\hlstd{(}
   \hlkwc{lambda} \hlstd{= lambda_fun,} \hlcom{# log-linear majorizer}
   \hlkwc{lambda_maj} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwc{intercept} \hlstd{=} \hlnum{0.01}\hlstd{,} \hlkwc{slope} \hlstd{=} \hlnum{0.03}\hlstd{),}
-  \hlkwc{exp_maj} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{exp_maj} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -450,7 +457,7 @@ which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{
   \hlkwc{lambda} \hlstd{= lambda_fun,}
   \hlkwc{lambda_maj_vector} \hlstd{=} \hlkwd{lambda_fun}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{10}\hlstd{),} \hlcom{# 1:10 (10 intensity values)}
   \hlkwc{times_vector} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlcom{# 0:10 (11 interval bounds)}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -478,7 +485,7 @@ Function \fct{draw\_cumulative\_intensity\_inversion} works with a cumulative in
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10.5}\hlstd{),}
   \hlkwc{range_L} \hlstd{=} \hlkwd{Lambda_fun}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{10.5}\hlstd{)),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -520,7 +527,7 @@ Function \fct{ztdraw\_cumulative\_intensity} conditions that at least one event 
   \hlkwc{Lambda} \hlstd{= Lambda_fun,}
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -536,7 +543,7 @@ Function \fct{ztdraw\_cumulative\_intensity} conditions that at least one event 
   \hlkwc{Lambda} \hlstd{= Lambda_fun,}
   \hlkwc{Lambda_inv} \hlstd{= Lambda_inv_fun,}
   \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{4.1}\hlstd{,} \hlnum{7.6}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -561,7 +568,7 @@ Functions \fct{draw\_sc\_step} and \fct{draw\_sc\_step\_regular} sample piecewis
 \begin{alltt}
 \hlkwd{draw_sc_step}\hlstd{(}
   \hlkwc{lambda_vector} \hlstd{=} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{times_vector} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{2.4}\hlstd{,} \hlnum{3.1}\hlstd{,} \hlnum{4.9}\hlstd{,} \hlnum{5.9}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -571,7 +578,7 @@ Functions \fct{draw\_sc\_step} and \fct{draw\_sc\_step\_regular} sample piecewis
 \end{verbatim}
 \begin{alltt}
 \hlkwd{draw_sc_step_regular}\hlstd{(}
-  \hlkwc{lambda_vector} \hlstd{=} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{5.9}\hlstd{),} \hlkwc{only1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+  \hlkwc{lambda_vector} \hlstd{=} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{5.9}\hlstd{),} \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}\hlstd{,}
   \hlkwc{atleast1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
@@ -590,8 +597,8 @@ Function \fct{vdraw\_sc\_step\_regular} is a vectorized version of \fct{draw\_sc
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{vdraw_sc_step_regular}\hlstd{(}
-  \hlkwc{lambda_matrix} \hlstd{=} \hlkwd{matrix}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{20}\hlstd{),} \hlkwc{ncol} \hlstd{=} \hlnum{5}\hlstd{),} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{4}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{lambda_matrix} \hlstd{=} \hlkwd{matrix}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{20}\hlstd{),} \hlkwc{ncol} \hlstd{=} \hlnum{5}\hlstd{),} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{4}\hlstd{),}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -606,7 +613,7 @@ Function \fct{vdraw\_sc\_step\_regular} is a vectorized version of \fct{draw\_sc
 
 \subsection{Sampling NHPPPs with linear and log-linear intensities}\label{sec:sample-nhppp-special}
 
-Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{only1}) returns the first event only.
+Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or more and at least one event, respectively, from NHPPPs with linear intensity functions. An optional argument (\texttt{atmost1}) returns the first event only.
 \begin{align*}
     \lambda(t) =
     \begin{cases}
@@ -620,7 +627,7 @@ Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or mor
 \begin{alltt}
 \hlkwd{draw_sc_linear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.5}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -629,7 +636,7 @@ Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or mor
 \begin{alltt}
 \hlkwd{ztdraw_sc_linear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlnum{0.2}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -655,7 +662,7 @@ The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as
 \begin{alltt}
 \hlkwd{draw_sc_loglinear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{8}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -669,7 +676,7 @@ The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as
 \begin{alltt}
 \hlkwd{ztdraw_sc_loglinear}\hlstd{(}
   \hlkwc{alpha} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{beta} \hlstd{=} \hlopt{-}\hlnum{0.02}\hlstd{,} \hlkwc{range_t} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{9.8}\hlstd{,} \hlnum{10}\hlstd{),}
-  \hlkwc{only1} \hlstd{=} \hlnum{FALSE}
+  \hlkwc{atmost1} \hlstd{=} \hlnum{FALSE}
 \hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -702,7 +709,6 @@ The claimed advantage of \pkg{nhppp} over the existing packages is that
 
 \input{table/tab_other_R_packages}
 
-\newpage
 \section{Illustrations} \label{sec:illustrations}
 
 Depending on the application, we may have access to the intensity function
@@ -762,10 +768,9 @@ The third, $\lambda_{*c}(t)$, shown as a thicker black line, is a tighter piecew
 majorizer is
 $0.718$.
 
-\newpage
 \subsection{Simulation functions and algorithms}\label{sec:methods-sim}
 
-We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $100$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware (Apple M1 Max laptop with 64 megabytes of random access memory).
+We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $100$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware.
 
 From the \pkg{nhppp} package we use
 \begin{enumerate}
@@ -794,7 +799,7 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Wed Jan 31 18:17:38 2024
+% Wed Jan 31 20:54:17 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -802,18 +807,18 @@ The results for the~\pkg{nhppp} functions in Table~\ref{tab:nhppp-results-counts
   \hline
  & Thinning $\lambda_*$=$\lambda_{*a}$ & Thinning $\lambda_*$=$\lambda_{*b}$ & Thinning $\lambda_*$=$\lambda_{*c}$ & Inversion & Order statistics \\ 
   \hline
-Sample mean & 172.440 & 170.030 & 172.020 & 170.350 & 173.680 \\ 
-  $B_\mu$ & 1.305 & -1.105 & 0.885 & -0.785 & 2.545 \\ 
-  $B_{\mu, rel}$ & 0.763 & -0.646 & 0.517 & -0.459 & 1.487 \\ 
-  Sample variance & 171.865 & 196.938 & 187.333 & 165.745 & 202.947 \\ 
-  $B_V$ & 0.730 & 25.804 & 16.198 & -5.390 & 31.812 \\ 
-  $B_{V, rel}$ & 0.427 & 15.078 & 9.465 & -3.149 & 18.589 \\ 
-  Goodness of fit, $\chi^2$ [$p$~value] & 4.090 [1.000] & 4.263 [1.000] & 3.563 [1.000] & 4.269 [1.000] & 5.572 [1.000] \\ 
-  $W_1$ [$p$~value] & 1.759 [0.204] & 1.427 [0.356] & 1.325 [0.074] & 1.244 [0.066] & 2.631 [0.114] \\ 
-  Equal tail 95\% CI = [146, 197] & [148, 192] & [143, 194] & [145, 201] & [146, 197] & [149, 200] \\ 
-  Equal tail 90\% CI = [150, 193] & [151, 192] & [147, 193] & [150, 193] & [150, 192] & [152, 195] \\ 
-  Equal tail 75\% CI = [156, 186] & [159, 187] & [153, 186] & [157, 185] & [154, 183] & [157, 188] \\ 
-  Equal tail 50\% CI = [162, 180] & [163, 183] & [161, 180] & [162, 180] & [162, 177] & [163, 183] \\ 
+Sample mean & 170.590 & 173.670 & 170.650 & 172.620 & 170.470 \\ 
+  $B_\mu$ & -0.545 & 2.535 & -0.485 & 1.485 & -0.665 \\ 
+  $B_{\mu, rel}$ & -0.318 & 1.481 & -0.283 & 0.868 & -0.388 \\ 
+  Sample variance & 163.234 & 176.122 & 170.513 & 168.985 & 183.181 \\ 
+  $B_V$ & -7.900 & 4.988 & -0.622 & -2.149 & 12.046 \\ 
+  $B_{V, rel}$ & -4.617 & 2.914 & -0.364 & -1.256 & 7.039 \\ 
+  Goodness of fit, $\chi^2$ [$p$~value] & 5.188 [1.000] & 8.889 [1.000] & 6.512 [1.000] & 6.731 [1.000] & 3.250 [1.000] \\ 
+  $W_1$ [$p$~value] & 1.198 [0.142] & 2.763 [0.110] & 1.203 [0.090] & 1.780 [0.228] & 1.247 [0.142] \\ 
+  Equal tail 95\% CI = [146, 197] & [146, 191] & [144, 195] & [148, 197] & [148, 197] & [143, 197] \\ 
+  Equal tail 90\% CI = [150, 193] & [150, 190] & [151, 193] & [149, 193] & [148, 194] & [149, 193] \\ 
+  Equal tail 75\% CI = [156, 186] & [156, 186] & [160, 189] & [155, 185] & [156, 185] & [157, 186] \\ 
+  Equal tail 50\% CI = [162, 180] & [160, 181] & [163, 182] & [160, 181] & [164, 180] & [162, 179] \\ 
    \hline
 \end{tabular}
 }
@@ -850,7 +855,7 @@ The respective results for the \proglang{R} packages are in Figure~\ref{fig:r-pk
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Wed Jan 31 18:17:39 2024
+% Wed Jan 31 20:54:18 2024
 \begin{table}[ht]
 \centering
 \scalebox{0.77}{
@@ -894,7 +899,7 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Wed Jan 31 18:17:40 2024
+% Wed Jan 31 20:54:19 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
@@ -902,11 +907,11 @@ Figure~\ref{fig:epdf-r-pkgs-times} and Table~\ref{tab:r-pkgs-gof-times} indicate
   \hline
  & Goodness of fit, $\chi^2$ [$p$~value] & $W_1$ [$p$~value] \\ 
   \hline
-Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.561 [1.000] \\ 
-  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.009 [1.000] & 0.378 [0.970] \\ 
-  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.011 [1.000] & 0.452 [1.000] \\ 
-  Inversion & 0.009 [1.000] & 0.374 [0.996] \\ 
-  Order statistics & 0.009 [1.000] & 0.407 [1.000] \\ 
+Thinning $\lambda_*$=$\lambda_{*a}$ & 0.010 [1.000] & 0.301 [0.970] \\ 
+  Thinning $\lambda_*$=$\lambda_{*b}$ & 0.010 [1.000] & 0.734 [0.992] \\ 
+  Thinning $\lambda_*$=$\lambda_{*c}$ & 0.011 [1.000] & 0.676 [0.966] \\ 
+  Inversion & 0.010 [1.000] & 0.253 [1.000] \\ 
+  Order statistics & 0.009 [1.000] & 0.267 [1.000] \\ 
    \hline
 \end{tabular}
 }
@@ -916,7 +921,7 @@ Thinning $\lambda_*$=$\lambda_{*a}$ & 0.008 [1.000] & 0.561 [1.000] \\
 
 
 % latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Wed Jan 31 18:17:40 2024
+% Wed Jan 31 20:54:19 2024
 \begin{table}[ht]
 \centering
 \scalebox{1}{
@@ -998,7 +1003,6 @@ In \pkg{nhppp}, functions that use the inversion or order statistics algorithms 
 \end{knitrout}
 
 
-\newpage
 \subsubsection{Time performance of vectorized functions}\label{sec:vectorized-functions}
 
 
@@ -1008,9 +1012,9 @@ In \proglang{R}, `vectorized' computation, where operations are done in columns,
 We compared the execution speed of non-vectorized and vectorized functions for sampling $100$ times from the piecewise constant `b' majorizer ($\lambda_{*b}$) in Figure~\ref{fig:example-function-plot}.
 %
 When drawing only the earliest event, the vectorized function is approximately
-$51$ times faster than the non-vectorized function ($1.15 \mu s$ versus $59.01 \mu s$ per sample drawn.)
+$51$ times faster than the non-vectorized function ($1.18 \mu s$ versus $60.43 \mu s$ per sample drawn.)
 %
-However, when drawing all events, the order changes: the vectorized function is approximately $2.5$ times slower than the non-vectorized function ($1.23 ms$ versus $0.50 ms$ per set of event times drawn.) The reversal in apparent performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
+However, when drawing all events, the order changes: the vectorized function is approximately $2.3$ times slower than the non-vectorized function ($1.27 ms$ versus $0.55 ms$ per set of event times drawn.) The reversal in apparent performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
 $741.97$.)
 
 
@@ -1018,11 +1022,7 @@ $741.97$.)
 
 \section{Summary and next developments} \label{sec:summary}
 
-The \pkg{nhppp} is developed to aid the simulation of NHPPPs from general intensity or cumulative intensity functions. It contains specialized functions to ensure speed.
-
-The next steps are a vectorized implementation of some functions, to allow fast simulation over vectors of arguments.
-
-A \proglang{C++} implementation is also forthcoming.
+The \pkg{nhppp} facilitates the simulation of NHPPPs from time-varying intensity or cumulative intensity functions. Its claim is that it (i) simulates correctly from a target density, not just from an approximation; (ii) samples conditional on observing at least one event in an interval; (iii) accomodates user provided random number stream objects; and (iv) is fast. The current version includes one vectorized function for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also linking our \proglang{C++} dynamic (shared) library that implements the algorithms and functions described here.
 
 
 %% -- Optional special unnumbered sections -------------------------------------
@@ -1045,6 +1045,8 @@ Packages
 \pkg{otinference}~{0.1.0}~\citep{otinference-package}, and
 \pkg{parallel}~{4.3.1}
 were used in the examples and the analyses.
+
+All computations were done on an Apple M1 Max machine with 64 megabytes of random access memory.
 %
 \proglang{R} itself
 and all aforementioned packages are available from the Comprehensive
@@ -1053,7 +1055,7 @@ and all aforementioned packages are available from the Comprehensive
 
 
 \section*{Acknowledgments}
-This work was funded from grant U01CA265750  from the National Cancer Institute.
+This work was funded from grant U01CA265750 from the National Cancer Institute.
 We thank the investigators of the Cancer Incidence and Surveillance Modeling Network (CISNET)
 Bladder Cancer Site Stavroula Chrysanthopoulou, Jonah Popp, Fernando Alarid-Escudero,
 Hawre Jalal, and David Garibay for useful discussions.

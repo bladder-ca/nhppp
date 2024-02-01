@@ -4,7 +4,8 @@
 #' Simulate a piecewise constant-rate Poisson Point Process over `(t_min, t_max]` (inversion method)
 #' where the intervals have the same length (are "regular").
 #'
-#' @param Lambda_matrix (matrix) integrated rates, one per interval
+#' @param Lambda_matrix (matrix) integrated intensity rates at the end of each interval
+#' @param lambda_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, double) `t_min` and `t_max`
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time

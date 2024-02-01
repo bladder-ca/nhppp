@@ -1,8 +1,8 @@
 #' Sampling from NHPPPs with piecewise constant intensities
 #' with same interval lengths (non-vectorized)
 #'
-#' @param Lambda_vector (scalar, double) `K` constant integrated rates, one per interval
-#' @param lambda_vector (scalar, double) `K` constant rates, one per interval
+#' @param Lambda_vector (scalar, double) `K` integrated intensity rates at the end of each interval
+#' @param lambda_vector (scalar, double) `K` constant intensity rates, one per interval
 #' @param range_t (vector, double) `t_min` and `t_max`
 #' @param rng_stream an `rstream` object
 #' @param atmost1 boolean, draw at most 1 event time

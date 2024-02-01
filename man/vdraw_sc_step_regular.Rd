@@ -14,7 +14,9 @@ vdraw_sc_step_regular(
 )
 }
 \arguments{
-\item{Lambda_matrix}{(matrix) integrated rates, one per interval}
+\item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval}
+
+\item{lambda_matrix}{(matrix) intensity rates, one per interval}
 
 \item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 

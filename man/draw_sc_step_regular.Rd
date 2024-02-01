@@ -15,9 +15,9 @@ draw_sc_step_regular(
 )
 }
 \arguments{
-\item{Lambda_vector}{(scalar, double) \code{K} constant integrated rates, one per interval}
+\item{Lambda_vector}{(scalar, double) \code{K} integrated intensity rates at the end of each interval}
 
-\item{lambda_vector}{(scalar, double) \code{K} constant rates, one per interval}
+\item{lambda_vector}{(scalar, double) \code{K} constant intensity rates, one per interval}
 
 \item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 

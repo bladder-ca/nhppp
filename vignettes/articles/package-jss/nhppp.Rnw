@@ -175,6 +175,13 @@ The \pkg{nhppp} package in \proglang{R} contains functions for the simulation of
 
 We review NHPPPs in Section~\ref{sec:review} and algorithms for sampling from constant rate Poisson point processes in Section~\ref{sec:sample-ppp}. We introduce the three sampling algorithms that are implemented in the package in Section~\ref{sec:general-sampling}. We discuss special functional forms for the intensity function (constant, piecewise constant, linear, and log-linear) in Section~\ref{sec:special_cases}. We describe \pkg{nhppp} versus other \proglang{R} packages that can simulate from one dimensional NHPPPs in Section~\ref{sec:other-R-packages} and present a numerical study in Section~\ref{sec:illustrations}. We summarize in Section~\ref{sec:summary}.
 
+You can install the release and development version of \pkg{nhppp} by running
+<<install, eval=FALSE>>=
+install.packages("nhppp") # CRAN
+
+# install.packages("devtools")
+devtools::install_github("bladder-ca/nhppp-fast") # GitHub
+@
 
 \section{The Poisson point process} \label{sec:review}
 \subsection{Definition}
@@ -259,15 +266,15 @@ Table~\ref{tab:simtasks} summarizes the common simulation tasks, such as simulat
 
 Sampling the constant rate Poisson process is straightforward. Algorithms~\ref{alg:PPP_t} and~\ref{alg:PPP_order_stats} are two ways to sample event times in interval $(a, b]$ with constant intensity $\lambda$. Algorithm~\ref{alg:PPP_conditional} describes sampling event times conditional on observing at least $k$ events within the interval of interest.
 
-
+\newpage
 \subsection{Sequential sampling}\label{sec:PPP_t}
-
-\input{algorithms/alg_ppp_sequential}
 
 Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the inter-event times $X_i$ are exponentially distributed with mean $\lambda^{-1}$~\citep[par. 4.1]{cox1965theory}. It involves generation only of exponential random variates, which is cheap on modern hardware. To sample at most $k$ events, change the condition for the while loop in line 3 to
 \begin{center}
 \textbf{while} {$t <b  \ \& \  |\mathcal{Z}| < k$} \textbf{do}.
 \end{center}
+
+\input{algorithms/alg_ppp_sequential}
 
 The package's \fct{ppp\_sequential} function implements constant-rate sequential sampling that returns a vector with 0 or more event times in the interval $[a, b)$. The \code{range\_t} argument is a two-values vector with the bounds $a, b$. The optional \code{tol} argument is used to get an upper bound on the realized number of events -- using it speeds up the algorithm's implementation in \proglang{R}. Setting the optional argument \code{atmost1} to \code{TRUE} from its default value of \code{FALSE} returns the first event or an empty vector, depending on whether at least one event is drawn in the interval.
 
@@ -339,12 +346,12 @@ Li <- function(z) sqrt(2 * z)
 draw(
   lambda = l, lambda_maj = l(10), range_t = c(5, 10),
   atmost1 = FALSE, atleast1 = FALSE
-) |> head(n = 20)
+) |> head(n = 5)
 
 draw(
   Lambda = L, Lambda_inv = Li, range_t = c(5, 10),
   atmost1 = FALSE, atleast1 = FALSE
-) |> head(n = 20)
+) |> head(n = 5)
 @
 
 \subsection{The thinning algorithm}\label{sec:thinning}
@@ -572,7 +579,6 @@ The claimed advantage of \pkg{nhppp} over the existing packages is that
 
 \input{table/tab_other_R_packages}
 
-\newpage
 \section{Illustrations} \label{sec:illustrations}
 
 Depending on the application, we may have access to the intensity function
@@ -676,7 +682,6 @@ The third, $\lambda_{*c}(t)$, shown as a thicker black line, is a tighter piecew
 majorizer is
 $\Sexpr{pprint(L(6*pi)/sum(l_star2(t_breaks[1:M])*(6*pi / M)), 3) }$.
 
-\newpage
 \subsection{Simulation functions and algorithms}\label{sec:methods-sim}
 
 We sampled series of events from the target NHPPP using the packages and functions listed in Table~\ref{tab:R-packages}. We repeated the sampling $\Sexpr{n_simulations}$ times, recording all simulated points (event times). We also recorded the median computation time for drawing one series of events with single-threaded computation on modern hardware.
@@ -1348,7 +1353,6 @@ plot_comptimes(comptimes_one_sample)
 @
 
 
-\newpage
 \subsubsection{Time performance of vectorized functions}\label{sec:vectorized-functions}
 
 <<vectorized-vs-not, include=FALSE, echo=FALSE, cache=TRUE>>=
@@ -1383,7 +1387,7 @@ $\Sexpr{pprint(Lmat[1,M], 2)}$.)
 
 \section{Summary and next developments} \label{sec:summary}
 
-The \pkg{nhppp} is developed to aid the simulation of NHPPPs from general intensity or cumulative intensity functions. Its claimed advantages are that (i) it has functions that can simulate correctly from a target density, not just from an approximation; (ii) can sample conditional on observing at least one event; (iii) can use user provided random number stream objects; and it is fast. The current version includes only one vectorized function, for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also porting a \proglang{C++} dynamically linked library that implements the algorithms and functions we described.
+The \pkg{nhppp} facilitates the simulation of NHPPPs from time-varying intensity or cumulative intensity functions. Its claim is that it (i) simulates correctly from a target density, not just from an approximation; (ii) samples conditional on observing at least one event in an interval; (iii) accomodates user provided random number stream objects; and (iv) is fast. The current version includes one vectorized function for sampling from regular-spaced piecewise constant intensity functions. In future releases we will vectorize additional functions, possibly also linking our \proglang{C++} dynamic (shared) library that implements the algorithms and functions described here.
 
 
 %% -- Optional special unnumbered sections -------------------------------------
