@@ -86,10 +86,10 @@ nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
 
 - Functions whose names start with `ppp_[sequential|orderstats]` sample
   event times in an interval with constant intensity functions with the
-  sequential and order statsitic
+  sequential and order statistics algorithms.
 
 - Function `ztppp()` samples one or more event times in an interval with
-  constant intensity, i.e., from zero-truncated Poisson process.
+  constant intensity, i.e., from a zero-truncated Poisson process.
 
 - Functions `ppp_n()` and `ppp_next_n()` sample `n` events in an
   interval and the next `n` event times after a time `t0`.
