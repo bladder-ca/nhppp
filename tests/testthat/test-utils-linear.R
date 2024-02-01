@@ -35,8 +35,8 @@ test_that("Lambda_inv_linear_form works", {
 })
 
 
-test_that("get_piecewise_linear_majorizer() works", {
-  expect_no_error(l1 <- get_piecewise_linear_majorizer(
+test_that("get_step_majorizer() works", {
+  expect_no_error(l1 <- get_step_majorizer(
     fun = abs,
     breaks = -10:10, is_monotone = FALSE, K = 1
   ))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rng_stream_rztpois}
 \alias{rng_stream_rztpois}
-\title{Zero-truncated Poisson random samples from \code{rstream} or \code{RNGClass} objects}
+\title{Zero-truncated Poisson random samples from \code{rstream} objects}
 \usage{
 rng_stream_rztpois(size = 1, lambda = 1, rng_stream = NULL)
 }
@@ -15,8 +15,11 @@ rng_stream_rztpois(size = 1, lambda = 1, rng_stream = NULL)
 \item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 }
 \value{
-a vector of counts of size \code{size}
+a vector of non zero counts of size \code{size}
 }
 \description{
-Sample from \code{rstream} or \code{RNGClass} objects
+Sample from \code{rstream} objects
+}
+\examples{
+rng_stream_rztpois(10)
 }

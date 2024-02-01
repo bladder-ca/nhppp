@@ -37,23 +37,23 @@ read_code <- function(codeFile) {
 #' @param t_min (double) the start of the time nterval
 #' @param t_max (double) optional: the end of the time interval
 #' @param size (double) optional: the size of the vector
-#' @param only1 (boolean) optional: at most one sample returned
-#' @param zero_truncated (boolean) optional: at least one sample returned
-#' @return NULL
-check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, only1 = FALSE, zero_truncated = FALSE) {
+#' @param atmost1 (boolean) optional: at most one sample returned
+#' @param atleast1 (boolean) optional: at least one sample returned
+#' @return None
+check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
   testthat::expect_identical(times, sort(times))
   testthat::expect_identical(times, unique(times))
-  testthat::expect_true(min(times) >= t_min)
+  testthat::expect_true(min(times, Inf) >= t_min)
   if (!is.null(t_max)) {
-    testthat::expect_true(max(times) <= t_max)
+    testthat::expect_true(max(times, -Inf) <= t_max)
   }
   if (!is.null(size)) {
     testthat::expect_equal(length(times), size)
   }
-  if (only1) {
+  if (atmost1) {
     testthat::expect_true(length(times) <= 1)
   }
-  if (zero_truncated) {
+  if (atleast1) {
     testthat::expect_true(length(times) >= 1)
   }
 }
@@ -70,7 +70,7 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, o
 #' @param threshold (double) optional: the cutoff for a large absolute threshold
 #' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the
 #' Difference vs Average ratio in any decile is bigger than the `threshold`
-#' @return NULL
+#' @return None
 compare_ppp_vectors <- function(ppp1,
                                 ppp2,
                                 threshold = 0.15, showQQ = TRUE) {

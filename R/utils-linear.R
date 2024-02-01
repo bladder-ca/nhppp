@@ -61,16 +61,20 @@ Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
   return((log(tmp + z * beta) - alpha) / beta)
 }
 
-#' Piecewise linear majorizer for K-Lipschitz functions over an interval
+#' Piecewise constant (step) majorizer for K-Lipschitz functions over an interval
 #'
-#' @description Return a piecewise linear majorizer for K-Lipschitz functions
+#' @description Return a piecewise constant (step) majorizer for K-Lipschitz functions
 #'              over an interval.
 #' @param fun A function object with a single argument `x`
 #' @param breaks (vector) The set of `M+1` boundaries for the `M` subintervals in `x`
 #' @param is_monotone (boolean) Is the function monotone? (Default is `TRUE`.)
 #' @param K (double) A non-negative number for the Lipschitz cone. (Default is 0.)
+#' @return A vector of length `M` with the values of the piecewise constant majorizer
+#'
 #' @export
-get_piecewise_linear_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
+#' @examples
+#' get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
+get_step_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
   if (K < 0) stop()
   M <- length(breaks) - 1
   f_breaks <- fun(breaks)
