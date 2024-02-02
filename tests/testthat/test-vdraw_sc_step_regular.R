@@ -53,3 +53,16 @@ test_that("vdraw_sc_step_regular() works", {
     }
   }
 })
+
+test_that("vdraw_sc_step_regular() does not break with matrices whose mode is list", {
+  l <- matrix(rep(1, 50), ncol = 5)
+  L <- mat_cumsum_columns(l)
+
+  mode(L) <- "list"
+  expect_no_error(Z <- vdraw_sc_step_regular(
+    Lambda_matrix = L,
+    range_t = c(100, 110),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+})
