@@ -48,9 +48,9 @@ test_that("vztdraw_sc_step_regular() works", {
       check_ppp_sample_validity(tmp, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
     }
   }
-  #very small rates
+  # very small rates
   expect_no_error(Z2 <- vztdraw_sc_step_regular(
-    lambda_matrix = l*0.001,
+    lambda_matrix = l * 0.001,
     range_t = c(100, 110),
     atmost1 = TRUE
   ))
@@ -60,7 +60,6 @@ test_that("vztdraw_sc_step_regular() works", {
       check_ppp_sample_validity(tmp, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
     }
   }
-
 })
 
 test_that("vztdraw_sc_step_regular() does not break with matrices whose mode is list", {

@@ -20,9 +20,8 @@ vztdraw_sc_step_regular <- function(Lambda_matrix = NULL,
                                     lambda_matrix = NULL,
                                     range_t = c(0, 10),
                                     atmost1 = FALSE) {
-
-  #browser()
-  if(!is.matrix(range_t)) {
+  # browser()
+  if (!is.matrix(range_t)) {
     range_t <- matrix(range_t, nrow = 1)
   }
   if (is.null(Lambda_matrix) && !is.null(lambda_matrix)) {
@@ -33,15 +32,15 @@ vztdraw_sc_step_regular <- function(Lambda_matrix = NULL,
   }
   n_draws <- nrow(Lambda_matrix)
   n_intervals <- ncol(Lambda_matrix)
-  interval_duration <- (range_t[,2] - range_t[,1]) / n_intervals
+  interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals
 
   # pad Lambda_matrix with starting zeros to be able to take duration of each interval
   Lambda_matrix <- cbind(rep(0, n_draws), Lambda_matrix)
 
-  n_events <- rztpois(size = n_draws, lambda = Lambda_matrix[,n_intervals+1])
+  n_events <- rztpois(size = n_draws, lambda = Lambda_matrix[, n_intervals + 1])
 
 
-  if(atmost1){
+  if (atmost1) {
     n_max_events <- 1
     Tau <- matrix(rep(NA, n_draws), ncol = 1)
   } else {
@@ -51,11 +50,11 @@ vztdraw_sc_step_regular <- function(Lambda_matrix = NULL,
   # This part can be sped up in C
   # n_events_cumsum <- cumsum(n_events)
   # U <- stats::runif(n_events_cumsum[n_draws])
-  for (r in 1:n_draws){
-    if(atmost1){
-      Tau[r, 1] <- min(stats::runif(n_events[r])) * Lambda_matrix[r, n_intervals+1]
+  for (r in 1:n_draws) {
+    if (atmost1) {
+      Tau[r, 1] <- min(stats::runif(n_events[r])) * Lambda_matrix[r, n_intervals + 1]
     } else {
-      Tau[r, 1:(n_events[r])] <- sort(stats::runif(n_events[r])) * Lambda_matrix[r, n_intervals+1]
+      Tau[r, 1:(n_events[r])] <- sort(stats::runif(n_events[r])) * Lambda_matrix[r, n_intervals + 1]
     }
   }
 
@@ -64,14 +63,14 @@ vztdraw_sc_step_regular <- function(Lambda_matrix = NULL,
   IntervalIndex[, 1] <- 1:n_draws
   AddOneForNextIndex <- matrix(rep(c(0, 1), n_draws), ncol = 2, byrow = TRUE)
 
-  #browser()
+  # browser()
   # back transform Tau
   for (ev in 1:n_max_events) {
     for (i in 1:(n_intervals)) {
       is_tau_in_this_interval <- (Lambda_matrix[, i] < Tau[, ev] & Lambda_matrix[, i + 1] >= Tau[, ev])
       IntervalIndex[, ev + 1] <- i * is_tau_in_this_interval + IntervalIndex[, ev + 1] * (!is_tau_in_this_interval)
     }
-    Tau[, ev] <- range_t[,1] +
+    Tau[, ev] <- range_t[, 1] +
       ((IntervalIndex[, ev + 1] - 1) + # 0-based indexing of intervals here
         (Tau[, ev] - Lambda_matrix[IntervalIndex[, c(1, ev + 1), drop = FALSE]]) /
           (Lambda_matrix[IntervalIndex[, c(1, ev + 1), drop = FALSE] + AddOneForNextIndex] -

@@ -118,10 +118,8 @@ rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 #' rztpois(10, 1)
 #' rztpois(10, 1:10)
 rztpois <- function(size = 1, lambda = 1) {
-  #exp_minus_lambda <- exp(-lambda)
+  # exp_minus_lambda <- exp(-lambda)
   p <- stats::runif(n = size, min = exp(-lambda), max = 1)
   x <- stats::qpois(p = p, lambda = lambda)
   return(x)
 }
-
-

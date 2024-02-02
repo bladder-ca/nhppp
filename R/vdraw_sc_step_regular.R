@@ -22,6 +22,9 @@ vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
                                   range_t = c(0, 10),
                                   tol = 10^-6,
                                   atmost1 = FALSE) {
+  if (!is.matrix(range_t)) {
+    range_t <- matrix(range_t, nrow = 1)
+  }
 
   if (is.null(Lambda_matrix) && !is.null(lambda_matrix)) {
     mode(lambda_matrix) <- "numeric"
@@ -31,7 +34,7 @@ vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
   }
   n_draws <- nrow(Lambda_matrix)
   n_intervals <- ncol(Lambda_matrix)
-  interval_duration <- (range_t[2] - range_t[1]) / n_intervals
+  interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals
 
   # pad Lambda_matrix with starting zeros to be able to take duration of each interval
   Lambda_matrix <- cbind(rep(0, n_draws), Lambda_matrix)
@@ -59,7 +62,7 @@ vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
       IntervalIndex[, ev + 1] <- i * is_tau_in_this_interval + IntervalIndex[, ev + 1] * (!is_tau_in_this_interval)
     }
 
-    Tau[, ev] <- range_t[1] +
+    Tau[, ev] <- range_t[, 1] +
       ((IntervalIndex[, ev + 1] - 1) + # 0-based indexing of intervals here
         (Tau[, ev] - Lambda_matrix[IntervalIndex[, c(1, ev + 1), drop = FALSE]]) /
           (Lambda_matrix[IntervalIndex[, c(1, ev + 1), drop = FALSE] + AddOneForNextIndex] -
