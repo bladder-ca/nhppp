@@ -48,14 +48,6 @@
 
 
 
-% \SweaveOpts{prefix.string=figures/nhppp, concordance=FALSE}
-
-%\VignetteIndexEntry{a guide to the nhppp package}
-%\VignetteKeywords{nhppp}
-%\VignetteDepends{nhppp,rstream,lifecycle}
-%\VignettePackage{nhppp}
-
-
 %% -- Article metainformation (author, title, ...) -----------------------------
 
 %% - \author{} with primary affiliation (and optionally ORCID link)
@@ -92,15 +84,18 @@
 }
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 
 <<setup-block, echo=FALSE, message=FALSE, results='hide'>>=
+library("knitr")
 suppressPackageStartupMessages({
   library("ggplot2")
 })
 library("bench")
 library("latex2exp")
 library("nhppp")
-
+render_sweave()
+opts_chunk$set(prompt=TRUE)
 options(
   prompt = "R> ", continue = "+  ", width = 70,
   useFancyQuotes = FALSE, out.extra = "",
@@ -171,18 +166,19 @@ It is often desirable to simulate series of events (stochastic point processes) 
 A NHPPP has the properties that the number of events in all non-overlapping time intervals are independent random variables and that, within each time interval, the number of events is Poisson distributed. Thus an NHPPP is a memoryless point process. A large number of phenomena may reasonably conform with these properties.%
 \footnote{Other phenomena are not well described by a memoryless point process. An example is new infection events during an epidemic wave, where the number of new infections over time depends on the number of infections in the previous time interval. At least in its early phase, an epidemic wave may be better described by, e.g., self-exciting point processes that transiently increase the intensity function after a first event.}
 
-The \pkg{nhppp} package in \proglang{R} contains functions for the simulation of NHPPPs over a one-dimensional carrier space, which we will take to represent time.
+The \pkg{nhppp} package in \proglang{R} contains functions for the simulation of NHPPPs over a one-dimensional carrier space, which we will take to represent time~\citep{nhppp-package, trikalinos2024nhppp}.
 
 We review NHPPPs in Section~\ref{sec:review} and algorithms for sampling from constant rate Poisson point processes in Section~\ref{sec:sample-ppp}. We introduce the three sampling algorithms that are implemented in the package in Section~\ref{sec:general-sampling}. We discuss special functional forms for the intensity function (constant, piecewise constant, linear, and log-linear) in Section~\ref{sec:special_cases}. We describe \pkg{nhppp} versus other \proglang{R} packages that can simulate from one dimensional NHPPPs in Section~\ref{sec:other-R-packages} and present a numerical study in Section~\ref{sec:illustrations}. We summarize in Section~\ref{sec:summary}.
 
-You can install the release and development version of \pkg{nhppp} by running
-<<install, eval=FALSE>>=
-install.packages("nhppp") # CRAN
-
+You can install the development version of \pkg{nhppp} with
+<<install-development, eval=FALSE>>=
 # install.packages("devtools")
-devtools::install_github("bladder-ca/nhppp-fast") # GitHub
+devtools::install_github("bladder-ca/nhppp-fast")
 @
-
+or the release version with
+<<install-release, eval=FALSE>>=
+install.packages("nhppp")
+@
 \section{The Poisson point process} \label{sec:review}
 \subsection{Definition}
 The Poisson point process is a stochastic series of events on the real line. For some sequence of events, let $N(t, t + \Delta t)$ be the number of events in the interval $(t, t  + \Delta t]$. If for some positive intensity $\lambda$ and, as ${\Delta t \rightarrow 0}$,
@@ -266,7 +262,6 @@ Table~\ref{tab:simtasks} summarizes the common simulation tasks, such as simulat
 
 Sampling the constant rate Poisson process is straightforward. Algorithms~\ref{alg:PPP_t} and~\ref{alg:PPP_order_stats} are two ways to sample event times in interval $(a, b]$ with constant intensity $\lambda$. Algorithm~\ref{alg:PPP_conditional} describes sampling event times conditional on observing at least $k$ events within the interval of interest.
 
-\newpage
 \subsection{Sequential sampling}\label{sec:PPP_t}
 
 Algorithm~\ref{alg:PPP_t} samples events sequentially, using the fact that the inter-event times $X_i$ are exponentially distributed with mean $\lambda^{-1}$~\citep[par. 4.1]{cox1965theory}. It involves generation only of exponential random variates, which is cheap on modern hardware. To sample at most $k$ events, change the condition for the while loop in line 3 to
@@ -280,7 +275,7 @@ The package's \fct{ppp\_sequential} function implements constant-rate sequential
 
 <<demo-pppt>>=
 library("nhppp")
-ppp_sequential(range_t = c(0, 10), rate = 1, tol = 10^-6, atmost1 = FALSE)
+ppp_sequential(range_t = c(7, 10), rate = 1, tol = 10^-6, atmost1 = FALSE)
 @
 
 All \pkg{nhppp} functions can accept a user provided random number stream object via the \texttt{rng\_stream} option.
@@ -288,10 +283,7 @@ All \pkg{nhppp} functions can accept a user provided random number stream object
 <<demo-pppt-rstream>>=
 library("rstream")
 S <- new("rstream.mrg32k3a")
-ppp_sequential(
-  range_t = c(0, 10), rate = 1, tol = 10^-6, atmost1 = FALSE,
-  rng_stream = S
-)
+ppp_sequential(range_t = c(7, 10), rate = 1, rng_stream = S)
 @
 
 
@@ -307,10 +299,10 @@ Algorithm~\ref{alg:PPP_order_stats} first draws the number of events in $(a, b]$
 The \fct{ppp\_orderstat} function implements constant-rate sampling via the order-statistics algorithm.
 
 <<demo-ppp_orderstat>>=
-ppp_orderstat(range_t = c(3.14, 6.28), rate = 1, atmost1 = FALSE)
+ppp_orderstat(range_t = c(3.14, 6.28), rate = 1/2)
 @
 
-\subsection{Sampling conditional on observing at least $m$ events}\label{sec:PPP_order_stats}
+\subsection{Sampling conditional on observing at least $m$ events}\label{sec:PPP_cond_sampling}
 
 \input{algorithms/alg_ppp_conditional}
 
@@ -341,7 +333,6 @@ The thinning algorithm works with the intensity function $\lambda(t)$, which is 
 l <- function(t) t
 L <- function(t) 0.5 * t^2
 Li <- function(z) sqrt(2 * z)
-
 draw(
   lambda = l, lambda_maj = l(10), range_t = c(5, 10),
   atmost1 = FALSE, atleast1 = FALSE
@@ -375,18 +366,16 @@ The \pkg{nhppp} package has functions that sample from time-varying intensity fu
 
 <<demo-draw_intensity>>=
 lambda_fun <- function(t) exp(0.02 * t)
-
 draw_intensity(
   lambda = lambda_fun, # linear majorizer
   lambda_maj = c(intercept = 1.01, slope = 0.03),
-  exp_maj = FALSE, range_t = c(0, 10), atmost1 = FALSE
-)
-
+  exp_maj = FALSE, range_t = c(0, 10)
+) |> head (n = 5)
 draw_intensity(
   lambda = lambda_fun, # log-linear majorizer
   lambda_maj = c(intercept = 0.01, slope = 0.03),
-  exp_maj = TRUE, range_t = c(0, 10), atmost1 = FALSE
-)
+  exp_maj = TRUE, range_t = c(0, 10)
+) |> head (n = 5)
 @
 
 
@@ -407,9 +396,8 @@ which is specified as a vector of length $M+1$ including the points $(a, [b_m]_{
 draw_intensity_step(
   lambda = lambda_fun,
   lambda_maj_vector = lambda_fun(1:10), # 1:10 (10 intensity values)
-  times_vector = 0:10, # 0:10 (11 interval bounds)
-  atmost1 = FALSE
-)
+  times_vector = 0:10 # 0:10 (11 interval bounds)
+) |> head(n = 5)
 @
 
 \subsection{The time transformation or inversion algorithm}\label{sec:inversion}
@@ -422,14 +410,12 @@ Function \fct{draw\_cumulative\_intensity\_inversion} works with a cumulative in
 <<demo-draw_cumulative_intensity_inversion>>=
 Lambda_fun <- function(t) 50 * exp(0.02 * t) - 50
 Lambda_inv_fun <- function(z) 50 * log((z + 50) / 50)
-
 draw_cumulative_intensity_inversion(
   Lambda = Lambda_fun,
   Lambda_inv = Lambda_inv_fun,
   range_t = c(5, 10.5),
-  range_L = Lambda_fun(c(5, 10.5)),
-  atmost1 = FALSE
-)
+  range_L = Lambda_fun(c(5, 10.5))
+) |> head(n = 5)
 @
 
 \input{algorithms/alg_nhppp_inversion}
@@ -461,8 +447,7 @@ Function \fct{ztdraw\_cumulative\_intensity} conditions that at least one event 
 draw_cumulative_intensity_orderstats(
   Lambda = Lambda_fun,
   Lambda_inv = Lambda_inv_fun,
-  range_t = c(4.1, 7.6),
-  atmost1 = FALSE
+  range_t = c(4.1, 7.6)
 )
 @
 
@@ -470,15 +455,12 @@ draw_cumulative_intensity_orderstats(
 ztdraw_cumulative_intensity(
   Lambda = Lambda_fun,
   Lambda_inv = Lambda_inv_fun,
-  range_t = c(4.1, 7.6),
-  atmost1 = FALSE
+  range_t = c(4.1, 7.6)
 )
 @
 
 
-
-
-
+\newpage
 \section{Special cases}\label{sec:special_cases}
 
 The \pkg{nhppp} package implements several special cases where the intensity function $\lambda(\cdot)$, the integrated intensity function $\Lambda(\cdot)$, and its inverse $\Lambda^{-1}(\cdot)$ have straightforward analytical expressions.
@@ -490,12 +472,11 @@ Functions \fct{draw\_sc\_step} and \fct{draw\_sc\_step\_regular} sample piecewis
 draw_sc_step(
   lambda_vector = 1:5, times_vector = c(0.5, 1, 2.4, 3.1, 4.9, 5.9),
   atmost1 = FALSE, atleast1 = FALSE
-)
-
+) |> head(n = 5)
 draw_sc_step_regular(
   lambda_vector = 1:5, range_t = c(0.5, 5.9), atmost1 = FALSE,
   atleast1 = FALSE
-)
+) |> head(n = 5)
 @
 
 
@@ -520,14 +501,8 @@ Functions \fct{draw\_sc\_linear} and \fct{ztdraw\_sc\_linear} sample zero or mor
 \end{align*}
 
 <<demo-zt-draw_sc_linear>>=
-draw_sc_linear(
-  alpha = 3, beta = -0.5, range_t = c(0, 10),
-  atmost1 = FALSE
-)
-ztdraw_sc_linear(
-  alpha = 0.5, beta = 0.2, range_t = c(0, 10),
-  atmost1 = FALSE
-)
+draw_sc_linear(alpha = 3, beta = -0.5, range_t = c(0, 10)) |> head(n = 5)
+ztdraw_sc_linear(alpha = 0.5, beta = 0.2, range_t = c(9.999, 10))
 @
 
 An analogous set of functions (\fct{[nhppp|ztnhppp]\_sc\_loglinear}) samples from log-linear intensity functions
@@ -541,17 +516,11 @@ An analogous set of functions (\fct{[nhppp|ztnhppp]\_sc\_loglinear}) samples fro
 \end{align*}
 The sampling algorithm is a variation of Algorithm~\ref{alg:NHPPP_inversion}, as described in~\citet{lewis1976linear}. Example usage follows.
 <<demo-draw_sc_loglinear>>=
-draw_sc_loglinear(
-  alpha = 1, beta = -0.02, range_t = c(8, 10),
-  atmost1 = FALSE
-)
+draw_sc_loglinear(alpha = 1, beta = -0.02, range_t = c(8, 10))
 @
 
 <<demo-ztdraw_sc_loglinear>>=
-ztdraw_sc_loglinear(
-  alpha = 1, beta = -0.02, range_t = c(9.8, 10),
-  atmost1 = FALSE
-)
+ztdraw_sc_loglinear(alpha = 1, beta = -0.02, range_t = c(9, 10))
 @
 
 
@@ -1187,7 +1156,7 @@ epdf_r_pkg_times <- gridExtra::grid.arrange(
 )
 @
 
-
+\newpage
 \subsection{Time performance}\label{sec:example-time-performance}
 
 \subsubsection{Time performance of nonvectorized functions}\label{sec:nonvectorized-functions}
@@ -1404,14 +1373,14 @@ were used for automatic report generation. Packages
 \pkg{latex2exp}~{\Sexpr{utils::packageVersion("latex2exp")}}~\citep{latex2exp-package}
 were used for plot generation and \LaTeX formatting.
 Packages
-\pkg{nhppp}~{\Sexpr{utils::packageVersion("nhppp")}}, %~\citep{nhppp-package},
+\pkg{nhppp}~{\Sexpr{utils::packageVersion("nhppp")}}~\citep{nhppp-package},
 \pkg{bench}~{\Sexpr{utils::packageVersion("bench")}}~\citep{bench-package},
 \pkg{rstream}~{\Sexpr{utils::packageVersion("rstream")}}~\citep{rstream-package},
 \pkg{otinference}~{\Sexpr{utils::packageVersion("otinference")}}~\citep{otinference-package}, and
 \pkg{parallel}~{\Sexpr{utils::packageVersion("parallel")}}
 were used in the examples and the analyses.
 
-All computations were done on an Apple M1 Max machine with 64 megabytes of random access memory.
+All computations were done on an Apple M1 Max machine with 64 megabytes of random access memory. A preprint of the current paper is in~\citet{trikalinos2024nhppp}.
 %
 \proglang{R} itself
 and all aforementioned packages are available from the Comprehensive
@@ -1451,8 +1420,7 @@ If $\lambda(t)$ is monotonic, the least upper bound (supremum) is always found a
 
 The algorithm should be started with a good partitioning of the time interval. In practice, it is generally easy to specify equispaced intervals that are fine enough and impose little computational penalty for the application.
 
-The \pkg{nhppp}
-function \fct{get\_step\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{draw\_intensity\_step}, \fct{draw\_sc\_step}, \fct{draw\_sc\_step\_regular} and \fct{vdraw\_sc\_step\_regular} expect the majorizer function values as an argument.
+Function \fct{get\_step\_majorizer} implements Algorithm~\ref{alg:lambda_majorizer}. Functions \fct{draw\_intensity\_step}, \fct{draw\_sc\_step}, \fct{draw\_sc\_step\_regular} and \fct{vdraw\_sc\_step\_regular} expect the majorizer function values as an argument.
 <<app-majorizer>>=
 get_step_majorizer(
   fun = abs, breaks = -5:5, is_monotone = FALSE,
