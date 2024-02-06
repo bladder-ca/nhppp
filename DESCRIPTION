@@ -17,7 +17,9 @@ Description: Simulates events from one dimensional nonhomogeneous Poisson point 
 License: GPL (>= 3)
 Imports: 
     lifecycle,
-    rstream
+    rstream, 
+    Rcpp (>= 1.0.12)
+LinkingTo: Rcpp
 Encoding: UTF-8
 Language: es
 Roxygen: list(markdown = TRUE)
