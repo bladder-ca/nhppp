@@ -3,7 +3,7 @@
 \name{vztdraw_sc_step_regular}
 \alias{vztdraw_sc_step_regular}
 \title{Vectorized sampling from zero-truncated NHPPPs with piecewise constant intensities
-with same interval lengths}
+with same interval lengths (R)}
 \usage{
 vztdraw_sc_step_regular(
   Lambda_matrix = NULL,

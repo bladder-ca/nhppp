@@ -9,11 +9,11 @@ L <- lambda_death |>
   tidyr::pivot_wider( names_from = age, values_from = estimate) |>
   as.matrix()
 
-n_people <- 100
+n_people <- 10000
 L_mat <- L[rep(1, n_people),]
 
 
-death_other_causes <- nhppp::vztdraw_sc_step_regular(Lambda_matrix = L_mat,
+death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
                                                      range_t = c(40, 77),
                                                      atmost1 = TRUE)
 
@@ -37,3 +37,4 @@ lesion_times <- vdraw_intensity_step_regular(
   lambda_maj_matrix = l_maj_mat,
   range_t = cbind(rep(40, n_people), death_other_causes)
 )
+lesion_times

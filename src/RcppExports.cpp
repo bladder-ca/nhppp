@@ -10,6 +10,30 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// find_upper_bound_index
+int find_upper_bound_index(const Rcpp::NumericVector& L, const int start, const double tau);
+RcppExport SEXP _nhppp_find_upper_bound_index(SEXP LSEXP, SEXP startSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const int >::type start(startSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_upper_bound_index(L, start, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matrix_cumsum_columns
+Rcpp::NumericMatrix matrix_cumsum_columns(const Rcpp::NumericMatrix& X);
+RcppExport SEXP _nhppp_matrix_cumsum_columns(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(matrix_cumsum_columns(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // matrix_cumsum_columns_inplace
 void matrix_cumsum_columns_inplace(NumericMatrix& X);
 RcppExport SEXP _nhppp_matrix_cumsum_columns_inplace(SEXP XSEXP) {
@@ -30,26 +54,85 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// vdraw_sc_step_regular
-NumericMatrix vdraw_sc_step_regular(NumericMatrix& lambda, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
-RcppExport SEXP _nhppp_vdraw_sc_step_regular(SEXP lambdaSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+// rztpois
+int rztpois(const double lambda);
+RcppExport SEXP _nhppp_rztpois(SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rztpois(lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rztpois_vec
+Rcpp::IntegerVector rztpois_vec(const Rcpp::NumericVector& lambda);
+RcppExport SEXP _nhppp_rztpois_vec(SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rztpois_vec(lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// step_regular_inverse
+Rcpp::NumericMatrix step_regular_inverse(Rcpp::NumericMatrix& Z, int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericVector& interval_duration, const Rcpp::NumericVector& range_t, bool atmost1);
+RcppExport SEXP _nhppp_step_regular_inverse(SEXP ZSEXP, SEXP max_eventsSEXP, SEXP LambdaSEXP, SEXP TauSEXP, SEXP interval_durationSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< int >::type max_events(max_eventsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Lambda(LambdaSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type interval_duration(interval_durationSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type range_t(range_tSEXP);
+    Rcpp::traits::input_parameter< bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(step_regular_inverse(Z, max_events, Lambda, Tau, interval_duration, range_t, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vdraw_sc_step_regular
+NumericMatrix vdraw_sc_step_regular(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
+RcppExport SEXP _nhppp_vdraw_sc_step_regular(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular(lambda, is_cumulative, range_t, tol, atmost1));
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular(rate, is_cumulative, range_t, tol, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vztdraw_sc_step_regular
+NumericMatrix vztdraw_sc_step_regular(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const bool atmost1);
+RcppExport SEXP _nhppp_vztdraw_sc_step_regular(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_regular(rate, is_cumulative, range_t, atmost1));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_nhppp_find_upper_bound_index", (DL_FUNC) &_nhppp_find_upper_bound_index, 3},
+    {"_nhppp_matrix_cumsum_columns", (DL_FUNC) &_nhppp_matrix_cumsum_columns, 1},
     {"_nhppp_matrix_cumsum_columns_inplace", (DL_FUNC) &_nhppp_matrix_cumsum_columns_inplace, 1},
     {"_nhppp_matrix_diff_columns_inplace", (DL_FUNC) &_nhppp_matrix_diff_columns_inplace, 1},
+    {"_nhppp_rztpois", (DL_FUNC) &_nhppp_rztpois, 1},
+    {"_nhppp_rztpois_vec", (DL_FUNC) &_nhppp_rztpois_vec, 1},
+    {"_nhppp_step_regular_inverse", (DL_FUNC) &_nhppp_step_regular_inverse, 7},
     {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
+    {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},
     {NULL, NULL, 0}
 };
 

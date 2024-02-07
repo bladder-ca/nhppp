@@ -108,6 +108,41 @@ test_that("vdraw_sc_step_regular() agrees with strung together constant rates", 
 })
 
 
+
+test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rates", {
+  r_ppp_sequential <- unlist(lapply(
+    integer(10000),
+    function(x) {
+      c(
+        ppp_sequential(range_t = c(1, 2), rate = 1, atmost1 = FALSE),
+        ppp_sequential(range_t = c(2, 3), rate = 10, atmost1 = FALSE),
+        ppp_sequential(range_t = c(3, 5), rate = 3, atmost1 = FALSE)
+      )
+    }
+  ))
+
+  Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
+
+  r_vdraw_sc_step_regular <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
+  compare_ppp_vectors(ppp1 = r_ppp_sequential, ppp2 = r_vdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
+
+  r_ppp_sequential1 <- unlist(lapply(
+    integer(10000),
+    function(x) {
+      c(
+        ppp_sequential(range_t = c(1, 2), rate = 1, atmost1 = TRUE),
+        ppp_sequential(range_t = c(2, 3), rate = 10, atmost1 = TRUE),
+        ppp_sequential(range_t = c(3, 5), rate = 3, atmost1 = TRUE)
+      )[1]
+    }
+  ))
+  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
+  compare_ppp_vectors(ppp1 = r_ppp_sequential1, ppp2 = r_vdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
+})
+
+
 test_that("NHPPP methods agree on the first time to event with constant rate", {
   l <- function(t) 2
   L <- function(t) 2 * t
