@@ -1,5 +1,5 @@
 #' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
-#'    an interval (thinning method) with piecewise constant_majorizers
+#'    an interval (thinning method) with piecewise constant_majorizers (R)
 #'
 #' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
 #'    an interval (thinning method) with piecewise constant_majorizers.

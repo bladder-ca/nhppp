@@ -12,14 +12,16 @@ NumericMatrix vdraw_sc_step_regular(
 ) {
   int n_intervals = rate.cols();
   int n_draws = rate.rows();  
+  NumericVector interval_duration = (range_t(_,1) - range_t(_,0))/n_intervals;
   NumericMatrix Lambda(n_draws, n_intervals);
   if(!is_cumulative) {
     Lambda = matrix_cumsum_columns(rate);
+    for(int i = 0; i!= n_intervals; ++i){
+      Lambda.column(i) = Lambda.column(i) * interval_duration; 
+    }
   } else {
     Lambda = rate;
   }
-
-  NumericVector interval_duration = (range_t.column(1) - range_t.column(0)) / n_intervals;
 
   int n_max_events = R::qpois(1.0 - tol, max(Lambda), 1, 0);
   if(n_max_events == 0) {
@@ -27,10 +29,6 @@ NumericMatrix vdraw_sc_step_regular(
     std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
     return(Z);
   }
-
-  NumericMatrix Z(n_draws, n_max_events); 
-  std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
-
 
   NumericMatrix Tau(n_draws, n_max_events);
   for(int i =0; i!=n_draws*n_max_events; ++i) {
@@ -41,7 +39,7 @@ NumericMatrix vdraw_sc_step_regular(
   }
  
 
-  return step_regular_inverse(Z, n_max_events, Lambda, Tau, interval_duration, range_t, atmost1);
+  return step_regular_inverse(n_max_events, Lambda, Tau, range_t, atmost1);
 }
 
 

@@ -13,6 +13,10 @@ matrix_cumsum_columns_inplace <- function(X) {
     invisible(.Call(`_nhppp_matrix_cumsum_columns_inplace`, X))
 }
 
+matrix_diff_columns <- function(X) {
+    .Call(`_nhppp_matrix_diff_columns`, X)
+}
+
 matrix_diff_columns_inplace <- function(X) {
     invisible(.Call(`_nhppp_matrix_diff_columns_inplace`, X))
 }
@@ -25,8 +29,12 @@ rztpois_vec <- function(lambda) {
     .Call(`_nhppp_rztpois_vec`, lambda)
 }
 
-step_regular_inverse <- function(Z, max_events, Lambda, Tau, interval_duration, range_t, atmost1) {
-    .Call(`_nhppp_step_regular_inverse`, Z, max_events, Lambda, Tau, interval_duration, range_t, atmost1)
+step_regular_inverse <- function(max_events, Lambda, Tau, range_t, atmost1) {
+    .Call(`_nhppp_step_regular_inverse`, max_events, Lambda, Tau, range_t, atmost1)
+}
+
+vdraw_intensity_step_regular <- function(lambda, rate_maj, is_cumulative, range_t, tol, atmost1) {
+    .Call(`_nhppp_vdraw_intensity_step_regular`, lambda, rate_maj, is_cumulative, range_t, tol, atmost1)
 }
 
 vdraw_sc_step_regular <- function(rate, is_cumulative, range_t, tol, atmost1) {

@@ -12,6 +12,8 @@ void matrix_diff_columns_inplace(Rcpp::NumericMatrix & X);
 
 Rcpp::NumericMatrix matrix_cumsum_columns(const Rcpp::NumericMatrix & X);
 
+Rcpp::NumericMatrix matrix_diff_columns(const Rcpp::NumericMatrix & X);
+
 int find_upper_bound_index(
   const Rcpp::NumericVector& L, 
   const int start, 
@@ -33,13 +35,19 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular(
 );
 
 
+Rcpp::NumericMatrix vdraw_intensity_step_regular(
+  Rcpp::Function lambda,
+  const Rcpp::NumericMatrix & rate_maj,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & range_t,
+  const double tol,
+  const bool atmost1);
+
 Rcpp::NumericMatrix step_regular_inverse(
-  Rcpp::NumericMatrix & Z, 
   int max_events, 
   const Rcpp::NumericMatrix & Lambda,
   const Rcpp::NumericMatrix & Tau, 
-  const Rcpp::NumericVector & interval_duration,
-  const Rcpp::NumericVector & range_t, 
+  const Rcpp::NumericMatrix & range_t, 
   bool atmost1
 );
 

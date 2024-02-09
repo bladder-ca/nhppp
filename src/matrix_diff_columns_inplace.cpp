@@ -1,8 +1,8 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+#include "nhppp.h"
+
 // [[Rcpp::export]]
-void matrix_diff_columns_inplace(NumericMatrix & X) {
+void matrix_diff_columns_inplace(Rcpp::NumericMatrix & X) {
   for(int c = X.cols() - 1; c != 0 ; --c){
-    X(_,c) = X(_,c) - X(_,c-1);
+    X(Rcpp::_,c) = X(Rcpp::_,c) - X(Rcpp::_,c-1);
   }
 }

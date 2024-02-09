@@ -3,20 +3,26 @@
 
 // [[Rcpp::export]]
 Rcpp::NumericMatrix step_regular_inverse(
-  Rcpp::NumericMatrix & Z, 
   int max_events,
   const Rcpp::NumericMatrix & Lambda,
   const Rcpp::NumericMatrix & Tau, 
-  const Rcpp::NumericVector & interval_duration,
-  const Rcpp::NumericVector & range_t, 
+  const Rcpp::NumericMatrix & range_t, 
   bool atmost1
 ) {
+
 
   Rcpp::NumericVector L;
   int i1, i2, ev_max = 0;
   int n_draws = Lambda.rows(); 
   int n_intervals = Lambda.cols();
   double L0;
+
+  Rcpp::NumericVector interval_duration = (range_t.column(1) - range_t.column(0)) / n_intervals;
+
+  Rcpp::NumericMatrix Z(n_draws, max_events); 
+  std::fill( Z.begin(), Z.end(), Rcpp::NumericVector::get_na() ) ;
+
+  
 
   for(int draw = 0; draw != n_draws; ++draw){
     i1 = 0; 
