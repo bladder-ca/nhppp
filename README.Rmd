@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 set.seed(2024)
 ```
 
-# nhppp  <img src="man/figures/logo.png" align="right" width=50%>
+# nhppp  <img src="man/figures/logo.png" align="right" width="100">
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/bladder-ca/nhppp-fast/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bladder-ca/nhppp-fast?branch=main)
