@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nhppp <img src="man/figures/logo.png" align="right" />
+# nhppp <img src="man/figures/logo.png" align = "right" height = "277" />
 
 <!-- badges: start -->
 
