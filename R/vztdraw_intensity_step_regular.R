@@ -25,23 +25,23 @@
 #'  )
 #' @export
 vztdraw_intensity_step_regular <- function(lambda,
-                                           lambda_args = NULL,
-                                           Lambda_maj_matrix = NULL,
-                                           lambda_maj_matrix = NULL,
+                                           lambda_args,
+                                           Lambda_maj_matrix,
+                                           lambda_maj_matrix,
                                            range_t = c(0, 10),
                                            tol = 10^-6,
                                            atmost1 = FALSE) {
 
 
-
+  #browser()
   Z <- vdraw_intensity_step_regular(lambda = lambda,
-                                           lambda_args = lambda_args,
-                                           Lambda_maj_matrix = Lambda_maj_matrix,
-                                           lambda_maj_matrix = lambda_maj_matrix,
-                                           range_t = range_t,
-                                           tol = tol,
-                                           atmost1 = atmost1,
-                                           force_zt = TRUE)
+                                    lambda_args = lambda_args,
+                                    Lambda_maj_matrix = Lambda_maj_matrix,
+                                    lambda_maj_matrix = lambda_maj_matrix,
+                                    range_t = range_t,
+                                    tol = tol,
+                                    atmost1 = atmost1,
+                                    force_zt = TRUE)
 
 
   if(!is.matrix(range_t)) {
@@ -63,7 +63,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                          range_t = range_t[has_no_times,, drop=FALSE],
                                          tol = tol,
                                          atmost1 = atmost1,
-                                         force_zt = TRUE)
+                                         force_zero_truncated_majorizer = TRUE)
 
     diff_cols <- ncol(Z_add) - ncol(Z)
     if(diff_cols>0) {

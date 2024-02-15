@@ -25,15 +25,15 @@
 #'  )
 #' @export
 vdraw_intensity_step_regular <- function(lambda,
-                                         lambda_args = NULL,
-                                         Lambda_maj_matrix = NULL,
-                                         lambda_maj_matrix = NULL,
-                                         range_t = c(0, 10),
+                                         lambda_args,
+                                         Lambda_maj_matrix,
+                                         lambda_maj_matrix,
+                                         range_t,
                                          tol = 10^-6,
                                          atmost1 = FALSE,
-                                         force_zt = FALSE) {
+                                         ...) {
   #browser()
-  if (!is.null(Lambda_maj_matrix)) {
+  if (!missing(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
     n_draws <- nrow(Lambda_maj_matrix)
@@ -48,7 +48,7 @@ vdraw_intensity_step_regular <- function(lambda,
 
   # Towards the end, I need lambda_maj_matrix
   # make this a helper function
-  if (is.null(lambda_maj_matrix)) {
+  if (missing(lambda_maj_matrix)) {
     lambda_maj_matrix <- matrix(0, ncol = n_intervals, nrow = n_draws)
     lambda_maj_matrix[, 1] <- Lambda_maj_matrix[, 1] / interval_duration
     for (col in 2:n_intervals) {
@@ -57,14 +57,11 @@ vdraw_intensity_step_regular <- function(lambda,
   }
   mode(lambda_maj_matrix) <- "numeric"
 
-  if (!force_zt) {
     vdraw_fun <- vdraw_sc_step_regular
-  } else {
-    vdraw_fun <- vztdraw_sc_step_regular
+  if(!("force_zt_majorizer" %in% ...names() && force_zt_majorizer)){
+    vdraw_fun <- vdraw_sc_step_regular
   }
-
   Z_star <- vdraw_fun(
-    Lambda_matrix = Lambda_maj_matrix,
     lambda_matrix = lambda_maj_matrix,
     range_t = range_t,
     tol = tol,
@@ -88,7 +85,7 @@ vdraw_intensity_step_regular <- function(lambda,
     return(Z[, 1, drop = FALSE])
   }
   for (r in 1:n_draws) {
-    tmp <- lambda(Z_star[r, ], lambda_args) / lambda_maj_matrix[r, lambda_maj_indices_for_events[r, ]] > U[r, ]
+    tmp <- lambda(Z_star[r, ], lambda_args=lambda_args) / lambda_maj_matrix[r, lambda_maj_indices_for_events[r, ]] > U[r, ]
     n_accepted_in_row <- sum(tmp, na.rm = TRUE)
     if (n_accepted_in_row != 0) {
       Z[r, 1:n_accepted_in_row] <- sort(Z_star[r, tmp], na.last = TRUE)[1:n_accepted_in_row]
