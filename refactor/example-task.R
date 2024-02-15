@@ -14,16 +14,23 @@ L_mat <- L[rep(1, n_people),]
 
 
 death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
-                                                     range_t = c(40, 77),
+                                                     range_t = c(40, 110),
                                                      atmost1 = TRUE)
 
 
 
 ### Maybe this code is buggy
 
-lesion_intensity_function <- function(age, extra_args=list(center_age=40)) {
-  0.01*(age-extra_args$center_age)^2
+lesion_intensity_function <- function(age, lambda_arg = list(trunc_age = 80, jump_age = 60)) {
+  # 0.01*(age-extra_args$center_age)^2
+  exp(-10 + 0.08 * age * as.numeric(age < lambda_arg$trunc_age) +
+        0.08 * lambda_arg$trunc_age * as.numeric(age >= lambda_arg$trunc_age) +
+        0.5 * as.numeric(age >= lambda_arg$jump_age))
 }
+
+plot(x = c(40:100), y = lesion_intensity_function(age = c(40:100)))
+
+
 n_lambda_intervals <- 20
 l_maj_mat <- matrix(NA, ncol = n_lambda_intervals, nrow = n_people)
 for(r in 1:n_people) {
@@ -37,4 +44,5 @@ lesion_times <- vdraw_intensity_step_regular(
   lambda_maj_matrix = l_maj_mat,
   range_t = cbind(rep(40, n_people), death_other_causes)
 )
-lesion_times
+
+table(is.na(lesion_times))
