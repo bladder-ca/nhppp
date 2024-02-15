@@ -19,13 +19,11 @@ death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
 
 
 
-### Maybe this code is buggy
 
-lesion_intensity_function <- function(age, lambda_arg = list(trunc_age = 80, jump_age = 60)) {
-  # 0.01*(age-extra_args$center_age)^2
-  exp(-10 + 0.08 * age * as.numeric(age < lambda_arg$trunc_age) +
-        0.08 * lambda_arg$trunc_age * as.numeric(age >= lambda_arg$trunc_age) +
-        0.5 * as.numeric(age >= lambda_arg$jump_age))
+lesion_intensity_function <- function(age, lambda_args = list(trunc_age = 80, jump_age = 60), ...) {
+   exp(-10 + 0.08 * age * as.numeric(age < lambda_args$trunc_age) +
+         0.08 * lambda_args$trunc_age * as.numeric(age >= lambda_args$trunc_age) +
+         0.5 * as.numeric(age >= lambda_args$jump_age))
 }
 
 plot(x = c(40:100), y = lesion_intensity_function(age = c(40:100)))
@@ -39,10 +37,14 @@ for(r in 1:n_people) {
                       lesion_intensity_function(t_steps[2:(n_lambda_intervals+1)]))
 }
 
-lesion_times <- vdraw_intensity_step_regular(
+t1 <- Sys.time()
+lesion_times <- vztdraw_intensity_step_regular(
   lambda = lesion_intensity_function,
+  lambda_args = list(trunc_age = 80, jump_age = 60),
   lambda_maj_matrix = l_maj_mat,
   range_t = cbind(rep(40, n_people), death_other_causes)
 )
+dt <- Sys.time() - t1
 
-table(is.na(lesion_times))
+
+

@@ -30,8 +30,9 @@ vdraw_intensity_step_regular <- function(lambda,
                                          lambda_maj_matrix = NULL,
                                          range_t = c(0, 10),
                                          tol = 10^-6,
-                                         atmost1 = FALSE) {
-  # browser()
+                                         atmost1 = FALSE,
+                                         force_zt = FALSE) {
+  #browser()
   if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
@@ -56,8 +57,13 @@ vdraw_intensity_step_regular <- function(lambda,
   }
   mode(lambda_maj_matrix) <- "numeric"
 
+  if (!force_zt) {
+    vdraw_fun <- vdraw_sc_step_regular
+  } else {
+    vdraw_fun <- vztdraw_sc_step_regular
+  }
 
-  Z_star <- vdraw_sc_step_regular(
+  Z_star <- vdraw_fun(
     Lambda_matrix = Lambda_maj_matrix,
     lambda_matrix = lambda_maj_matrix,
     range_t = range_t,
@@ -88,13 +94,6 @@ vdraw_intensity_step_regular <- function(lambda,
       Z[r, 1:n_accepted_in_row] <- sort(Z_star[r, tmp], na.last = TRUE)[1:n_accepted_in_row]
     }
   }
-  for (col in 1:n_max_events) {
-    if (all(is.na(Z[, col]))) {
-      if (col > 2) {
-        return(Z[, 1:(col - 1), drop = FALSE])
-      } else {
-        return(Z[, 1, drop = FALSE])
-      }
-    }
-  }
+  num_draws_with_na <- colSums(is.na(Z))
+  return(Z[,num_draws_with_na != n_draws, drop = FALSE])
 }

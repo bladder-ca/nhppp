@@ -42,14 +42,16 @@ vdraw_intensity_step_regular_cpp <- function(lambda,
   }
   if(!is.matrix(range_t)) {
     range_t = matrix(rep(range_t, each = nrow(rate)), ncol = 2)
-  } else if(all.equal(dim(range_t), c(1,2))) {
+  } else if(nrow(range_t) == 1) {
     range_t <- range_t[rep(1, nrow(rate)),]
-  } else {
+  } else if(nrow(range_t) != nrow(rate)){
     stop("`range_t` should have as many rows as `lambda_maj_matrix` or `Lambda_maj_matrix`")
+  } else {
+    range_t
   }
 
   mode(rate) <- "numeric"
-
+browser()
   return(
     .Call(`_nhppp_vdraw_intensity_step_regular`, lambda,
           rate, is_cumulative_rate, range_t, tol, atmost1)

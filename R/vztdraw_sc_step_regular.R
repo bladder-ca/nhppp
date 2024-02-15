@@ -19,7 +19,8 @@
 vztdraw_sc_step_regular <- function(Lambda_matrix = NULL,
                                     lambda_matrix = NULL,
                                     range_t = c(0, 10),
-                                    atmost1 = FALSE) {
+                                    atmost1 = FALSE, 
+                                    ...) {
   # browser()
   if (!is.matrix(range_t)) {
     range_t <- matrix(range_t, nrow = 1)

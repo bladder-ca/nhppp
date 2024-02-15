@@ -12,7 +12,7 @@ NumericMatrix vdraw_intensity_step_regular(
 
 
   int n_intervals = rate_maj.cols();
-  int n_draws = rate_maj.rows();  
+  int n_draws = rate_maj.rows();
   NumericVector interval_duration = (range_t(_,1) - range_t(_,0))/n_intervals;
   NumericMatrix Lambda_maj(n_draws, n_intervals);
   NumericMatrix lambda_maj(n_draws, n_intervals);
@@ -22,22 +22,23 @@ NumericMatrix vdraw_intensity_step_regular(
     Lambda_maj = rate_maj;
     Lambda_maj = matrix_cumsum_columns(rate_maj);
     for(int i = 0; i!= n_intervals; ++i){
-      Lambda_maj.column(i) = Lambda_maj.column(i) * interval_duration; 
+      Lambda_maj.column(i) = Lambda_maj.column(i) * interval_duration;
     }
   } else {
     lambda_maj = matrix_diff_columns(rate_maj);
     for(int i = 0; i!= n_intervals; ++i){
-      lambda_maj.column(i) = lambda_maj.column(i) / interval_duration; 
+      lambda_maj.column(i) = lambda_maj.column(i) / interval_duration;
     }
     Lambda_maj = rate_maj;
   }
 
   NumericMatrix Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
-  
+
+
   bool accept;
-  int interval;  
-  int acc_i = 0; 
-  int max_acc_i = 0; 
+  int interval;
+  int acc_i = 0;
+  int max_acc_i = 0;
 
   NumericMatrix lambda_star = lambda(Zstar);
 
@@ -57,8 +58,9 @@ NumericMatrix vdraw_intensity_step_regular(
           break;
         }
       }
-    }  
+    }
   }
+
   return Z(Range(0, n_draws-1), Range(0, max_acc_i));
 
 
