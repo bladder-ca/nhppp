@@ -33,6 +33,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            atmost1 = FALSE) {
 
 
+
   Z <- vdraw_intensity_step_regular(lambda = lambda,
                                            lambda_args = lambda_args,
                                            Lambda_maj_matrix = Lambda_maj_matrix,
@@ -42,6 +43,14 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            atmost1 = atmost1,
                                            force_zt = TRUE)
 
+
+  if(!is.matrix(range_t)) {
+    range_t <- matrix(rep(range_t, each=nrow(Z)), ncol =2)
+  } else if(nrow(range_t)==1) {
+    range_t <- range_t[rep(1,ncol(Z)),]
+  } else {
+  }
+
   has_no_times <- is.na(Z[,1])
   max_events <- ncol(Z)
 
@@ -49,9 +58,9 @@ vztdraw_intensity_step_regular <- function(lambda,
 
     Z_add <- vdraw_intensity_step_regular(lambda = lambda,
                                          lambda_args = lambda_args,
-                                         Lambda_maj_matrix = Lambda_maj_matrix[has_no_times,],
-                                         lambda_maj_matrix = lambda_maj_matrix[has_no_times,],
-                                         range_t = range_t[has_no_times,],
+                                         Lambda_maj_matrix = Lambda_maj_matrix[has_no_times,, drop=FALSE],
+                                         lambda_maj_matrix = lambda_maj_matrix[has_no_times,, drop=FALSE],
+                                         range_t = range_t[has_no_times,, drop=FALSE],
                                          tol = tol,
                                          atmost1 = atmost1,
                                          force_zt = TRUE)

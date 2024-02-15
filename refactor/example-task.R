@@ -37,14 +37,26 @@ for(r in 1:n_people) {
                       lesion_intensity_function(t_steps[2:(n_lambda_intervals+1)]))
 }
 
-t1 <- Sys.time()
 lesion_times <- vztdraw_intensity_step_regular(
   lambda = lesion_intensity_function,
   lambda_args = list(trunc_age = 80, jump_age = 60),
   lambda_maj_matrix = l_maj_mat,
   range_t = cbind(rep(40, n_people), death_other_causes)
 )
-dt <- Sys.time() - t1
 
+for(i in 1:5) {
+  tic()
+  death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
+                                                           range_t = c(lesion_times[,1], 110),
+                                                           atmost1 = TRUE)
+
+  lesion_times <- vztdraw_intensity_step_regular(
+    lambda = lesion_intensity_function,
+    lambda_args = list(trunc_age = 80, jump_age = 60),
+    lambda_maj_matrix = l_maj_mat,
+    range_t = cbind(rep(40, n_people), death_other_causes)
+  )
+  toc()
+}
 
 
