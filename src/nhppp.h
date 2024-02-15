@@ -51,6 +51,21 @@ Rcpp::NumericMatrix step_regular_inverse(
   bool atmost1
 );
 
+
+// class RegularStepInfo {
+//   const bool atmost1 {false}; 
+//   const int max_events {0}; 
+//   const Rcpp::NumericMatrix & range_t {Rcpp::NumericMatrix(1, 1)};
+//   const Rcpp::NumericVector & interval_duration {range_t(Rcpp::_,1) - range_t(Rcpp::_,0)};
+//   Rcpp::NumericMatrix & lambda {Rcpp::NumericMatrix(1, 1)};
+//   Rcpp::NumericMatrix & Lambda {matrix_cumsum_columns(lambda) * interval_duration};
+// };
+
+// Rcpp::NumericMatrix step_regular_inverse2(
+//   const RegularStepInfo & info, 
+//   const Rcpp::NumericMatrix & Tau
+// );
+
 int rztpois(const double lambda);
 
 Rcpp::IntegerVector rztpois_vec(const Rcpp::NumericVector & lambda); 
