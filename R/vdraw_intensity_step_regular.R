@@ -58,7 +58,8 @@ vdraw_intensity_step_regular <- function(lambda,
   mode(lambda_maj_matrix) <- "numeric"
 
   vdraw_fun <- vdraw_sc_step_regular
-  if ("force_zt_majorizer" %in% ...names() && force_zt_majorizer) {
+  if ("force_zt_majorizer" %in% ...names() # && force_zt_majorizer
+      ) {
     vdraw_fun <- vztdraw_sc_step_regular
   }
   Z_star <- vdraw_fun(
@@ -84,7 +85,10 @@ vdraw_intensity_step_regular <- function(lambda,
     Z[order(row(Z), is.na(Z), method = "radix")], # shifts non-NAs to the left
     nrow = nrow(Z), ncol = ncol(Z), byrow = TRUE
   )
-  Z_sorted <- Z_sorted[, colSums(is.na(Z_sorted)) > 0, drop = FALSE] # removes empty columns after the shift
+
+  if(ncol(Z_sorted) > 1) {
+    Z_sorted <- Z_sorted[, colSums(!is.na(Z_sorted)) > 0, drop = FALSE] # removes empty columns after the shift
+  }
 
   if (atmost1) {
     return(Z_sorted[, 1, drop = FALSE])
