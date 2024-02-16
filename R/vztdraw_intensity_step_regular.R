@@ -28,10 +28,10 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            lambda_args,
                                            Lambda_maj_matrix,
                                            lambda_maj_matrix,
-                                           range_t = c(0, 10),
+                                           range_t,
                                            tol = 10^-6,
-                                           atmost1 = FALSE) {
-
+                                           atmost1 = FALSE,
+                                           ...) {
 
   #browser()
   Z <- vdraw_intensity_step_regular(lambda = lambda,
@@ -41,15 +41,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                     range_t = range_t,
                                     tol = tol,
                                     atmost1 = atmost1,
-                                    force_zt = TRUE)
-
-
-  if(!is.matrix(range_t)) {
-    range_t <- matrix(rep(range_t, each=nrow(Z)), ncol =2)
-  } else if(nrow(range_t)==1) {
-    range_t <- range_t[rep(1,ncol(Z)),]
-  } else {
-  }
+                                    force_zt_majorizer = force_zt_majorizer)
 
   has_no_times <- is.na(Z[,1])
   max_events <- ncol(Z)
@@ -59,30 +51,28 @@ vztdraw_intensity_step_regular <- function(lambda,
     Z_add <- vdraw_intensity_step_regular(lambda = lambda,
                                          lambda_args = lambda_args,
                                          Lambda_maj_matrix = Lambda_maj_matrix[has_no_times,, drop=FALSE],
-                                         lambda_maj_matrix = lambda_maj_matrix[has_no_times,, drop=FALSE],
-                                         range_t = range_t[has_no_times,, drop=FALSE],
+                                         lambda_maj_matrix = lambda_maj_matrix[has_no_times, ,drop=FALSE],
+                                         range_t = range_t[has_no_times, , drop=FALSE],
                                          tol = tol,
                                          atmost1 = atmost1,
-                                         force_zero_truncated_majorizer = TRUE)
+                                         force_zt_majorizer = force_zt_majorizer)
 
     diff_cols <- ncol(Z_add) - ncol(Z)
-    if(diff_cols>0) {
-      for(co in 1:diff_cols) {
-        Z <- cbind(Z, rep(NA, nrow(Z)))
-      }
-    } else if (diff_cols < 0) {
-      for(co in 1:abs(diff_cols)) {
-        Z_add <- cbind(Z_add, rep(NA, sum(has_no_times)))
-      }
-    } else {
-      Z_add
+    if(diff_cols > 0) {
+      Z <- matrix(
+        c(as.vector(Z), rep(NA, times = abs(diff_cols) * nrow(Z))),
+        ncol =  ncol(Z_add), nrow = nrow(Z), byrow = FALSE
+        )
     }
-    #browser()
-    Z[has_no_times,] <- Z_add
+    if (diff_cols < 0) {
+      Z_add <- matrix(
+        c(as.vector(Z_add), rep(NA, times = abs(diff_cols) * nrow(Z_add))),
+        ncol =  ncol(Z), nrow = nrow(Z_add), byrow = FALSE
+        )
+    }
 
+    Z[has_no_times, ] <- Z_add
     has_no_times <- is.na(Z[,1])
-
   }
-
   return(Z)
 }
