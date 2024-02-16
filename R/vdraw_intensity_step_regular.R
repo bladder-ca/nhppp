@@ -58,8 +58,8 @@ vdraw_intensity_step_regular <- function(lambda,
   mode(lambda_maj_matrix) <- "numeric"
 
   vdraw_fun <- vdraw_sc_step_regular
-  if (!("force_zt_majorizer" %in% ...names() && force_zt_majorizer)) {
-    vdraw_fun <- vdraw_sc_step_regular
+  if ("force_zt_majorizer" %in% ...names() && force_zt_majorizer) {
+    vdraw_fun <- vztdraw_sc_step_regular
   }
   Z_star <- vdraw_fun(
     lambda_matrix = lambda_maj_matrix,
@@ -73,9 +73,9 @@ vdraw_intensity_step_regular <- function(lambda,
 
   # Extracts correct majorising values
   lambda_maj_idx <- ceiling((Z_star - range_t[, rep(1, n_max_events)]) / interval_duration)
-  lambda_maj <- array(
+  lambda_maj <- matrix(
     t(lambda_maj_matrix)[lambda_maj_idx + (1:nrow(lambda_maj_matrix) - 1) * ncol(lambda_maj_matrix)],
-    dim(lambda_maj_idx)
+    nrow = nrow(lambda_maj_idx), ncol = ncol(lambda_maj_idx), byrow = FALSE
   )
 
   accept <- ifelse(lambda(Z_star, lambda_args) / lambda_maj > U, TRUE, NA)
