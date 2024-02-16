@@ -20,9 +20,9 @@
 #'
 #' @examples
 #' Z <- vdraw_intensity_step_regular(
-#'  lambda = function(x, ...) 0.1 * x,
-#'  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
-#'  )
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#' )
 #' @export
 vdraw_intensity_step_regular <- function(lambda,
                                          lambda_args = NULL,
@@ -32,7 +32,7 @@ vdraw_intensity_step_regular <- function(lambda,
                                          tol = 10^-6,
                                          atmost1 = FALSE,
                                          force_zt = FALSE) {
-  #browser()
+  # browser()
   if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
@@ -73,27 +73,25 @@ vdraw_intensity_step_regular <- function(lambda,
 
   n_max_events <- ncol(Z_star)
   U <- matrix(stats::runif(length(Z_star)), ncol = n_max_events)
-  lambda_maj_indices_for_events <- ceiling((Z_star - range_t[, rep(1, n_max_events)]) / interval_duration)
 
-  Z <- matrix(NA, ncol = n_max_events, nrow = n_draws)
+  # Extracts correct majorising values
+  lambda_maj_idx <- ceiling((Z_star - range_t[, rep(1, n_max_events)]) / interval_duration)
+  lambda_maj <- array(
+    t(lambda_maj_matrix)[lambda_maj_idx + (1:nrow(lambda_maj_matrix) - 1) * ncol(lambda_maj_matrix)],
+    dim(lambda_maj_idx)
+  )
+
+  accept <- ifelse(lambda(Z_star, lambda_args) / lambda_maj > U, TRUE, NA)
+  Z <- Z_star * accept
+  Z_sorted <- matrix(
+    Z[order(row(Z), is.na(Z), method = "radix")], # shifts non-NAs to the left
+    nrow = nrow(Z), ncol = ncol(Z), byrow = TRUE
+  )
+  Z_sorted <- Z_sorted[, colSums(is.na(Z_sorted)) > 0, drop = FALSE] # removes empty columns after the shift
+
   if (atmost1) {
-    for (r in 1:n_draws) {
-      tmp <- lambda(Z_star[r, ], lambda_args) / lambda_maj_matrix[r, lambda_maj_indices_for_events[r, ]] > U[r, ]
-      n_accepted_in_row <- sum(tmp, na.rm = TRUE)
-      if (n_accepted_in_row != 0) {
-        Z[r, 1:n_accepted_in_row] <- min(Z_star[r, tmp], na.rm = TRUE)
-      }
-    }
-    Z[which(is.infinite(Z[, 1])), 1] <- NA
-    return(Z[, 1, drop = FALSE])
+    return(Z_sorted[, 1, drop = FALSE])
+  } else {
+    return(Z_sorted)
   }
-  for (r in 1:n_draws) {
-    tmp <- lambda(Z_star[r, ], lambda_args) / lambda_maj_matrix[r, lambda_maj_indices_for_events[r, ]] > U[r, ]
-    n_accepted_in_row <- sum(tmp, na.rm = TRUE)
-    if (n_accepted_in_row != 0) {
-      Z[r, 1:n_accepted_in_row] <- sort(Z_star[r, tmp], na.last = TRUE)[1:n_accepted_in_row]
-    }
-  }
-  num_draws_with_na <- colSums(is.na(Z))
-  return(Z[,num_draws_with_na != n_draws, drop = FALSE])
 }
