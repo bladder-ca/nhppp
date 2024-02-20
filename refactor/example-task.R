@@ -39,13 +39,15 @@ for(r in 1:n_people) {
                       lesion_intensity_function(t_steps[2:(n_lambda_intervals+1)]))
 }
 
+tic()
 lesion_times <- vdraw_intensity_step_regular(
     lambda = lesion_intensity_function,
     lambda_args = list(trunc_age = 80, jump_age = 60),
     lambda_maj_matrix = l_maj_mat,
-    range_t = cbind(rep(40, n_people), death_other_causes)
+    range_t = cbind(rep(40, n_people), death_other_causes),
+    force_zt_majorizer = TRUE
   )
-
+toc()
 
 for(i in 1:5) {
   tic()
@@ -53,12 +55,12 @@ for(i in 1:5) {
                                                            range_t = c(40, 110),
                                                            atmost1 = TRUE)
 
-  # vztdraw_intensity_step_regular is buggy
   lesion_times <- vztdraw_intensity_step_regular(
     lambda = lesion_intensity_function,
     lambda_args = list(trunc_age = 80, jump_age = 60),
     lambda_maj_matrix = l_maj_mat,
-    range_t = cbind(rep(40, n_people), death_other_causes)
+    range_t = cbind(rep(40, n_people), death_other_causes),
+    force_zt_majorizer = TRUE
   )
   toc()
 }

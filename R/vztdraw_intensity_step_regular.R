@@ -31,6 +31,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            range_t,
                                            tol = 10^-6,
                                            atmost1 = FALSE,
+                                           force_zt_majorizer = TRUE,
                                            ...) {
 
   #browser()
@@ -50,7 +51,6 @@ vztdraw_intensity_step_regular <- function(lambda,
 
     Z_add <- vdraw_intensity_step_regular(lambda = lambda,
                                          lambda_args = lambda_args,
-                                         Lambda_maj_matrix = Lambda_maj_matrix[has_no_times,, drop=FALSE],
                                          lambda_maj_matrix = lambda_maj_matrix[has_no_times, ,drop=FALSE],
                                          range_t = range_t[has_no_times, , drop=FALSE],
                                          tol = tol,
