@@ -61,13 +61,13 @@ for(i in 1:5) {
     lambda = lesion_intensity_function,
     lambda_args = list(trunc_age = 80, jump_age = 60),
     lambda_maj_matrix = l_maj_mat,
-    range_t = cbind(rep(40, n_people), death_other_causes),
-    force_zt_majorizer = TRUE
+    range_t = cbind(rep(40, n_people), death_other_causes)
   )
   toc()
 }
 
 # Transition parameters
+
 
 edges_dt <- data.table::data.table(
   edge_start = c("PUNLMP [VLIP]", "Ta-LG [HIP LG]",
@@ -121,7 +121,10 @@ verhulst_equation <- function(lesion_age) {
        (exp(growth_rate * lesion_age) - 1))
 }
 
-evaluate_transition_intensity <- function(lesion_age) {
+evaluate_transition_intensity <- function(lesion_age, lambda_args=NULL) {
+  if(!is.null(lambda_args)) {
+    list2env(lambda_args)
+  }
   N <- verhulst_equation(lesion_age = lesion_age)
   edge_log_N * log(N)
 }
@@ -133,8 +136,6 @@ lesion_dt <- data.table::as.data.table(
     spawn_age = 40,
     death_other_causes = death_other_causes,
     lesion_inception = lesion_times[, 1, drop = FALSE],
-    lesion_age = lesion_times[, 1, drop = FALSE] - 40,
-    lesion_stop_age = death_other_causes - lesion_inception,
     lesion_starting_state = sample(x = node_dt[, starting_states],
                                    prob = node_dt[, starting_state_prob],
                                    replace = TRUE,
@@ -143,12 +144,15 @@ lesion_dt <- data.table::as.data.table(
   )
 )
 lesion_dt[, "flat_morphology"] <- ifelse(lesion_dt[, lesion_starting_state == "Tis [CIS]"], 1, 0)
+lesion_dt[, "lesion_stop_age"] <- death_other_causes - lesion_dt[, "lesion_inception"]
 lesion_dt_long <- left_join(lesion_dt, edges_dt,
                         by = c("lesion_starting_state" = "edge_start"),
                         relationship = "many-to-many")
+data.table::setkey(lesion_dt_long, "id")
 
 
 # Majorizer
+
 n_lambda_intervals <- 20
 transiton_maj_mat <- matrix(NA, ncol = n_lambda_intervals, nrow = nrow(lesion_dt_long))
 for(r in 1:nrow(lesion_dt_long)) {
@@ -161,25 +165,35 @@ for(r in 1:nrow(lesion_dt_long)) {
     evaluate_transition_intensity(t_steps[2:(n_lambda_intervals+1)]))
 }
 
+
 # Check the majorizer
-r <- 2
-a <- seq(0,  lesion_dt_long[r, lesion_stop_age], length.out = 20)
-flat_morphology <- lesion_dt_long[r, flat_morphology]
-edge_log_N <- lesion_dt_long[r, edge_log_N]
-l <- evaluate_transition_intensity(a)
-l_max <- transiton_maj_mat[r, ]
-plot(a, l)
-lines(a, l_max)
+# r <- 2
+# a <- seq(0,  lesion_dt_long[r, lesion_stop_age], length.out = 20)
+# flat_morphology <- lesion_dt_long[r, flat_morphology]
+# edge_log_N <- lesion_dt_long[r, edge_log_N]
+# l <- evaluate_transition_intensity(a)
+# l_max <- transiton_maj_mat[r, ]
+#plot(a, l)
+#lines(a, l_max)
 
-# lesion_transition_age <- vdraw_intensity_step_regular(
-#   lambda = evaluate_transition_intensity,
-#   lambda_args = list(flat_morphology = lesion_dt_long[, flat_morphology],
-#                      edge_log_N = lesion_dt_long[, edge_log_N]
-#                      ),
-#   lambda_maj_matrix = transiton_maj_mat,
-#   range_t = as.matrix(lesion_dt[, .(0, lesion_stop_age)])
-# )
 
+tmp <- vdraw_sc_step_regular(
+  lambda_matrix = transiton_maj_mat,
+  range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)]),
+  atmost1 = TRUE
+)
+
+tic()
+lesion_transition_age <- vdraw_intensity_step_regular(
+  lambda = evaluate_transition_intensity,
+  lambda_args = list(flat_morphology = lesion_dt_long[, flat_morphology],
+                     edge_log_N = lesion_dt_long[, edge_log_N]
+                     ),
+  lambda_maj_matrix = transiton_maj_mat,
+  range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)]),
+  atmost1 = TRUE
+)
+toc()
 
 
 

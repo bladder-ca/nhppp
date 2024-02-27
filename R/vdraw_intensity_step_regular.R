@@ -33,7 +33,7 @@ vdraw_intensity_step_regular <- function(lambda,
                                          atmost1 = FALSE,
                                          force_zt_majorizer = FALSE,
                                          ...) {
-  # browser()
+  #browser()
   if (!missing(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)

@@ -31,7 +31,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            range_t,
                                            tol = 10^-6,
                                            atmost1 = FALSE,
-                                           force_zt_majorizer = TRUE,
+                                           #force_zt_majorizer = TRUE,
                                            ...) {
 
   #browser()
@@ -42,7 +42,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                     range_t = range_t,
                                     tol = tol,
                                     atmost1 = atmost1,
-                                    force_zt_majorizer = force_zt_majorizer)
+                                    force_zt_majorizer = TRUE) #force_zt_majorizer)
 
   has_no_times <- is.na(Z[,1])
   max_events <- ncol(Z)
@@ -55,7 +55,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                          range_t = range_t[has_no_times, , drop=FALSE],
                                          tol = tol,
                                          atmost1 = atmost1,
-                                         force_zt_majorizer = force_zt_majorizer)
+                                         force_zt_majorizer = TRUE) #force_zt_majorizer)
 
     diff_cols <- ncol(Z_add) - ncol(Z)
     if(diff_cols > 0) {
