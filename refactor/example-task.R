@@ -39,20 +39,19 @@ for(r in 1:n_people) {
                       lesion_intensity_function(t_steps[2:(n_lambda_intervals+1)]))
 }
 
-tic()
-lesion_times <- vdraw_intensity_step_regular(
+tictoc::tic()
+lesion_times <- vdraw_intensity_step_regular_cpp(
     lambda = lesion_intensity_function,
     lambda_args = list(trunc_age = 80, jump_age = 60),
     lambda_maj_matrix = l_maj_mat,
-    range_t = cbind(rep(40, n_people), death_other_causes),
-    force_zt_majorizer = TRUE
+    range_t = cbind(rep(40, n_people), death_other_causes)
   )
-toc()
+tictoc::toc()
 
 # Sampling conditional of ≥1 lesion
 
 for(i in 1:5) {
-  tic()
+  tictoc::tic()
   death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
                                                            range_t = c(40, 110),
                                                            atmost1 = TRUE)
@@ -63,7 +62,7 @@ for(i in 1:5) {
     lambda_maj_matrix = l_maj_mat,
     range_t = cbind(rep(40, n_people), death_other_causes)
   )
-  toc()
+  tictoc::toc()
 }
 
 # Transition parameters
@@ -145,7 +144,7 @@ lesion_dt <- data.table::as.data.table(
 )
 lesion_dt[, "flat_morphology"] <- ifelse(lesion_dt[, lesion_starting_state == "Tis [CIS]"], 1, 0)
 lesion_dt[, "lesion_stop_age"] <- death_other_causes - lesion_dt[, "lesion_inception"]
-lesion_dt_long <- left_join(lesion_dt, edges_dt,
+lesion_dt_long <- dplyr::left_join(lesion_dt, edges_dt,
                         by = c("lesion_starting_state" = "edge_start"),
                         relationship = "many-to-many")
 data.table::setkey(lesion_dt_long, "id")
@@ -183,8 +182,8 @@ tmp <- vdraw_sc_step_regular(
   atmost1 = TRUE
 )
 
-tic()
-lesion_transition_age <- vdraw_intensity_step_regular(
+tictoc::tic()
+lesion_transition_age <- vdraw_intensity_step_regular_cpp(
   lambda = evaluate_transition_intensity,
   lambda_args = list(flat_morphology = lesion_dt_long[, flat_morphology],
                      edge_log_N = lesion_dt_long[, edge_log_N]
@@ -193,7 +192,7 @@ lesion_transition_age <- vdraw_intensity_step_regular(
   range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)]),
   atmost1 = TRUE
 )
-toc()
+tictoc::toc()
 
 
 
