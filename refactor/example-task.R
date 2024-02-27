@@ -162,9 +162,12 @@ for(r in 1:nrow(lesion_dt_long)) {
 }
 
 # Check the majorizer
-a <- seq(0,  lesion_dt_long[5, lesion_stop_age], length.out = 20)
+r <- 2
+a <- seq(0,  lesion_dt_long[r, lesion_stop_age], length.out = 20)
+flat_morphology <- lesion_dt_long[r, flat_morphology]
+edge_log_N <- lesion_dt_long[r, edge_log_N]
 l <- evaluate_transition_intensity(a)
-l_max <- transiton_maj_mat[5, ]
+l_max <- transiton_maj_mat[r, ]
 plot(a, l)
 lines(a, l_max)
 
