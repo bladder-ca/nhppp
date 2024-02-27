@@ -150,34 +150,42 @@ lesion_dt_long <- dplyr::left_join(lesion_dt, edges_dt,
 data.table::setkey(lesion_dt_long, "id")
 
 
-# Majorizer
+# # Majorizer -- slow
+# tictoc::tic()
+# n_lambda_intervals <- 20
+# transition_maj_mat <- matrix(NA, ncol = n_lambda_intervals, nrow = nrow(lesion_dt_long))
+# for(r in 1:nrow(lesion_dt_long)) {
+#   t_steps <- seq(0, lesion_dt_long[r, lesion_stop_age], length.out = n_lambda_intervals + 1)
+#   flat_morphology <- lesion_dt_long[r, flat_morphology]
+#   edge_log_N <- lesion_dt_long[r, edge_log_N]
+#
+#   transition_maj_mat[r,] <- pmax(
+#     evaluate_transition_intensity(t_steps[1:n_lambda_intervals]),
+#     evaluate_transition_intensity(t_steps[2:(n_lambda_intervals+1)]))
+# }
+# tictoc::toc()
 
+# Majorizer -- ~200 times faster
+tictoc::tic()
+lambda_args <- list(flat_morphology = lesion_dt_long[, flat_morphology],
+                    edge_log_N = lesion_dt_long[, edge_log_N])
 n_lambda_intervals <- 20
-transiton_maj_mat <- matrix(NA, ncol = n_lambda_intervals, nrow = nrow(lesion_dt_long))
-for(r in 1:nrow(lesion_dt_long)) {
-  t_steps <- seq(0, lesion_dt_long[r, lesion_stop_age], length.out = n_lambda_intervals + 1)
-  flat_morphology <- lesion_dt_long[r, flat_morphology]
-  edge_log_N <- lesion_dt_long[r, edge_log_N]
+range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)])
+n_rows <- nrow(lesion_dt_long)
+t_steps <- matrix(
+  rep(range_t[,1], n_lambda_intervals + 1) +
+  rep(seq.int(from = 0, to = 1, length.out = n_lambda_intervals + 1), each = n_rows) *
+  rep(range_t[,2] - range_t[,1], n_lambda_intervals + 1),
+  ncol = n_lambda_intervals + 1)
 
-  transiton_maj_mat[r,] <- pmax(
-    evaluate_transition_intensity(t_steps[1:n_lambda_intervals]),
-    evaluate_transition_intensity(t_steps[2:(n_lambda_intervals+1)]))
-}
-
-
-# Check the majorizer
-# r <- 2
-# a <- seq(0,  lesion_dt_long[r, lesion_stop_age], length.out = 20)
-# flat_morphology <- lesion_dt_long[r, flat_morphology]
-# edge_log_N <- lesion_dt_long[r, edge_log_N]
-# l <- evaluate_transition_intensity(a)
-# l_max <- transiton_maj_mat[r, ]
-#plot(a, l)
-#lines(a, l_max)
+L <- evaluate_transition_intensity(t_steps[,], lambda_args = lambda_args)
+L <- pmax(as.vector(L[,1:n_lambda_intervals]), as.vector(L[,2:(n_lambda_intervals+1)]))
+transition_maj_mat <- matrix(L, ncol = n_lambda_intervals)
+tictoc::toc()
 
 
 tmp <- vdraw_sc_step_regular(
-  lambda_matrix = transiton_maj_mat,
+  lambda_matrix = transition_maj_mat,
   range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)]),
   atmost1 = TRUE
 )
@@ -188,7 +196,7 @@ lesion_transition_age <- vdraw_intensity_step_regular_cpp(
   lambda_args = list(flat_morphology = lesion_dt_long[, flat_morphology],
                      edge_log_N = lesion_dt_long[, edge_log_N]
                      ),
-  lambda_maj_matrix = transiton_maj_mat,
+  lambda_maj_matrix = transition_maj_mat,
   range_t = as.matrix(lesion_dt_long[, .(0, lesion_stop_age)]),
   atmost1 = TRUE
 )
