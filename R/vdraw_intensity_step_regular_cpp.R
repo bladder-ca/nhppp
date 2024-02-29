@@ -24,18 +24,18 @@
 #'  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #'  )
 #' @export
-vdraw_intensity_step_regular_cpp <- function(lambda,
-                                             lambda_args,
-                                             Lambda_maj_matrix,
-                                             lambda_maj_matrix,
-                                             range_t,
+vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
+                                             lambda_args = NULL,
+                                             Lambda_maj_matrix = NULL,
+                                             lambda_maj_matrix = NULL,
+                                             range_t = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE){
   #browser()
-  if(!missing(lambda_maj_matrix) && missing(Lambda_maj_matrix)) {
+  if(!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
     is_cumulative_rate <- FALSE
-  } else if(missing(lambda_maj_matrix) && !missing(Lambda_maj_matrix)) {
+  } else if(is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
    rate <- Lambda_maj_matrix
    is_cumulative_rate <- TRUE
   } else {
@@ -51,15 +51,13 @@ vdraw_intensity_step_regular_cpp <- function(lambda,
   }
 
   mode(rate) <- "numeric"
-  if(missing(lambda_args) || is.null(lambda_args)) {
+  if(is.null(lambda_args)) {
     l_ <- lambda
   } else {
     l_ <- function(X, ...) {
       return(lambda(X, lambda_args))
     }
   }
-
-  l_(2)
   return(
     .Call(`_nhppp_vdraw_intensity_step_regular`, l_,
           rate, is_cumulative_rate, range_t, tol, atmost1)

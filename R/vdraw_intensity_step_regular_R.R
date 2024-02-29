@@ -23,28 +23,31 @@
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export
-vdraw_intensity_step_regular_R <- function(lambda,
-                                         lambda_args,
-                                         Lambda_maj_matrix,
-                                         lambda_maj_matrix,
-                                         range_t,
+vdraw_intensity_step_regular_R <- function(lambda = NULL,
+                                         lambda_args = NULL,
+                                         Lambda_maj_matrix = NULL,
+                                         lambda_maj_matrix = NULL,
+                                         range_t = NULL,
                                          tol = 10^-6,
                                          atmost1 = FALSE,
                                          force_zt_majorizer = FALSE,
                                          ...) {
-  #browser()
-  if (!missing(Lambda_maj_matrix)) {
+
+  generate_lambda <- generate_Lambda <- FALSE
+  if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
     n_draws <- nrow(Lambda_maj_matrix)
-  } else {
+    generate_lambda <- TRUE
+  } else if(!is.null(lambda_maj_matrix)){
+    mode(lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(lambda_maj_matrix)
     n_draws <- nrow(lambda_maj_matrix)
+    generate_Lambda <- TRUE
   }
-  if (!is.matrix(range_t)) {
-    range_t <- matrix(range_t, nrow = 1)
-  }
+  range_t <- make_range_t_matrix(range_t = range_t, n_rows = n_draws)
   interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals
+
 
   # Towards the end, I need lambda_maj_matrix
   # make this a helper function
@@ -57,9 +60,9 @@ vdraw_intensity_step_regular_R <- function(lambda,
   }
   mode(lambda_maj_matrix) <- "numeric"
 
-  vdraw_fun <- vdraw_sc_step_regular
+  vdraw_fun <- vdraw_sc_step_regular_cpp
   if (force_zt_majorizer) {
-    vdraw_fun <- vztdraw_sc_step_regular
+    vdraw_fun <- vztdraw_sc_step_regular_R
   }
 
   Z_star <- vdraw_fun(
