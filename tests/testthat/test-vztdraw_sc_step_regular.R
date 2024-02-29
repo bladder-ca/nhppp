@@ -1,6 +1,6 @@
-test_that("vztdraw_sc_step_regular() works", {
+test_that("vztdraw_sc_step_regular_R() works", {
   # 1 row matrix
-  expect_no_error(Z0 <- vztdraw_sc_step_regular(
+  expect_no_error(Z0 <- vztdraw_sc_step_regular_R(
     Lambda_matrix = matrix(1:5, nrow = 1),
     range_t = c(100, 110),
     atmost1 = FALSE
@@ -14,7 +14,7 @@ test_that("vztdraw_sc_step_regular() works", {
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
 
-  expect_no_error(Z <- vztdraw_sc_step_regular(
+  expect_no_error(Z <- vztdraw_sc_step_regular_R(
     Lambda_matrix = L,
     range_t = c(100, 110),
     atmost1 = FALSE
@@ -26,7 +26,7 @@ test_that("vztdraw_sc_step_regular() works", {
       check_ppp_sample_validity(tmp, t_min = 100, t_max = 110, atleast1 = TRUE)
     }
   }
-  expect_no_error(Z1 <- vztdraw_sc_step_regular(
+  expect_no_error(Z1 <- vztdraw_sc_step_regular_R(
     Lambda_matrix = L,
     range_t = c(100, 110),
     atmost1 = TRUE
@@ -37,7 +37,7 @@ test_that("vztdraw_sc_step_regular() works", {
       check_ppp_sample_validity(tmp, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
     }
   }
-  expect_no_error(Z2 <- vztdraw_sc_step_regular(
+  expect_no_error(Z2 <- vztdraw_sc_step_regular_R(
     lambda_matrix = l,
     range_t = c(100, 110),
     atmost1 = TRUE
@@ -49,7 +49,7 @@ test_that("vztdraw_sc_step_regular() works", {
     }
   }
   # very small rates
-  expect_no_error(Z2 <- vztdraw_sc_step_regular(
+  expect_no_error(Z2 <- vztdraw_sc_step_regular_R(
     lambda_matrix = l * 0.001,
     range_t = c(100, 110),
     atmost1 = TRUE
@@ -62,12 +62,12 @@ test_that("vztdraw_sc_step_regular() works", {
   }
 })
 
-test_that("vztdraw_sc_step_regular() does not break with matrices whose mode is list", {
+test_that("vztdraw_sc_step_regular_R() does not break with matrices whose mode is list", {
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
 
   mode(L) <- "list"
-  expect_no_error(Z <- vztdraw_sc_step_regular(
+  expect_no_error(Z <- vztdraw_sc_step_regular_R(
     Lambda_matrix = L,
     range_t = c(100, 110),
     atmost1 = FALSE

@@ -31,6 +31,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda,
                                              range_t,
                                              tol = 10^-6,
                                              atmost1 = FALSE){
+  #browser()
   if(!missing(lambda_maj_matrix) && missing(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
     is_cumulative_rate <- FALSE
@@ -50,10 +51,15 @@ vdraw_intensity_step_regular_cpp <- function(lambda,
   }
 
   mode(rate) <- "numeric"
-  l_ <- function(X, args = lambda_args) {
-    if(is.null(args)) return(lambda(X))
-    return(lambda(X, lambda_args = args))
+  if(missing(lambda_args) || is.null(lambda_args)) {
+    l_ <- lambda
+  } else {
+    l_ <- function(X, ...) {
+      return(lambda(X, lambda_args))
+    }
   }
+
+  l_(2)
   return(
     .Call(`_nhppp_vdraw_intensity_step_regular`, l_,
           rate, is_cumulative_rate, range_t, tol, atmost1)

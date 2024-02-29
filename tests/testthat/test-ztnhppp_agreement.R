@@ -65,13 +65,13 @@ test_that("vztdraw_sc_step_regular() agrees with vdraw_sc_step_regular()", {
   Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
   r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
   r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
-  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular_R(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
   r_vztdraw_sc_step_regular <- r_vztdraw_sc_step_regular[!is.na(r_vztdraw_sc_step_regular)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular, ppp2 = r_vztdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
 
   r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
   r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
-  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular_R(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
   r_vztdraw_sc_step_regular1 <- r_vztdraw_sc_step_regular1[!is.na(r_vztdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular1, ppp2 = r_vztdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })
@@ -91,7 +91,7 @@ test_that("vztdraw_sc_step_regular_cpp() agrees with vdraw_sc_step_regular()", {
   r_vztdraw_sc_step_regular1 <- r_vztdraw_sc_step_regular1[!is.na(r_vztdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular1, ppp2 = r_vztdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })
- 
+
 
 
 test_that("ztNHPPP exponential agrees with general methods", {

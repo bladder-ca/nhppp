@@ -35,7 +35,7 @@ vztdraw_intensity_step_regular <- function(lambda,
                                            ...) {
 
   #browser()
-  Z <- vdraw_intensity_step_regular(lambda = lambda,
+  Z <- vdraw_intensity_step_regular_R(lambda = lambda,
                                     lambda_args = lambda_args,
                                     Lambda_maj_matrix = Lambda_maj_matrix,
                                     lambda_maj_matrix = lambda_maj_matrix,
@@ -49,7 +49,7 @@ vztdraw_intensity_step_regular <- function(lambda,
 
   while(sum(has_no_times)>0) {
 
-    Z_add <- vdraw_intensity_step_regular(lambda = lambda,
+    Z_add <- vdraw_intensity_step_regular_R(lambda = lambda,
                                          lambda_args = lambda_args,
                                          lambda_maj_matrix = lambda_maj_matrix[has_no_times, ,drop=FALSE],
                                          range_t = range_t[has_no_times, , drop=FALSE],
