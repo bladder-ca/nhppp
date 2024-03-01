@@ -1,12 +1,47 @@
 
+#' helper function that fixes the arguments in the vectorised functions
+fix_vfunc_arguments <- function(
+    lambda_mat = NULL,
+    Lambda_mat = NULL,
+    range_t = NULL,
+    generate_lambda = TRUE,
+    generate_Lambda = TRUE
+  ) {
+  args_list <- list()
+
+  if (!is.null(Lambda_mat)) {
+    mode(Lambda_mat) <- "numeric"
+    n_intervals <- ncol(Lambda_mat)
+    n_draws <- nrow(Lambda_mat)
+  } else if(!is.null(lambda_mat)){
+    mode(lambda_mat) <- "numeric"
+    n_intervals <- ncol(lambda_mat)
+    n_draws <- nrow(lambda_mat)
+  }
+  args_list[["range_t"]] <- make_range_t_matrix(range_t = range_t, n_rows = n_rows)
+  if(generate_lambda) {
+
+  }
+  args_list[["Lambda_mat"]] <- Lambda_mat
+  args_list[["lambda_mat"]] <- lambda_mat
+  args_list
+
+
+  return(args_list)
+}
+
+
+
+
+
 #' Helper function for the vectorized versions of sampling functions.
 #' Takes the usual ways that `range_t` is specified
-#' (a 2-vector, a 1 x 2 or an `r x 2` matrix) and
-#' returns a `r x 2` matrix.
+#' (a 2-vector, a 1 x 2 or an r x 2 matrix) and
+#' returns a r x 2 matrix.
 #'
-#' @param range_t a 2-vector, a 1 x 2 or an `r x 2` matrix
+#' @param range_t a 2-vector, a 1 x 2 or an r x 2 matrix
 #' @param n_row the number of rows in the fully expanded matrix (`r`)
-#' @return A matrix (`r x 2`), row-expanded if needed
+#' @return A matrix (r x 2), row-expanded if needed
 make_range_t_matrix <- function(range_t, n_rows) {
   if(is.matrix(range_t) && nrow(range_t) == n_rows && ncol(range_t)==2){
     return(range_t)
@@ -25,15 +60,15 @@ make_range_t_matrix <- function(range_t, n_rows) {
 #' Takes the usual ways that `lambda_mat` and `Lambda_mat` are specified
 #' and returns `lambda_mat`.
 #'
-#' @param lambda_mat a matrix of intensities or missing 
-#' @param Lambda_mat a matrix of cumulative intensities or missing 
+#' @param lambda_mat a matrix of intensities or missing
+#' @param Lambda_mat a matrix of cumulative intensities or missing
 #' @param interval_duration a vector with the same number of elements as the rows of `Lambda_mat`
-#' @return A matrix (`r x 2`), row-expanded if needed
+#' @return A matrix (r x 2), row-expanded if needed
 make_lambda_matrix <- function(lambda_mat = NULL, Lambda_mat = NULL, interval_duration = NULL) {
   if(!is.null(lambda_mat)) {
     mode(lambda_mat) <- "numeric"
     return(lambda_mat)
-  } 
+  }
   if(!is.null(Lambda_mat) && !is.null(interval_duration)) {
     mode(Lambda_mat) <- "numeric"
     lambda_mat <- mat_diff_columns(Lambda_mat) / interval_duration
@@ -47,15 +82,15 @@ make_lambda_matrix <- function(lambda_mat = NULL, Lambda_mat = NULL, interval_du
 #' Takes the usual ways that `lambda_mat` and `Lambda_mat` are specified
 #' and returns `Lambda_mat`.
 #'
-#' @param lambda_mat a matrix of intensities or missing 
-#' @param Lambda_mat a matrix of cumulative intensities or missing 
+#' @param lambda_mat a matrix of intensities or missing
+#' @param Lambda_mat a matrix of cumulative intensities or missing
 #' @param interval_duration a vector with the same number of elements as the rows of `Lambda_mat`
-#' @return A matrix (`r x 2`), row-expanded if needed
+#' @return A matrix (r x 2), row-expanded if needed
 make_Lambda_matrix <- function(Lambda_mat = NULL, lambda_mat = NULL, interval_duration = NULL) {
   if(!is.null(Lambda_mat)) {
     mode(Lambda_mat) <- "numeric"
     return(Lambda_mat)
-  } 
+  }
   if(!is.null(lambda_mat) && !is.null(interval_duration)) {
     mode(lambda_mat) <- "numeric"
     Lambda_mat <- mat_cumsum_columns(lambda_mat) * interval_duration
@@ -65,7 +100,7 @@ make_Lambda_matrix <- function(Lambda_mat = NULL, lambda_mat = NULL, interval_du
 }
 
 
-#' Return matrix with column-wise differencing. 
+#' Return matrix with column-wise differencing.
 #' No checks for arguments is done.
 #'
 #' @param X (matrix)

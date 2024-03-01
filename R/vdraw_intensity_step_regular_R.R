@@ -8,6 +8,93 @@
 #' @param lambda (function) a vectorized intensity function, with one or two arguments.
 #'  The first is time. The optional second is a named list with additional arguments.
 #' @param lambda_args (list) optional list of named arguments for `lambda()`
+#' @param lambda_majorizer (RateMatrixRegularClass) instantaneous intensity object, one per interval, regular steps
+#' @param interval (Interval) vectorized Interval object
+#' @param tol (scalar, double) tolerance for the number of events
+#' @param atmost1 boolean, draw at most 1 event time
+#' @param atleast1 boolean, draw at least 1 event time in interval
+#'
+#' @return a matrix of event times (columns) per draw (rows)
+#'         NAs are structural empty spots
+#' @examples
+#' Z <- vdraw_intensity_step_regular_R2(
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_majorizer = new_RateMatrixRegularStep(matrix(rep(1, 5), nrow = 1), FALSE)
+#' )
+#' @export
+vdraw_intensity_step_regular_R2 <- function(lambda = NULL,
+                                            lambda_args = NULL,
+                                            lambda_majorizer = NULL,
+                                            interval = NULL,
+                                            tol = 10^-6,
+                                            atmost1 = FALSE,
+                                            force_zt_majorizer = FALSE,
+                                            validate = FALSE,
+                                            ...) {
+#browser()
+  if(validate){
+    interval <- validate_Interval(interval)
+    stopifnot(attr(interval, "vectorized"))
+    lambda_majorizer <- validate_RateMatrixRegularStep(lambda_majorizer)
+    stopifnot(!attr(lambda_majorizer, "cumulative"))
+  }
+  n_intervals <- ncol(lambda_majorizer)
+  n_draws <- nrow(lambda_majorizer)
+  interval_duration <- attr(interval, "duration") / n_intervals
+
+  vdraw_fun <- vdraw_sc_step_regular_R
+  if (force_zt_majorizer) {
+    vdraw_fun <- vztdraw_sc_step_regular_R
+  }
+
+  Z_star <- vdraw_fun(
+    lambda_matrix = lambda_majorizer,
+    range_t = interval,
+    tol = tol,
+    atmost1 = FALSE
+  )
+
+  n_max_events <- ncol(Z_star)
+  U <- matrix(stats::runif(length(Z_star)), ncol = n_max_events)
+
+  # Extracts correct majorising values
+  lambda_maj_idx <- ceiling((Z_star - interval[, rep(1, n_max_events)]) / interval_duration)
+
+  idx_adjusted <- as.vector(lambda_maj_idx + (1:nrow(lambda_majorizer) - 1) * ncol(lambda_majorizer))
+  lambda_maj <- matrix(
+    t(lambda_majorizer)[idx_adjusted],
+    nrow = nrow(lambda_maj_idx), ncol = ncol(lambda_maj_idx), byrow = FALSE
+  )
+
+  accept <- ifelse(lambda(Z_star, lambda_args) / lambda_maj > U, TRUE, NA)
+  Z <- Z_star * accept
+  Z_sorted <- matrix(
+    Z[order(row(Z), is.na(Z), method = "radix")], # shifts non-NAs to the left
+    nrow = nrow(Z), ncol = ncol(Z), byrow = TRUE
+  )
+
+  if(ncol(Z_sorted) > 1) {
+    Z_sorted <- Z_sorted[, colSums(!is.na(Z_sorted)) > 0, drop = FALSE] # removes empty columns after the shift
+  }
+
+  if (atmost1) {
+    return(Z_sorted[, 1, drop = FALSE])
+  } else {
+    return(Z_sorted)
+  }
+}
+
+
+#' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
+#'    an interval (thinning method) with piecewise constant_majorizers (R)
+#'
+#' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
+#'    an interval (thinning method) with piecewise constant_majorizers.
+#'    The majorizers are step functions over equal-length time intevals.
+#'
+#' @param lambda (function) a vectorized intensity function, with one or two arguments.
+#'  The first is time. The optional second is a named list with additional arguments.
+#' @param lambda_args (list) optional list of named arguments for `lambda()`
 #' @param Lambda_maj_matrix (matrix) for the majorizeintegrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
@@ -18,7 +105,7 @@
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
 #' @examples
-#' Z <- vdraw_intensity_step_regular_R(
+#' Z <- vdraw_intensity_step_regular_R_old(
 #'   lambda = function(x, ...) 0.1 * x,
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )

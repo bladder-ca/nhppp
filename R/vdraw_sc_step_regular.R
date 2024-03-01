@@ -18,7 +18,6 @@
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular(Lambda_matrix = matrix(1:5, nrow = 1))
-#' @export
 vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
                                   lambda_matrix = NULL,
                                   range_t = c(0, 10),

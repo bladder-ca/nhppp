@@ -44,7 +44,7 @@ vztdraw_intensity_step_regular_R <- function(lambda = NULL,
 
   range_t <- make_range_t_matrix(range_t = range_t, n_rows = nrow(Z))
 
-  browser()
+  #browser()
   has_no_times <- is.na(Z[,1])
   max_events <- ncol(Z)
 
