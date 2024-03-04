@@ -34,9 +34,9 @@ vdraw_sc_step_regular_cpp <- function(
   }
   if(!is.matrix(range_t)) {
     range_t = matrix(rep(range_t, each = nrow(rate)), ncol = 2)
-  } else if(all.equal(dim(range_t), c(1,2))) {
+  } else if(nrow(range_t) == 1) {
     range_t <- range_t[rep(1, nrow(rate)),]
-  } else {
+  } else if(nrow(range_t) != nrow(rate)) {
     stop("`range_t` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
   }
 

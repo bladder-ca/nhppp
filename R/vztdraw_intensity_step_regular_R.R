@@ -32,7 +32,7 @@ vztdraw_intensity_step_regular_R <- function(lambda = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE,
                                              ...) {
-
+  #browser()
   Z <- vdraw_intensity_step_regular_R(lambda = lambda,
                                     lambda_args = lambda_args,
                                     Lambda_maj_matrix = Lambda_maj_matrix,
@@ -44,7 +44,7 @@ vztdraw_intensity_step_regular_R <- function(lambda = NULL,
 
   range_t <- make_range_t_matrix(range_t = range_t, n_rows = nrow(Z))
 
-  #browser()
+
   has_no_times <- is.na(Z[,1])
   max_events <- ncol(Z)
 
