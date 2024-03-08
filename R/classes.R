@@ -1,6 +1,5 @@
-
 new_Interval <- function(range_t) {
-	structure(range_t, class = "Interval")
+  structure(range_t, class = "Interval")
 }
 
 
@@ -16,4 +15,3 @@ new_lambdaStepRegular <- function(lambda_mat, range_t) {
     class = "factor"
   )
 }
-

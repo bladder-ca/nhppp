@@ -15,7 +15,7 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
 
   for (i in 1:nrow(Z)) {
     tmp <- Z[i, !is.na(Z[i, ])]
@@ -32,7 +32,7 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
   for (i in 1:nrow(Z)) {
     tmp <- Z[i, !is.na(Z[i, ])]
     if (length(tmp) > 0) {
@@ -48,7 +48,7 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     tol = 10^-6,
     atmost1 = TRUE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
   for (i in 1:nrow(Z)) {
     tmp <- Z[i, !is.na(Z[i, ])]
     if (length(tmp) > 0) {
@@ -64,7 +64,7 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     tol = 10^-6,
     atmost1 = TRUE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
   for (i in 1:nrow(Z)) {
     tmp <- Z[i, !is.na(Z[i, ])]
     if (length(tmp) > 0) {
@@ -89,7 +89,7 @@ test_that("vdraw_intensity_step_regular_cpp() does not break with matrices whose
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
   mode(lmaj) <- "list"
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
@@ -98,5 +98,5 @@ test_that("vdraw_intensity_step_regular_cpp() does not break with matrices whose
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z)>0)
+  expect_true(ncol(Z) > 0)
 })

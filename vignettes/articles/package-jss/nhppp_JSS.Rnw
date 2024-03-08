@@ -95,7 +95,7 @@ library("bench")
 library("latex2exp")
 library("nhppp")
 render_sweave()
-opts_chunk$set(prompt=TRUE)
+opts_chunk$set(prompt = TRUE)
 options(
   prompt = "R> ", continue = "+  ", width = 70,
   useFancyQuotes = FALSE, out.extra = "",
@@ -299,7 +299,7 @@ Algorithm~\ref{alg:PPP_order_stats} first draws the number of events in $(a, b]$
 The \fct{ppp\_orderstat} function implements constant-rate sampling via the order-statistics algorithm.
 
 <<demo-ppp_orderstat>>=
-ppp_orderstat(range_t = c(3.14, 6.28), rate = 1/2)
+ppp_orderstat(range_t = c(3.14, 6.28), rate = 1 / 2)
 @
 
 \subsection{Sampling conditional on observing at least $m$ events}\label{sec:PPP_cond_sampling}
@@ -370,12 +370,12 @@ draw_intensity(
   lambda = lambda_fun, # linear majorizer
   lambda_maj = c(intercept = 1.01, slope = 0.03),
   exp_maj = FALSE, range_t = c(0, 10)
-) |> head (n = 5)
+) |> head(n = 5)
 draw_intensity(
   lambda = lambda_fun, # log-linear majorizer
   lambda_maj = c(intercept = 0.01, slope = 0.03),
   exp_maj = TRUE, range_t = c(0, 10)
-) |> head (n = 5)
+) |> head(n = 5)
 @
 
 

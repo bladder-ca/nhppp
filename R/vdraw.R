@@ -18,10 +18,10 @@
 #' @return a vector of event times
 #' @examples
 #' Z <- vdraw(
-#'    lambda = function(x, ...) 0.1 * x,
-#'    lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
-#'    atmost1 = FALSE, atleast1 = TRUE, use_cpp = TRUE
-#'  )
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
+#'   atmost1 = FALSE, atleast1 = TRUE, use_cpp = TRUE
+#' )
 #' @export
 vdraw <- function(
     lambda = NULL,
@@ -32,9 +32,8 @@ vdraw <- function(
     tol = 10^-6,
     atmost1 = FALSE,
     atleast1 = FALSE,
-    use_cpp = FALSE){
-
-  if(isTRUE(use_cpp) && isFALSE(atleast1)) {
+    use_cpp = FALSE) {
+  if (isTRUE(use_cpp) && isFALSE(atleast1)) {
     return(
       vdraw_intensity_step_regular_cpp(
         lambda = lambda,
@@ -43,28 +42,31 @@ vdraw <- function(
         lambda_matrix = lambda_matrix,
         range_t = range_t,
         tol = tol,
-        atmost1 = atmost1)
+        atmost1 = atmost1
       )
+    )
   } else if (isTRUE(use_cpp) && isTRUE(atleast1)) {
-    error("C++ code not implemented yet for this option")
+    stop("C++ code not implemented yet for this option")
   } else if (isFALSE(use_cpp) && isFALSE(atleast1)) {
-      vdraw_intensity_step_regular_R(
-        lambda = lambda,
-        lambda_args = lambda_args,
-        Lambda_matrix = Lambda_matrix,
-        lambda_matrix = lambda_matrix,
-        range_t = range_t,
-        tol = tol,
-        atmost1 = atmost1)
-  } else if (isFALSE(use_cpp) && isTRUE(atleast1)){
-      vztdraw_intensity_step_regular_R(
-        lambda = lambda,
-        lambda_args = lambda_args,
-        Lambda_matrix = Lambda_matrix,
-        lambda_matrix = lambda_matrix,
-        range_t = range_t,
-        tol = tol,
-        atmost1 = atmost1)
+    vdraw_intensity_step_regular_R(
+      lambda = lambda,
+      lambda_args = lambda_args,
+      Lambda_matrix = Lambda_matrix,
+      lambda_matrix = lambda_matrix,
+      range_t = range_t,
+      tol = tol,
+      atmost1 = atmost1
+    )
+  } else if (isFALSE(use_cpp) && isTRUE(atleast1)) {
+    vztdraw_intensity_step_regular_R(
+      lambda = lambda,
+      lambda_args = lambda_args,
+      Lambda_matrix = Lambda_matrix,
+      lambda_matrix = lambda_matrix,
+      range_t = range_t,
+      tol = tol,
+      atmost1 = atmost1
+    )
   } else {
     stop("never here")
   }

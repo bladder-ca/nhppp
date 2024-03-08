@@ -20,9 +20,9 @@
 #'
 #' @examples
 #' Z <- vdraw_intensity_step_regular_cpp(
-#'  lambda = function(x, ...) 0.1 * x,
-#'  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
-#'  )
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#' )
 #' @export
 vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              lambda_args = NULL,
@@ -30,28 +30,28 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              lambda_maj_matrix = NULL,
                                              range_t = NULL,
                                              tol = 10^-6,
-                                             atmost1 = FALSE){
-  #browser()
-  if(!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
+                                             atmost1 = FALSE) {
+  # browser()
+  if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
     is_cumulative_rate <- FALSE
-  } else if(is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
-   rate <- Lambda_maj_matrix
-   is_cumulative_rate <- TRUE
+  } else if (is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
+    rate <- Lambda_maj_matrix
+    is_cumulative_rate <- TRUE
   } else {
     stop("lambda_maj_matrix and Lambda_maj_matrix cannot both be `NULL`")
   }
-  if(!is.matrix(range_t)) {
-    range_t = matrix(rep(range_t, each = nrow(rate)), ncol = 2)
-  } else if(nrow(range_t) == 1) {
-    range_t <- range_t[rep(1, nrow(rate)),]
-  } else if(nrow(range_t) != nrow(rate)){
+  if (!is.matrix(range_t)) {
+    range_t <- matrix(rep(range_t, each = nrow(rate)), ncol = 2)
+  } else if (nrow(range_t) == 1) {
+    range_t <- range_t[rep(1, nrow(rate)), ]
+  } else if (nrow(range_t) != nrow(rate)) {
     stop("`range_t` should have as many rows as `lambda_maj_matrix` or `Lambda_maj_matrix`")
   } else {
   }
 
   mode(rate) <- "numeric"
-  if(is.null(lambda_args)) {
+  if (is.null(lambda_args)) {
     l_ <- lambda
   } else {
     l_ <- function(X, ...) {
@@ -59,7 +59,9 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     }
   }
   return(
-    .Call(`_nhppp_vdraw_intensity_step_regular`, l_,
-          rate, is_cumulative_rate, range_t, tol, atmost1)
+    .Call(
+      `_nhppp_vdraw_intensity_step_regular`, l_,
+      rate, is_cumulative_rate, range_t, tol, atmost1
+    )
   )
 }

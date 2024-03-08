@@ -18,46 +18,50 @@
 #' x <- vztdraw_sc_step_regular_cpp(Lambda_matrix = matrix(1:5, nrow = 1))
 #' @export
 vztdraw_sc_step_regular_cpp <- function(Lambda_matrix = NULL,
-                                    lambda_matrix = NULL,
-                                    range_t = c(0, 10),
-                                    subinterval = NULL,
-                                    atmost1 = FALSE) {
-  if(!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
+                                        lambda_matrix = NULL,
+                                        range_t = c(0, 10),
+                                        subinterval = NULL,
+                                        atmost1 = FALSE) {
+  if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
     rate <- lambda_matrix
     is_cumulative_rate <- FALSE
-  } else if(is.null(lambda_matrix) && !is.null(Lambda_matrix)) {
-   rate <- Lambda_matrix
-   is_cumulative_rate <- TRUE
+  } else if (is.null(lambda_matrix) && !is.null(Lambda_matrix)) {
+    rate <- Lambda_matrix
+    is_cumulative_rate <- TRUE
   } else {
     stop("lambda_matrix and Lambda_matrix cannot both be `NULL`")
   }
-  if(!is.matrix(range_t)) {
-    range_t = matrix(rep(range_t, each = nrow(rate)), ncol = 2)
-  } else if(nrow(range_t) == 1) {
-    range_t <- range_t[rep(1, nrow(rate)),]
-  } else if(nrow(range_t) != nrow(rate)) {
+  if (!is.matrix(range_t)) {
+    range_t <- matrix(rep(range_t, each = nrow(rate)), ncol = 2)
+  } else if (nrow(range_t) == 1) {
+    range_t <- range_t[rep(1, nrow(rate)), ]
+  } else if (nrow(range_t) != nrow(rate)) {
     stop("`range_t` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
   }
 
   mode(rate) <- "numeric"
 
-  if(is.null(subinterval)) {
+  if (is.null(subinterval)) {
     return(
-      .Call(`_nhppp_vztdraw_sc_step_regular`,
-            rate, is_cumulative_rate, range_t, atmost1)
+      .Call(
+        `_nhppp_vztdraw_sc_step_regular`,
+        rate, is_cumulative_rate, range_t, atmost1
+      )
     )
   } else {
-    if(!is.matrix(subinterval)) {
-      subinterval = matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
-    } else if(nrow(subinterval) == 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)),]
-    } else if(nrow(subinterval) != nrow(rate)) {
+    if (!is.matrix(subinterval)) {
+      subinterval <- matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
+    } else if (nrow(subinterval) == 1) {
+      subinterval <- subinterval[rep(1, nrow(rate)), ]
+    } else if (nrow(subinterval) != nrow(rate)) {
       stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
     }
-    stopifnot(all(subinterval[,1] >= range_t[,1]), all(subinterval[,2] <= range_t[,2]))
+    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
     return(
-      .Call(`_nhppp_vztdraw_sc_step_regular2`,
-            rate, is_cumulative_rate, range_t, subinterval, atmost1)
+      .Call(
+        `_nhppp_vztdraw_sc_step_regular2`,
+        rate, is_cumulative_rate, range_t, subinterval, atmost1
+      )
     )
   }
 }

@@ -25,42 +25,46 @@ vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
                                   atmost1 = FALSE,
                                   atleast1 = FALSE,
                                   use_cpp = TRUE) {
-  if(isTRUE(use_cpp) && isFALSE(atleast1)) {
+  if (isTRUE(use_cpp) && isFALSE(atleast1)) {
     return(
       vdraw_sc_step_regular_cpp(
         Lambda_matrix = Lambda_matrix,
         lambda_matrix = lambda_matrix,
         range_t = range_t,
-        tol = tol, 
-        atmost1 = atmost1)
+        tol = tol,
+        atmost1 = atmost1
       )
+    )
   } else if (isTRUE(use_cpp) && isTRUE(atleast1)) {
     return(
       vztdraw_sc_step_regular_cpp(
         Lambda_matrix = Lambda_matrix,
         lambda_matrix = lambda_matrix,
         range_t = range_t,
-        atmost1 = atmost1)
+        atmost1 = atmost1
       )
+    )
   } else if (isFALSE(use_cpp) && isFALSE(atleast1)) {
     return(
       vdraw_sc_step_regular_cpp(
         Lambda_matrix = Lambda_matrix,
         lambda_matrix = lambda_matrix,
         range_t = range_t,
-        tol = tol, 
-        atmost1 = atmost1)
+        tol = tol,
+        atmost1 = atmost1
       )
-  } else if (isFALSE(use_cpp) && isTRUE(atleast1)){
+    )
+  } else if (isFALSE(use_cpp) && isTRUE(atleast1)) {
     return(
       vztdraw_sc_step_regular_cpp(
         Lambda_matrix = Lambda_matrix,
         lambda_matrix = lambda_matrix,
         range_t = range_t,
-        tol = tol, 
-        atmost1 = atmost1)
+        tol = tol,
+        atmost1 = atmost1
       )
+    )
   } else {
-    stop("never here")  
-  } 
+    stop("never here")
+  }
 }

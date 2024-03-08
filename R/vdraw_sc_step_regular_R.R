@@ -18,10 +18,10 @@
 #' x <- vdraw_sc_step_regular_R(Lambda_matrix = matrix(1:5, nrow = 1))
 #' @export
 vdraw_sc_step_regular_R <- function(Lambda_matrix = NULL,
-                                  lambda_matrix = NULL,
-                                  range_t = c(0, 10),
-                                  tol = 10^-6,
-                                  atmost1 = FALSE) {
+                                    lambda_matrix = NULL,
+                                    range_t = c(0, 10),
+                                    tol = 10^-6,
+                                    atmost1 = FALSE) {
   if (!is.matrix(range_t)) {
     range_t <- matrix(range_t, nrow = 1)
   }

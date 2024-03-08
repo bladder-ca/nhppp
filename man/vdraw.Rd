@@ -46,8 +46,8 @@ For time-intensive simulations prefer one of the specific functions.
 }
 \examples{
 Z <- vdraw(
-   lambda = function(x, ...) 0.1 * x,
-   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
-   atmost1 = FALSE, atleast1 = TRUE, use_cpp = TRUE
- )
+  lambda = function(x, ...) 0.1 * x,
+  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
+  atmost1 = FALSE, atleast1 = TRUE, use_cpp = TRUE
+)
 }

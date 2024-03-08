@@ -9,6 +9,7 @@ vztdraw_sc_step_regular_cpp(
   Lambda_matrix = NULL,
   lambda_matrix = NULL,
   range_t = c(0, 10),
+  subinterval = NULL,
   atmost1 = FALSE
 )
 }
@@ -18,6 +19,8 @@ vztdraw_sc_step_regular_cpp(
 \item{lambda_matrix}{(matrix) intensity rates, one per interval}
 
 \item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
+
+\item{subinterval}{(vector, double) optional -- the subinterval of \code{range_t} to sample. If \code{NULL}, the whole range_t is used.}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }

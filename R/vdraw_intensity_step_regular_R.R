@@ -24,22 +24,21 @@
 #' )
 #' @export
 vdraw_intensity_step_regular_R <- function(lambda = NULL,
-                                         lambda_args = NULL,
-                                         Lambda_maj_matrix = NULL,
-                                         lambda_maj_matrix = NULL,
-                                         range_t = NULL,
-                                         tol = 10^-6,
-                                         atmost1 = FALSE,
-                                         force_zt_majorizer = FALSE,
-                                         ...) {
-
+                                           lambda_args = NULL,
+                                           Lambda_maj_matrix = NULL,
+                                           lambda_maj_matrix = NULL,
+                                           range_t = NULL,
+                                           tol = 10^-6,
+                                           atmost1 = FALSE,
+                                           force_zt_majorizer = FALSE,
+                                           ...) {
   generate_lambda <- generate_Lambda <- FALSE
   if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
     n_draws <- nrow(Lambda_maj_matrix)
     generate_lambda <- TRUE
-  } else if(!is.null(lambda_maj_matrix)){
+  } else if (!is.null(lambda_maj_matrix)) {
     mode(lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(lambda_maj_matrix)
     n_draws <- nrow(lambda_maj_matrix)
@@ -92,7 +91,7 @@ vdraw_intensity_step_regular_R <- function(lambda = NULL,
     nrow = nrow(Z), ncol = ncol(Z), byrow = TRUE
   )
 
-  if(ncol(Z_sorted) > 1) {
+  if (ncol(Z_sorted) > 1) {
     Z_sorted <- Z_sorted[, colSums(!is.na(Z_sorted)) > 0, drop = FALSE] # removes empty columns after the shift
   }
 

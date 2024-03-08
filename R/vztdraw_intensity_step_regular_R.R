@@ -20,9 +20,9 @@
 #'
 #' @examples
 #' Z <- vztdraw_intensity_step_regular(
-#'  lambda = function(x, ...) 0.1 * x,
-#'  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
-#'  )
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#' )
 #' @export
 vztdraw_intensity_step_regular_R <- function(lambda = NULL,
                                              lambda_args = NULL,
@@ -32,49 +32,52 @@ vztdraw_intensity_step_regular_R <- function(lambda = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE,
                                              ...) {
-  #browser()
-  Z <- vdraw_intensity_step_regular_R(lambda = lambda,
-                                    lambda_args = lambda_args,
-                                    Lambda_maj_matrix = Lambda_maj_matrix,
-                                    lambda_maj_matrix = lambda_maj_matrix,
-                                    range_t = range_t,
-                                    tol = tol,
-                                    atmost1 = atmost1,
-                                    force_zt_majorizer = TRUE) #force_zt_majorizer)
+  # browser()
+  Z <- vdraw_intensity_step_regular_R(
+    lambda = lambda,
+    lambda_args = lambda_args,
+    Lambda_maj_matrix = Lambda_maj_matrix,
+    lambda_maj_matrix = lambda_maj_matrix,
+    range_t = range_t,
+    tol = tol,
+    atmost1 = atmost1,
+    force_zt_majorizer = TRUE
+  ) # force_zt_majorizer)
 
   range_t <- make_range_t_matrix(range_t = range_t, n_rows = nrow(Z))
 
 
-  has_no_times <- is.na(Z[,1])
+  has_no_times <- is.na(Z[, 1])
   max_events <- ncol(Z)
 
-  while(sum(has_no_times)>0) {
-
-    Z_add <- vdraw_intensity_step_regular_R(lambda = lambda,
-                                         lambda_args = lambda_args,
-                                         Lambda_maj_matrix = Lambda_maj_matrix[has_no_times, ,drop=FALSE],
-                                         lambda_maj_matrix = lambda_maj_matrix[has_no_times, ,drop=FALSE],
-                                         range_t = range_t[has_no_times, , drop=FALSE],
-                                         tol = tol,
-                                         atmost1 = atmost1,
-                                         force_zt_majorizer = TRUE) #force_zt_majorizer)
+  while (sum(has_no_times) > 0) {
+    Z_add <- vdraw_intensity_step_regular_R(
+      lambda = lambda,
+      lambda_args = lambda_args,
+      Lambda_maj_matrix = Lambda_maj_matrix[has_no_times, , drop = FALSE],
+      lambda_maj_matrix = lambda_maj_matrix[has_no_times, , drop = FALSE],
+      range_t = range_t[has_no_times, , drop = FALSE],
+      tol = tol,
+      atmost1 = atmost1,
+      force_zt_majorizer = TRUE
+    ) # force_zt_majorizer)
 
     diff_cols <- ncol(Z_add) - ncol(Z)
-    if(diff_cols > 0) {
+    if (diff_cols > 0) {
       Z <- matrix(
         c(as.vector(Z), rep(NA, times = abs(diff_cols) * nrow(Z))),
-        ncol =  ncol(Z_add), nrow = nrow(Z), byrow = FALSE
-        )
+        ncol = ncol(Z_add), nrow = nrow(Z), byrow = FALSE
+      )
     }
     if (diff_cols < 0) {
       Z_add <- matrix(
         c(as.vector(Z_add), rep(NA, times = abs(diff_cols) * nrow(Z_add))),
-        ncol =  ncol(Z), nrow = nrow(Z_add), byrow = FALSE
-        )
+        ncol = ncol(Z), nrow = nrow(Z_add), byrow = FALSE
+      )
     }
 
     Z[has_no_times, ] <- Z_add
-    has_no_times <- is.na(Z[,1])
+    has_no_times <- is.na(Z[, 1])
   }
   return(Z)
 }

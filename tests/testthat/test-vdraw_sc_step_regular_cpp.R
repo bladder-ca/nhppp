@@ -57,7 +57,6 @@ test_that("vdraw_sc_step_regular_cpp() works", {
 
   expect_equal(L, Lref) # no side effects on l, L
   expect_equal(l, lref)
-
 })
 
 test_that("vdraw_sc_step_regular_cpp() does not break with matrices whose mode is list", {
@@ -81,6 +80,7 @@ test_that("vdraw_sc_step_regular_cpp() works with subinterval", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
+  check_ppp_sample_validity(Z0[1, ], t_min = 100, t_max = 110, atmost1 = FALSE)
   expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
     range_t = c(100, 110),
@@ -88,14 +88,14 @@ test_that("vdraw_sc_step_regular_cpp() works with subinterval", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
+  check_ppp_sample_validity(Z0[1, ], t_min = 101.01, t_max = 108.99, atmost1 = FALSE)
+
   expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
-    Lambda_matrix = matrix(1:5, nrow = 1)*10,
+    Lambda_matrix = matrix(1:5, nrow = 1) * 10,
     range_t = c(100, 110),
     subinterval = c(105.01, 105.99),
     tol = 10^-6,
     atmost1 = FALSE
   ))
+  check_ppp_sample_validity(Z0[1, ], t_min = 105.01, t_max = 105.99, atmost1 = FALSE)
 })
-
-
-
