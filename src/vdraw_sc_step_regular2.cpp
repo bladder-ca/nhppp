@@ -45,10 +45,12 @@ NumericMatrix vdraw_sc_step_regular2(
     // L0, L1 , the cumulative intensity at the subinterval bounds 
     i0 = floor((subinterval(draw, 0) - range_t(draw, 0)) / interval_duration[draw]);
     f0 = (subinterval(draw, 0) - range_t(draw,0)) / interval_duration[draw] - i0; 
-    L0 = simple_lerp(L[i0], L[i0+1], f0);
+    L0 = (i0!=0)?L[i0-1]:0;
+    L0 = simple_lerp(L0, L[i0], f0);
     i1 = floor((subinterval(draw, 1) - range_t(draw, 0)) / interval_duration[draw]);
     f1 = (subinterval(draw, 1) - range_t(draw,0)) / interval_duration[draw] - i1; 
-    L1 = simple_lerp(L[i1], L[i1+1], f1);
+    L1 = (i1!=0)?L[i1-1]:0;
+    L1 = (i1 != n_intervals)?simple_lerp(L1,L[i1], f1):L[i1-1];
 
     tau = L0; 
     j0 = i0;
@@ -59,12 +61,11 @@ NumericMatrix vdraw_sc_step_regular2(
         break; 
       }
       j0 = find_upper_bound_index(L, j0, tau); 
-      if(j0 == -1) {
+      if(j0 == -1 || j0 == n_intervals-1) {
         break;
       }
       L_at_start_of_j0 = (j0>0) ? L[j0-1] : 0;
-      Z(draw, ev) =  
-        range_t(draw, 0) + interval_duration[draw] * 
+      Z(draw, ev) = range_t(draw, 0) + interval_duration[draw] * 
           (j0 + (tau - L_at_start_of_j0)/(L[j0] - L_at_start_of_j0));
       if(atmost1){
         break;

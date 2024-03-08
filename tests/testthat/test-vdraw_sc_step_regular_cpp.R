@@ -89,7 +89,7 @@ test_that("vdraw_sc_step_regular_cpp() works with subinterval", {
     atmost1 = FALSE
   ))
   expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
-    Lambda_matrix = matrix(1:5, nrow = 1),
+    Lambda_matrix = matrix(1:5, nrow = 1)*10,
     range_t = c(100, 110),
     subinterval = c(105.01, 105.99),
     tol = 10^-6,

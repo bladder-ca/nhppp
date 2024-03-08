@@ -6,15 +6,26 @@ devtools::load_all()
 dat <- readRDS("refactor/SEER_WM_50K_data.rds")
 lambda_death <- readRDS("refactor/dt_intensities_death_from_other_causes.rds")
 
-L <- lambda_death |>
-  dplyr::filter(sex == "male" & race == "white" & cohort == 1940 & intensity == "Lambda") |>
-  dplyr::filter(age >=40 & age <= 77) |>
-  dplyr::select(age, estimate) |>
-  tidyr::pivot_wider(names_from = age, values_from = estimate) |>
-  as.matrix()
+# L <- lambda_death |>
+#   dplyr::filter(sex == "male" & race == "white" & cohort == 1940 & intensity == "Lambda") |>
+#   dplyr::filter(age >=40 & age <= 77) |>
+#   dplyr::select(age, estimate) |>
+#   tidyr::pivot_wider(names_from = age, values_from = estimate) |>
+#   as.matrix()
+
+L <- matrix((1:110)/110, nrow =1)
 
 n_people <- 10000
 L_mat <- L[rep(1, n_people),]
+tictoc::tic()
+death_other_causes0 <- nhppp::vdraw_sc_step_regular_cpp(
+  Lambda_matrix = L_mat,
+  range_t = c(0, 110),
+  atmost1 = TRUE,
+  subinterval = c(0, 110))
+tictoc::toc()
+
+
 
 
 death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
@@ -39,28 +50,28 @@ for(r in 1:n_people) {
                       lesion_intensity_function(t_steps[2:(n_lambda_intervals+1)], lambda_args = l_args))
 }
 
-lesion_times <- vztdraw_intensity_step_regular(
-  lambda = lesion_intensity_function,
-  lambda_args = l_args,
-  lambda_maj_matrix = l_maj_mat,
-  range_t = cbind(rep(40, n_people), death_other_causes)
-)
+# lesion_times <- vztdraw_intensity_step_regular(
+#   lambda = lesion_intensity_function,
+#   lambda_args = l_args,
+#   lambda_maj_matrix = l_maj_mat,
+#   range_t = cbind(rep(40, n_people), death_other_causes)
+# )
 
-table(is.na(lesion_times))
+# table(is.na(lesion_times))
 
-for(i in 1:5) {
-  tictoc::tic()
-  death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
-                                                           range_t = c(lesion_times[,1], 110),
-                                                           atmost1 = TRUE)
+# for(i in 1:5) {
+#   tictoc::tic()
+#   death_other_causes <- nhppp::vztdraw_sc_step_regular_cpp(Lambda_matrix = L_mat,
+#                                                            range_t = c(lesion_times[,1], 110),
+#                                                            atmost1 = TRUE)
 
-  lesion_times <- vztdraw_intensity_step_regular(
-    lambda = lesion_intensity_function,
-    lambda_args = l_args,
-    lambda_maj_matrix = l_maj_mat,
-    range_t = cbind(rep(40, n_people), death_other_causes)
-  )
-  tictoc::toc()
-}
+#   lesion_times <- vztdraw_intensity_step_regular(
+#     lambda = lesion_intensity_function,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = l_maj_mat,
+#     range_t = cbind(rep(40, n_people), death_other_causes)
+#   )
+#   tictoc::toc()
+# }
 
 
