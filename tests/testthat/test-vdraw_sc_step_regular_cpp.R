@@ -72,3 +72,30 @@ test_that("vdraw_sc_step_regular_cpp() does not break with matrices whose mode i
     atmost1 = FALSE
   ))
 })
+
+test_that("vdraw_sc_step_regular_cpp() works with subinterval", {
+  expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = matrix(1:5, nrow = 1),
+    range_t = c(100, 110),
+    subinterval = c(100, 110),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = matrix(1:5, nrow = 1),
+    range_t = c(100, 110),
+    subinterval = c(101.01, 108.99),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = matrix(1:5, nrow = 1),
+    range_t = c(100, 110),
+    subinterval = c(105.01, 105.99),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+})
+
+
+

@@ -7,6 +7,7 @@
 #' @param Lambda_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, double) `t_min` and `t_max`
+#' @param subinterval (matrix, double) subinterval of `range_t` to sample from
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
 #'
@@ -21,6 +22,7 @@ vdraw_sc_step_regular_cpp <- function(
     lambda_matrix= NULL,
     Lambda_matrix = NULL,
     range_t  = c(0, 10),
+    subinterval = NULL, 
     tol = 10^-6,
     atmost1 = FALSE){
   if(!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
@@ -41,9 +43,26 @@ vdraw_sc_step_regular_cpp <- function(
   }
 
   mode(rate) <- "numeric"
+   
+
+  if(is.null(subinterval)) {
+    return(
+      .Call(`_nhppp_vdraw_sc_step_regular`,
+            rate, is_cumulative_rate, range_t, tol, atmost1)
+    )  
+  } else {
+    if(!is.matrix(subinterval)) {
+      subinterval = matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
+  } else if(nrow(subinterval) == 1) {
+    subinterval <- subinterval[rep(1, nrow(rate)),]
+  } else if(nrow(subinterval) != nrow(rate)) {
+    stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
+  }
+    stopifnot(all(subinterval[,1] >= range_t[,1]), all(subinterval[,2] <= range_t[,2]))
+    return(
+      .Call(`_nhppp_vdraw_sc_step_regular2`,
+            rate, is_cumulative_rate, range_t, subinterval, tol, atmost1)
+    )  
+  }
   
-  return(
-    .Call(`_nhppp_vdraw_sc_step_regular`,
-          rate, is_cumulative_rate, range_t, tol, atmost1)
-  )
 }

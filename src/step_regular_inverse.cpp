@@ -1,16 +1,6 @@
 #include "nhppp.h"
 
 
-
-// Rcpp::NumericMatrix step_regular_inverse2(
-//   const RegularStepInfo & info
-//   const Rcpp::NumericMatrix & Tau
-// ) {
-//   return step_regular_inverse(info.max_events, info.Lambda, Tau, info.range_t, info.atmost1);
-// }
-
-
-
 // [[Rcpp::export]]
 Rcpp::NumericMatrix step_regular_inverse(
   int max_events,

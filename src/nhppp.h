@@ -1,9 +1,11 @@
 #ifndef HNPPP_H
 #define HNPPP_H
 
+#include <algorithm>
+#include <cmath>
+
 #include <Rcpp.h>
 #include <Rmath.h>
-#include <algorithm>
 
 
 void matrix_cumsum_columns_inplace(Rcpp::NumericMatrix & X);
@@ -18,6 +20,16 @@ int find_upper_bound_index(
   const Rcpp::NumericVector& L, 
   const int start, 
   const double tau);
+
+int find_lower_bound_index(
+  const Rcpp::NumericVector& L, 
+  const int start, 
+  const double tau);
+
+double simple_lerp(
+  const double a, 
+  const double b, 
+  const double f);
 
 Rcpp::NumericMatrix vdraw_sc_step_regular(
   const Rcpp::NumericMatrix & rate,

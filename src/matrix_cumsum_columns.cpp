@@ -1,3 +1,4 @@
+
 #include "nhppp.h"
 
 // [[Rcpp::export]]
