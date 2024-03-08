@@ -53,3 +53,7 @@ vztdraw_sc_step_regular <- function(rate, is_cumulative, range_t, atmost1) {
     .Call(`_nhppp_vztdraw_sc_step_regular`, rate, is_cumulative, range_t, atmost1)
 }
 
+vztdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, atmost1) {
+    .Call(`_nhppp_vztdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, atmost1)
+}
+

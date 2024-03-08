@@ -3,12 +3,11 @@
 using namespace Rcpp; 
 
 // [[Rcpp::export]]
-NumericMatrix vdraw_sc_step_regular2(
+NumericMatrix vztdraw_sc_step_regular2(
   const NumericMatrix & rate,
   const bool is_cumulative,
   const NumericMatrix & range_t,
   const NumericMatrix & subinterval,
-  const double tol,
   const bool atmost1
 ) {
   int n_intervals = rate.cols();
@@ -24,17 +23,12 @@ NumericMatrix vdraw_sc_step_regular2(
     Lambda = rate;
   }
 
-  int n_max_events = R::qpois(1.0 - tol, max(Lambda), 1, 0);
-  if(n_max_events == 0) {
-    NumericMatrix Z(n_draws, 1); 
-    std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
-    return(Z);
-  }
-
+  int n_max_events = std::max(1, (int) R::qpois(.99999, max(Lambda), 1, 0));
+  NumericVector U(n_max_events);
   NumericMatrix Z(n_draws, n_max_events);
   std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
-  int i0, i1, j0, ev;
-  double f0, f1, L0, L1, tau, L_at_start_of_j0; 
+  int i0, i1, j0, N, N_iter;
+  double f0, f1, L0, L1, L_at_start_of_j0, u; 
   int ev_max = 0;
   for (int draw = 0; draw != n_draws; ++draw){
 
@@ -52,32 +46,35 @@ NumericMatrix vdraw_sc_step_regular2(
     L1 = (i1!=0)?L[i1-1]:0;
     L1 = (i1 != n_intervals)?simple_lerp(L1,L[i1], f1):L[i1-1];
 
-    tau = L0; 
+
+    N = rztpois(L1 - L0);
+    for (int i = 0; i != N; ++i){
+      U[i] = R::runif(L0, L1);
+    }
+    if(atmost1){
+      u = (*std::min_element(U.begin(), U.begin() + N));
+      U[0] = u;
+      N_iter = 1;
+    } else {
+      std::sort(U.begin(), U.begin() + N); 
+      N_iter = N;
+    }
+        
     j0 = i0;
-    ev = 0; 
-    while(true){
-      tau += R::rexp(1);
-      if (tau > L1) {
-        break; 
-      }
-      j0 = find_upper_bound_index(L, j0, tau); 
+    for(int i = 0; i != N_iter; ++i){
+      j0 = find_upper_bound_index(L, i0, U[i]); 
       if(j0 == -1) {
         break;
       }
       L_at_start_of_j0 = (j0>0) ? L[j0-1] : 0;
-      Z(draw, ev) = range_t(draw, 0) + interval_duration[draw] * 
-          (j0 + (tau - L_at_start_of_j0)/(L[j0] - L_at_start_of_j0));
+      Z(draw, i) =  range_t(draw, 0) + interval_duration[draw] * 
+          (j0 + (U[i] - L_at_start_of_j0)/(L[j0] - L_at_start_of_j0));
       if(atmost1){
         break;
       }
-      ev_max = std::max(ev_max, ev);
-      ev++;
-      if(ev == n_max_events) {
-        break;
-      }
+      ev_max = std::max(ev_max, i);
     }
   }
-
   return Z(Rcpp::Range(0, n_draws-1), Rcpp::Range(0, ev_max));
 }
 

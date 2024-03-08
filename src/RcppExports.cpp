@@ -176,6 +176,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vztdraw_sc_step_regular2
+NumericMatrix vztdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool atmost1);
+RcppExport SEXP _nhppp_vztdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_find_lower_bound_index", (DL_FUNC) &_nhppp_find_lower_bound_index, 3},
@@ -191,6 +206,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
     {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 6},
     {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},
+    {"_nhppp_vztdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular2, 5},
     {NULL, NULL, 0}
 };
 

@@ -31,6 +31,15 @@ double simple_lerp(
   const double b, 
   const double f);
 
+Rcpp::NumericMatrix vdraw_sc_step_regular2(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & range_t,
+  const Rcpp::NumericMatrix & subinterval,
+  const double tol,
+  const bool atmost1
+);
+
 Rcpp::NumericMatrix vdraw_sc_step_regular(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
@@ -46,6 +55,13 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular(
   const bool atmost1
 );
 
+Rcpp::NumericMatrix vztdraw_sc_step_regular2(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & range_t,
+  const Rcpp::NumericMatrix & subinterval,
+  const bool atmost1
+);
 
 Rcpp::NumericMatrix vdraw_intensity_step_regular(
   Rcpp::Function lambda,

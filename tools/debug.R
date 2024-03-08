@@ -1,4 +1,4 @@
-devtools::clean_dll()
+#devtools::clean_dll()
 devtools::load_all()
 
 
@@ -19,6 +19,16 @@ n_people <- 10000
 L_mat <- L[rep(1, n_people),]
 tictoc::tic()
 death_other_causes0 <- nhppp::vdraw_sc_step_regular_cpp(
+  Lambda_matrix = L_mat,
+  range_t = c(0, 110),
+  atmost1 = TRUE,
+  subinterval = c(0, 110))
+tictoc::toc()
+
+
+
+tictoc::tic()
+death_other_causes1 <- nhppp::vztdraw_sc_step_regular_cpp(
   Lambda_matrix = L_mat,
   range_t = c(0, 110),
   atmost1 = TRUE,
