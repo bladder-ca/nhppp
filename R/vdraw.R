@@ -18,9 +18,10 @@
 #' @return a vector of event times
 #' @examples
 #' Z <- vdraw(
-#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda = function(x, lambda_args = NULL) 0.1 * x,
+#'   range_t = c(1,10),
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
-#'   atmost1 = FALSE, atleast1 = TRUE, use_cpp = TRUE
+#'   atmost1 = FALSE, atleast1 = FALSE, use_cpp = TRUE
 #' )
 #' @export
 vdraw <- function(
@@ -38,8 +39,8 @@ vdraw <- function(
       vdraw_intensity_step_regular_cpp(
         lambda = lambda,
         lambda_args = lambda_args,
-        Lambda_matrix = Lambda_matrix,
-        lambda_matrix = lambda_matrix,
+        Lambda_maj_matrix = Lambda_maj_matrix,
+        lambda_maj_matrix = lambda_maj_matrix,
         range_t = range_t,
         tol = tol,
         atmost1 = atmost1
@@ -51,8 +52,8 @@ vdraw <- function(
     vdraw_intensity_step_regular_R(
       lambda = lambda,
       lambda_args = lambda_args,
-      Lambda_matrix = Lambda_matrix,
-      lambda_matrix = lambda_matrix,
+      Lambda_maj_matrix = Lambda_maj_matrix,
+      lambda_maj_matrix = lambda_maj_matrix,
       range_t = range_t,
       tol = tol,
       atmost1 = atmost1
@@ -61,8 +62,8 @@ vdraw <- function(
     vztdraw_intensity_step_regular_R(
       lambda = lambda,
       lambda_args = lambda_args,
-      Lambda_matrix = Lambda_matrix,
-      lambda_matrix = lambda_matrix,
+      Lambda_maj_matrix = Lambda_maj_matrix,
+      lambda_maj_matrix = lambda_maj_matrix,
       range_t = range_t,
       tol = tol,
       atmost1 = atmost1

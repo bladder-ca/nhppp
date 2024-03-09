@@ -20,8 +20,9 @@
 #'
 #' @examples
 #' Z <- vdraw_intensity_step_regular_cpp(
-#'   lambda = function(x, ...) 0.1 * x,
-#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#'    lambda = function(x, lambda_args = NULL) 0.1 * x,
+#'    range_t = c(1,10),
+#'    lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export
 vdraw_intensity_step_regular_cpp <- function(lambda = NULL,

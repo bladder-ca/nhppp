@@ -12,7 +12,7 @@ make_range_t_matrix(range_t, n_rows)
 \arguments{
 \item{range_t}{a 2-vector, a 1 x 2 or an r x 2 matrix}
 
-\item{n_row}{the number of rows in the fully expanded matrix (\code{r})}
+\item{n_rows}{the number of rows in the fully expanded matrix (\code{r})}
 }
 \value{
 A matrix (r x 2), row-expanded if needed

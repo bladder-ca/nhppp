@@ -13,14 +13,16 @@
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
+#' @param ... (any) other arguments (ignored  -- used for flexibility in calling from other functions)
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
 #' @export
 #'
 #' @examples
-#' Z <- vztdraw_intensity_step_regular(
-#'   lambda = function(x, ...) 0.1 * x,
+#' Z <- vztdraw_intensity_step_regular_R(
+#'   lambda = function(x, lambda_args =  NULL) 0.1 * x,
+#'   range_t = c(1,10),
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export

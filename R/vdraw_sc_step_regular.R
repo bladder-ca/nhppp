@@ -60,7 +60,6 @@ vdraw_sc_step_regular <- function(Lambda_matrix = NULL,
         Lambda_matrix = Lambda_matrix,
         lambda_matrix = lambda_matrix,
         range_t = range_t,
-        tol = tol,
         atmost1 = atmost1
       )
     )

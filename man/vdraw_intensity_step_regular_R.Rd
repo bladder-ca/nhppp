@@ -33,7 +33,9 @@ The first is time. The optional second is a named list with additional arguments
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
-\item{atleast1}{boolean, draw at least 1 event time in interval}
+\item{force_zt_majorizer}{boolean, force the use of the zero-truncated majorizer; - used for flexibility in calling from other function. Keep the default \code{FALSE} unless you know what you are doing.}
+
+\item{...}{(any) other arguments (ignored  -- used for flexibility in calling from other functions)}
 }
 \value{
 a matrix of event times (columns) per draw (rows)
@@ -45,8 +47,9 @@ an interval (thinning method) with piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
 \examples{
-Z <- vdraw_intensity_step_regular_R_old(
-  lambda = function(x, ...) 0.1 * x,
-  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+Z <- vdraw_intensity_step_regular_R(
+   lambda = function(x, lambda_args = NULL) 0.1 * x,
+   range_t = c(1,10),
+   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 )
 }

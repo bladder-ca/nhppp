@@ -21,6 +21,8 @@ vztdraw_sc_step_regular_R(
 \item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 
 \item{atmost1}{boolean, draw at most 1 event time}
+
+\item{...}{(any) other arguments (ignored  -- used for flexibility in calling from other functions)}
 }
 \value{
 a vector of event times t

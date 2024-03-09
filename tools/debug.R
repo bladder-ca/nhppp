@@ -1,5 +1,12 @@
-#devtools::clean_dll()
+devtools::clean_dll()
 devtools::load_all()
+
+
+Z <- vdraw_intensity_step_regular_R(
+  lambda = function(x, lambda_args = NULL) 0.1 * x,
+  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1), 
+  range_t = c(1,10)
+ )
 
 
 #library(tidyverse)

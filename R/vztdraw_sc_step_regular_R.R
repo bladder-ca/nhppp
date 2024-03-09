@@ -8,6 +8,7 @@
 #' @param lambda_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, double) `t_min` and `t_max`
 #' @param atmost1 boolean, draw at most 1 event time
+#' @param ... (any) other arguments (ignored  -- used for flexibility in calling from other functions)
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length

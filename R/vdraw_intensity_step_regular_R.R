@@ -13,14 +13,16 @@
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time in interval
+#' @param force_zt_majorizer boolean, force the use of the zero-truncated majorizer; - used for flexibility in calling from other function. Keep the default `FALSE` unless you know what you are doing.
+#' @param ... (any) other arguments (ignored  -- used for flexibility in calling from other functions)
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
 #' @examples
-#' Z <- vdraw_intensity_step_regular_R_old(
-#'   lambda = function(x, ...) 0.1 * x,
-#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#' Z <- vdraw_intensity_step_regular_R(
+#'    lambda = function(x, lambda_args = NULL) 0.1 * x,
+#'    range_t = c(1,10),
+#'    lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export
 vdraw_intensity_step_regular_R <- function(lambda = NULL,
@@ -32,21 +34,24 @@ vdraw_intensity_step_regular_R <- function(lambda = NULL,
                                            atmost1 = FALSE,
                                            force_zt_majorizer = FALSE,
                                            ...) {
-  generate_lambda <- generate_Lambda <- FALSE
+
+#browser()
   if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
     n_draws <- nrow(Lambda_maj_matrix)
-    generate_lambda <- TRUE
   } else if (!is.null(lambda_maj_matrix)) {
     mode(lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(lambda_maj_matrix)
     n_draws <- nrow(lambda_maj_matrix)
-    generate_Lambda <- TRUE
   }
   range_t <- make_range_t_matrix(range_t = range_t, n_rows = n_draws)
   interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals
 
+
+  if(is.null(Lambda_maj_matrix)) {
+    Lambda_maj_matrix <- mat_cumsum_columns(lambda_maj_matrix)
+  }
 
   # Towards the end, I need lambda_maj_matrix
   # make this a helper function

@@ -31,6 +31,8 @@ The first is time. The optional second is a named list with additional arguments
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
+
+\item{...}{(any) other arguments (ignored  -- used for flexibility in calling from other functions)}
 }
 \value{
 a matrix of event times (columns) per draw (rows)
@@ -42,8 +44,9 @@ an interval (thinning method) with piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
 \examples{
-Z <- vztdraw_intensity_step_regular(
-  lambda = function(x, ...) 0.1 * x,
+Z <- vztdraw_intensity_step_regular_R(
+  lambda = function(x, lambda_args =  NULL) 0.1 * x,
+  range_t = c(1,10),
   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 )
 }

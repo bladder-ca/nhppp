@@ -4,7 +4,7 @@
 #' returns a r x 2 matrix.
 #'
 #' @param range_t a 2-vector, a 1 x 2 or an r x 2 matrix
-#' @param n_row the number of rows in the fully expanded matrix (`r`)
+#' @param n_rows the number of rows in the fully expanded matrix (`r`)
 #' @return A matrix (r x 2), row-expanded if needed
 make_range_t_matrix <- function(range_t, n_rows) {
   if (is.matrix(range_t) && nrow(range_t) == n_rows && ncol(range_t) == 2) {
