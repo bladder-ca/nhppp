@@ -11,7 +11,7 @@ Rcpp::NumericMatrix step_regular_inverse(
 ) {
 
 
-  Rcpp::NumericVector L;
+  //Rcpp::NumericVector L;
   int i1, i2, ev_max = 0;
   int n_draws = Lambda.rows(); 
   int n_intervals = Lambda.cols();
@@ -27,7 +27,7 @@ Rcpp::NumericMatrix step_regular_inverse(
   for(int draw = 0; draw != n_draws; ++draw){
     i1 = 0; 
     i2 = 0;
-    L = Lambda.row(draw);
+    auto L = Lambda.row(draw);
     for(int ev = 0; ev != max_events; ++ev){
       if(Tau(draw, ev) > L[n_intervals-1]) {
         break;
