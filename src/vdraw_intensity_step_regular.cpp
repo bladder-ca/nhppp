@@ -46,9 +46,13 @@ NumericMatrix vdraw_intensity_step_regular(
   NumericMatrix Z(n_draws, Zstar.cols());
   std::fill(Z.begin(), Z.end(), NumericVector::get_na());
 
+
   for(int draw = 0; draw != n_draws; ++draw){
     acc_i = 0;
     for(int ev = 0; ev != Zstar.cols(); ++ev){
+      if(NumericVector::is_na(Zstar(draw, ev))) {
+        break;
+      }
       interval = floor(Zstar(draw, ev) / interval_duration(draw));
       accept = ((lambda_star(draw, ev)/lambda_maj(draw, interval)) > R::runif(0.0, 1.0));
       if(accept) {
@@ -62,9 +66,9 @@ NumericMatrix vdraw_intensity_step_regular(
     }
   }
 
-  return Z;
+  
 
-  //return Z(Range(0, n_draws-1), Range(0, max_acc_i));
+  return Z(Range(0, n_draws-1), Range(0, max_acc_i));
 
 
 }
