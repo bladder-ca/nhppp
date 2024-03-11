@@ -34,17 +34,14 @@ NumericMatrix vdraw_intensity_step_regular(
 
   NumericMatrix Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
 
-
-  return Zstar;
-
-
-
   bool accept;
   int interval;
   int acc_i = 0;
   int max_acc_i = 0;
 
   NumericMatrix lambda_star = lambda(Zstar);
+
+return lambda_star;
 
   NumericMatrix Z(n_draws, Zstar.cols());
   std::fill(Z.begin(), Z.end(), NumericVector::get_na());
