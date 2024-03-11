@@ -64,7 +64,7 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular2(
 );
 
 Rcpp::NumericMatrix vdraw_intensity_step_regular(
-  Rcpp::Function lambda,
+  const Rcpp::Function & lambda,
   const Rcpp::NumericMatrix & rate_maj,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
@@ -78,21 +78,6 @@ Rcpp::NumericMatrix step_regular_inverse(
   const Rcpp::NumericMatrix & range_t, 
   bool atmost1
 );
-
-
-// class RegularStepInfo {
-//   const bool atmost1 {false}; 
-//   const int max_events {0}; 
-//   const Rcpp::NumericMatrix & range_t {Rcpp::NumericMatrix(1, 1)};
-//   const Rcpp::NumericVector & interval_duration {range_t(Rcpp::_,1) - range_t(Rcpp::_,0)};
-//   Rcpp::NumericMatrix & lambda {Rcpp::NumericMatrix(1, 1)};
-//   Rcpp::NumericMatrix & Lambda {matrix_cumsum_columns(lambda) * interval_duration};
-// };
-
-// Rcpp::NumericMatrix step_regular_inverse2(
-//   const RegularStepInfo & info, 
-//   const Rcpp::NumericMatrix & Tau
-// );
 
 int rztpois(const double lambda);
 

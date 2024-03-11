@@ -3,7 +3,7 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 NumericMatrix vdraw_intensity_step_regular(
-  Function lambda,
+  const Function & lambda,
   const NumericMatrix & rate_maj,
   const bool is_cumulative,
   const NumericMatrix & range_t,

@@ -116,12 +116,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // vdraw_intensity_step_regular
-NumericMatrix vdraw_intensity_step_regular(Function lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
+NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
 RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Function >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const Function& >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type rate_maj(rate_majSEXP);
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);

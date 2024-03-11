@@ -2,6 +2,12 @@ devtools::clean_dll()
 devtools::load_all()
 
 
+lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
+  l_args <- list(exponent = 1L)
+  lmaj <- matrix(rep(1, 50), ncol = 5)
+  Lmaj <- mat_cumsum_columns(lmaj)
+lala <- vdraw_intensity_step_regular_cpp(lambda = lfun, lambda_args = l_args,     lambda_maj_matrix = lmaj, range_t = c(1, 5), tol = 10^-6,     atmost1 = FALSE)
+
 Z <- vdraw_intensity_step_regular_R(
   lambda = function(x, lambda_args = NULL) 0.1 * x,
   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1), 
