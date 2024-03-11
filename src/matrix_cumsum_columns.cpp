@@ -7,7 +7,7 @@ Rcpp::NumericMatrix matrix_cumsum_columns(const Rcpp::NumericMatrix & X) {
   int n_rows = X.rows();
 
   Rcpp::NumericMatrix Y(n_rows, n_col); 
-  std::copy(X.column(1).begin(), X.column(1).end(), Y.column(1).begin());
+  std::copy(X.column(0).begin(), X.column(0).end(), Y.column(0).begin());
   if(n_col == 1) {
   	return Y;
   }
