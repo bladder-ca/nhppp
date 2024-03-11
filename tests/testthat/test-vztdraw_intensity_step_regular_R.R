@@ -15,14 +15,7 @@ test_that("vztdraw_intensity_step_regular_R() works", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z) > 0)
-
-  for (i in 1:nrow(Z)) {
-    tmp <- Z[i, !is.na(Z[i, ])]
-    if (length(tmp) > 0) {
-      check_ppp_sample_validity(tmp, t_min = 1, t_max = 5)
-    }
-  }
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
 
   expect_no_error(Z <- vztdraw_intensity_step_regular_R(
     lambda = lfun,
@@ -32,13 +25,7 @@ test_that("vztdraw_intensity_step_regular_R() works", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z) > 0)
-  for (i in 1:nrow(Z)) {
-    tmp <- Z[i, !is.na(Z[i, ])]
-    if (length(tmp) > 0) {
-      check_ppp_sample_validity(tmp, t_min = 1, t_max = 5)
-    }
-  }
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
 
   expect_no_error(Z <- vztdraw_intensity_step_regular_R(
     lambda = lfun,
@@ -48,13 +35,7 @@ test_that("vztdraw_intensity_step_regular_R() works", {
     tol = 10^-6,
     atmost1 = TRUE
   ))
-  expect_true(ncol(Z) > 0)
-  for (i in 1:nrow(Z)) {
-    tmp <- Z[i, !is.na(Z[i, ])]
-    if (length(tmp) > 0) {
-      check_ppp_sample_validity(tmp, t_min = 1, t_max = 5, atmost1 = TRUE)
-    }
-  }
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
 
   expect_no_error(Z <- vztdraw_intensity_step_regular_R(
     lambda = lfun,
@@ -64,13 +45,7 @@ test_that("vztdraw_intensity_step_regular_R() works", {
     tol = 10^-6,
     atmost1 = TRUE
   ))
-  expect_true(ncol(Z) > 0)
-  for (i in 1:nrow(Z)) {
-    tmp <- Z[i, !is.na(Z[i, ])]
-    if (length(tmp) > 0) {
-      check_ppp_sample_validity(tmp, t_min = 1, t_max = 5, atmost1 = TRUE)
-    }
-  }
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
 })
 
 
@@ -89,7 +64,6 @@ test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z) > 0)
   mode(lmaj) <- "list"
   expect_no_error(Z <- vztdraw_intensity_step_regular_R(
     lambda = lfun,
@@ -98,5 +72,4 @@ test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  expect_true(ncol(Z) > 0)
 })

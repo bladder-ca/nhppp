@@ -20,9 +20,9 @@
 #'         NAs are structural empty spots
 #' @examples
 #' Z <- vdraw_intensity_step_regular_R(
-#'    lambda = function(x, lambda_args = NULL) 0.1 * x,
-#'    range_t = c(1,10),
-#'    lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+#'   lambda = function(x, lambda_args = NULL) 0.1 * x,
+#'   range_t = c(1, 10),
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export
 vdraw_intensity_step_regular_R <- function(lambda = NULL,
@@ -34,8 +34,7 @@ vdraw_intensity_step_regular_R <- function(lambda = NULL,
                                            atmost1 = FALSE,
                                            force_zt_majorizer = FALSE,
                                            ...) {
-
-#browser()
+  # browser()
   if (!is.null(Lambda_maj_matrix)) {
     mode(Lambda_maj_matrix) <- "numeric"
     n_intervals <- ncol(Lambda_maj_matrix)
@@ -49,7 +48,7 @@ vdraw_intensity_step_regular_R <- function(lambda = NULL,
   interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals
 
 
-  if(is.null(Lambda_maj_matrix)) {
+  if (is.null(Lambda_maj_matrix)) {
     Lambda_maj_matrix <- mat_cumsum_columns(lambda_maj_matrix)
   }
 

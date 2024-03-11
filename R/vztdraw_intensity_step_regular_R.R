@@ -21,8 +21,8 @@
 #'
 #' @examples
 #' Z <- vztdraw_intensity_step_regular_R(
-#'   lambda = function(x, lambda_args =  NULL) 0.1 * x,
-#'   range_t = c(1,10),
+#'   lambda = function(x, lambda_args = NULL) 0.1 * x,
+#'   range_t = c(1, 10),
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
 #' )
 #' @export

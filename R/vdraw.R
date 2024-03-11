@@ -19,7 +19,7 @@
 #' @examples
 #' Z <- vdraw(
 #'   lambda = function(x, lambda_args = NULL) 0.1 * x,
-#'   range_t = c(1,10),
+#'   range_t = c(1, 10),
 #'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
 #'   atmost1 = FALSE, atleast1 = FALSE, use_cpp = TRUE
 #' )

@@ -21,6 +21,7 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
                                  rng_stream = NULL,
                                  atmost1 = FALSE,
                                  atleast1 = FALSE) {
+  # browser()
   if (is.null(Lambda_vector) && !is.null(lambda_vector)) {
     Lambda_vector <- cumsum(lambda_vector)
   }
@@ -64,5 +65,6 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
               Lambda_vector[Lambda_indices_low[tau_in_interval]]
           )
     )
+
   return(t_)
 }
