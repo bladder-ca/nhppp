@@ -35,6 +35,10 @@ NumericMatrix vdraw_intensity_step_regular(
   NumericMatrix Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
 
 
+  return Zstar;
+
+
+
   bool accept;
   int interval;
   int acc_i = 0;
