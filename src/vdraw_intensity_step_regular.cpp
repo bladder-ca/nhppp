@@ -41,7 +41,7 @@ NumericMatrix vdraw_intensity_step_regular(
 
   NumericMatrix lambda_star = lambda(Zstar);
 
-return lambda_star;
+
 
   NumericMatrix Z(n_draws, Zstar.cols());
   std::fill(Z.begin(), Z.end(), NumericVector::get_na());
@@ -62,7 +62,9 @@ return lambda_star;
     }
   }
 
-  return Z(Range(0, n_draws-1), Range(0, max_acc_i));
+  return Z;
+
+  //return Z(Range(0, n_draws-1), Range(0, max_acc_i));
 
 
 }
