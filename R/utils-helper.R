@@ -84,7 +84,7 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, a
     check_ppp_vector_validity(times = times, t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
   } else {
     for (i in 1:nrow(times)) {
-      expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
+      testthat::expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
       check_ppp_vector_validity(times = times[i, ], t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
     }
   }
