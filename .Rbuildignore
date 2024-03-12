@@ -9,3 +9,6 @@
 ^README\.Rmd$
 ^codecov\.yml$
 ^CRAN-SUBMISSION$
+^refactor$
+tools
+.vscode

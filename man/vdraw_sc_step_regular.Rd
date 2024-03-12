@@ -3,14 +3,16 @@
 \name{vdraw_sc_step_regular}
 \alias{vdraw_sc_step_regular}
 \title{Vectorized sampling from NHPPPs with piecewise constant intensities
-with same interval lengths}
+with same interval lengths (R)}
 \usage{
 vdraw_sc_step_regular(
   Lambda_matrix = NULL,
   lambda_matrix = NULL,
   range_t = c(0, 10),
   tol = 10^-6,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  atleast1 = FALSE,
+  use_cpp = TRUE
 )
 }
 \arguments{
@@ -23,6 +25,10 @@ vdraw_sc_step_regular(
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
+
+\item{atleast1}{boolean, draw at least 1 event time (zero-truncated NHPPP)}
+
+\item{use_cpp}{(boolean, TRUE) use the C++ implementation of the function}
 }
 \value{
 a vector of event times t

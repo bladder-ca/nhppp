@@ -27,6 +27,9 @@ read_code <- function(codeFile) {
 }
 
 
+
+
+
 #' Check the validity of a ppp vector.
 #'
 #' @description Standard checks for a vector of ordered times. Check
@@ -40,25 +43,52 @@ read_code <- function(codeFile) {
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
 #' @return None
-check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
-  testthat::expect_identical(times, sort(times))
-  testthat::expect_identical(times, unique(times))
-  testthat::expect_true(min(times, Inf) >= t_min)
-  if (!is.null(t_max)) {
-    testthat::expect_true(max(times, -Inf) <= t_max)
-  }
-  if (!is.null(size)) {
-    testthat::expect_equal(length(times), size)
-  }
-  if (atmost1) {
-    testthat::expect_true(length(times) <= 1)
-  }
+check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
+  times <- times[!is.na(times)]
   if (atleast1) {
     testthat::expect_true(length(times) >= 1)
+  }
+  if (length(times != 0)) {
+    testthat::expect_identical(times, sort(times))
+    testthat::expect_identical(times, unique(times))
+    testthat::expect_true(min(times, Inf) >= t_min)
+    if (!is.null(t_max)) {
+      testthat::expect_true(max(times, -Inf) <= t_max)
+    }
+    if (!is.null(size)) {
+      testthat::expect_equal(length(times), size)
+    }
+    if (atmost1) {
+      testthat::expect_true(length(times) <= 1)
+    }
   }
 }
 
 
+
+#' Check the validity of ppp samples
+#'
+#' @description Standard checks for a vector of ordered times. Check
+#' that the `times` vector is sorted, has unique values, has all values
+#' in `[t_min, t_max]`, and has length `size` (if applicable).
+#'
+#' @param times (vector, double | matrix) the times to be checked as vectors or matrices (time-vectors in rows)
+#' @param t_min (double) the start of the time nterval
+#' @param t_max (double) optional: the end of the time interval
+#' @param size (double) optional: the size of the vector
+#' @param atmost1 (boolean) optional: at most one sample returned
+#' @param atleast1 (boolean) optional: at least one sample returned
+#' @return None
+check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
+  if (!is.matrix(times)) {
+    check_ppp_vector_validity(times = times, t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
+  } else {
+    for (i in 1:nrow(times)) {
+      expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
+      check_ppp_vector_validity(times = times[i, ], t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
+    }
+  }
+}
 
 #' Check that two ppp vectors Q-Q agree
 #'

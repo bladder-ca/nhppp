@@ -6,7 +6,9 @@
 \alias{nhppp-package}
 \title{nhppp: Simulating Nonhomogeneous Poisson Point Processes}
 \description{
-Simulates events from one dimensional nonhomogeneous Poisson point processes (NHPPPs). Functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function (Cinlar E, "Theory of stochastic processes" (1975, ISBN:0486497996)); the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme (Lewis PAW, Shedler, GS (1979) \doi{10.1002/nav.3800260304}).
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+Simulates events from one dimensional nonhomogeneous Poisson point processes (NHPPPs) as per Trikalinos and Sereda (2024, \href{https://arxiv.org/abs/2402.00358}{arXiv:2402.00358}). Functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function (Cinlar E, "Theory of stochastic processes" (1975, ISBN:0486497996)); the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme (Lewis PAW, Shedler, GS (1979) \doi{10.1002/nav.3800260304}).
 }
 \seealso{
 Useful links:

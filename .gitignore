@@ -50,6 +50,8 @@ vignettes/articles/*.gz
 vignettes/articles/*.bbl
 vignettes/articles/cache/
 
+.vscode/
+.vscode/*
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth

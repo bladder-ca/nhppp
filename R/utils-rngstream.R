@@ -103,3 +103,23 @@ rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
   x <- stats::qpois(p = p, lambda = lambda)
   return(x)
 }
+
+
+#' Zero-truncated Poisson random samples (basic R)
+#'
+#' @description Sample zero-truncated Poisson random samples (basic R)
+#' @param size Integer, number of samples
+#' @param lambda Positive number, the mean of the original
+#'        (untruncated) Poisson distribution
+#'
+#' @return a vector of non zero counts of size `size`
+#' @export
+#' @examples
+#' rztpois(10, 1)
+#' rztpois(10, 1:10)
+rztpois <- function(size = 1, lambda = 1) {
+  # exp_minus_lambda <- exp(-lambda)
+  p <- stats::runif(n = size, min = exp(-lambda), max = 1)
+  x <- stats::qpois(p = p, lambda = lambda)
+  return(x)
+}

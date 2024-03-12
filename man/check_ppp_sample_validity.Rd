@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-helper.R
 \name{check_ppp_sample_validity}
 \alias{check_ppp_sample_validity}
-\title{Check the validity of a ppp vector.}
+\title{Check the validity of ppp samples}
 \usage{
 check_ppp_sample_validity(
   times,
@@ -14,7 +14,7 @@ check_ppp_sample_validity(
 )
 }
 \arguments{
-\item{times}{(vector, double) the times to be checked}
+\item{times}{(vector, double | matrix) the times to be checked as vectors or matrices (time-vectors in rows)}
 
 \item{t_min}{(double) the start of the time nterval}
 

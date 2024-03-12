@@ -21,3 +21,20 @@ test_that("rng_stream_rexp() works ", {
   expect_no_error(S1 <- methods::new("rstream.mrg32k3a"))
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = S1))
 })
+
+
+test_that("rng_stream_rztpois() works ", {
+  expect_no_error(rng_stream_rztpois(size = 10, lambda = 1, rng_stream = NULL))
+  expect_no_error(S1 <- methods::new("rstream.mrg32k3a"))
+  expect_no_error(rng_stream_rztpois(size = 10, lambda = 1, rng_stream = S1))
+})
+
+
+test_that("rztpois() works", {
+  expect_no_error(rztpois(size = 10, lambda = 1))
+  # vectorized for lambda
+  expect_no_error(rztpois(size = 10, lambda = rep(1, 10)))
+  expect_no_error(rztpois(size = 10, lambda = 1:10))
+
+  expect_equal(sum(rztpois(4, c(rep(.0001, 3), 10000)) < 2), 3)
+})
