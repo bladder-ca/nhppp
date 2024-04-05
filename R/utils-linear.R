@@ -61,27 +61,27 @@ Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
   return((log(tmp + z * beta) - alpha) / beta)
 }
 
-#' Piecewise constant (step) majorizer for K-Lipschitz functions over an interval
-#'
-#' @description Return a piecewise constant (step) majorizer for K-Lipschitz functions
-#'              over an interval.
-#' @param fun A function object with a single argument `x`
-#' @param breaks (vector) The set of `M+1` boundaries for the `M` subintervals in `x`
-#' @param is_monotone (boolean) Is the function monotone? (Default is `TRUE`.)
-#' @param K (double) A non-negative number for the Lipschitz cone. (Default is 0.)
-#' @return A vector of length `M` with the values of the piecewise constant majorizer
-#'
-#' @export
-#' @examples
-#' get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
-get_step_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
-  if (K < 0) stop()
-  M <- length(breaks) - 1
-  f_breaks <- fun(breaks)
-  lambda_star <- pmax(f_breaks[1:M], f_breaks[2:(M + 1)])
-  if (isTRUE(is_monotone)) {
-    return(lambda_star)
-  } else {
-    return(lambda_star + K * abs(breaks[1:M] - breaks[2:(M + 1)]) / 2)
-  }
-}
+# #' Piecewise constant (step) majorizer for K-Lipschitz functions over an interval
+# #'
+# #' @description Return a piecewise constant (step) majorizer for K-Lipschitz functions
+# #'              over an interval.
+# #' @param fun A function object with a single argument `x`
+# #' @param breaks (vector) The set of `M+1` boundaries for the `M` subintervals in `x`
+# #' @param is_monotone (boolean) Is the function monotone? (Default is `TRUE`.)
+# #' @param K (double) A non-negative number for the Lipschitz cone. (Default is 0.)
+# #' @return A vector of length `M` with the values of the piecewise constant majorizer
+# #'
+# #' @export
+# #' @examples
+# #' get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
+# get_step_majorizer <- function(fun, breaks, is_monotone = TRUE, K = 0) {
+#   if (K < 0) stop()
+#   M <- length(breaks) - 1
+#   f_breaks <- fun(breaks)
+#   lambda_star <- pmax(f_breaks[1:M], f_breaks[2:(M + 1)])
+#   if (isTRUE(is_monotone)) {
+#     return(lambda_star)
+#   } else {
+#     return(lambda_star + K * abs(breaks[1:M] - breaks[2:(M + 1)]) / 2)
+#   }
+# }
