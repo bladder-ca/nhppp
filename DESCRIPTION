@@ -25,6 +25,7 @@ Language: es
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
+    rlecuyer,
     testthat,
     withr
 Config/Needs/website: rmarkdown
