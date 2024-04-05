@@ -72,3 +72,33 @@ test_that("vdraw_intensity_step_regular_cpp() does not break with matrices whose
     atmost1 = FALSE
   ))
 })
+
+
+
+test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
+  lfun <- function(x, ...) .2 * x
+  lmaj <- matrix(rep(1, 50), ncol = 5)
+  Lmaj <- mat_cumsum_columns(lmaj)
+
+
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    Lambda_maj_matrix = Lmaj,
+    range_t = c(1, 5),
+    subinterval = c(2.3, 4.8),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+
+  check_ppp_sample_validity(Z, t_min = 2.3, t_max = 4.8, atmost1 = FALSE)
+
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_maj_matrix = lmaj,
+    range_t = c(1, 5),
+    subinterval = c(2.3, 4.8),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 2.3, t_max = 4.8, atmost1 = FALSE)
+})

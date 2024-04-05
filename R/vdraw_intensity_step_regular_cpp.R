@@ -11,6 +11,7 @@
 #' @param Lambda_maj_matrix (matrix) for the majorizeintegrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
+#' @param subinterval (matrix, double) subinterval of `range_t` to sample from
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
 #'
@@ -30,6 +31,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              Lambda_maj_matrix = NULL,
                                              lambda_maj_matrix = NULL,
                                              range_t = NULL,
+                                             subinterval = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE) {
   # browser()
@@ -59,10 +61,28 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
       return(lambda(X, lambda_args))
     }
   }
+
+  use_subinterval <- TRUE
+  if (is.null(subinterval)) {
+    use_subinterval <- FALSE
+    subinterval <- range_t
+  } else {
+    if (!is.matrix(subinterval)) {
+      subinterval <- matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
+    } else if (nrow(subinterval) == 1) {
+      subinterval <- subinterval[rep(1, nrow(rate)), ]
+    } else if (nrow(subinterval) != nrow(rate)) {
+      stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
+    }
+    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
+  }
+
+  # browser()
+
   return(
     .Call(
       `_nhppp_vdraw_intensity_step_regular`, l_,
-      rate, is_cumulative_rate, range_t, tol, atmost1
+      rate, is_cumulative_rate, range_t, subinterval, use_subinterval, tol, atmost1
     )
   )
 }
