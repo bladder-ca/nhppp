@@ -7,6 +7,8 @@ NumericMatrix vdraw_intensity_step_regular(
   const NumericMatrix & rate_maj,
   const bool is_cumulative,
   const NumericMatrix & range_t,
+  const NumericMatrix & subinterval,
+  const bool use_subinteval,
   const double tol,
   const bool atmost1) {
 
@@ -32,7 +34,13 @@ NumericMatrix vdraw_intensity_step_regular(
     Lambda_maj = rate_maj;
   }
 
-  NumericMatrix Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
+  NumericMatrix Zstar;//(n_draws, n_intervals);
+  if(use_subinteval) {
+    Zstar = vdraw_sc_step_regular2(Lambda_maj, true, range_t, subinterval, tol, false);
+  } else {
+    Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
+  }
+  
 
   bool accept;
   int interval;

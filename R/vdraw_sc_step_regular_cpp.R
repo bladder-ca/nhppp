@@ -21,7 +21,7 @@
 vdraw_sc_step_regular_cpp <- function(
     lambda_matrix = NULL,
     Lambda_matrix = NULL,
-    range_t = c(0, 10),
+    range_t = NULL,
     subinterval = NULL,
     tol = 10^-6,
     atmost1 = FALSE) {

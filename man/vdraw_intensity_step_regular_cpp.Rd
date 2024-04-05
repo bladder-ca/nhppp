@@ -11,6 +11,7 @@ vdraw_intensity_step_regular_cpp(
   Lambda_maj_matrix = NULL,
   lambda_maj_matrix = NULL,
   range_t = NULL,
+  subinterval = NULL,
   tol = 10^-6,
   atmost1 = FALSE
 )
@@ -26,6 +27,8 @@ The first is time. The optional second is a named list with additional arguments
 \item{lambda_maj_matrix}{(matrix) intensity rates, one per interval}
 
 \item{range_t}{(vector, or matrix) \code{t_min} and \code{t_max}, possibly vectorized}
+
+\item{subinterval}{(matrix, double) subinterval of \code{range_t} to sample from}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
