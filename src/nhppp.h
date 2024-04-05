@@ -63,14 +63,6 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular2(
   const bool atmost1
 );
 
-// Rcpp::NumericMatrix vdraw_intensity_step_regular(
-//   const Rcpp::Function & lambda,
-//   const Rcpp::NumericMatrix & rate_maj,
-//   const bool is_cumulative,
-//   const Rcpp::NumericMatrix & range_t,
-//   const double tol,
-//   const bool atmost1);
-
 Rcpp::NumericMatrix vdraw_intensity_step_regular(
   const Rcpp::Function & lambda,
   const Rcpp::NumericMatrix & rate_maj,
