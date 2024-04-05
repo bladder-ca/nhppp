@@ -49,11 +49,11 @@ vztdraw_sc_step_regular_cpp <- function(Lambda_matrix = NULL,
       )
     )
   } else {
-    #browser()
+    # browser()
     if (!is.matrix(subinterval)) {
       subinterval <- matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
     } else if (nrow(subinterval) == 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ,drop = FALSE]
+      subinterval <- subinterval[rep(1, nrow(rate)), , drop = FALSE]
     } else if (nrow(subinterval) != nrow(rate)) {
       stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
     }
