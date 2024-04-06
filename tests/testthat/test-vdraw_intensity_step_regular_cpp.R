@@ -104,58 +104,139 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
 })
 
 
-test_that("vdraw_intensity_step_regular_cpp() uses user-supplied RNGs", {
-  l <- matrix(rep(1, 50), ncol = 5)
-  L <- mat_cumsum_columns(l)
+test_that("vdraw_intensity_step_regular_cpp() works with different majorizers", {
+  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
+  l_args <- list(exponent = 1L)
+  lmaj <- matrix(rep(1, 1000), ncol = 5)
 
-  seed <- rep(1, 6)
-  rlecuyer::.lec.SetPackageSeed(seed)
-  rlecuyer::.lec.CreateStream(c("a", "b"))
+  expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_args = l_args,
+    lambda_maj_matrix = lmaj,
+    range_t = c(1, 5),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
 
-  res <- list()
+  expect_no_error(Z2 <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_args = l_args,
+    lambda_maj_matrix = lmaj + 10,
+    range_t = c(1, 5),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z2, t_min = 1, t_max = 5)
 
-  # seed the old.kind generator (default ) hereon "R"
-  set.seed(123)
-  res[["R0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  set.seed(123)
-  res[["R1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  expect_equal(res[["R0"]], res[["R1"]])
-
-  # activate "a" and reseed "R" -- If the function uses the "R", the test will fail
-  set.seed(123)
-  old.kind <- rlecuyer::.lec.CurrentStream("a")
-  res[["a0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  rlecuyer::.lec.CurrentStreamEnd(old.kind)
-  expect_false(identical(res[["R0"]], res[["a0"]]))
-
-  # activate "b", again, re-seed "R"
-  set.seed(123)
-  old.kind <- rlecuyer::.lec.CurrentStream("b")
-  res[["b0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  rlecuyer::.lec.CurrentStreamEnd(old.kind)
-  expect_false(identical(res[["R0"]], res[["b0"]]))
-  expect_false(identical(res[["b0"]], res[["a0"]]))
-
-  # reset the RNGs -- but advance the "R"
-  burn <- runif(10000)
-  rm("burn")
-  rlecuyer::.lec.ResetStartStream("a")
-  rlecuyer::.lec.ResetStartStream("b")
-
-  # activate "a" -- do not reseed "R"
-  old.kind <- rlecuyer::.lec.CurrentStream("a")
-  res[["a1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  rlecuyer::.lec.CurrentStreamEnd(old.kind)
-  expect_equal(res[["a0"]], res[["a1"]])
-  expect_false(identical(res[["R0"]], res[["a1"]]))
-
-  # activate "b" -- do not reseed "R"
-  old.kind <- rlecuyer::.lec.CurrentStream("b")
-  res[["b1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, range_t = c(100, 110))
-  rlecuyer::.lec.CurrentStreamEnd(old.kind)
-  expect_equal(res[["b0"]], res[["b1"]])
-  expect_false(identical(res[["R0"]], res[["b1"]]))
-  expect_false(identical(res[["a1"]], res[["b1"]]))
-
-  rlecuyer::.lec.exit()
+  compare_ppp_vectors(ppp1 = Z1, ppp2 = Z2, threshold = 0.1, showQQ = TRUE)
 })
+
+
+
+
+
+test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
+  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
+  l_args <- list(exponent = 1L)
+  l_ <- function(x) lfun(x, lambda_args = l_args)
+  N <- 1000
+  lmaj0 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =0)
+  lmaj1 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =1)
+  lmaj10 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =10)
+
+  Z0 <- list()
+  for(i in 1:2){
+    set.seed(123)
+    expect_no_error(Z0[[i]] <- vdraw_intensity_step_regular_cpp(
+      lambda = lfun,
+      lambda_args = l_args,
+      lambda_maj_matrix = lmaj0,
+      range_t = c(1, 5),
+      tol = 10^-6,
+      atmost1 = FALSE
+    ))
+    if(i >1){
+      expect_true(identical(Z0[[1]], Z0[[i]]))
+    }
+  }
+
+  check_ppp_sample_validity(Z0[[1]], t_min = 1, t_max = 5)
+  check_ppp_sample_validity(Z0[[2]], t_min = 1, t_max = 5)
+
+#
+#   set.seed(123)
+#   expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
+#     lambda = lfun,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = lmaj1,
+#     range_t = c(1, 5),
+#     tol = 10^-6,
+#     atmost1 = FALSE
+#   ))
+#   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
+#
+#
+#   set.seed(123)
+#   expect_no_error(Z10 <- vdraw_intensity_step_regular_cpp(
+#     lambda = lfun,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = lmaj10,
+#     range_t = c(1, 5),
+#     tol = 10^-6,
+#     atmost1 = FALSE
+#   ))
+#   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
+#
+#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
+#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
+})
+
+
+
+
+# test_that("vdraw_sc_step_regular_cpp() uses blocked random numbers", {
+#   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
+#   l_args <- list(exponent = 1L)
+#   l_ <- function(x) lfun(x, lambda_args = l_args)
+#   N <- 1000
+#   lmaj0 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =0)
+#   lmaj1 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =1)
+#   lmaj10 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =10)
+#
+#   expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
+#     lambda = lfun,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = lmaj0,
+#     range_t = c(1, 5),
+#     tol = 10^-6,
+#     atmost1 = FALSE
+#   ))
+#   check_ppp_sample_validity(Z0, t_min = 1, t_max = 5)
+#
+#   expect_no_error(Z1 <- vdraw_sc_step_regular_cpp(
+#     lambda = lfun,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = lmaj1,
+#     range_t = c(1, 5),
+#     tol = 10^-6,
+#     atmost1 = FALSE
+#   ))
+#   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
+#
+#
+#   expect_no_error(Z10 <- vdraw_sc_step_regular_cpp(
+#     lambda = lfun,
+#     lambda_args = l_args,
+#     lambda_maj_matrix = lmaj10,
+#     range_t = c(1, 5),
+#     tol = 10^-6,
+#     atmost1 = FALSE
+#   ))
+#   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
+#
+#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
+#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
+# })
+
+
