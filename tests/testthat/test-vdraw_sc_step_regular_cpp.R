@@ -59,8 +59,8 @@ test_that("vdraw_sc_step_regular_cpp() uses blocked random numbers", {
   l <- matrix(rep(1, 500), ncol = 5)
   L <- mat_cumsum_columns(l)
 
-  Z<- list()
-  for(i in 1:2){
+  Z <- list()
+  for (i in 1:2) {
     set.seed(123)
     expect_no_error(Z[[i]] <- vdraw_sc_step_regular_cpp(
       Lambda_matrix = L,
@@ -68,11 +68,10 @@ test_that("vdraw_sc_step_regular_cpp() uses blocked random numbers", {
       tol = 10^-6,
       atmost1 = FALSE
     ))
-    if(i >1){
+    if (i > 1) {
       expect_true(identical(Z[[1]], Z[[i]]))
     }
   }
-
 })
 
 
@@ -159,4 +158,3 @@ test_that("vdraw_sc_step_regular_cpp() uses user-supplied RNGs", {
 
   rlecuyer::.lec.exit()
 })
-

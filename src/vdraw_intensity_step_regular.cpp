@@ -22,17 +22,17 @@ NumericMatrix vdraw_intensity_step_regular(
 
 
   if(!is_cumulative) {
-    Lambda_maj = rate_maj;
+    lambda_maj = rate_maj;
     Lambda_maj = matrix_cumsum_columns(rate_maj);
     for(int i = 0; i!= n_intervals; ++i){
       Lambda_maj.column(i) = Lambda_maj.column(i) * interval_duration;
     }
   } else {
+    Lambda_maj = rate_maj;
     lambda_maj = matrix_diff_columns(rate_maj);
     for(int i = 0; i!= n_intervals; ++i){
       lambda_maj.column(i) = lambda_maj.column(i) / interval_duration;
     }
-    Lambda_maj = rate_maj;
   }
 
   NumericMatrix Zstar;//(n_draws, n_intervals);
@@ -51,11 +51,8 @@ NumericMatrix vdraw_intensity_step_regular(
 
   NumericMatrix lambda_star = lambda(Zstar);
 
-
-
   NumericMatrix Z(n_draws, Zstar.cols());
   std::fill(Z.begin(), Z.end(), NumericVector::get_na());
-
 
   for(int draw = 0; draw != n_draws; ++draw){
     acc_i = 0;
@@ -63,16 +60,20 @@ NumericMatrix vdraw_intensity_step_regular(
       if(NumericVector::is_na(Zstar(draw, ev))) {
         break;
       }
-      interval = floor(Zstar(draw, ev) / interval_duration(draw));
+      //interval = floor(Zstar(draw, ev) / interval_duration(draw));
+      interval = floor(Zstar(draw, ev) - range_t(draw, 0)) / interval_duration(draw);
       acceptance_prob = (lambda_star(draw, ev)/lambda_maj(draw, interval));
       if(acceptance_prob > 1 || acceptance_prob < 0) {
-        double zs = Zstar(draw, ev); 
-        double ls = lambda_star(draw, ev); 
-        double Ls = lambda_maj(draw, ev); 
-        double LLs = Lambda_maj(draw, ev); 
-        double LLs1 = rate_maj(draw, ev);
+        // double zs = Zstar(draw, ev); 
+        // double ls = lambda_star(draw, ev); 
+        // double lm = lambda_maj(draw, ev); 
+        // double lm1 = lambda_maj(draw, interval); 
+        // double Lm = Lambda_maj(draw, ev); 
+        // double Lm1 = Lambda_maj(draw, interval);  
+        // double rm = rate_maj(draw, ev);
+        // double rm1 = rate_maj(draw, interval);
 
-        std::string str = "Inadmissible acceptance probability (majorizer error?): ";
+        std::string str = "Majorizer error? Pr(acceptance) = ";
         str += std::to_string(acceptance_prob);
         throw std::range_error(str);
       }

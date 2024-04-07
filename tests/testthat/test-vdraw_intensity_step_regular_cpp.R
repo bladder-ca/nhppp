@@ -141,12 +141,12 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
   l_args <- list(exponent = 1L)
   l_ <- function(x) lfun(x, lambda_args = l_args)
   N <- 1000
-  lmaj0 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =0)
-  lmaj1 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =1)
-  lmaj10 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =10)
+  lmaj0 <- get_step_majorizer(fun = l_, breaks = matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K = 0)
+  lmaj1 <- get_step_majorizer(fun = l_, breaks = matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K = 1)
+  lmaj10 <- get_step_majorizer(fun = l_, breaks = matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K = 10)
 
   Z0 <- list()
-  for(i in 1:2){
+  for (i in 1:2) {
     set.seed(123)
     expect_no_error(Z0[[i]] <- vdraw_intensity_step_regular_cpp(
       lambda = lfun,
@@ -156,7 +156,7 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
       tol = 10^-6,
       atmost1 = FALSE
     ))
-    if(i >1){
+    if (i > 1) {
       expect_true(identical(Z0[[1]], Z0[[i]]))
     }
   }
@@ -164,32 +164,32 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
   check_ppp_sample_validity(Z0[[1]], t_min = 1, t_max = 5)
   check_ppp_sample_validity(Z0[[2]], t_min = 1, t_max = 5)
 
-#
-#   set.seed(123)
-#   expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
-#     lambda = lfun,
-#     lambda_args = l_args,
-#     lambda_maj_matrix = lmaj1,
-#     range_t = c(1, 5),
-#     tol = 10^-6,
-#     atmost1 = FALSE
-#   ))
-#   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
-#
-#
-#   set.seed(123)
-#   expect_no_error(Z10 <- vdraw_intensity_step_regular_cpp(
-#     lambda = lfun,
-#     lambda_args = l_args,
-#     lambda_maj_matrix = lmaj10,
-#     range_t = c(1, 5),
-#     tol = 10^-6,
-#     atmost1 = FALSE
-#   ))
-#   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
-#
-#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
-#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
+  #
+  #   set.seed(123)
+  #   expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
+  #     lambda = lfun,
+  #     lambda_args = l_args,
+  #     lambda_maj_matrix = lmaj1,
+  #     range_t = c(1, 5),
+  #     tol = 10^-6,
+  #     atmost1 = FALSE
+  #   ))
+  #   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
+  #
+  #
+  #   set.seed(123)
+  #   expect_no_error(Z10 <- vdraw_intensity_step_regular_cpp(
+  #     lambda = lfun,
+  #     lambda_args = l_args,
+  #     lambda_maj_matrix = lmaj10,
+  #     range_t = c(1, 5),
+  #     tol = 10^-6,
+  #     atmost1 = FALSE
+  #   ))
+  #   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
+  #
+  #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
+  #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
 })
 
 
@@ -238,5 +238,3 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
 #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
 #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
 # })
-
-

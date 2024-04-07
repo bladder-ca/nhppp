@@ -25,12 +25,7 @@ Z <- vdraw_intensity_step_regular_R(
 dat <- readRDS("refactor/SEER_WM_50K_data.rds")
 lambda_death <- readRDS("refactor/dt_intensities_death_from_other_causes.rds")
 
-# L <- lambda_death |>
-#   dplyr::filter(sex == "male" & race == "white" & cohort == 1940 & intensity == "Lambda") |>
-#   dplyr::filter(age >=40 & age <= 77) |>
-#   dplyr::select(age, estimate) |>
-#   tidyr::pivot_wider(names_from = age, values_from = estimate) |>
-#   as.matrix()
+
 
 L <- matrix((1:110)/110, nrow =1)
 

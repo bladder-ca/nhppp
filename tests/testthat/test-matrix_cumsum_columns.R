@@ -1,11 +1,11 @@
-test_that("matrix_cumsum_columns[_inplace]() works",{
+test_that("matrix_cumsum_columns[_inplace]() works", {
   # this is the C++ version of the function
   set.seed(123)
   N <- 100
-  J0 <- J <- matrix(rnorm(10*N), ncol = 10)
+  J0 <- J <- matrix(rnorm(10 * N), ncol = 10)
   J_target <- J
-  for(i in 2:10){
-    J_target[,i] <- J_target[,i] + J_target[,i-1]
+  for (i in 2:10) {
+    J_target[, i] <- J_target[, i] + J_target[, i - 1]
   }
 
   J_R <- mat_cumsum_columns(J)
@@ -27,5 +27,4 @@ test_that("matrix_cumsum_columns[_inplace]() works",{
   # works with 1 column:
   expect_equal(J0[, 1, drop = FALSE], mat_cumsum_columns(J0[, 1, drop = FALSE]))
   expect_equal(J0[, 1, drop = FALSE], matrix_cumsum_columns(J0[, 1, drop = FALSE]))
-
 })
