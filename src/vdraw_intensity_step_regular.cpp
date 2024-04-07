@@ -1,3 +1,4 @@
+#include <string>
 #include "nhppp.h"
 using namespace Rcpp;
 
@@ -42,7 +43,8 @@ NumericMatrix vdraw_intensity_step_regular(
   }
   
 
-  bool accept;
+  //bool accept;
+  double acceptance_prob;
   int interval;
   int acc_i = 0;
   int max_acc_i = 0;
@@ -62,10 +64,23 @@ NumericMatrix vdraw_intensity_step_regular(
         break;
       }
       interval = floor(Zstar(draw, ev) / interval_duration(draw));
-      accept = ((lambda_star(draw, ev)/lambda_maj(draw, interval)) > R::runif(0.0, 1.0));
-      if(accept) {
+      acceptance_prob = (lambda_star(draw, ev)/lambda_maj(draw, interval));
+      if(acceptance_prob > 1 || acceptance_prob < 0) {
+        double zs = Zstar(draw, ev); 
+        double ls = lambda_star(draw, ev); 
+        double Ls = lambda_maj(draw, ev); 
+        double LLs = Lambda_maj(draw, ev); 
+        double LLs1 = rate_maj(draw, ev);
+
+        std::string str = "Inadmissible acceptance probability (majorizer error?): ";
+        str += std::to_string(acceptance_prob);
+        throw std::range_error(str);
+      }
+      
+      
+      if(acceptance_prob > (R::runif(0.0, 1.0))) {
         Z(draw,acc_i) = Zstar(draw, ev);
-        max_acc_i = std::max(acc_i, max_acc_i);
+        max_acc_i = std::max(max_acc_i, acc_i);
         ++acc_i;
         if(atmost1) {
           break;

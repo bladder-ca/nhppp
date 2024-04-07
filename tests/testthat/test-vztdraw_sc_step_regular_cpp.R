@@ -59,6 +59,28 @@ test_that("vztdraw_sc_step_regular_cpp() does not break with matrices whose mode
 })
 
 
+
+test_that("vztdraw_sc_step_regular_cpp() uses blocked random numbers", {
+  l <- matrix(rep(1, 500), ncol = 5)
+  L <- mat_cumsum_columns(l)
+
+  Z<- list()
+  for(i in 1:2){
+    set.seed(123)
+    expect_no_error(Z[[i]] <- vztdraw_sc_step_regular_cpp(
+      Lambda_matrix = L,
+      range_t = c(100, 110),
+      tol = 10^-6,
+      atmost1 = FALSE
+    ))
+    if(i >1){
+      expect_true(identical(Z0[[1]], Z0[[i]]))
+    }
+  }
+
+})
+
+
 test_that("vztdraw_sc_step_regular_cpp() works with subinterval", {
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
