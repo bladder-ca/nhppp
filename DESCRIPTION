@@ -1,6 +1,6 @@
 Package: nhppp
 Title: Simulating Nonhomogeneous Poisson Point Processes 
-Version: 0.1.3.9004
+Version: 0.1.3.9005
 Authors@R: 
     c(person(given = "Thomas", 
              family = "Trikalinos", 
@@ -25,6 +25,7 @@ Language: es
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
+    data.table,
     rlecuyer,
     testthat,
     withr

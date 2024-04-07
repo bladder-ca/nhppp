@@ -2,6 +2,7 @@
 ## add tests that have lamda_args
 
 test_that("vztdraw_intensity_step_regular_R() works", {
+  set.seed(123)
   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)
   lmaj <- matrix(rep(1, 50), ncol = 5)
@@ -51,7 +52,8 @@ test_that("vztdraw_intensity_step_regular_R() works", {
 
 
 test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose mode is list", {
-  lfun <- function(x, ...) .2 * x
+  set.seed(123)
+  lfun <- function(x, ...) .2 * x   
   lmaj <- matrix(rep(1, 50), ncol = 5)
   Lmaj <- mat_cumsum_columns(lmaj)
 
@@ -73,3 +75,5 @@ test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose
     atmost1 = FALSE
   ))
 })
+
+

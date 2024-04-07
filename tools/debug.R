@@ -2,11 +2,17 @@ devtools::clean_dll()
 devtools::load_all()
 
 
-lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
+set.seed(123)
+ lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)
-  lmaj <- matrix(rep(1, 50), ncol = 5)
-  Lmaj <- mat_cumsum_columns(lmaj)
-lala <- vdraw_intensity_step_regular_cpp(lambda = lfun, lambda_args = l_args,     lambda_maj_matrix = lmaj, range_t = c(1, 5), tol = 10^-6,     atmost1 = FALSE)
+  l_ <- function(x) lfun(x, lambda_args = l_args)
+  N <- 1000
+  lmaj0 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =0)
+  lmaj1 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =1)
+  lmaj10 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =10)
+
+
+lala <- vdraw_intensity_step_regular_cpp(lambda = lfun, lambda_args = l_args, lambda_maj_matrix = lmaj0, range_t = c(1, 5), tol = 10^-6,     atmost1 = FALSE)
 
 Z <- vdraw_intensity_step_regular_R(
   lambda = function(x, lambda_args = NULL) 0.1 * x,
@@ -19,12 +25,7 @@ Z <- vdraw_intensity_step_regular_R(
 dat <- readRDS("refactor/SEER_WM_50K_data.rds")
 lambda_death <- readRDS("refactor/dt_intensities_death_from_other_causes.rds")
 
-# L <- lambda_death |>
-#   dplyr::filter(sex == "male" & race == "white" & cohort == 1940 & intensity == "Lambda") |>
-#   dplyr::filter(age >=40 & age <= 77) |>
-#   dplyr::select(age, estimate) |>
-#   tidyr::pivot_wider(names_from = age, values_from = estimate) |>
-#   as.matrix()
+
 
 L <- matrix((1:110)/110, nrow =1)
 
