@@ -47,7 +47,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   if (!is.matrix(range_t)) {
     range_t <- matrix(rep(range_t, each = nrow(rate)), ncol = 2)
   } else if (nrow(range_t) == 1) {
-    range_t <- range_t[rep(1, nrow(rate)), ]
+    range_t <- range_t[rep(1, nrow(rate)), , drop = FALSE]
   } else if (nrow(range_t) != nrow(rate)) {
     stop("`range_t` should have as many rows as `lambda_maj_matrix` or `Lambda_maj_matrix`")
   } else {
@@ -70,7 +70,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     if (!is.matrix(subinterval)) {
       subinterval <- matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
     } else if (nrow(subinterval) == 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ]
+      subinterval <- subinterval[rep(1, nrow(rate)), , drop = FALSE]
     } else if (nrow(subinterval) != nrow(rate)) {
       stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
     }

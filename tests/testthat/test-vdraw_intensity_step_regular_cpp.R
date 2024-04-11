@@ -46,6 +46,31 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     atmost1 = TRUE
   ))
   check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
+
+
+  #### Also works for 1 row and range_t being matrix or vector
+
+  # range_t vector
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_args = l_args,
+    Lambda_maj_matrix = Lmaj[1, , drop = FALSE],
+    range_t = c(1, 5),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
+
+  # range_t matrix
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_args = l_args,
+    Lambda_maj_matrix = Lmaj[1, , drop = FALSE],
+    range_t = cbind(1, 5),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
 })
 
 
@@ -80,7 +105,6 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
   lmaj <- matrix(rep(1, 50), ncol = 5)
   Lmaj <- mat_cumsum_columns(lmaj)
 
-
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     Lambda_maj_matrix = Lmaj,
@@ -97,6 +121,31 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
     lambda_maj_matrix = lmaj,
     range_t = c(1, 5),
     subinterval = c(2.3, 4.8),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 2.3, t_max = 4.8, atmost1 = FALSE)
+
+
+  #### Also works for 1 row and range_t, subinterval being matrix or vector
+
+  # range_t, subinterval vectors
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_maj_matrix = lmaj[1, , drop = FALSE],
+    range_t = c(1, 5),
+    subinterval = c(2.3, 4.8),
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 2.3, t_max = 4.8, atmost1 = FALSE)
+
+  # range_t,subinterval matrices
+  expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_maj_matrix = lmaj[1, , drop = FALSE],
+    range_t = cbind(1, 5),
+    subinterval = cbind(2.3, 4.8),
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -163,78 +212,4 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
 
   check_ppp_sample_validity(Z0[[1]], t_min = 1, t_max = 5)
   check_ppp_sample_validity(Z0[[2]], t_min = 1, t_max = 5)
-
-  #
-  #   set.seed(123)
-  #   expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
-  #     lambda = lfun,
-  #     lambda_args = l_args,
-  #     lambda_maj_matrix = lmaj1,
-  #     range_t = c(1, 5),
-  #     tol = 10^-6,
-  #     atmost1 = FALSE
-  #   ))
-  #   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
-  #
-  #
-  #   set.seed(123)
-  #   expect_no_error(Z10 <- vdraw_intensity_step_regular_cpp(
-  #     lambda = lfun,
-  #     lambda_args = l_args,
-  #     lambda_maj_matrix = lmaj10,
-  #     range_t = c(1, 5),
-  #     tol = 10^-6,
-  #     atmost1 = FALSE
-  #   ))
-  #   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
-  #
-  #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
-  #   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
 })
-
-
-
-
-# test_that("vdraw_sc_step_regular_cpp() uses blocked random numbers", {
-#   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
-#   l_args <- list(exponent = 1L)
-#   l_ <- function(x) lfun(x, lambda_args = l_args)
-#   N <- 1000
-#   lmaj0 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =0)
-#   lmaj1 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =1)
-#   lmaj10 <- get_step_majorizer(fun = l_, breaks= matrix(rep(1:11, each = N), nrow = N), is_monotone = FALSE, K =10)
-#
-#   expect_no_error(Z0 <- vdraw_sc_step_regular_cpp(
-#     lambda = lfun,
-#     lambda_args = l_args,
-#     lambda_maj_matrix = lmaj0,
-#     range_t = c(1, 5),
-#     tol = 10^-6,
-#     atmost1 = FALSE
-#   ))
-#   check_ppp_sample_validity(Z0, t_min = 1, t_max = 5)
-#
-#   expect_no_error(Z1 <- vdraw_sc_step_regular_cpp(
-#     lambda = lfun,
-#     lambda_args = l_args,
-#     lambda_maj_matrix = lmaj1,
-#     range_t = c(1, 5),
-#     tol = 10^-6,
-#     atmost1 = FALSE
-#   ))
-#   check_ppp_sample_validity(Z1, t_min = 1, t_max = 5)
-#
-#
-#   expect_no_error(Z10 <- vdraw_sc_step_regular_cpp(
-#     lambda = lfun,
-#     lambda_args = l_args,
-#     lambda_maj_matrix = lmaj10,
-#     range_t = c(1, 5),
-#     tol = 10^-6,
-#     atmost1 = FALSE
-#   ))
-#   check_ppp_sample_validity(Z10, t_min = 1, t_max = 5)
-#
-#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z1, threshold = 0.1, showQQ = TRUE)
-#   compare_ppp_vectors(ppp1 = Z0, ppp2 = Z10, threshold = 0.1, showQQ = TRUE)
-# })

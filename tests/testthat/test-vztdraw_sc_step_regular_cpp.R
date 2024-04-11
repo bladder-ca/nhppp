@@ -82,7 +82,7 @@ test_that("vztdraw_sc_step_regular_cpp() uses blocked random numbers", {
 test_that("vztdraw_sc_step_regular_cpp() works with subinterval", {
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
-    range_t = c(100, 110),
+    range_t = cbind(100, 110),
     subinterval = cbind(100, 110), # matrix
     atmost1 = FALSE
   ))
