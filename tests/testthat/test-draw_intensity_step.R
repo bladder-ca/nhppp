@@ -1,4 +1,5 @@
 test_that("draw_intensity_step() works", {
+  set.seed(123)
   l <- function(t) {
     return(rep(2, length(t)))
   }

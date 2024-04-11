@@ -1,4 +1,5 @@
 test_that("ztdraw_cumulative_intensity() works", {
+  set.seed(123)
   L <- function(t) {
     return(2 * t)
   }

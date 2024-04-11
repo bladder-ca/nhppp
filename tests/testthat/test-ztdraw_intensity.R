@@ -1,4 +1,5 @@
 test_that("ztdraw_intensity() works", {
+  set.seed(123)
   l <- function(t) {
     return(2)
   }

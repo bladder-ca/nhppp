@@ -1,4 +1,5 @@
 test_that("draw_cumulative_intensity_orderstats() works", {
+  set.seed(123)
   L <- function(t) {
     return(2 * t)
   }

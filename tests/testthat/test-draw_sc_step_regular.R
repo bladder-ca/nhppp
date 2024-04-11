@@ -1,4 +1,5 @@
 test_that("draw_sc_step_regular() arguments work", {
+  set.seed(123)
   l <- stats::runif(10)
   L <- cumsum(l)
 

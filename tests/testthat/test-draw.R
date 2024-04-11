@@ -1,4 +1,5 @@
 test_that("draw() works with lambda option", {
+  set.seed(123)
   l <- function(t) {
     return(2)
   }
@@ -14,6 +15,7 @@ test_that("draw() works with lambda option", {
 
 
 test_that("draw() works with Lambda option", {
+  set.seed(123)
   L <- function(t) {
     return(2 * t)
   }
