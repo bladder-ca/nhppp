@@ -1,4 +1,5 @@
 test_that("draw_sc_step() arguments work", {
+  set.seed(123)
   expect_no_error(df0 <- draw_sc_step(times_vector = c(0, 10), lambda_vector = 1, atmost1 = TRUE))
   check_ppp_sample_validity(times = df0, t_min = 0, t_max = 10, atmost1 = TRUE)
 
