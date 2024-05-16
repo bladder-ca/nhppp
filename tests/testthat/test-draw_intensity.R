@@ -1,4 +1,5 @@
 test_that("draw_intensity() works", {
+  set.seed(123)
   l <- function(t) {
     return(2)
   }
@@ -36,6 +37,7 @@ test_that("draw_intensity() works", {
 
 
 test_that("draw_intensity() works with linear majorization function", {
+  set.seed(123)
   l <- function(t) {
     return(2)
   }

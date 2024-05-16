@@ -53,7 +53,7 @@ test_that("vztdraw_intensity_step_regular_R() works", {
 
 test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose mode is list", {
   set.seed(123)
-  lfun <- function(x, ...) .2 * x   
+  lfun <- function(x, ...) .2 * x
   lmaj <- matrix(rep(1, 50), ncol = 5)
   Lmaj <- mat_cumsum_columns(lmaj)
 
@@ -75,5 +75,3 @@ test_that("vztdraw_intensity_step_regular_R() does not break with matrices whose
     atmost1 = FALSE
   ))
 })
-
-

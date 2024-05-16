@@ -1,4 +1,5 @@
 test_that("PPP methods agree on the first time to event", {
+  set.seed(123)
   r_ppp_next_n <- unlist(lapply(integer(10000), function(x) ppp_next_n(n = 1, rate = 10, t_min = 1)))
   r_ppp_sequential <- unlist(lapply(integer(10000), function(x) ppp_sequential(range_t = c(1, 3), rate = 10, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp_next_n, ppp2 = r_ppp_sequential, threshold = 0.1, showQQ = TRUE)
@@ -12,6 +13,7 @@ test_that("PPP methods agree on the first time to event", {
 
 
 test_that("draw_sc_step() agrees with strung together constant rates", {
+  set.seed(123)
   r_ppp_sequential <- unlist(lapply(
     integer(10000),
     function(x) {
@@ -43,6 +45,7 @@ test_that("draw_sc_step() agrees with strung together constant rates", {
 
 
 test_that("draw_sc_step_regular() agrees with strung together constant rates", {
+  set.seed(123)
   r_ppp_sequential <- unlist(lapply(
     integer(10000),
     function(x) {
@@ -75,6 +78,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
 })
 
 test_that("vdraw_sc_step_regular() agrees with strung together constant rates", {
+  set.seed(123)
   r_ppp_sequential <- unlist(lapply(
     integer(10000),
     function(x) {
@@ -110,6 +114,7 @@ test_that("vdraw_sc_step_regular() agrees with strung together constant rates", 
 
 
 test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rates", {
+  set.seed(123)
   r_ppp_sequential <- unlist(lapply(
     integer(10000),
     function(x) {
@@ -144,6 +149,7 @@ test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rate
 
 
 test_that("NHPPP methods agree on the first time to event with constant rate", {
+  set.seed(123)
   l <- function(t) 2
   L <- function(t) 2 * t
   Li <- function(z) z / 2
@@ -169,6 +175,7 @@ test_that("NHPPP methods agree on the first time to event with constant rate", {
 })
 
 test_that("NHPPP linear intensity agrees with general methods", {
+  set.seed(123)
   l <- function(t, alpha = 1, beta = 2) alpha + beta * t
   L <- function(t, alpha = 1, beta = 2, t0 = 1) Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = t0)
   Li <- function(z, alpha = 1, beta = 2, t0 = 1) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = t0)
@@ -188,6 +195,7 @@ test_that("NHPPP linear intensity agrees with general methods", {
 })
 
 test_that("NHPPP loglinear agrees with general methods", {
+  set.seed(123)
   l <- function(t, alpha = .1, beta = .02) exp(alpha + beta * t)
   L <- function(t, alpha = .1, beta = .02, t0 = 1) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = t0)
   Li <- function(z, alpha = .1, beta = .02, t0 = 1) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = t0)

@@ -1,4 +1,5 @@
 test_that("vztdraw_sc_step_regular_R() works", {
+  set.seed(123)
   # 1 row matrix
   expect_no_error(Z0 <- vztdraw_sc_step_regular_R(
     Lambda_matrix = matrix(1:5, nrow = 1),
@@ -41,6 +42,7 @@ test_that("vztdraw_sc_step_regular_R() works", {
 })
 
 test_that("vztdraw_sc_step_regular_R() does not break with matrices whose mode is list", {
+  set.seed(123)
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
 

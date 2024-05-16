@@ -10,6 +10,7 @@
 #' @param subinterval (matrix, double) subinterval of `range_t` to sample from
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
+#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length
@@ -24,7 +25,12 @@ vdraw_sc_step_regular_cpp <- function(
     range_t = NULL,
     subinterval = NULL,
     tol = 10^-6,
-    atmost1 = FALSE) {
+    atmost1 = FALSE,
+    atmostB = NULL) {
+  if (is.null(atmostB)) {
+    atmostB <- 0 # has to be <=0 in the C++ argument to be ignored
+  }
+
   if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
     rate <- lambda_matrix
     is_cumulative_rate <- FALSE
@@ -55,7 +61,7 @@ vdraw_sc_step_regular_cpp <- function(
     if (!is.matrix(subinterval)) {
       subinterval <- matrix(rep(subinterval, each = nrow(rate)), ncol = 2)
     } else if (nrow(subinterval) == 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ]
+      subinterval <- subinterval[rep(1, nrow(rate)), , drop = FALSE]
     } else if (nrow(subinterval) != nrow(rate)) {
       stop("`subinterval` should have as many rows as `lambda_matrix` or `Lambda_matrix`")
     }
@@ -63,7 +69,7 @@ vdraw_sc_step_regular_cpp <- function(
     return(
       .Call(
         `_nhppp_vdraw_sc_step_regular2`,
-        rate, is_cumulative_rate, range_t, subinterval, tol, atmost1
+        rate, is_cumulative_rate, range_t, subinterval, tol, atmost1, atmostB
       )
     )
   }

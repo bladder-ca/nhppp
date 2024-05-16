@@ -9,7 +9,8 @@ NumericMatrix vdraw_sc_step_regular2(
   const NumericMatrix & range_t,
   const NumericMatrix & subinterval,
   const double tol,
-  const bool atmost1
+  const bool atmost1, 
+  const int atmostB
 ) {
   int n_intervals = rate.cols();
   int n_draws = rate.rows();  
@@ -25,6 +26,10 @@ NumericMatrix vdraw_sc_step_regular2(
   }
 
   int n_max_events = R::qpois(1.0 - tol, max(Lambda), 1, 0);
+  if(atmostB>0 && atmostB < n_max_events) {
+    n_max_events = atmostB;
+  }
+  
   if(n_max_events == 0) {
     NumericMatrix Z(n_draws, 1); 
     std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;

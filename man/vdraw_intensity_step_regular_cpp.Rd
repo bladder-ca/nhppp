@@ -13,7 +13,8 @@ vdraw_intensity_step_regular_cpp(
   range_t = NULL,
   subinterval = NULL,
   tol = 10^-6,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  atmostB = NULL
 )
 }
 \arguments{
