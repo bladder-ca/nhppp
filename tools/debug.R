@@ -2,6 +2,30 @@ devtools::clean_dll()
 devtools::load_all()
 
 
+
+
+
+library(data.table)
+
+dlist <- readRDS("tools/debug.rds")
+l_ <- dlist$lambda
+lmaj <- dlist$lmaj
+range_t <- dlist$range_t
+subinterval <- dlist$subinterval
+pos_part <- dlist$pos_part
+my_lambda_args <- dlist$my_l_args
+
+Z <- nhppp::vdraw_intensity_step_regular_cpp(
+  lambda = l_,
+  lambda_maj_matrix = lmaj, 
+  range_t = range_t,
+  subinterval = subinterval, 
+  atmost1 = TRUE
+)
+
+
+
+
 set.seed(123)
  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)

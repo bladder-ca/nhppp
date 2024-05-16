@@ -24,7 +24,13 @@ vdraw_sc_step_regular_cpp <- function(
     range_t = NULL,
     subinterval = NULL,
     tol = 10^-6,
-    atmost1 = FALSE) {
+    atmost1 = FALSE, 
+    atmostB = NULL) {
+
+  if(is.null(atmostB)) {
+    atmostB <- 0  # has to be <=0 in the C++ argument to be ignored 
+  }
+
   if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
     rate <- lambda_matrix
     is_cumulative_rate <- FALSE
@@ -63,7 +69,7 @@ vdraw_sc_step_regular_cpp <- function(
     return(
       .Call(
         `_nhppp_vdraw_sc_step_regular2`,
-        rate, is_cumulative_rate, range_t, subinterval, tol, atmost1
+        rate, is_cumulative_rate, range_t, subinterval, tol, atmost1, atmostB
       )
     )
   }

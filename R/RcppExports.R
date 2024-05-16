@@ -45,8 +45,8 @@ vdraw_sc_step_regular <- function(rate, is_cumulative, range_t, tol, atmost1) {
     .Call(`_nhppp_vdraw_sc_step_regular`, rate, is_cumulative, range_t, tol, atmost1)
 }
 
-vdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, atmost1) {
-    .Call(`_nhppp_vdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, atmost1)
+vdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, atmost1, atmostB) {
+    .Call(`_nhppp_vdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, atmost1, atmostB)
 }
 
 vztdraw_sc_step_regular <- function(rate, is_cumulative, range_t, atmost1) {

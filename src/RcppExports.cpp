@@ -149,8 +149,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vdraw_sc_step_regular2
-NumericMatrix vdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const double tol, const bool atmost1);
-RcppExport SEXP _nhppp_vdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+NumericMatrix vdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const double tol, const bool atmost1, const int atmostB);
+RcppExport SEXP _nhppp_vdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP atmostBSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -160,7 +160,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, atmost1));
+    Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, atmost1, atmostB));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -206,7 +207,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_step_regular_inverse", (DL_FUNC) &_nhppp_step_regular_inverse, 5},
     {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 8},
     {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
-    {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 6},
+    {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 7},
     {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},
     {"_nhppp_vztdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular2, 5},
     {NULL, NULL, 0}
