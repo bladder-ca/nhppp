@@ -34,6 +34,8 @@ The first is time. The optional second is a named list with additional arguments
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
+
+\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
 }
 \value{
 a matrix of event times (columns) per draw (rows)

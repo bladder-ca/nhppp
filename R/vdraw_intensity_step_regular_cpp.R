@@ -14,7 +14,7 @@
 #' @param subinterval (matrix, double) subinterval of `range_t` to sample from
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
-#' @parma atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
+#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
