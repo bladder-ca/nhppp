@@ -11,7 +11,8 @@ NumericMatrix vdraw_intensity_step_regular(
   const NumericMatrix & subinterval,
   const bool use_subinteval,
   const double tol,
-  const bool atmost1) {
+  const bool atmost1, 
+  const int atmostB) {
 
 
   int n_intervals = rate_maj.cols();
@@ -37,7 +38,7 @@ NumericMatrix vdraw_intensity_step_regular(
 
   NumericMatrix Zstar;//(n_draws, n_intervals);
   if(use_subinteval) {
-    Zstar = vdraw_sc_step_regular2(Lambda_maj, true, range_t, subinterval, tol, false);
+    Zstar = vdraw_sc_step_regular2(Lambda_maj, true, range_t, subinterval, tol, false, atmostB);
   } else {
     Zstar = vdraw_sc_step_regular(Lambda_maj, true, range_t, tol, false);
   }

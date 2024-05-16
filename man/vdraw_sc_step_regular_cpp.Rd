@@ -11,7 +11,8 @@ vdraw_sc_step_regular_cpp(
   range_t = NULL,
   subinterval = NULL,
   tol = 10^-6,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  atmostB = NULL
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ vdraw_sc_step_regular_cpp(
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
+
+\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
 }
 \value{
 a vector of event times t

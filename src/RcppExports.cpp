@@ -116,8 +116,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vdraw_intensity_step_regular
-NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinteval, const double tol, const bool atmost1);
-RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintevalSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinteval, const double tol, const bool atmost1, const int atmostB);
+RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintevalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP atmostBSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -129,7 +129,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type use_subinteval(use_subintevalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinteval, tol, atmost1));
+    Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinteval, tol, atmost1, atmostB));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -205,7 +206,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_rztpois", (DL_FUNC) &_nhppp_rztpois, 1},
     {"_nhppp_rztpois_vec", (DL_FUNC) &_nhppp_rztpois_vec, 1},
     {"_nhppp_step_regular_inverse", (DL_FUNC) &_nhppp_step_regular_inverse, 5},
-    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 8},
+    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 9},
     {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
     {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 7},
     {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},

@@ -14,6 +14,7 @@
 #' @param subinterval (matrix, double) subinterval of `range_t` to sample from
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
+#' @parma atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
@@ -33,7 +34,8 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              range_t = NULL,
                                              subinterval = NULL,
                                              tol = 10^-6,
-                                             atmost1 = FALSE) {
+                                             atmost1 = FALSE,
+                                             atmostB = NULL) {
   # browser()
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
@@ -51,6 +53,10 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   } else if (nrow(range_t) != nrow(rate)) {
     stop("`range_t` should have as many rows as `lambda_maj_matrix` or `Lambda_maj_matrix`")
   } else {
+  }
+
+  if (is.null(atmostB)) {
+    atmostB <- -1 # has to be <=0 to be ignored
   }
 
   mode(rate) <- "numeric"
@@ -82,7 +88,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   return(
     .Call(
       `_nhppp_vdraw_intensity_step_regular`, l_,
-      rate, is_cumulative_rate, range_t, subinterval, use_subinterval, tol, atmost1
+      rate, is_cumulative_rate, range_t, subinterval, use_subinterval, tol, atmost1, atmostB
     )
   )
 }

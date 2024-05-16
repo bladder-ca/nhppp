@@ -37,7 +37,8 @@ Rcpp::NumericMatrix vdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const bool atmost1
+  const bool atmost1, 
+  const int atmostB
 );
 
 Rcpp::NumericMatrix vdraw_sc_step_regular(
@@ -60,8 +61,7 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular2(
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
-  const bool atmost1, 
-  const int atmostB
+  const bool atmost1
 );
 
 Rcpp::NumericMatrix vdraw_intensity_step_regular(
@@ -72,7 +72,8 @@ Rcpp::NumericMatrix vdraw_intensity_step_regular(
   const Rcpp::NumericMatrix & subinterval,
   const bool use_subinteval,
   const double tol,
-  const bool atmost1);
+  const bool atmost1, 
+  const int atmostB);
 
 
 Rcpp::NumericMatrix step_regular_inverse(
