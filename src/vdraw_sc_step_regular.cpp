@@ -29,6 +29,7 @@ NumericMatrix vdraw_sc_step_regular(
     std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
     return(Z);
   }
+  n_max_events = (atmost1)?1:n_max_events;
 
   NumericMatrix Tau(n_draws, n_max_events);
   for(int i =0; i!=n_draws*n_max_events; ++i) {

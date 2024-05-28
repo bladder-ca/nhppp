@@ -1347,7 +1347,7 @@ We compared the execution speed of non-vectorized and vectorized functions for s
 When drawing only the earliest event, the vectorized function is approximately
 $\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) / as.numeric(comptimes_vec[[4,"median"]]), 0) }$ times faster than the non-vectorized function (median $\Sexpr{pprint(as.numeric(comptimes_vec[[4,"median"]]) *10^6)} \mu s$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[3,"median"]]) *10^6 )} \mu s$ over $\Sexpr{n_simulations}$ simulations).
 %
-However, when drawing all events, the order changes: the vectorized function is approximately $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) / as.numeric(comptimes_vec[[1,"median"]]), 1) }$ times slower than the non-vectorized function (median $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) *10^3)} ms$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) *10^3)} ms$ over $\Sexpr{n_simulations}$ simulations). The reversal in performance is because the vectorized function is not optimized for large numbers of events per draw. (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
+When drawing all events, the vectorized function is approximately $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) / as.numeric(comptimes_vec[[2,"median"]]), 1) }$ times faster than the non-vectorized function (median $\Sexpr{pprint(as.numeric(comptimes_vec[[2,"median"]]) *10^3)} ms$ versus $\Sexpr{pprint(as.numeric(comptimes_vec[[1,"median"]]) *10^3)} ms$ over $\Sexpr{n_simulations}$ simulations). (The expected number of events with $\lambda_{*b}$ in $(0, 6\pi]$ is
 $\Sexpr{pprint(Lmat[1,M], 2)}$.)
 
 
