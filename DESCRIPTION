@@ -30,5 +30,5 @@ Suggests:
     testthat,
     withr
 Config/Needs/website: rmarkdown
-URL: https://github.com/bladder-ca/nhppp-fast
-BugReports: https://github.com/bladder-ca/nhppp-fast/issues
+URL: https://github.com/bladder-ca/nhppp
+BugReports: https://github.com/bladder-ca/nhppp/issues

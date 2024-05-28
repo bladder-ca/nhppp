@@ -6,8 +6,8 @@
 <!-- badges: start -->
 
 [![Codecov test
-coverage](https://codecov.io/gh/bladder-ca/nhppp-fast/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bladder-ca/nhppp-fast?branch=main)
-[![R-CMD-check](https://github.com/bladder-ca/nhppp-fast/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bladder-ca/nhppp-fast/actions/workflows/R-CMD-check.yaml)
+coverage](https://codecov.io/gh/bladder-ca/nhppp/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bladder-ca/nhppp?branch=main)
+[![R-CMD-check](https://github.com/bladder-ca/nhppp/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bladder-ca/nhppp/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 nhppp is a package for simulating events from one dimensional
@@ -37,7 +37,7 @@ You can install the development version of nhppp from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("bladder-ca/nhppp-fast")
+devtools::install_github("bladder-ca/nhppp")
 ```
 
 ## Example
