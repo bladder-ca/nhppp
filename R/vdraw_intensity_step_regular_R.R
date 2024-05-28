@@ -13,7 +13,7 @@
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
-#' @param force_zt_majorizer boolean, force the use of the zero-truncated majorizer; - used for flexibility in calling from other function. Keep the default `FALSE` unless you know what you are doing.
+#' @param force_zt_majorizer boolean, force the use of the zero-truncated majorizer; - used for flexibility in calling from other functions. Keep the default `FALSE` unless you know what you are doing.
 #' @param ... (any) other arguments (ignored  -- used for flexibility in calling from other functions)
 #'
 #' @return a matrix of event times (columns) per draw (rows)
