@@ -17,6 +17,11 @@ time-transformation of a homogeneous Poisson process (of intensity one)
 via the inverse of the integrated intensity function; the generation of
 a Poisson number of order statistics from a fixed density function; and
 the thinning of a majorizing NHPPP via an acceptance-rejection scheme.
+It was developed to provide fast and memory efficient functions for
+discrete event and statistical simulations. For a description of the
+algorithms and a numerical comparison with other R packages, see
+Trikalinos and Sereda (2024), accessible at
+<https://arxiv.org/abs/2402.00358>.
 
 ## Installation
 
@@ -38,7 +43,9 @@ devtools::install_github("bladder-ca/nhppp-fast")
 ## Example
 
 These examples use the generic function `draw()`, which is a wrapper for
-the packages specific functions.
+the packages specific functions. `draw()` is a non-vectorized function,
+but `nhppp` includes vectorized functions that are fast and have small
+memory footprint.
 
 Consider the time varying intensity function
 $\lambda(t) = e^{(0.2t)} (1 + \sin t)$, which is a sinusoidal intensity

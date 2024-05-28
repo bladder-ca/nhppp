@@ -1,6 +1,15 @@
-# nhppp (development version)
+# nhppp 0.1.4
+
+* Function arguments are now more consistent.
+
+* More extensive numerical checks.  
+
+* Added C++ code for vectorized functions -- for computational speed and memory efficiency.  
 
 # nhppp 0.1.3
+
+
+* CRAN release
 
 # nhppp 0.1.2
 

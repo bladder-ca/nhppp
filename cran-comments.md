@@ -1,7 +1,5 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-* This is a new release.
-
-* Per feedback from CRAN (Uwe Ligges) I removed file LICENSE and `+ file` from the description. 
+* This is a new version of the package. It adds vectorized functions and many numerical tests/checks. 
