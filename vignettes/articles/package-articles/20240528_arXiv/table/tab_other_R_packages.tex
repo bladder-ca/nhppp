@@ -1,0 +1,77 @@
+\begin{sidewaystable}
+\caption{\textbf{NHPPP generation in \proglang{R} packages}} \label{tab:R-packages}
+\vspace{5pt}
+\footnotesize
+\centering
+\begin{tabular}{lllllllll}
+\toprule
+\textbf{\proglang{R} package} &
+\textbf{Function} &
+\multicolumn{3}{c}{\textbf{Algorithms (inputs)}} & 
+\begin{tabular}[c]{@{}l@{}}\textbf{Sample only} \\\textbf{earliest event}\end{tabular} & 
+\begin{tabular}[c]{@{}l@{}}\textbf{Custom} \\\textbf{RNG}\end{tabular}& 
+\begin{tabular}[c]{@{}l@{}}\textbf{Simulate} \\\textbf{given} $N>0$\end{tabular}&
+\begin{tabular}[c]{@{}l@{}}\textbf{Vectorized} \\\textbf{functions}\end{tabular}\\
+\cmidrule(lr){3-5} 
+  &  & \textbf{Thinning} & \textbf{Inversion} & \begin{tabular}[c]{@{}l@{}}\textbf{Order} \\\textbf{statistics} \end{tabular}& & &\\
+\midrule
+%
+\pkg{nhppp} &
+[see text] &
+$\lambda(t)$, $\lambda_*(t)$ &
+$\Lambda(t), \Lambda^{-1}(z)$ &
+$\Lambda(t), \Lambda^{-1}(z)$ &
+Yes &  
+\begin{tabular}[c]{@{}l@{}}\pkg{rstream} \\objects\end{tabular} & 
+Yes &
+\begin{tabular}[c]{@{}l@{}}For piecewise \\constant\\ intensity\end{tabular}\\
+\addlinespace[1em]
+%
+\pkg{reda} & 
+\fct{simEvent}   &
+$\lambda(t)$, $\lambda_{*}$ constant   &
+\begin{tabular}[c]{@{}l@{}}$\lambda(t)$ \\(no $\Lambda(t), \Lambda^{-1}(z)$)\end{tabular} &
+No &
+Yes &
+No &
+No &
+No \\
+\addlinespace[1em]
+%
+\pkg{simEd} & 
+\fct{thinning}  &
+$\lambda(t)$, $[\lambda_{*m}]_{m=1}^M$ &
+No & 
+No &
+No &
+No &
+No &
+No \\
+\addlinespace[1em]
+%
+\pkg{IndTestPP} &
+\fct{simNHPc} &
+$[\lambda_m]_{m=1}^M$, $\lambda_{*}$ constant  & 
+\begin{tabular}[c]{@{}l@{}}$[\lambda_m]_{m=1}^M$ \\(no $\Lambda(t), \Lambda^{-1}(z)$) \end{tabular}&
+No &
+No & 
+No & 
+No &
+No \\
+\addlinespace[1em]
+%
+\pkg{NHPoisson} & 
+\fct{simNHP.fun} &
+No &
+\begin{tabular}[c]{@{}l@{}}$\lambda(t)$, \\(no $\Lambda(t), \Lambda^{-1}(z)$)\end{tabular} &
+No &
+No &
+No &
+No &
+No \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+RNG: random number generator object.
+\end{flushleft}
+\end{sidewaystable}
