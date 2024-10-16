@@ -66,15 +66,16 @@ check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, a
 
 
 
-#' Check the validity of ppp samples
+#' Check the validity of ppp samples arranged in matrix format
 #'
-#' @description Standard checks for a vector of ordered times. Check
-#' that the `times` vector is sorted, has unique values, has all values
+#' @description Standard checks for a matrix of ordered times
+#' (event series in rows, times in columns). Check
+#' that the times in the columns are sorted, have unique values
 #' in `[t_min, t_max]`, and has length `size` (if applicable).
 #'
 #' @param times (vector, double | matrix) the times to be checked as vectors or matrices (time-vectors in rows)
-#' @param t_min (double) the start of the time nterval
-#' @param t_max (double) optional: the end of the time interval
+#' @param t_min (double | vector) the start of the time nterval
+#' @param t_max (double| vector) optional: the end of the time interval; if a vector, its length should match the number of rows of `times`.
 #' @param size (double) optional: the size of the vector
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
@@ -83,9 +84,20 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, a
   if (!is.matrix(times)) {
     check_ppp_vector_validity(times = times, t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
   } else {
+    if (length(t_min) == 1) {
+      t_min <- rep(t_min, nrow(times))
+    }
+    stopifnot(nrow(times) == length(t_min))
+    if (!is.null(t_max)) {
+      if (length(t_max) == 1) {
+        t_max <- rep(t_max, nrow(times))
+      }
+      stopifnot(nrow(times) == length(t_max))
+    }
     for (i in 1:nrow(times)) {
+      tmax_i <- if (!is.null(t_max)) t_max[i] else NULL
       testthat::expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
-      check_ppp_vector_validity(times = times[i, ], t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
+      check_ppp_vector_validity(times = times[i, ], t_min = t_min[i], t_max = tmax_i, size = size, atmost1 = atmost1, atleast1 = atleast1)
     }
   }
 }
