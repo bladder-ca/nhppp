@@ -68,3 +68,4 @@ vignettes/articles/cache/
 .Renviron
 .Rproj.user
 inst/doc
+docs

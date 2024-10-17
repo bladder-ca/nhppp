@@ -4,6 +4,7 @@
 ^\.gitignore$
 ^benchmarks$
 ^vignettes/articles$
+^articles$
 ^\.github$
 ^cran-comments\.md$
 ^README\.Rmd$
@@ -12,3 +13,6 @@
 ^refactor$
 tools
 .vscode
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

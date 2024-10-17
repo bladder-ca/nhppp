@@ -1,5 +1,7 @@
 ---
 title: "Sampling log-linear times"
+author: "TA Trikalinos" 
+date: "2024-10-17"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Sampling log-linear times}
@@ -344,5 +346,5 @@ Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example 
 
 # References 
 
-Trikalinos TA, Sereda Y. nhppp: Simulating Nonhomogeneous Poisson Point Processes in R. arXiv preprint arXiv:2402.00358. 2024 Feb 1.
+Trikalinos TA, Sereda Y. _nhppp: Simulating Nonhomogeneous Poisson Point Processes in R_. arXiv preprint arXiv:2402.00358. 2024 Feb 1.
 
