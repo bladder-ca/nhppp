@@ -23,3 +23,4 @@ None
 Compare that the deciles of two vectors have absolute difference
 over average ratios less than \code{threshold}
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ Return matrix with column-wise cumulative sum
 replacing cells larger than \code{ceil} with \code{NA}.
 No checks for arguments is done.
 }
+\keyword{internal}

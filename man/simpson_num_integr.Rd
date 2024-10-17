@@ -29,3 +29,4 @@ Faster that R's \code{integrate()} and precise enough, but does not do any check
 The error is at most \verb{M (b-a)^5/(180 n^4)} where \code{M} is the maximum of
 the fourth derivative of the integrand in the interval \verb{[a, b]}.
 }
+\keyword{internal}

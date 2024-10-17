@@ -35,3 +35,4 @@ inverse_with_uniroot_sorted(f = function(x) {
   2 * x
 }, y = c(0, 0.5))
 }
+\keyword{internal}

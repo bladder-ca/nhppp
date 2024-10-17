@@ -17,3 +17,4 @@ matrix
 Return matrix with column-wise cumulative sum
 No checks for arguments is done.
 }
+\keyword{internal}

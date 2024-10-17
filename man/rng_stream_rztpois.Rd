@@ -23,3 +23,4 @@ Sample from \code{rstream} objects
 \examples{
 rng_stream_rztpois(10)
 }
+\keyword{internal}

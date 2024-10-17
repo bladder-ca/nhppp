@@ -15,6 +15,7 @@
 #' #max error for simpson_num_integr(sin, 0, pi/2, 100) is 5.312842e-10
 #' 1 * (pi/2 - 0)^5/(180 * 100^4)
 #' @export
+#' @keywords internal
 simpson_num_integr <- function(f, a, b, n) {
   if (is.function(f) == FALSE) {
     stop("f must be a function with one parameter (variable)")

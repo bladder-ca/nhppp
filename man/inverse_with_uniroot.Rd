@@ -38,3 +38,4 @@ inverse_with_uniroot(f = function(x) {
   2 * x
 }, y = 0.5)
 }
+\keyword{internal}

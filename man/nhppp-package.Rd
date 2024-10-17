@@ -13,6 +13,7 @@ Simulates events from one dimensional nonhomogeneous Poisson point processes (NH
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://bladder-ca.github.io/nhppp/}
   \item \url{https://github.com/bladder-ca/nhppp}
   \item Report bugs at \url{https://github.com/bladder-ca/nhppp/issues}
 }

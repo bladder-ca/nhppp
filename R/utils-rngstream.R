@@ -7,6 +7,7 @@
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
 #' @return a vector of uniform variates of size `size`
+#' @keywords internal
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
@@ -33,6 +34,7 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
 #' @return a vector of exponential variates of size `size`
+#' @keywords internal
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
@@ -58,6 +60,7 @@ rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
 #' @return a vector of counts of size `size`
+#' @keywords internal
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
@@ -86,6 +89,7 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
 #' @return a vector of non zero counts of size `size`
+#' @keywords internal
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
@@ -114,6 +118,7 @@ rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 #'
 #' @return a vector of non zero counts of size `size`
 #' @export
+#' @keywords internal
 #' @examples
 #' rztpois(10, 1)
 #' rztpois(10, 1:10)
