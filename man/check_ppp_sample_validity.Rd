@@ -35,3 +35,4 @@ Standard checks for a matrix of ordered times
 that the times in the columns are sorted, have unique values
 in \verb{[t_min, t_max]}, and has length \code{size} (if applicable).
 }
+\keyword{internal}

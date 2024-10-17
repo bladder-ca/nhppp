@@ -18,3 +18,4 @@ Lambda_inv_linear_form(z, alpha, beta, t0)
 \description{
 Inverse of the definite integral of \code{l = alpha + beta*t} only for \verb{l+}.
 }
+\keyword{internal}

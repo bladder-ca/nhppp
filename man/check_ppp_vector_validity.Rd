@@ -34,3 +34,4 @@ Standard checks for a vector of ordered times. Check
 that the \code{times} vector is sorted, has unique values, has all values
 in \verb{[t_min, t_max]}, and has length \code{size} (if applicable).
 }
+\keyword{internal}

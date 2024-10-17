@@ -17,3 +17,4 @@ Copied from the \code{R6} source code.
 \details{
 Small utility functions. Not to be exported to the user.
 }
+\keyword{internal}

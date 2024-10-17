@@ -334,7 +334,7 @@ there is good agreement over this population of size $K = `r K`$. As $K$ increas
 the agreement remains evidently excellent. We have done in-depth comparisons elsewhere. 
 A set of QQ plots should suffice here.
 
-```{r qq-plots}
+```{r qq-plots, fig.alt="QQ plots comparing simulated times with the three methods. The QQ plots indicate excellent agreement."}
 qqplot(pop$t_nonvec_special_case, pop$t_thinning)
 qqplot(pop$t_nonvec_special_case, pop$t_inversion)
 ```

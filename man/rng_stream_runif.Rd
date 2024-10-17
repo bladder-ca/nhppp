@@ -24,3 +24,4 @@ Sample from \code{rstream} objects
 \examples{
 rng_stream_runif(10)
 }
+\keyword{internal}

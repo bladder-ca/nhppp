@@ -7,6 +7,7 @@
 #' Copied from the `R6` source code.
 #' @param expr Expression.
 #' @return NULL
+#' @keywords internal
 expect_no_error <- function(expr) {
   err <- FALSE
   tryCatch(force(expr),
@@ -22,6 +23,7 @@ expect_no_error <- function(expr) {
 #'
 #' @param codeFile Path to file
 #' @return \code{codeFile} contents as a character string
+#' @keywords internal
 read_code <- function(codeFile) {
   paste(readLines(file.path(codeFile)), collapse = "\n")
 }
@@ -43,6 +45,7 @@ read_code <- function(codeFile) {
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
 #' @return None
+#' @keywords internal
 check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
   times <- times[!is.na(times)]
   if (atleast1) {
@@ -80,6 +83,7 @@ check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, a
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
 #' @return None
+#' @keywords internal
 check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
   if (!is.matrix(times)) {
     check_ppp_vector_validity(times = times, t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
@@ -113,6 +117,7 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, a
 #' @param showQQ (boolean) optional: show the QQ plot if the absolute value of the
 #' Difference vs Average ratio in any decile is bigger than the `threshold`
 #' @return None
+#' @keywords internal
 compare_ppp_vectors <- function(ppp1,
                                 ppp2,
                                 threshold = 0.15, showQQ = TRUE) {

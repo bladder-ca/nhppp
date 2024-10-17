@@ -15,3 +15,4 @@ read_code(codeFile)
 \description{
 Read code from text file as string
 }
+\keyword{internal}

@@ -34,6 +34,6 @@ Suggests:
     truncnorm,
     withr
 Config/Needs/website: rmarkdown
-URL: https://github.com/bladder-ca/nhppp
+URL: https://bladder-ca.github.io/nhppp/, https://github.com/bladder-ca/nhppp
 BugReports: https://github.com/bladder-ca/nhppp/issues
 VignetteBuilder: knitr

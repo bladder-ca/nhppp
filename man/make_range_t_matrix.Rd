@@ -23,3 +23,4 @@ Takes the usual ways that \code{range_t} is specified
 (a 2-vector, a 1 x 2 or an r x 2 matrix) and
 returns a r x 2 matrix.
 }
+\keyword{internal}

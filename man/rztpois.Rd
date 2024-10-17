@@ -22,3 +22,4 @@ Sample zero-truncated Poisson random samples (basic R)
 rztpois(10, 1)
 rztpois(10, 1:10)
 }
+\keyword{internal}

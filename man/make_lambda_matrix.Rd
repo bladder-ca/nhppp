@@ -27,3 +27,4 @@ Helper function for the vectorized versions of sampling functions.
 Takes the usual ways that \code{lambda_mat} and \code{Lambda_mat} are specified
 and returns \code{lambda_mat}.
 }
+\keyword{internal}

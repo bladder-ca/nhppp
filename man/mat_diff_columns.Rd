@@ -17,3 +17,4 @@ matrix
 Return matrix with column-wise differencing.
 No checks for arguments is done.
 }
+\keyword{internal}

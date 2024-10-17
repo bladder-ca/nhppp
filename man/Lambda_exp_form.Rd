@@ -20,3 +20,4 @@ Lambda_exp_form(t, alpha, beta, t0)
 Definite integral of \code{l = exp(alpha + beta*t)} starting at
 \code{t0} -- only for \verb{l+}.
 }
+\keyword{internal}

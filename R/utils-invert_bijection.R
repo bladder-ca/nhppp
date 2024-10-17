@@ -11,6 +11,7 @@
 #' @return (scalar, double) vector of x=f^(-1)(y): the inverted value
 #' @export
 #'
+#' @keywords internal
 #' @examples
 #' inverse_with_uniroot(f = function(x) {
 #'   2 * x
@@ -41,6 +42,7 @@ inverse_with_uniroot <- function(f = f, y,
 #' @return (vector, double) vector of x=f^(-1)(y): the inverted values
 #' @export
 #'
+#' @keywords internal
 #' @examples
 #' inverse_with_uniroot_sorted(f = function(x) {
 #'   2 * x

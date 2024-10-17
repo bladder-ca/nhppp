@@ -22,3 +22,4 @@ Sample from \code{rstream} objects
 \examples{
 rng_stream_rexp(10)
 }
+\keyword{internal}

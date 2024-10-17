@@ -6,6 +6,7 @@
 #' @param range_t a 2-vector, a 1 x 2 or an r x 2 matrix
 #' @param n_rows the number of rows in the fully expanded matrix (`r`)
 #' @return A matrix (r x 2), row-expanded if needed
+#' @keywords internal
 make_range_t_matrix <- function(range_t, n_rows) {
   if (is.matrix(range_t) && nrow(range_t) == n_rows && ncol(range_t) == 2) {
     return(range_t)
@@ -28,6 +29,7 @@ make_range_t_matrix <- function(range_t, n_rows) {
 #' @param Lambda_mat a matrix of cumulative intensities or missing
 #' @param interval_duration a vector with the same number of elements as the rows of `Lambda_mat`
 #' @return A matrix (r x 2), row-expanded if needed
+#' @keywords internal
 make_lambda_matrix <- function(lambda_mat = NULL, Lambda_mat = NULL, interval_duration = NULL) {
   if (!is.null(lambda_mat)) {
     mode(lambda_mat) <- "numeric"
@@ -50,6 +52,7 @@ make_lambda_matrix <- function(lambda_mat = NULL, Lambda_mat = NULL, interval_du
 #' @param Lambda_mat a matrix of cumulative intensities or missing
 #' @param interval_duration a vector with the same number of elements as the rows of `Lambda_mat`
 #' @return A matrix (r x 2), row-expanded if needed
+#' @keywords internal
 make_cumulative_Lambda_matrix <- function(Lambda_mat = NULL, lambda_mat = NULL, interval_duration = NULL) {
   if (!is.null(Lambda_mat)) {
     mode(Lambda_mat) <- "numeric"
@@ -69,6 +72,7 @@ make_cumulative_Lambda_matrix <- function(Lambda_mat = NULL, lambda_mat = NULL, 
 #'
 #' @param X (matrix)
 #' @return matrix
+#' @keywords internal
 mat_diff_columns <- function(X) {
   if (ncol(X) > 1) {
     X <- cbind(rep(0, nrow(X)), X)
@@ -84,6 +88,7 @@ mat_diff_columns <- function(X) {
 #'
 #' @param X (matrix)
 #' @return matrix
+#' @keywords internal
 mat_cumsum_columns <- function(X) {
   if (ncol(X) > 1) {
     return(t(apply(X, 1, cumsum)))
@@ -99,6 +104,7 @@ mat_cumsum_columns <- function(X) {
 #' @param X (matrix)
 #' @param ceil (double or Inf) the ceiling to be applied
 #' @return matrix
+#' @keywords internal
 mat_cumsum_columns_with_scalar_ceiling <- function(X, ceil = Inf) {
   X <- mat_cumsum_columns(X)
 
@@ -127,6 +133,7 @@ mat_cumsum_columns_with_scalar_ceiling <- function(X, ceil = Inf) {
 #' @param X (matrix)
 #' @param ceil (vector or Inf) the set of ceilings to be applied, per row of `X`
 #' @return matrix
+#' @keywords internal
 mat_cumsum_columns_with_vector_ceiling <- function(X, ceil = Inf) {
   # browser()
   X <- mat_cumsum_columns(X)
