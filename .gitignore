@@ -67,3 +67,4 @@ vignettes/articles/cache/
 # R Environment Variables
 .Renviron
 .Rproj.user
+inst/doc
