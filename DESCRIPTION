@@ -1,6 +1,6 @@
 Package: nhppp
 Title: Simulating Nonhomogeneous Poisson Point Processes 
-Version: 0.1.4.9000
+Version: 0.1.4.9001
 Authors@R: 
     c(person(given = "Thomas", 
              family = "Trikalinos", 
@@ -17,18 +17,23 @@ Description: Simulates events from one dimensional nonhomogeneous Poisson point 
 License: GPL (>= 3)
 Imports: 
     lifecycle,
-    rstream, 
+    rstream,
     Rcpp (>= 1.0.12)
 LinkingTo: Rcpp
 Encoding: UTF-8
 Language: es
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     data.table,
+    knitr,
     rlecuyer,
+    rmarkdown,
     testthat,
+    tictoc,
+    truncnorm,
     withr
 Config/Needs/website: rmarkdown
 URL: https://github.com/bladder-ca/nhppp
 BugReports: https://github.com/bladder-ca/nhppp/issues
+VignetteBuilder: knitr

@@ -1,0 +1,20 @@
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{lp{2cm}lp{1.8cm}p{6cm}}
+    \toprule
+    \textbf{\#} & \textbf{Sampling task} & \textbf{Sampled times} & \textbf{Number of sampled events} & \textbf{Example}  \\ 
+    \midrule
+    I & Any next event&  $\{\}$  or $\{Z_{(1)}\}$&  0 or 1& Single event that may (or may not) occur in the interval: death, progression from Stage I to Stage II cancer. \\ 
+    \addlinespace
+    II & Exactly one next event&  $\{Z_{(1)} \}$&  1& Single event which must occur in the interval: death from any cause in a lifetime-horizon simulation. \\ 
+    \addlinespace
+    III & Any and all events&  $\{\}$ or $\{Z_{(1)}, Z_{(2)}, \dots \}$&  $\ge 0$& Zero, one, or more events: emergence of one or more bladder tumors. \\ 
+    \addlinespace
+    IV & At least one next event&  $\{Z_{(1)} , Z_{(2)}, \dots \}$&  $\ge 1$& One or more events: emergence of bladder tumors when simulating only patients with bladder tumors. \\ 
+    \addlinespace
+    V & Event $i-1$ given $Z_{(i)}$ & $\{Z_{(i-1)}\}$ & 1 & Find the previous event when simulating conditional on a future event: time of symptom onset given the time of symptom-driven diagnosis; onset of Stage I cancer given progression from Stage I to Stage II cancer. \\ 
+    \bottomrule
+    \end{tabular}
+    \caption{Common simulation needs in discrete event simulation. All listed tasks involve sampling events over the interval $(a, b]$ with known $\lambda(t)$ or $\Lambda(t)$.}
+    \label{tab:simtasks}
+\end{table}

@@ -1,0 +1,155 @@
+\begin{thebibliography}{22}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\c{C}inlar(1975)}]{Cinlar1975inversion}
+\c{C}inlar E (1975).
+\newblock \enquote{Introduction to stochastic processes Prentice-Hall.}
+\newblock \emph{Englewood Cliffs, New Jersey (420p)}.
+
+\bibitem[{Cebrián(2020{\natexlab{a}})}]{IndTestPP-package}
+Cebrián AC (2020{\natexlab{a}}).
+\newblock \emph{\pkg{IndTestPP}: {T}ests of Independence and Analysis of
+  Dependence Between Point Processes in Time}.
+\newblock R package version 3.0,
+  \urlprefix\url{https://CRAN.R-project.org/package=IndTestPP}.
+
+\bibitem[{Cebrián(2020{\natexlab{b}})}]{NHPoisson-package}
+Cebrián AC (2020{\natexlab{b}}).
+\newblock \emph{\pkg{NHPoisson}: {M}odelling and Validation of Non-Homogeneous
+  Poisson Processes}.
+\newblock R package version 3.3,
+  \urlprefix\url{https://CRAN.R-project.org/package=NHPoisson}.
+
+\bibitem[{Cebrián \emph{et~al.}(2015)Cebrián, Abaurrea, and
+  Asín}]{NHPoisson-jss}
+Cebrián AC, Abaurrea J, Asín J (2015).
+\newblock \enquote{\pkg{NHPoisson}: {A}n \proglang{R} Package for Fitting and
+  Validating Nonhomogeneous Poisson Processes.}
+\newblock \emph{Journal of Statistical Software}, \textbf{64}(6), 1–25.
+\newblock \doi{10.18637/jss.v064.i06}.
+\newblock
+  \urlprefix\url{https://www.jstatsoft.org/index.php/jss/article/view/v064i06}.
+
+\bibitem[{Cox and Miller(1965)}]{cox1965theory}
+Cox D, Miller H (1965).
+\newblock \enquote{The {P}oisson Process.}
+\newblock In \emph{The Theory of Stochastic Processes}, p. 147. Chapman and
+  Hall.
+
+\bibitem[{Dahl \emph{et~al.}(2019)Dahl, Scott, Roosen, Magnusson, and
+  Swinton}]{xtable-package}
+Dahl DB, Scott D, Roosen C, Magnusson A, Swinton J (2019).
+\newblock \emph{\pkg{xtable}: {E}xport Tables to \LaTeX or HTML}.
+\newblock R package version 1.8.4,
+  \urlprefix\url{https://CRAN.R-project.org/package=xtable}.
+
+\bibitem[{Hammersley and Mauldon(1956)}]{hammersley1956av}
+Hammersley JM, Mauldon JG (1956).
+\newblock \enquote{General principles of antithetic variates.}
+\newblock In \emph{Mathematical proceedings of the Cambridge philosophical
+  society}, volume~52, pp. 476--481. Cambridge University Press.
+
+\bibitem[{Hester and Vaughan(2023)}]{bench-package}
+Hester J, Vaughan D (2023).
+\newblock \emph{\pkg{bench}: {H}igh Precision Timing of R Expressions}.
+\newblock R package version 1.1.3,
+  \urlprefix\url{https://CRAN.R-project.org/package=bench}.
+
+\bibitem[{Lawson \emph{et~al.}(2023)Lawson, Leemis, and Kudlay}]{simEd-package}
+Lawson B, Leemis L, Kudlay V (2023).
+\newblock \emph{\pkg{simEd}: {S}imulation Education}.
+\newblock R package version 2.0.1,
+  \urlprefix\url{https://CRAN.R-project.org/package=simEd}.
+
+\bibitem[{Lewis and Shedler(1976)}]{lewis1976linear}
+Lewis P, Shedler G (1976).
+\newblock \enquote{Simulation of nonhomogeneous Poisson processes with log
+  linear rate function.}
+\newblock \emph{Biometrika}, \textbf{63}(3), 501--505.
+
+\bibitem[{Lewis and Shedler(1979)}]{lewis1979thinning}
+Lewis PW, Shedler GS (1979).
+\newblock \enquote{Simulation of nonhomogeneous {P}oisson processes by
+  thinning.}
+\newblock \emph{Naval Research Logistics Quarterly}, \textbf{26}(3), 403--413.
+
+\bibitem[{Leydold(2022)}]{rstream-package}
+Leydold J (2022).
+\newblock \emph{\pkg{rstream}: {S}treams of Random Numbers}.
+\newblock R package version 1.3.7,
+  \urlprefix\url{https://CRAN.R-project.org/package=rstream}.
+
+\bibitem[{Meschiari(2022)}]{latex2exp-package}
+Meschiari S (2022).
+\newblock \emph{\pkg{latex2exp}: {U}se \LaTeX Expressions in Plots}.
+\newblock R package version 0.9.6,
+  \urlprefix\url{https://CRAN.R-project.org/package=latex2exp}.
+
+\bibitem[{Press \emph{et~al.}(2007)Press, Teukolsky, Vetterling, and
+  Flannery}]{brent-bisection}
+Press W, Teukolsky S, Vetterling W, Flannery B (2007).
+\newblock \emph{Section 9.3. Van Wijngaarden-Dekker-Brent Method. Numerical
+  Recipes: The Art of Scientific Computing}.
+\newblock Cambridge University Press, New York.
+
+\bibitem[{{R Core Team}(2023)}]{R-program}
+{R Core Team} (2023).
+\newblock \emph{\proglang{R}: {A} Language and Environment for Statistical
+  Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+\newblock \urlprefix\url{https://www.R-project.org/}.
+
+\bibitem[{Sommerfeld(2017)}]{otinference-package}
+Sommerfeld M (2017).
+\newblock \emph{\pkg{otinference}: {I}nference for Optimal Transport}.
+\newblock R package version 0.1.0,
+  \urlprefix\url{https://CRAN.R-project.org/package=otinference}.
+
+\bibitem[{Sommerfeld and Munk(2018)}]{sommerfeld2018inference}
+Sommerfeld M, Munk A (2018).
+\newblock \enquote{Inference for empirical Wasserstein distances on finite
+  spaces.}
+\newblock \emph{Journal of the Royal Statistical Society Series B: Statistical
+  Methodology}, \textbf{80}(1), 219--238.
+
+\bibitem[{Wang \emph{et~al.}(2022)Wang, Fu, and Yan}]{reda-package}
+Wang W, Fu H, Yan J (2022).
+\newblock \emph{\pkg{reda}: {R}ecurrent Event Data Analysis}.
+\newblock {R} package version 0.5.4,
+  \urlprefix\url{https://github.com/wenjie2wang/reda}.
+
+\bibitem[{Wickham(2016)}]{ggplot2-package}
+Wickham H (2016).
+\newblock \emph{\pkg{ggplot2}: {E}legant Graphics for Data Analysis}.
+\newblock Springer-Verlag New York.
+\newblock ISBN 978-3-319-24277-4.
+\newblock \urlprefix\url{https://ggplot2.tidyverse.org}.
+
+\bibitem[{Wilke(2023)}]{ggridges-package}
+Wilke CO (2023).
+\newblock \emph{\pkg{ggridges}: {R}idgeline Plots in \pkg{ggplot2}}.
+\newblock R package version 0.5.5,
+  \urlprefix\url{https://CRAN.R-project.org/package=ggridges}.
+
+\bibitem[{Wright and Ramsay~Jr(1979)}]{wright1979crn}
+Wright R, Ramsay~Jr T (1979).
+\newblock \enquote{On the effectiveness of common random numbers.}
+\newblock \emph{Management Science}, \textbf{25}(7), 649--656.
+
+\bibitem[{Xie(2014)}]{knitr-package}
+Xie Y (2014).
+\newblock \enquote{\pkg{knitr}: {A} Comprehensive Tool for Reproducible
+  Research in \pkg{R}.}
+\newblock In V~Stodden, F~Leisch, RD~Peng (eds.), \emph{Implementing
+  Reproducible Computational Research}. Chapman and Hall/CRC.
+\newblock ISBN 978-1466561595.
+
+\end{thebibliography}

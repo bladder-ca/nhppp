@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-helper.R
 \name{check_ppp_sample_validity}
 \alias{check_ppp_sample_validity}
-\title{Check the validity of ppp samples}
+\title{Check the validity of ppp samples arranged in matrix format}
 \usage{
 check_ppp_sample_validity(
   times,
@@ -16,9 +16,9 @@ check_ppp_sample_validity(
 \arguments{
 \item{times}{(vector, double | matrix) the times to be checked as vectors or matrices (time-vectors in rows)}
 
-\item{t_min}{(double) the start of the time nterval}
+\item{t_min}{(double | vector) the start of the time nterval}
 
-\item{t_max}{(double) optional: the end of the time interval}
+\item{t_max}{(double| vector) optional: the end of the time interval; if a vector, its length should match the number of rows of \code{times}.}
 
 \item{size}{(double) optional: the size of the vector}
 
@@ -30,7 +30,8 @@ check_ppp_sample_validity(
 None
 }
 \description{
-Standard checks for a vector of ordered times. Check
-that the \code{times} vector is sorted, has unique values, has all values
+Standard checks for a matrix of ordered times
+(event series in rows, times in columns). Check
+that the times in the columns are sorted, have unique values
 in \verb{[t_min, t_max]}, and has length \code{size} (if applicable).
 }

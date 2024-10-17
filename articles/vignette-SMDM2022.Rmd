@@ -1,0 +1,262 @@
+---
+title: "SMDM2022_presentation"
+output:
+  pdf_document: default
+  html_document: default
+date: "2022-10-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rstream)
+library(ggplot2)
+library(gganimate)
+library(latex2exp)
+library(des.sim.functions)
+library(numDeriv)
+library(nhppp)
+
+n_times <- 1000
+save_to <- file.path("~/Downloads/SMDM/2022")
+```
+
+## The functions for $\lambda(t)$, $\Lambda(t)$, and $\Lambda^{-1}(t)$
+
+Use the `func_factory_cohort_annual_mort_rate()` function of the `des.sim.functions` 
+package to create empirical functions for the $\lambda(t)$, $\Lambda(t)$, and $\Lambda^{-1}(t)$ of all cause mortality for a woman born in 1975 in the US.  
+
+```{r }
+# RI life tables (USMDB)
+L_list <- func_factory_cohort_annual_mort_rate(
+  sex = "male",
+  cohort = 1975,
+  race = "all",
+  region = "USA",
+  source = "HMD",
+  interpolation_method = "linear"
+)
+
+# for the age_range in the returned functions, create a range of ages;
+# to make the plot seem smoother, you specify a smaller value for `by`, e.g.
+# `by = 0.1`.
+age <- seq.int(
+  from = L_list$age_range[1],
+  to = L_list$age_range[2],
+  by = 1
+)
+
+# Add data for plotting in the the tibble `df`
+df <- as_tibble_col(age, column_name = "age") %>%
+  mutate(
+    lambda = L_list$lambda(age),
+    Lambda = L_list$Lambda(age),
+    Lambda_inv = L_list$Lambda_inv(age)
+  )
+```
+
+### Intensity function $\lambda(t)$
+```{r}
+p1 <- ggplot(data = df, aes(x = age, y = lambda)) +
+  geom_smooth(formula = "y ~ x", se = FALSE, method = "loess", span = 0.1) +
+  labs(x = "Age", y = "Intensity") +
+  theme_bw() +
+  #  ggtitle("Intensity function") +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 20),
+    title = element_text(size = 18)
+  )
+# annotate("text", label = TeX("$lambda(t)$"), x=10, y=0.05, size=10)
+
+
+show(p1)
+```
+
+### Cumulative intensity function $\Lambda(t)$
+```{r}
+p2 <- ggplot(data = df, aes(x = age, y = Lambda)) +
+  geom_smooth(formula = "y ~ x", se = FALSE, method = "loess", span = 0.1) +
+  labs(x = "Age", y = "Cumulative Intensity") +
+  theme_bw() +
+  # ggtitle("Cumulative intensity function") +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 20),
+    title = element_text(size = 18)
+  ) #+
+# annotate("text", label = TeX("$Lambda(t)$"), x=10, y=1.3, size=10)
+
+show(p2)
+```
+### Inverse of cumulative intensity function $\Lambda^{-1}(t)$
+```{r}
+p2_inv <- ggplot(data = df, aes(x = age, y = Lambda_inv)) +
+  geom_smooth(formula = "y ~ x", se = FALSE, method = "loess", span = 0.1) +
+  labs(y = "Age", x = "Cumulative Intensity") +
+  theme_bw() +
+  # ggtitle("Cumulative intensity function") +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 20),
+    title = element_text(size = 18)
+  ) +
+  annotate("text", label = TeX("$Lambda^{-1}(t)$"), x = 15, y = 30, size = 10)
+
+show(p2_inv)
+```
+
+
+# Computation time study
+
+```{r}
+# Parameters
+S <- new("rstream.mrg32k3a")
+l <- function(t) {
+  2 * t
+}
+L <- function(t) {
+  t^2
+}
+Li <- function(z) {
+  sqrt(z)
+}
+tp <- c(0, 5)
+t <- seq(tp[1], tp[2], length.out = 1000)
+l_max <- max(sapply(t, l))
+
+par(mfrow = c(1, 3))
+plot(t, l(t))
+plot(t, L(t))
+plot(t, Li(t))
+```
+
+
+### `R` code: Best case arguments: RNG vs no RNG
+
+```{r}
+# Best case: RNG with no RNG
+res1 <- microbenchmark::microbenchmark(
+  # using the rstream random number generator
+  "R: Inversion (substream)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = S
+  ),
+  "R: Thinning (substream)" = des.sim.functions::sim_nhppp_t_thinning(
+    lambda = l, lambda_max = l_max, range_t = tp, rng_stream = S
+  ),
+
+  # using the built-in random number generator
+  "R: Inversion (native)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL
+  ),
+  "R: Thinning (native)" = des.sim.functions::sim_nhppp_t_thinning(
+    lambda = l, lambda_max = l_max, range_t = tp, rng_stream = NULL
+  ),
+  times = n_times
+)
+
+autoplot(res1, type = c("violin")) +
+  labs(x = "", y = "") +
+  ggtitle("Best arguments, native RNG vs separate RNG substreams") +
+  theme(
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14)
+  )
+```
+
+### `R` code: Best case arguments: 1 sample vs all samples
+```{r}
+# Best case: 1 vs all
+res2 <- microbenchmark::microbenchmark(
+  # First time
+  "R: Inversion (1 sample)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = T
+  ),
+  "R: Thinning (1 sample)" = des.sim.functions::sim_nhppp_t_thinning(
+    lambda = l, lambda_max = l_max, range_t = tp, rng_stream = NULL, only1 = T
+  ),
+
+  # All times
+  "R: Inversion (all samples)" = des.sim.functions::nhppp_t_cumulative_intensity_inversion(
+    Lambda = L, Lambda_inv = Li, range_t = tp, rng_stream = NULL, only1 = F
+  ),
+  "R: Thinning (all samples)" = des.sim.functions::sim_nhppp_t_thinning(
+    lambda = l, lambda_max = l_max, range_t = tp, rng_stream = NULL, only1 = F
+  ),
+  times = n_times
+)
+
+autoplot(res2, type = c("violin")) +
+  labs(x = "", y = "") +
+  ggtitle("Best arguments, 1 sample vs all samples") +
+  theme(
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14)
+  )
+```
+
+### `R` code: Suboptimal case arguments: thinning vs inversion
+```{r}
+# Worse case:
+inversion_w_integration <- function(lambda, range_t, only1 = FALSE) {
+  Lambda_int <- function(t) {
+    des.sim.functions::simpson_num_integr(f = lambda, a = range_t[1], b = t, n = 50)
+  }
+  des.sim.functions::nhppp_t_cumulative_intensity_inversion(Lambda = Lambda_int, range_t = range_t, rng_stream = NULL, only1 = only1)
+}
+
+thinning_with_differentiation <- function(Lambda, range_t, only1 = FALSE) {
+  lambda_diff <- function(t) {
+    numDeriv::grad(Lambda, t)
+  }
+  des.sim.functions::sim_nhppp_t_thinning(
+    lambda = lambda_diff, lambda_max = NULL, range_t = range_t, rng_stream = NULL, only1 = only1
+  )
+}
+
+# The first time vs all
+res3 <- microbenchmark::microbenchmark(
+  "R: Inversion (1 sample)" = inversion_w_integration(lambda = l, range_t = tp, only1 = TRUE),
+  "R: Thinning (1 sample)" = thinning_with_differentiation(Lambda = L, range_t = tp, only1 = TRUE),
+  "R: Inversion (all samples)" = inversion_w_integration(lambda = l, range_t = tp, only1 = FALSE),
+  "R: Thinning, (all samples)" = thinning_with_differentiation(Lambda = L, range_t = tp, only1 = FALSE),
+  times = n_times
+)
+
+autoplot(res3, type = c("violin")) +
+  labs(x = "", y = "") +
+  ggtitle("Suboptimal arguments, 1 sample vs all samples") +
+  theme(
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14)
+  )
+```
+
+### Comparisons with `C++` code via `RCpp`
+
+```{r}
+res4 <- microbenchmark::microbenchmark(
+  "C++: Inversion (one sample)" = nhppp::sim_nhppp_ct_inv(0, 5, "L", "Linv", TRUE),
+  "C++: Thinning (one sample)" = nhppp::sim_nhppp_ct_thinning(0, 5, 10, "l", TRUE),
+  "C++: Inversion (all samples)" = nhppp::sim_nhppp_ct_inv(0, 5, "L", "Linv", FALSE),
+  "C++: Thinning (all samples)" = nhppp::sim_nhppp_ct_thinning(0, 5, 10, "l", FALSE),
+  times = n_times
+)
+
+autoplot(res4, type = c("violin")) +
+  labs(x = "", y = "") +
+  ggtitle("C++ code, 1 sample vs all samples") +
+  theme(
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14)
+  )
+```
+### Single plot to choose from
+```{r}
+autoplot(rbind(res2, res4) %>% filter(str_detect(expr, "(all samples)")))
+```
+
+

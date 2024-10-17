@@ -1,0 +1,350 @@
+---
+title: "Sampling log-linear times"
+author: "TA Trikalinos" 
+date: "2024-10-17"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sampling log-linear times}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  % \VignetteDepends{tictoc, truncnorm}
+---
+
+```{r, include = FALSE}
+set.seed(20241017)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+K <- 10^5
+```
+
+
+## Simulation description  
+
+Assume a population of $K = `r K`$ individuals indexed by $k \in [K] := \{ 1, \dots, K\}$. 
+For person $k$, we want to simulate the first occurrence of an event (e.g., emergence of a tumor) 
+over the age (time) interval $[T_{k0}, T_{k1})$. For example, $T_{k0}$ may be the age in years when person $k$ enters the simulation, and $T_{k1}$ the age in years when that person dies from non-cancer causes. (In practice, $T_{k1}$ would be obtained by separate point process.)  Only some people will develop clinical cancer over their simulated lifetime. 
+
+To fix a simulation scenario, let $a_k = 40$ for all $k$ and $b_k \sim U(50 , 100)$, where $U()$ is the uniform distribution.  
+
+
+We use the log-linear intensity function 
+
+$\lambda_k(t) = e^{\alpha_k + \beta_k t}$, 
+
+where $t$ is age in years. The parameters $\alpha_k, \beta_k$ are random over the individuals in the population with 
+$\alpha_k \sim N(-4, 0.5)$, and 
+$\beta_k \sim N_{0+}(0.03, 0.003)$, 
+where $N()$ is a normal distribution and $N_{0+}()$ is a truncated normal distribution with support $[0, \infty)$.
+
+
+## Overview of sampling methods described here
+We will use three methods: 
+
+1. Simulate one person at a time looping over persons. The fastest way to do 
+this is to use a special case function in the `nhppp` package that 
+samples from log-linear intensity functions in a non-vectorized fashion. Yet 
+this will be slowest approach. 
+
+2. Simulate all persons in a vectorized way using only the intensity 
+function $\lambda(t)$. When you only know $\lambda(t)$ `nhppp` uses the thinning 
+algorithm. It is a very flexible approach because it does not 
+require a lot of information -- just $\lambda(t)$. 
+This will by much faster than the first option, but not as fast as the third option.  
+
+3. Simulate all persons in a vectorized way using the cumulative 
+intensity function $\Lambda(t)$ and its inverse $\Lambda^{-1}(z)$, 
+which are defined below. When you have analytic expressions for these objects,
+you get the fastest sampling in the `nhppp` package. Then the package can 
+use the `inversion` or the `order statistics` 
+algorithms which are more efficient. 
+
+
+## Setup 
+We will use `data.table`s -- but the same analysis should be obvious in base `R`. 
+We will use functions from three more packages, without loading them:
+the `truncnorm` package is only needed for the truncated normal distribution. 
+The `tictoc()` package will be used for a simple time comparison between
+the different ways one can simulate this problem. The `stats` package is used
+to generate normally and uniformly distributed samples. 
+
+```{r setup}
+library(data.table)
+library(nhppp)
+```
+
+Setup `pop`, the population `data.table`. The person specific parameters $\alpha_k, \beta_k, T_{k0}$ and $T_{k1}$ are variables in `pop`.
+  
+```{r population}
+pop <- setDT(
+  list(
+    id = 1:K, 
+    alpha = stats::rnorm(n = K, mean = -4, sd = 0.5),
+    beta = truncnorm::rtruncnorm(n = K, mean = 0.03, sd = 0.003, a = 0, b = Inf),  
+    T0 = rep(40, K), 
+    T1 = stats::runif(n = K, min = 50, max = 100)
+  )
+)
+setindex(pop, id)
+pop
+```
+
+### Intensity, cumulative intensity, and inverse cumulative intensity functions 
+
+Define some bespoke functions for the different simulation approaches below.
+The trick is to define functions so that they work in a vectorized form. 
+For an example,  take a look at the intensity function below. 
+The other functions have the same bahavior. 
+
+#### Intensity function $\lambda()$
+
+Define a vectorized form of the intensity function. 
+```{r function-lambda-0} 
+l <- function(t, alpha = pop$alpha, beta = pop$beta, ...) exp(alpha + beta * t)
+```
+
+Arguments `alpha` and `beta` can be scalars or vectors (or column matrices). 
+Argument `t` can be a scalar, a vector of $K$ ages (times), or a $K \times s$ matrix. See some examples of the behavior of the vectorized function. The ellipses (`...`) allow `l()` to ignore extra arguments without breaking the execution of the script. While we won't do that on purpose, some sampling functions in the `nhppp` package that take function arguments need the ability to pass optional extraneous arguments. 
+
+Scalar arguments, evaluated at `t = 45`
+```{r} 
+l(t = 45, alpha = -4, beta = 0.03) 
+```
+
+
+Scalar arguments, evaluated at `t = 45:50` (vector) or as a column matrix 
+The function returns results in the format of the `t` argument. 
+``` {r}  
+l(t = 45:50, alpha = -4, beta = 0.03) 
+
+l(t = matrix(45:50, ncol = 1), alpha = -4, beta = 0.03) 
+```
+
+
+Vector arguments, using the first 5 people and evaluating all people at `t = 45`
+```{r}
+l(t = 45, alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+```
+
+Matrix arguments are convenient: 
+the rows are people and the columns are the ages (times) -- and they can differ across persons. 
+For the first 5 people, we evaluate a different age for each person. 
+The results are returned in a matrix format. 
+```{r}
+l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+``` 
+
+For the first 5 people, we evaluate three different ages for each person. We arrange a `t_mat`
+matrix of ages (times) with people in the rows and ages (times) for each person in the columns. 
+The results are returned in a matrix format. 
+
+```{r}
+t_mat <- matrix(c(45, 50, 45, 47.4, 30, 
+               45.1, 50.1, 45.5, 47.8, 38, 
+               48, 52.7, 60.1, 70.1, 99.9), ncol = 3, byrow = TRUE); t_mat
+
+l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+```
+
+
+The defaults for the `alpha` and `beta` arguments of the `l()` functions
+are the respective columns of the whole population. We can then evaluate the 
+intensity function $\lambda()$ for the whole population passing only the `t`
+argument.  
+
+```{r}
+t_mat <- matrix(rep(c(45, 50, 55), each = K), ncol = 3, byrow = TRUE)
+l(t = t_mat)  |> head()
+```
+
+
+#### Cumulative intensity function $\Lambda(t)$
+
+The cumulative intensity function is $\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s$. 
+It does not matter what we choose for the lower limit of integration in the definition of $\Lambda$ -- the lower limit cancels out in the mathematics of the sampling algorithms.  Thus we are free to 
+use any lower limit (say 0) for any antiderivative of $\lambda()$ that is convenient (for any integration constant).
+
+With a slight abuse of notation, define 0 as the lower integration limit and write ${\Lambda(t) := \Lambda(0, t) = \int_0^t \lambda(s) \ \textrm{d}s}$.
+For the log-linear intensity in this example, some calculus yields 
+$\Lambda(t) = \frac{1}{\beta} (e^{\alpha + \beta t} - e^\alpha)$. 
+
+The vectorized version of $\Lambda$ for our example is 
+``` {r Lambda}
+L <- function(t, alpha = pop$alpha, beta = pop$beta, ...) {
+  (exp(alpha + beta * t) - exp(alpha)) / beta
+}
+```
+
+
+#### Inverse cumulative intensity function $\Lambda^{-1}(z)$
+
+By its construction, $\Lambda$ is a strictly positive monotone function in $t$, and thus invertible.
+The inverse of the cumulative intensity function $\Lambda^{-1}$ is defined as the function that 
+recovers the $t$ when you pass it the $\Lambda(t)$. The definition is that
+it satisfies ${\Lambda^{-1} \big ( \Lambda(t) \big ) = t}$. In our example, $\Lambda^{-1}(z) = \big(\log(\beta z + e^\alpha) - \alpha\big)/\beta$, which is easily derived from the formula of $\Lambda(t)$.  
+
+The vectorized implementation of $\Lambda^{-1}$ for our example is 
+``` {r Lambda-inv}
+Li <- function(z, alpha = pop$alpha, beta = pop$beta, ...) {
+  (log(beta * z + exp(alpha)) - alpha) / beta
+}
+```
+
+
+## Method 1: non-vectorized sampling with `nhppp::draw_sc_loglinear()` 
+
+The `nhppp` package function `draw_sc_loglinear()` draws times from log-linear 
+densities for each person at a time. This is slower than the other methods, 
+but can be practical even for sizeable simulations that will be run once (e.g., 
+for statistical simulation analyses) or when you develop code.  
+
+It's arguments `alpha`, `beta` have the same name as the parameters 
+in our log-linear intensity function $\lambda$. The `range_t` argument asks for
+the bounds of the interval $[T_{k0}, T_{k1})$. The argument `atmost1` asks only 
+for the first time.  This special case function uses a bespoke inversion algorithm. 
+
+```{r method-1}
+tictoc::tic("Method 1 (nonvectorized)")
+t_nonvec_special_case <- rep(NA, K)
+for (k in 1:K) {
+  t1 <- nhppp::draw_sc_loglinear(
+    alpha = pop$alpha[k], 
+    beta = pop$beta[k], 
+    range_t = c(pop$T0[k], pop$T1[k]), 
+    atmost1 = TRUE)
+  if(length(t1) != 0) {
+    t_nonvec_special_case[k] <- t1
+  }
+}
+tictoc::toc(log = TRUE)
+pop[, t_nonvec_special_case := t_nonvec_special_case]
+```
+
+
+## Method 2: Vectorized sampling using only $\lambda()$ 
+
+When you only know the intensity function $\lambda$, `nhppp` employs a thinning 
+algorithm. 
+
+One of the items needed for the thinning algorithm is a piecewise constant
+majorizer function $\lambda_*$ such that: $\lambda_*(t) >= \lambda(t)$ for 
+all $t$ of interest.
+ 
+The `nhppp::vdraw_intensity_step_regular_cpp` function assumes that 
+you will provide the majorizer function as a matrix (`lambda_maj_matrix`). 
+To create this matrix, split the simulation time (here, from age 40 to age 100) 
+in $M$ equal-length intervals. 
+For person $k$ and interval $m$, the element `lambda_maj_matrix[k, m]`
+records a supremum of $\lambda_k$ over the $m$-th interval. 
+Any supremum will do -- but the algorithm is most 
+efficient when you give it the least upper bound  -- practically, the maximum 
+of $\lambda(t)$ over all $t$ in the interval. For monotone intensity functions, 
+such as the function in the example, the maximum is at one of the interval's bounds. 
+It will be at the left bound, if $\lambda$ is decreasing, and at the right bound, 
+if $\lambda$ is increasing. 
+
+There is a helper function in `nhppp` that generates the majorizer matrix 
+automatically for monotone (and possibly discontinuous) functions and 
+for nonmonotone continuous Lipschitz functions (functions whose maximum slope is 
+bounded). Even if your case is more complex, you should be able to find a 
+supremum that works. 
+
+This code samples in a vectorized fashion when you know only $\lambda()$. It creates
+a majorizer matrix over $M=5$ intervals over the whole simulation horizon. You 
+specify the $[T_{k0}, T_{k1})$ intervals for each person via the `subinterval` option. 
+(The `atmostB` option can be useful to speed up the sampling and minimize memory 
+needs when one is interested in the first event only. The smaller the value, the faster 
+the algorithm but you have to check that you have not specified it to be too small.
+In this example, `atmostB = 5` is fine -- it returns exact solutions; but we 
+have checked it [not shown].  If you do not want to mess with it, 
+do not use the option. The function may be already fast enough for your needs).  
+
+```{r method-2}
+tictoc::tic("Method 2 (vectorized, thinning)") 
+M <- 5 
+break_points <- seq.int(from = 40, to = 100, length.out = M+1)
+breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
+
+lmaj_mat <- nhppp::get_step_majorizer(
+  fun = l, 
+  breaks = breaks_mat, 
+  is_monotone = TRUE)
+
+pop[,
+    t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
+      lambda = l,
+      lambda_maj_matrix = lmaj_mat,
+      range_t = c(40, 100),
+      subinterval =  matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE),
+      atmost1 = TRUE, 
+      atmostB = 5
+      )
+]
+tictoc::toc(log = TRUE) # timer end
+
+
+```
+
+
+## Method 3: Vectorized sampling using $\Lambda()$ and $\Lambda^{-1}()$
+
+The most efficient sampling is possible when one knows $\Lambda()$ and $\Lambda^{-1}()$. 
+The `nhppp` package can sample in this case using the `vdraw_cumulative_intensity()`
+function. Here `range_t` is a matrix with information on each person's $[T_{k0}, T_{k1})$. 
+
+```{r method-3}
+tictoc::tic("Method 3 (inversion)") 
+range_t <- matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE)
+pop[,
+    t_inversion := nhppp::vdraw_cumulative_intensity(
+      Lambda = L,
+      Lambda_inv = Li, 
+      range_t = range_t,
+      atmost1 = TRUE
+    )
+]
+tictoc::toc(log  = TRUE) # timer end
+```
+
+## Comparisons 
+
+### Simulation time-costs
+
+1. `r tictoc::tic.log()[[1]]`. This is the slowest approach -- but still not
+ bad for $`r K`$ samples!
+
+2. `r tictoc::tic.log()[[2]]`. This approach is many times faster that then first approach. 
+It is very flexible -- it can accommodate very complex time varying intensity 
+functions. You almost always know $\lambda$ and can get its majorizer $\lambda_*$ 
+easily and fast.  
+
+3. `r tictoc::tic.log()[[3]]`. This approach is many times faster that the second one, 
+but requires implementations for $\Lambda$ and $\Lambda^{-1}$.
+ 
+
+
+### Simulated times 
+
+All three methods sample correctly from the specified log-linear process. There 
+is no approximation at play.
+
+The QQ plots comparing the simulated times with the three methods -- and 
+there is good agreement over this population of size $K = `r K`$. As $K$ increases 
+the agreement remains evidently excellent. We have done in-depth comparisons elsewhere. 
+A set of QQ plots should suffice here.
+
+```{r qq-plots}
+qqplot(pop$t_nonvec_special_case, pop$t_thinning)
+qqplot(pop$t_nonvec_special_case, pop$t_inversion)
+```
+
+## Acknowledgments 
+
+Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example we use in this vignette. 
+
+
+# References 
+
+Trikalinos TA, Sereda Y. _nhppp: Simulating Nonhomogeneous Poisson Point Processes in R_. arXiv preprint arXiv:2402.00358. 2024 Feb 1.
+
