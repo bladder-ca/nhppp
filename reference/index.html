@@ -35,9 +35,15 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="functions-by-type">Functions by type<a class="anchor" aria-label="anchor" href="#functions-by-type"></a></h2>
 
 
+
+
+    </div><div class="section level2">
+
+      <h3 id="ppp">PPP<a class="anchor" aria-label="anchor" href="#ppp"></a></h3>
+      <div class="section-desc"><p>Constant intensity Poisson Point Processes</p></div>
 
 
     </div><div class="section level2">
@@ -46,66 +52,6 @@
 
 
       <dl><dt>
-
-          <code><a href="draw.html">draw()</a></code>
-
-        </dt>
-        <dd>Generic function for simulating from NHPPPs given the intensity function or the cumulative intensity function.</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_cumulative_intensity_inversion.html">draw_cumulative_intensity_inversion()</a></code>
-
-        </dt>
-        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (inversion method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_cumulative_intensity_orderstats.html">draw_cumulative_intensity_orderstats()</a></code>
-
-        </dt>
-        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (order statistics method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_intensity.html">draw_intensity()</a></code>
-
-        </dt>
-        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_intensity_step.html">draw_intensity_step()</a></code>
-
-        </dt>
-        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method) with piecewise constant_majorizer</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_sc_linear.html">draw_sc_linear()</a></code>
-
-        </dt>
-        <dd>Special case: Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) with linear intensity function (inversion method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_sc_loglinear.html">draw_sc_loglinear()</a></code>
-
-        </dt>
-        <dd>Special case: Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) with log-linear intensity function (inversion method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_sc_step.html">draw_sc_step()</a></code>
-
-        </dt>
-        <dd>Simulate a piecewise constant-rate Poisson Point Process over <code>(t_min, t_max]</code> (inversion method) The intervals need not have the same length.</dd>
-      </dl><dl><dt>
-
-          <code><a href="draw_sc_step_regular.html">draw_sc_step_regular()</a></code>
-
-        </dt>
-        <dd>Sampling from NHPPPs with piecewise constant intensities with same interval lengths (non-vectorized)</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_step_majorizer.html">get_step_majorizer()</a></code>
-
-        </dt>
-        <dd>Piecewise constant (step) majorizer for K-Lipschitz functions over an interval (vectorized over the <code>breaks</code> argument).</dd>
-      </dl><dl><dt>
 
           <code><a href="ppp_n.html">ppp_n()</a></code>
 
@@ -131,16 +77,56 @@
         <dd>Simulate a homogeneous Poisson Point Process over (t_min, t_max]</dd>
       </dl><dl><dt>
 
+          <code><a href="ztppp.html">ztppp()</a></code>
+
+        </dt>
+        <dd>Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="nhppp-wrapper-functions">NHPPP wrapper functions<a class="anchor" aria-label="anchor" href="#nhppp-wrapper-functions"></a></h3>
+      <div class="section-desc"><p>Non-homogeneous Poisson Point Processes wrapper functions</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="draw.html">draw()</a></code>
+
+        </dt>
+        <dd>Generic function for simulating from NHPPPs given the intensity function or the cumulative intensity function.</dd>
+      </dl><dl><dt>
+
           <code><a href="vdraw.html">vdraw()</a></code>
 
         </dt>
         <dd>Vectorized generic function for simulating from NHPPPs given the intensity function or the cumulative intensity function</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
 
-          <code><a href="vdraw_cumulative_intensity.html">vdraw_cumulative_intensity()</a></code>
+      <h3 id="nhppp-from-intensity-function">NHPPP from intensity function<a class="anchor" aria-label="anchor" href="#nhppp-from-intensity-function"></a></h3>
+      <div class="section-desc"><p>Non-homogeneous Poisson Point Processes from intensity functions</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="draw_intensity.html">draw_intensity()</a></code>
 
         </dt>
-        <dd>Vectorized simulation from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (inversion method)</dd>
+        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="draw_intensity_step.html">draw_intensity_step()</a></code>
+
+        </dt>
+        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method) with piecewise constant_majorizer</dd>
       </dl><dl><dt>
 
           <code><a href="vdraw_intensity_step_regular.html">vdraw_intensity_step_regular()</a></code>
@@ -161,6 +147,100 @@
         <dd>Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from an interval (thinning method) with piecewise constant_majorizers (C++)</dd>
       </dl><dl><dt>
 
+          <code><a href="ztdraw_intensity.html">ztdraw_intensity()</a></code>
+
+        </dt>
+        <dd>Simulate <code>size</code> samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t0, t_max) (thinning method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="ztdraw_intensity_step.html">ztdraw_intensity_step()</a></code>
+
+        </dt>
+        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method) with piecewise constant_majorizer</dd>
+      </dl><dl><dt>
+
+          <code><a href="vztdraw_intensity_step_regular.html">vztdraw_intensity_step_regular()</a></code>
+
+        </dt>
+        <dd>Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from an interval (thinning method) with piecewise constant_majorizers</dd>
+      </dl><dl><dt>
+
+          <code><a href="vztdraw_intensity_step_regular_R.html">vztdraw_intensity_step_regular_R()</a></code>
+
+        </dt>
+        <dd>Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from an interval (thinning method) with piecewise constant_majorizers (R)</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="nhppp-from-cumulative-intensity-function">NHPPP from cumulative intensity function<a class="anchor" aria-label="anchor" href="#nhppp-from-cumulative-intensity-function"></a></h3>
+      <div class="section-desc"><p>Non-homogeneous Poisson Point Processes from cumulative intensity functions</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="draw_cumulative_intensity_inversion.html">draw_cumulative_intensity_inversion()</a></code>
+
+        </dt>
+        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (inversion method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="draw_cumulative_intensity_orderstats.html">draw_cumulative_intensity_orderstats()</a></code>
+
+        </dt>
+        <dd>Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (order statistics method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="vdraw_cumulative_intensity.html">vdraw_cumulative_intensity()</a></code>
+
+        </dt>
+        <dd>Vectorized simulation from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (inversion method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="ztdraw_cumulative_intensity.html">ztdraw_cumulative_intensity()</a></code>
+
+        </dt>
+        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) (order statistics method)</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="nhppp-special-cases">NHPPP special cases<a class="anchor" aria-label="anchor" href="#nhppp-special-cases"></a></h3>
+      <div class="section-desc"><p>Non-homogeneous Poisson Point Processes from intensity functions</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="draw_sc_linear.html">draw_sc_linear()</a></code>
+
+        </dt>
+        <dd>Special case: Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) with linear intensity function (inversion method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="draw_sc_loglinear.html">draw_sc_loglinear()</a></code>
+
+        </dt>
+        <dd>Special case: Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) with log-linear intensity function (inversion method)</dd>
+      </dl><dl><dt>
+
+          <code><a href="draw_sc_step.html">draw_sc_step()</a></code>
+
+        </dt>
+        <dd>Simulate a piecewise constant-rate Poisson Point Process over <code>(t_min, t_max]</code> (inversion method) The intervals need not have the same length.</dd>
+      </dl><dl><dt>
+
+          <code><a href="draw_sc_step_regular.html">draw_sc_step_regular()</a></code>
+
+        </dt>
+        <dd>Sampling from NHPPPs with piecewise constant intensities with same interval lengths (non-vectorized)</dd>
+      </dl><dl><dt>
+
           <code><a href="vdraw_sc_step_regular.html">vdraw_sc_step_regular()</a></code>
 
         </dt>
@@ -179,16 +259,16 @@
         <dd>Vectorized sampling from NHPPPs with piecewise constant intensities with same interval lengths (C++)</dd>
       </dl><dl><dt>
 
-          <code><a href="vztdraw_intensity_step_regular.html">vztdraw_intensity_step_regular()</a></code>
+          <code><a href="ztdraw_sc_linear.html">ztdraw_sc_linear()</a></code>
 
         </dt>
-        <dd>Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from an interval (thinning method) with piecewise constant_majorizers</dd>
+        <dd>Simulate <code>size</code> samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) with linear intensity function</dd>
       </dl><dl><dt>
 
-          <code><a href="vztdraw_intensity_step_regular_R.html">vztdraw_intensity_step_regular_R()</a></code>
+          <code><a href="ztdraw_sc_loglinear.html">ztdraw_sc_loglinear()</a></code>
 
         </dt>
-        <dd>Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from an interval (thinning method) with piecewise constant_majorizers (R)</dd>
+        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) with a log-linear intensity function (inversion method)</dd>
       </dl><dl><dt>
 
           <code><a href="vztdraw_sc_step_regular.html">vztdraw_sc_step_regular()</a></code>
@@ -207,44 +287,26 @@
 
         </dt>
         <dd>Vectorized sampling from zero-truncated NHPPPs with piecewise constant intensities with same interval lengths (C++)</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
 
-          <code><a href="ztdraw_cumulative_intensity.html">ztdraw_cumulative_intensity()</a></code>
+      <h3 id="auxiliary-functions">Auxiliary functions<a class="anchor" aria-label="anchor" href="#auxiliary-functions"></a></h3>
+      <div class="section-desc"><p>Auxiliary functions</p></div>
 
-        </dt>
-        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) (order statistics method)</dd>
-      </dl><dl><dt>
 
-          <code><a href="ztdraw_intensity.html">ztdraw_intensity()</a></code>
+    </div><div class="section level2">
 
-        </dt>
-        <dd>Simulate <code>size</code> samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t0, t_max) (thinning method)</dd>
-      </dl><dl><dt>
 
-          <code><a href="ztdraw_intensity_step.html">ztdraw_intensity_step()</a></code>
 
-        </dt>
-        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from (t0, t_max) (thinning method) with piecewise constant_majorizer</dd>
-      </dl><dl><dt>
 
-          <code><a href="ztdraw_sc_linear.html">ztdraw_sc_linear()</a></code>
+      <dl><dt>
+
+          <code><a href="get_step_majorizer.html">get_step_majorizer()</a></code>
 
         </dt>
-        <dd>Simulate <code>size</code> samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) with linear intensity function</dd>
-      </dl><dl><dt>
-
-          <code><a href="ztdraw_sc_loglinear.html">ztdraw_sc_loglinear()</a></code>
-
-        </dt>
-        <dd>Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) with a log-linear intensity function (inversion method)</dd>
-      </dl><dl><dt>
-
-          <code><a href="ztppp.html">ztppp()</a></code>
-
-        </dt>
-        <dd>Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]</dd>
+        <dd>Piecewise constant (step) majorizer for K-Lipschitz functions over an interval (vectorized over the <code>breaks</code> argument).</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
