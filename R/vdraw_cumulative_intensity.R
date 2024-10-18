@@ -8,16 +8,15 @@
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
 #'        It should take a vectorized argument z and an optional arguments list.
 #' @param t_min (scalar | vector | column matrix) the lower bound of the interval for each sampled point process
-#'        If a vector or matrix, its length is the number of point processes that should be drawn.
+#'        The length of this argument is the number of point processes that should be drawn.
 #' @param t_max (scalar | vector | column matrix) the upper bound of the interval for each sampled point process
-#'        If a vector or matrix, its length is the number of point processes that should be drawn.
+#'        The length of this argument is the number of point processes that should be drawn.
 #' @param Lambda_args (list) optional arguments to pass to Lambda.
 #' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv().
 #' @param tol the tolerange for the calulations.
 #' @param atmost1 boolean, draw at most 1 event time per sampled point process.
 #'
-#' @return a vector of event times (t_); if no events realize,
-#'         a vector of length 0
+#' @return a matrix of event times with one row per sampled point process. 
 #' @export
 #'
 vdraw_cumulative_intensity <- function(Lambda,

@@ -92,7 +92,7 @@ test_that("vdraw_sc_step_regular() agrees with strung together constant rates", 
 
   Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
 
-  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
   compare_ppp_vectors(ppp1 = r_ppp, ppp2 = r_vdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
 
@@ -106,7 +106,7 @@ test_that("vdraw_sc_step_regular() agrees with strung together constant rates", 
       )[1]
     }
   ))
-  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_ppp1, ppp2 = r_vdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })
@@ -128,7 +128,7 @@ test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rate
 
   Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
 
-  r_vdraw_sc_step_regular <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vdraw_sc_step_regular <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
   compare_ppp_vectors(ppp1 = r_ppp, ppp2 = r_vdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
 
@@ -142,7 +142,7 @@ test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rate
       )[1]
     }
   ))
-  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_ppp1, ppp2 = r_vdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })

@@ -8,17 +8,26 @@ with same interval lengths (R)}
 vdraw_sc_step_regular_R(
   Lambda_matrix = NULL,
   lambda_matrix = NULL,
-  range_t = c(0, 10),
+  rate_matrix_t_min = NULL,
+  rate_matrix_t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE
 )
 }
 \arguments{
-\item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval}
+\item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval
+The number of rows is the number of point processes to draw.}
 
-\item{lambda_matrix}{(matrix) intensity rates, one per interval}
+\item{lambda_matrix}{(matrix) intensity rates, one per interval
+The number of rows is the number of point processes to draw.}
 
-\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
+\item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of \link{Lambda|lambda} matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
+of the time interval for each row of \link{Lambda|lambda} matrix.
+The length of this argument is the number of point processes that should be drawn.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
@@ -31,7 +40,10 @@ if no events realize, it will have 0 length
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 where the intervals have the same length (are "regular").
+This function is internal, and used mainly for testing the C++ version.
+It is superseded by the C++ implementation.
 }
 \examples{
 x <- vdraw_sc_step_regular_R(Lambda_matrix = matrix(1:5, nrow = 1))
 }
+\keyword{internal}
