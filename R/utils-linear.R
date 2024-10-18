@@ -1,66 +1,66 @@
-#' Definite integral of `l = alpha + beta*t` at time `t`
+#' Definite integral of `l = intercept + slope*t` at time `t`
 #' with `L(t0) = 0`
 #'
-#' @description Definite integral of `l = alpha + beta*t` starting at
+#' @description Definite integral of `l = intercept + slope*t` starting at
 #'              `t0` -- only for `l+`.
 #' @param t (double) the time point
-#' @param alpha (double) the intercept
-#' @param beta (double) the slope
+#' @param intercept (double) the intercept
+#' @param slope (double) the slope
 #' @param t0 (double) the starting time
 #' @keywords internal
-Lambda_linear_form <- function(t, alpha, beta, t0) {
+Lambda_linear_form <- function(t, intercept, slope, t0) {
   if (min(t) < t0) stop()
-  if (beta < 0) {
-    t[t > -alpha / beta] <- -alpha / beta
+  if (slope < 0) {
+    t[t > -intercept / slope] <- -intercept / slope
   }
-  return(alpha * (t - t0) + (beta / 2) * (t^2 - t0^2))
+  return(intercept * (t - t0) + (slope / 2) * (t^2 - t0^2))
 }
 
-#' Inverse of the definite integral of `l = alpha + beta*t` at time `t`
+#' Inverse of the definite integral of `l = intercept + slope*t` at time `t`
 #'
-#' @description Inverse of the definite integral of `l = alpha + beta*t` only for `l+`.
+#' @description Inverse of the definite integral of `l = intercept + slope*t` only for `l+`.
 #' @param z (double) the value of integrated rate for which you want to find the time
-#' @param alpha (double) the intercept
-#' @param beta (double) the slope
+#' @param intercept (double) the intercept
+#' @param slope (double) the slope
 #' @param t0 (double) the starting time
 #' @keywords internal
-Lambda_inv_linear_form <- function(z, alpha, beta, t0) {
-  if (beta == 0 & alpha == 0) stop()
-  if (beta != 0) {
-    L0 <- -alpha * t0 - beta / 2 * t0^2
-    Delta <- alpha^2 - 2 * beta * (L0 - z)
+Lambda_inv_linear_form <- function(z, intercept, slope, t0) {
+  if (slope == 0 & intercept == 0) stop()
+  if (slope != 0) {
+    L0 <- -intercept * t0 - slope / 2 * t0^2
+    Delta <- intercept^2 - 2 * slope * (L0 - z)
     if (!all(Delta >= 0)) stop()
-    t_ <- (-alpha + sqrt(Delta)) / beta
-  } else if (beta == 0) {
-    t_ <- z / alpha + t0
+    t_ <- (-intercept + sqrt(Delta)) / slope
+  } else if (slope == 0) {
+    t_ <- z / intercept + t0
   }
   return(t_)
 }
 
-#' Definite integral of `l = exp(alpha + beta*t)` at time `t`
+#' Definite integral of `l = exp(intercept + slope*t)` at time `t`
 #' with `L(t0) = 0`
 #'
-#' @description Definite integral of `l = exp(alpha + beta*t)` starting at
+#' @description Definite integral of `l = exp(intercept + slope*t)` starting at
 #'              `t0` -- only for `l+`.
 #' @param t (double) the time point
-#' @param alpha (double) the intercept
-#' @param beta (double) the slope
+#' @param intercept (double) the intercept
+#' @param slope (double) the slope
 #' @param t0 (double) the starting time
 #' @keywords internal
-Lambda_exp_form <- function(t, alpha, beta, t0) {
+Lambda_exp_form <- function(t, intercept, slope, t0) {
   if (min(t) < t0) stop()
-  return((exp(beta * t + alpha) - exp(beta * t0 + alpha)) / beta)
+  return((exp(slope * t + intercept) - exp(slope * t0 + intercept)) / slope)
 }
 
-#' Inverse of the definite integral of `l = exp(alpha + beta*t)` at time `t`
+#' Inverse of the definite integral of `l = exp(intercept + slope*t)` at time `t`
 #'
-#' @description Inverse of the definite integral of `l = exp(alpha + beta*t)` only for `l+`.
+#' @description Inverse of the definite integral of `l = exp(intercept + slope*t)` only for `l+`.
 #' @param z (double) the value of integrated rate for which you want to find the time
-#' @param alpha (double) the intercept
-#' @param beta (double) the slope
+#' @param intercept (double) the intercept
+#' @param slope (double) the slope
 #' @param t0 (double) the starting time
 #' @keywords internal
-Lambda_inv_exp_form <- function(z, alpha, beta, t0) {
-  tmp <- exp(beta * t0 + alpha)
-  return((log(tmp + z * beta) - alpha) / beta)
+Lambda_inv_exp_form <- function(z, intercept, slope, t0) {
+  tmp <- exp(slope * t0 + intercept)
+  return((log(tmp + z * slope) - intercept) / slope)
 }

@@ -4,14 +4,14 @@
 \alias{ztppp}
 \title{Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]}
 \usage{
-ztppp(range_t = c(0, 10), rate = 1, rng_stream = NULL, atmost1 = FALSE)
+ztppp(rate, t_min, t_max, atmost1 = FALSE)
 }
 \arguments{
-\item{range_t}{(vector, double) min and max of the time interval}
-
 \item{rate}{(scalar, double) constant instantaneous rate}
 
-\item{rng_stream}{an \code{rstream} object}
+\item{t_min}{(scalar, double) lower bound of the time interval}
+
+\item{t_max}{(scalar, double) upper bound of the time interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -22,5 +22,5 @@ a vector of event times of size \code{size}
 Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]
 }
 \examples{
-x <- ztppp(range_t = c(0, 10), rate = 0.001)
+x <- ztppp(t_min = 0, t_max = 10, rate = 0.001)
 }

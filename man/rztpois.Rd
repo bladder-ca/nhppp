@@ -4,16 +4,16 @@
 \alias{rztpois}
 \title{Zero-truncated Poisson random samples (basic R)}
 \usage{
-rztpois(size = 1, lambda = 1)
+rztpois(n, lambda)
 }
 \arguments{
-\item{size}{Integer, number of samples}
+\item{n}{Integer, number of samples}
 
 \item{lambda}{Positive number, the mean of the original
 (untruncated) Poisson distribution}
 }
 \value{
-a vector of non zero counts of size \code{size}
+a vector of non zero counts of size \code{n}
 }
 \description{
 Sample zero-truncated Poisson random samples (basic R)

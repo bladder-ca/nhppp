@@ -5,24 +5,16 @@
 \title{Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 The intervals need not have the same length.}
 \usage{
-draw_sc_step(
-  lambda_vector = rep(1, 5),
-  times_vector = c(0:5),
-  rng_stream = NULL,
-  atmost1 = FALSE,
-  atleast1 = FALSE
-)
+draw_sc_step(lambda_vector, time_breaks, atmost1 = FALSE, atleast1 = FALSE)
 }
 \arguments{
 \item{lambda_vector}{(scalar, double) \code{K} constant rates, one per interval}
 
-\item{times_vector}{(vector, double) \code{K+1} time points defining \code{K} intervals
+\item{time_breaks}{(vector, double) \code{K+1} time points defining \code{K} intervals
 of constant rates:
 \verb{[t_1 = range_t[1],       t_2)}: the first interval
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
 \verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
-
-\item{rng_stream}{an \code{rstream} object}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
@@ -37,5 +29,5 @@ Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_ma
 The intervals need not have the same length.
 }
 \examples{
-x <- draw_sc_step(lambda_vector = rep(1, 5), times_vector = c(0:5))
+x <- draw_sc_step(lambda_vector = rep(1, 5), time_breaks = c(0:5))
 }

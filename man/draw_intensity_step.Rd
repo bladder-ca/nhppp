@@ -5,27 +5,20 @@
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
 (t0, t_max) (thinning method) with piecewise constant_majorizer}
 \usage{
-draw_intensity_step(
-  lambda,
-  lambda_maj_vector = lambda(1:10),
-  times_vector = 0:10,
-  rng_stream = NULL,
-  atmost1 = FALSE
-)
+draw_intensity_step(lambda, majorizer_vector, time_breaks, atmost1 = FALSE)
 }
 \arguments{
 \item{lambda}{(function) the instantaneous rate of the NHPPP.
 A continuous function of time.}
 
-\item{lambda_maj_vector}{(scalar, double) \code{K} constant majorizing rates, one per interval}
+\item{majorizer_vector}{(scalar, double) \code{K} constant majorizing rates, one per interval}
 
-\item{times_vector}{(vector, double) \code{K+1} time points defining \code{K} intervals
+\item{time_breaks}{(vector, double) \code{K+1} time points defining \code{K} intervals
 of constant rates:
 \verb{[t_1 = range_t[1],       t_2)}: the first interval
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
-\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
-
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
+\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval
+#@param rng_stream (\code{rstream}) an \code{rstream} object or \code{NULL}}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -38,5 +31,5 @@ Sample NHPPP times using the thinning method, optionally using
 an \code{rstream} generator
 }
 \examples{
-x <- draw_intensity_step(lambda = function(t) exp(.02 * t))
+x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
 }

@@ -2,22 +2,22 @@
 % Please edit documentation in R/utils-linear.R
 \name{Lambda_linear_form}
 \alias{Lambda_linear_form}
-\title{Definite integral of \code{l = alpha + beta*t} at time \code{t}
+\title{Definite integral of \code{l = intercept + slope*t} at time \code{t}
 with \code{L(t0) = 0}}
 \usage{
-Lambda_linear_form(t, alpha, beta, t0)
+Lambda_linear_form(t, intercept, slope, t0)
 }
 \arguments{
 \item{t}{(double) the time point}
 
-\item{alpha}{(double) the intercept}
+\item{intercept}{(double) the intercept}
 
-\item{beta}{(double) the slope}
+\item{slope}{(double) the slope}
 
 \item{t0}{(double) the starting time}
 }
 \description{
-Definite integral of \code{l = alpha + beta*t} starting at
+Definite integral of \code{l = intercept + slope*t} starting at
 \code{t0} -- only for \verb{l+}.
 }
 \keyword{internal}

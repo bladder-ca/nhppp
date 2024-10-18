@@ -7,10 +7,9 @@
 \usage{
 draw_cumulative_intensity_orderstats(
   Lambda,
-  Lambda_inv = NULL,
-  range_t = c(0, 10),
-  range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-  rng_stream = NULL,
+  Lambda_inv,
+  t_min,
+  t_max,
   atmost1 = FALSE
 )
 }
@@ -20,11 +19,12 @@ which is the integrated rate of the NHPPP}
 
 \item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}}
 
-\item{range_t}{(vector, double) min and max of the time interval}
+\item{t_min}{(double) the lower bound of the time interval}
 
-\item{range_L}{(vector, double) min and max of the transformed time interval}
-
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}.}
+\item{t_max}{(double) the upper bound of the time interval
+#@param range_t (vector, double) min and max of the time interval
+#@param range_L (vector, double) min and max of the transformed time interval
+#@param rng_stream (\code{rstream}) an \code{rstream} object or \code{NULL}.}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -37,5 +37,5 @@ Sample NHPPP times using the order statistics method,
 optionally using an \code{rstream} generator object.
 }
 \examples{
-x <- draw_cumulative_intensity_orderstats(Lambda = function(t) t + cos(t) - 1)
+x <- draw_cumulative_intensity_orderstats(Lambda = function(t) 2*t, Lambda_inv = function(z) z/2, t_min = 0, t_max = 10)
 }

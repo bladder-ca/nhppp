@@ -8,7 +8,8 @@ with same interval lengths (non-vectorized)}
 draw_sc_step_regular(
   Lambda_vector = NULL,
   lambda_vector = NULL,
-  range_t = c(0, 10),
+  t_min = NULL,
+  t_max = NULL,
   rng_stream = NULL,
   atmost1 = FALSE,
   atleast1 = FALSE
@@ -19,13 +20,17 @@ draw_sc_step_regular(
 
 \item{lambda_vector}{(scalar, double) \code{K} constant intensity rates, one per interval}
 
-\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
+\item{t_min}{(scalar, double) lower bound of the time interval}
+
+\item{t_max}{(scalar, double) upper bound of the time interval}
 
 \item{rng_stream}{an \code{rstream} object}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
 \item{atleast1}{boolean, draw at least 1 event time}
+
+\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 }
 \value{
 a vector of event times t
@@ -36,5 +41,5 @@ Sampling from NHPPPs with piecewise constant intensities
 with same interval lengths (non-vectorized)
 }
 \examples{
-x <- draw_sc_step_regular(Lambda_vector = 1:5, range_t = c(0, 5))
+x <- draw_sc_step_regular(Lambda_vector = 1:5, t_min = 0, t_max = 5)
 }

@@ -6,31 +6,37 @@
 or the cumulative intensity function.}
 \usage{
 draw(
-  lambda = NULL,
-  lambda_maj = NULL,
   Lambda = NULL,
   Lambda_inv = NULL,
-  range_t = c(0, 10),
-  rng_stream = NULL,
+  lambda = NULL,
+  line_majorizer_intercept = NULL,
+  line_majorizer_slope = NULL,
+  line_majorizer_is_loglinear = FALSE,
+  step_majorizer_vector = NULL,
+  t_min = NULL,
+  t_max = NULL,
   atmost1 = FALSE,
   atleast1 = FALSE
 )
 }
 \arguments{
-\item{lambda}{(function) the instantaneous rate of the NHPPP.
-A continuous function of time.}
+\item{Lambda}{(function, double vector) the integrated (cumulative) rate of the NHPPP}
 
-\item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
-linear (if \code{exp_maj = FALSE}) or log-linear (if \code{exp_maj = TRUE}) function in \code{range_t}.}
+\item{Lambda_inv}{(function, double vector) the inverse of `Lambda()'}
 
-\item{Lambda}{(function, double vector) a continuous increasing R to R map
-which is the integrated rate of the NHPPP}
+\item{lambda}{(function) the instantaneous rate}
 
-\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}}
+\item{line_majorizer_intercept}{The intercept \code{alpha} of the \link{log}linear majorizer function: \code{alpha + beta * t} or \code{exp(alpha + beta * t)}}
 
-\item{range_t}{(vector, double) min and max of the time interval.}
+\item{line_majorizer_slope}{The slope \code{beta} of the \link{log}linear majorizer function: \code{alpha + beta * t} or \code{exp(alpha + beta * t)}}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
+\item{line_majorizer_is_loglinear}{(boolean) if \code{TRUE} the majorizer is loglinear \code{exp(alpha + beta * t)}; if \code{FALSE} it is a linear function}
+
+\item{step_majorizer_vector}{(vector, double) \code{K} constant majorizing rates, one per interval; all intervals are of equal length (regular)}
+
+\item{t_min}{(double) the lower bound of the interval}
+
+\item{t_max}{(double) the upper bound of the interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 

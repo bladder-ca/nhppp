@@ -8,9 +8,6 @@
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
 #' @param t_min (double) the lower bound of the time interval
 #' @param t_max (double) the upper bound of the time interval
-#' #@param range_t (vector, double) min and max of the time interval
-#' #@param range_L (vector, double) min and max of the transformed time interval
-#' #@param rng_stream (`rstream`) an `rstream` object or `NULL`.
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,

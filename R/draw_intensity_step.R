@@ -5,7 +5,7 @@
 #' an `rstream` generator
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
-#' @param lambda_maj_vector (scalar, double) `K` constant majorizing rates, one per interval
+#' @param majorizer_vector (scalar, double) `K` constant majorizing rates, one per interval
 #' @param time_breaks (vector, double) `K+1` time points defining `K` intervals
 #'        of constant rates:
 #'             `[t_1 = range_t[1],       t_2)`: the first interval
@@ -19,14 +19,13 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), lambda_maj_vector = c(2, 2.1, 2.9, 4))
+#' x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
 draw_intensity_step <- function(lambda,
-                                lambda_maj_vector,
+                                majorizer_vector,
                                 time_breaks,
-                                #rng_stream = NULL,
                                 atmost1 = FALSE) {
-  len_lambda <- length(lambda_maj_vector)
-  candidate_times <- draw_sc_step(lambda_vector = lambda_maj_vector, time_breaks = time_breaks, atmost1 = FALSE)
+  len_lambda <- length(majorizer_vector)
+  candidate_times <- draw_sc_step(lambda_vector = majorizer_vector, time_breaks = time_breaks, atmost1 = FALSE)
   num_candidates <- length(candidate_times)
   if (num_candidates == 0) {
     return(candidate_times)
@@ -35,7 +34,7 @@ draw_intensity_step <- function(lambda,
   acceptance_prob <- lambda(candidate_times) /
     stats::approx(
       x = time_breaks[1:len_lambda],
-      y = lambda_maj_vector,
+      y = majorizer_vector,
       xout = candidate_times, method = "constant", rule = 2, f = 0
     )$y
   if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
