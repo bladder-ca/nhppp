@@ -6,12 +6,12 @@
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param lambda_maj_vector (scalar, double) `K` constant majorizing rates, one per interval
-#' @param times_vector (vector, double) `K+1` time points defining `K` intervals
+#' @param time_breaks (vector, double) `K+1` time points defining `K` intervals
 #'        of constant rates:
 #'             `[t_1 = range_t[1],       t_2)`: the first interval
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
-#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
+#' #@param rng_stream (`rstream`) an `rstream` object or `NULL`
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
@@ -19,22 +19,22 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_intensity_step(lambda = function(t) exp(.02 * t))
+#' x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), lambda_maj_vector = c(2, 2.1, 2.9, 4))
 draw_intensity_step <- function(lambda,
-                                lambda_maj_vector = lambda(1:10),
-                                times_vector = 0:10,
-                                rng_stream = NULL,
+                                lambda_maj_vector,
+                                time_breaks,
+                                #rng_stream = NULL,
                                 atmost1 = FALSE) {
   len_lambda <- length(lambda_maj_vector)
-  candidate_times <- draw_sc_step(lambda_vector = lambda_maj_vector, times_vector = times_vector, rng_stream = rng_stream, atmost1 = FALSE)
+  candidate_times <- draw_sc_step(lambda_vector = lambda_maj_vector, time_breaks = time_breaks, atmost1 = FALSE)
   num_candidates <- length(candidate_times)
   if (num_candidates == 0) {
     return(candidate_times)
   }
-  u <- rng_stream_runif(size = num_candidates, minimum = 0, maximum = 1, rng_stream = rng_stream)
+  u <- stats::runif(n = num_candidates, min = 0, max = 1)
   acceptance_prob <- lambda(candidate_times) /
     stats::approx(
-      x = times_vector[1:len_lambda],
+      x = time_breaks[1:len_lambda],
       y = lambda_maj_vector,
       xout = candidate_times, method = "constant", rule = 2, f = 0
     )$y
