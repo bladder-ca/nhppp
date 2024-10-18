@@ -7,7 +7,7 @@ test_that("PPP methods agree on the first time to event", {
   r_ppp2 <- unlist(lapply(integer(10000), function(x) ppp2(t_min = 1, t_max = 3, rate = 10, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp_next_n, ppp2 = r_ppp2, threshold = 0.1, showQQ = TRUE)
 
-  r_draw_sc_step <- unlist(lapply(integer(10000), function(x) draw_sc_step(times_vector = c(1, 2, 3), lambda_vector = rep(10, 2), atmost1 = TRUE)))
+  r_draw_sc_step <- unlist(lapply(integer(10000), function(x) draw_sc_step(time_breaks = c(1, 2, 3), lambda_vector = rep(10, 2), atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp_next_n, ppp2 = r_draw_sc_step, threshold = 0.1, showQQ = TRUE)
 })
 
@@ -25,7 +25,7 @@ test_that("draw_sc_step() agrees with strung together constant rates", {
     }
   ))
 
-  r_draw_sc_step <- unlist(lapply(integer(10000), function(x) draw_sc_step(times_vector = c(1, 2, 2.2, 3), lambda_vector = c(1, 10, 3), atmost1 = FALSE)))
+  r_draw_sc_step <- unlist(lapply(integer(10000), function(x) draw_sc_step(time_breaks = c(1, 2, 2.2, 3), lambda_vector = c(1, 10, 3), atmost1 = FALSE)))
   compare_ppp_vectors(ppp1 = r_ppp, ppp2 = r_draw_sc_step, threshold = 0.1, showQQ = TRUE)
 
 
@@ -39,7 +39,7 @@ test_that("draw_sc_step() agrees with strung together constant rates", {
       )[1]
     }
   ))
-  r_draw_sc_step1 <- unlist(lapply(integer(10000), function(x) draw_sc_step(times_vector = c(1, 2, 2.2, 3), lambda_vector = c(1, 10, 3), atmost1 = TRUE)))
+  r_draw_sc_step1 <- unlist(lapply(integer(10000), function(x) draw_sc_step(time_breaks = c(1, 2, 2.2, 3), lambda_vector = c(1, 10, 3), atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp1, ppp2 = r_draw_sc_step1, threshold = 0.1, showQQ = TRUE)
 })
 
@@ -59,7 +59,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
 
   L <- c(1, 11, 14, 17)
 
-  r_ppp_regularstep <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, range_t = c(1, 5), atmost1 = FALSE)))
+  r_ppp_regularstep <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max  = 5, atmost1 = FALSE)))
   compare_ppp_vectors(ppp1 = r_ppp, ppp2 = r_ppp_regularstep, threshold = 0.1, showQQ = TRUE)
 
 
@@ -73,7 +73,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
       )[1]
     }
   ))
-  r_ppp_regularstep1 <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, range_t = c(1, 5), atmost1 = TRUE)))
+  r_ppp_regularstep1 <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max  = 5, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp1, ppp2 = r_ppp_regularstep1, threshold = 0.1, showQQ = TRUE)
 })
 
