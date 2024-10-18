@@ -73,9 +73,9 @@ Trikalinos</h4>
 
     
     
-<div class="section level3">
-<h3 id="simulation-description">Simulation description<a class="anchor" aria-label="anchor" href="#simulation-description"></a>
-</h3>
+<div class="section level2">
+<h2 id="simulation-description">Simulation description<a class="anchor" aria-label="anchor" href="#simulation-description"></a>
+</h2>
 <p>Assume a population of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>
 individuals indexed by
@@ -122,9 +122,9 @@ is a normal distribution and
 is a truncated normal distribution with support
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, \infty)</annotation></semantics></math>.</p>
 </div>
-<div class="section level3">
-<h3 id="overview-of-sampling-methods-described-here">Overview of sampling methods described here<a class="anchor" aria-label="anchor" href="#overview-of-sampling-methods-described-here"></a>
-</h3>
+<div class="section level2">
+<h2 id="overview-of-sampling-methods-described-here">Overview of sampling methods described here<a class="anchor" aria-label="anchor" href="#overview-of-sampling-methods-described-here"></a>
+</h2>
 <p>We will use three methods:</p>
 <ol style="list-style-type: decimal">
 <li><p>Simulate one person at a time looping over persons. The fastest
@@ -153,9 +153,9 @@ Then the package can use the <code>inversion</code> or the
 efficient.</p></li>
 </ol>
 </div>
-<div class="section level3">
-<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
-</h3>
+<div class="section level2">
+<h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+</h2>
 <p>We will use <code>data.table</code>s – but the same analysis should
 be obvious in base <code>R</code>. We will use functions from three more
 packages, without loading them: the <code>truncnorm</code> package is
@@ -199,18 +199,18 @@ are variables in <code>pop</code>.</p>
 <span><span class="co">#&gt;  99998:  99998 -3.628798 0.02907565    40 87.67655</span></span>
 <span><span class="co">#&gt;  99999:  99999 -4.438333 0.03027740    40 99.96851</span></span>
 <span><span class="co">#&gt; 100000: 100000 -3.483592 0.02673899    40 57.45794</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="intensity-cumulative-intensity-and-inverse-cumulative-intensity-functions">Intensity, cumulative intensity, and inverse cumulative intensity
+<div class="section level3">
+<h3 id="intensity-cumulative-intensity-and-inverse-cumulative-intensity-functions">Intensity, cumulative intensity, and inverse cumulative intensity
 functions<a class="anchor" aria-label="anchor" href="#intensity-cumulative-intensity-and-inverse-cumulative-intensity-functions"></a>
-</h4>
+</h3>
 <p>Define some bespoke functions for the different simulation approaches
 below. The trick is to define functions so that they work in a
 vectorized form. For an example, take a look at the intensity function
 below. The other functions have the same bahavior.</p>
-<div class="section level5">
-<h5 id="intensity-function-lambda">Intensity function
+<div class="section level4">
+<h4 id="intensity-function-lambda">Intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#intensity-function-lambda"></a>
-</h5>
+</h4>
 <p>Define a vectorized form of the intensity function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">l</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">alpha</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span>, <span class="va">beta</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">alpha</span> <span class="op">+</span> <span class="va">beta</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span></span></code></pre></div>
@@ -300,10 +300,10 @@ for the whole population passing only the <code>t</code> argument.</p>
 <span><span class="co">#&gt; [5,] 0.06470944 0.06470944 0.06470944</span></span>
 <span><span class="co">#&gt; [6,] 0.08214702 0.08214702 0.08214702</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="cumulative-intensity-function-lambdat">Cumulative intensity function
+<div class="section level4">
+<h4 id="cumulative-intensity-function-lambdat">Cumulative intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#cumulative-intensity-function-lambdat"></a>
-</h5>
+</h4>
 <p>The cumulative intensity function is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s</annotation></semantics></math>.
 It does not matter what we choose for the lower limit of integration in
@@ -317,7 +317,7 @@ that is convenient (for any integration constant).</p>
 <p>With a slight abuse of notation, define 0 as the lower integration
 limit and write
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:=</mo><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">{\Lambda(t) := \Lambda(0, t) = \int_0^t \lambda(s) \ \textrm{d}s}</annotation></semantics></math>.
-For the log-linear intensity in this example, some calculus yields
+For the log-linear intensity in this example,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mi>β</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mi>t</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t) = \frac{1}{\beta} (e^{\alpha + \beta t} - e^\alpha)</annotation></semantics></math>.</p>
 <p>The vectorized version of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
@@ -327,10 +327,10 @@ for our example is</p>
 <span>  <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">alpha</span> <span class="op">+</span> <span class="va">beta</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">beta</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="inverse-cumulative-intensity-function-lambda-1z">Inverse cumulative intensity function
+<div class="section level4">
+<h4 id="inverse-cumulative-intensity-function-lambda-1z">Inverse cumulative intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#inverse-cumulative-intensity-function-lambda-1z"></a>
-</h5>
+</h4>
 <p>By its construction,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 is a strictly positive monotone function in
@@ -357,10 +357,10 @@ for our example is</p>
 </div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="method-1-non-vectorized-sampling-with-nhpppdraw_sc_loglinear">Method 1: non-vectorized sampling with
+<div class="section level2">
+<h2 id="method-1-non-vectorized-sampling-with-nhpppdraw_sc_loglinear">Method 1: non-vectorized sampling with
 <code>nhppp::draw_sc_loglinear()</code><a class="anchor" aria-label="anchor" href="#method-1-non-vectorized-sampling-with-nhpppdraw_sc_loglinear"></a>
-</h3>
+</h2>
 <p>The <code>nhppp</code> package function
 <code><a href="../reference/draw_sc_loglinear.html">draw_sc_loglinear()</a></code> draws times from log-linear densities
 for each person at a time. This is slower than the other methods, but
@@ -388,13 +388,13 @@ special case function uses a bespoke inversion algorithm.</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Method 1 (nonvectorized): 1.703 sec elapsed</span></span>
+<span><span class="co">#&gt; Method 1 (nonvectorized): 1.683 sec elapsed</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">t_nonvec_special_case</span> <span class="op">:=</span> <span class="va">t_nonvec_special_case</span><span class="op">]</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="method-2-vectorized-sampling-using-only-lambda">Method 2: Vectorized sampling using only
+<div class="section level2">
+<h2 id="method-2-vectorized-sampling-using-only-lambda">Method 2: Vectorized sampling using only
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-2-vectorized-sampling-using-only-lambda"></a>
-</h3>
+</h2>
 <p>When you only know the intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>,
 <code>nhppp</code> employs a thinning algorithm.</p>
@@ -475,12 +475,12 @@ needs).</p>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
 <span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.112 sec elapsed</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
+<div class="section level2">
+<h2 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-3-vectorized-sampling-using-lambda-and-lambda-1"></a>
-</h3>
+</h2>
 <p>The most efficient sampling is possible when one knows
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
 and
@@ -503,14 +503,19 @@ The <code>nhppp</code> package can sample in this case using the
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log  <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
 <span><span class="co">#&gt; Method 3 (inversion): 0.016 sec elapsed</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
+</h2>
 <div class="section level3">
-<h3 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
+<h3 id="simulation-time-costs">Simulation time-costs<a class="anchor" aria-label="anchor" href="#simulation-time-costs"></a>
 </h3>
-<div class="section level4">
-<h4 id="simulation-time-costs">Simulation time-costs<a class="anchor" aria-label="anchor" href="#simulation-time-costs"></a>
-</h4>
+<p>The simulation time-costs that you see in this document depend on the
+machine that rendered it. If you read this online, this machine is
+probably some virtual server with minimal resources. If you installed
+the package locally, it is probably the machine you are using to run
+<code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (nonvectorized): 1.703 sec elapsed. This is the slowest
+<li><p>Method 1 (nonvectorized): 1.683 sec elapsed. This is the slowest
 approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples!</p></li>
@@ -529,19 +534,19 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>.</p></li>
 </ol>
 </div>
-<div class="section level4">
-<h4 id="simulated-times">Simulated times<a class="anchor" aria-label="anchor" href="#simulated-times"></a>
-</h4>
+<div class="section level3">
+<h3 id="simulated-times">Simulated times<a class="anchor" aria-label="anchor" href="#simulated-times"></a>
+</h3>
 <p>All three methods sample correctly from the specified log-linear
 process. There is no approximation at play.</p>
-<p>The QQ plots comparing the simulated times with the three methods –
-and there is good agreement over this population of size
+<p>The QQ plots compare the simulated times with the three methods. The
+agreement is excellent over this population of size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>.
 As
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
-increases the agreement remains evidently excellent. We have done
-in-depth comparisons elsewhere. A set of QQ plots should suffice
-here.</p>
+increases the agreement remains excellent (not shown here - try it for
+yourself). The paper in the bibliography includes in-depth comparisons.
+A set of QQ plots should suffice here.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html" class="external-link">qqplot</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">t_nonvec_special_case</span>, <span class="va">pop</span><span class="op">$</span><span class="va">t_thinning</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Log_linear_times_files/figure-html/qq-plots-1.png" alt="QQ plots comparing simulated times with the three methods. The QQ plots indicate excellent agreement." width="700"></p>
@@ -550,14 +555,14 @@ here.</p>
 <p><img src="Log_linear_times_files/figure-html/qq-plots-2.png" alt="QQ plots comparing simulated times with the three methods. The QQ plots indicate excellent agreement." width="700"></p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
-</h3>
+<div class="section level2">
+<h2 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
+</h2>
 <p>Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the
 numerical example in this vignette.</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
 </h2>
 <p>Trikalinos TA, Sereda Y. <em>nhppp: Simulating Nonhomogeneous Poisson
 Point Processes in R</em>. arXiv preprint arXiv:2402.00358. 2024 Feb
