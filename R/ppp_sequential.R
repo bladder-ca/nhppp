@@ -1,5 +1,7 @@
 #' Simulate a homogeneous Poisson Point Process over (t_min, t_max]
-#'
+#' @description
+#'   `r lifecycle::badge("deprecated")` 
+#' Use `ppp` instead. 
 #' @param range_t (vector, double) min and max of the time interval
 #' @param rate (scalar, double) constant instantaneous rate
 #' @param tol the probability that we will have more than
@@ -16,6 +18,7 @@
 ppp_sequential <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, atmost1 = FALSE) {
   # we expect lambda = t_max*rate events
   # we will draw n so that the probability that t>t_max is 1-tol
+  lifecycle::deprecate_warn(when = "0.5.0", what = "ppp_sequential()", with = "ppp()") 
   if (isTRUE(atmost1)) {
     n <- 1
   } else {
