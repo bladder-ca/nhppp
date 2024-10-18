@@ -34,8 +34,8 @@ draw_sc_loglinear <- function(alpha,
     draw_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_exp_form(t, alpha = alpha, beta = beta, t0 = t_min),
       Lambda_inv = function(z) Lambda_inv_exp_form(z, alpha = alpha, beta = beta, t0 = t_min),
-      range_t = c(t_min, t_max),
-      #rng_stream = rng_stream,
+      t_min = t_min, 
+      t_max = t_max,
       atmost1 = atmost1
     )
   )

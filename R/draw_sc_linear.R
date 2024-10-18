@@ -41,8 +41,8 @@ draw_sc_linear <- function(alpha,
     draw_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_linear_form(t, alpha = alpha, beta = beta, t0 = t_min),
       Lambda_inv = function(z) Lambda_inv_linear_form(z, alpha = alpha, beta = beta, t0 = t_min),
-      range_t = c(t_min, t_max),
-      #rng_stream = rng_stream,
+      t_min = t_min, 
+      t_max = t_max,
       atmost1 = atmost1
     )
   )

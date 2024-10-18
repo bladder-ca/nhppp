@@ -6,9 +6,11 @@
 #' @param Lambda (function, double vector) a continuous increasing R to R map
 #'               which is the integrated rate of the NHPPP
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
-#' @param range_t (vector, double) min and max of the time interval
-#' @param range_L (vector, double) min and max of the transformed time interval
-#' @param rng_stream (`rstream`) an `rstream` object.
+#' @param t_min (double) the lower bound of the time interval
+#' @param t_max (double) the upper bound of the time interval
+#' #@param range_t (vector, double) min and max of the time interval
+#' #@param range_L (vector, double) min and max of the transformed time interval
+#' #@param rng_stream (`rstream`) an `rstream` object or `NULL`.
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
@@ -16,30 +18,23 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_cumulative_intensity_inversion(Lambda = function(t) t + cos(t) - 1)
+#' x <- draw_cumulative_intensity_inversion(Lambda = function(t) 2*t, Lambda_inv = function(z) z/2, t_min = 0, t_max = 10)
 draw_cumulative_intensity_inversion <- function(Lambda,
-                                                Lambda_inv = NULL,
-                                                range_t = c(0, 10),
-                                                range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-                                                rng_stream = NULL,
+                                                Lambda_inv,
+                                                t_min, 
+                                                t_max,
                                                 atmost1 = FALSE) {
-  dat_warped_time <- ppp_sequential(
-    range_t = range_L,
+  L_min <- Lambda(t_min)
+  L_max <- Lambda(t_max)
+  dat_warped_time <- ppp(
     rate = 1,
-    rng_stream = rng_stream,
+    t_min = L_min, 
+    t_max = L_max,
     atmost1 = atmost1
   )
 
   if (length(dat_warped_time) == 0) {
     return(dat_warped_time)
   }
-  if (is.function(Lambda_inv)) {
-    return(Lambda_inv(dat_warped_time))
-  }
-  return(inverse_with_uniroot_sorted(
-    f = Lambda,
-    y = dat_warped_time,
-    range_x = range_t,
-    range_y = range_L
-  ))
+  return(Lambda_inv(dat_warped_time))
 }
