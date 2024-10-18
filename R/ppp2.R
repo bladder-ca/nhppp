@@ -1,7 +1,7 @@
 #' Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)
 #'
-#' Internal function -- not to be exported. 
-#' Same as `ppp` but uses the Order Statistics algorithm.  
+#' Internal function -- not to be exported.
+#' Same as `ppp` but uses the Order Statistics algorithm.
 #' @param rate (scalar, double) constant instantaneous rate
 #' @param t_min (scalar, double) the lower bound of the time interval
 #' @param t_max (scalar, double) the upper bound of the time interval

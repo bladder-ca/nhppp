@@ -1,5 +1,5 @@
-#' Simulate from a non homogeneous Poisson Point Process (NHPPP) 
-#'  over an interval when you know the cumulative intensity and its inverse. 
+#' Simulate from a non homogeneous Poisson Point Process (NHPPP)
+#'  over an interval when you know the cumulative intensity and its inverse.
 #'
 #' @description  Sample NHPPP times using the inversion method
 #' @param Lambda (function, double vector) a continuous increasing R to R map
@@ -14,16 +14,17 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_cumulative_intensity(Lambda = function(t) 2*t, Lambda_inv = function(z) z/2, t_min = 0, t_max = 10)
+#' x <- draw_cumulative_intensity(Lambda = function(t) 2 * t, Lambda_inv = function(z) z / 2, t_min = 0, t_max = 10)
 draw_cumulative_intensity <- function(Lambda,
                                       Lambda_inv,
-                                      t_min, 
+                                      t_min,
                                       t_max,
                                       atmost1 = FALSE) {
-  
-  draw_cumulative_intensity_inversion(Lambda = Lambda,
-                                      Lambda_inv = Lambda_inv,
-                                      t_min = t_min, 
-                                      t_max = t_max,
-                                      atmost1 = atmost1)
+  draw_cumulative_intensity_inversion(
+    Lambda = Lambda,
+    Lambda_inv = Lambda_inv,
+    t_min = t_min,
+    t_max = t_max,
+    atmost1 = atmost1
+  )
 }

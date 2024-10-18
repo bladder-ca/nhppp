@@ -1,6 +1,6 @@
-#' Generic function for simulating from NHPPPs given the intensity function
-#' or the cumulative intensity function.
+#' Generic function for simulating from NHPPPs given the intensity function.
 #'
+#' @description Sample from NHPPPs given the intensity function
 #' This is a wrapper to the package's specific functions, and thus somewhat slower.
 #' For time-intensive simulations prefer one of the specific functions.
 #'
@@ -18,19 +18,18 @@
 #' @return a vector of event times
 #' @export
 draw_intensity <- function(
-  lambda,
-  line_majorizer_intercept = NULL,
-  line_majorizer_slope = NULL,
-  line_majorizer_is_loglinear = FALSE,
-  step_majorizer_vector = NULL,
-  t_min  = NULL,
-  t_max  = NULL,
-  atmost1 = FALSE) {
-
-  if(!is.null(step_majorizer_vector)) {
+    lambda,
+    line_majorizer_intercept = NULL,
+    line_majorizer_slope = NULL,
+    line_majorizer_is_loglinear = FALSE,
+    step_majorizer_vector = NULL,
+    t_min = NULL,
+    t_max = NULL,
+    atmost1 = FALSE) {
+  if (!is.null(step_majorizer_vector)) {
     return(
       draw_intensity_step(
-        lambda  = lambda,
+        lambda = lambda,
         majorizer_vector = step_majorizer_vector,
         time_breaks = seq.int(from = t_min, to = t_max, length.out = length(step_majorizer_vector) + 1),
         atmost1 = atmost1
@@ -39,7 +38,7 @@ draw_intensity <- function(
   }
   return(
     draw_intensity_line(
-      lambda  = lambda,
+      lambda = lambda,
       majorizer_intercept = line_majorizer_intercept,
       majorizer_slope = line_majorizer_slope,
       majorizer_is_loglinear = line_majorizer_is_loglinear,
@@ -48,5 +47,4 @@ draw_intensity <- function(
       atmost1 = atmost1
     )
   )
-
 }

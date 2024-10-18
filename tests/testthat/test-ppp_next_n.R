@@ -5,5 +5,5 @@ test_that("ppp_next_n() works", {
       df1 <- ppp_next_n(n = 10, rate = 1, t_min = 5)
     )
   )
-  check_ppp_sample_validity(times = df1, t_min = 5,  size = 10)
+  check_ppp_sample_validity(times = df1, t_min = 5, size = 10)
 })

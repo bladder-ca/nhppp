@@ -1,5 +1,5 @@
 test_that("draw_cumulative_intensity() works", {
-  #This function is pass through to the draw_cumulative_intensity_inversion() function
+  # This function is pass through to the draw_cumulative_intensity_inversion() function
   L <- function(t) {
     return(2 * t)
   }

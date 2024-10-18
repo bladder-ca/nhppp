@@ -1,8 +1,7 @@
 #' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
 #'    (t0, t_max) (thinning method) with piecewise constant_majorizer
 #'
-#' @description Sample NHPPP times using the thinning method, optionally using
-#' an `rstream` generator
+#' @description Sample NHPPP times using the thinning method
 #' @param lambda (function) the instantaneous rate of the NHPPP.
 #' A continuous function of time.
 #' @param majorizer_vector (scalar, double) `K` constant majorizing rates, one per interval
@@ -11,7 +10,6 @@
 #'             `[t_1 = range_t[1],       t_2)`: the first interval
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
-#' #@param rng_stream (`rstream`) an `rstream` object or `NULL`
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
@@ -19,7 +17,7 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
+#' x <- draw_intensity_step(lambda = function(t) t * 0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
 draw_intensity_step <- function(lambda,
                                 majorizer_vector,
                                 time_breaks,

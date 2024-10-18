@@ -1,6 +1,7 @@
 #' Vectorized generic function for simulating from NHPPPs given the intensity function
 #' or the cumulative intensity function
 #'
+#' @description
 #' This is a wrapper to the package's specific functions, and thus slightly slower.
 #' For time-intensive simulations prefer one of the specific functions.
 #'

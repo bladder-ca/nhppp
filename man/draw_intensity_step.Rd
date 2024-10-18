@@ -17,8 +17,7 @@ A continuous function of time.}
 of constant rates:
 \verb{[t_1 = range_t[1],       t_2)}: the first interval
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
-\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval
-#@param rng_stream (\code{rstream}) an \code{rstream} object or \code{NULL}}
+\verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -27,9 +26,8 @@ a vector of event times (t_); if no events realize,
 a vector of length 0
 }
 \description{
-Sample NHPPP times using the thinning method, optionally using
-an \code{rstream} generator
+Sample NHPPP times using the thinning method
 }
 \examples{
-x <- draw_intensity_step(lambda = function(t) t*0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
+x <- draw_intensity_step(lambda = function(t) t * 0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
 }

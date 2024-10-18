@@ -27,5 +27,5 @@ a vector of length 0
 Sample NHPPP times using the inversion method
 }
 \examples{
-x <- draw_cumulative_intensity(Lambda = function(t) 2*t, Lambda_inv = function(z) z/2, t_min = 0, t_max = 10)
+x <- draw_cumulative_intensity(Lambda = function(t) 2 * t, Lambda_inv = function(z) z / 2, t_min = 0, t_max = 10)
 }

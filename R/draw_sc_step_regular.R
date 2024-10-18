@@ -19,9 +19,9 @@
 #' @export
 draw_sc_step_regular <- function(Lambda_vector = NULL,
                                  lambda_vector = NULL,
-                                 t_min = NULL, 
-                                 t_max = NULL, 
-                                 #range_t = c(0, 10),
+                                 t_min = NULL,
+                                 t_max = NULL,
+                                 # range_t = c(0, 10),
                                  rng_stream = NULL,
                                  atmost1 = FALSE,
                                  atleast1 = FALSE) {

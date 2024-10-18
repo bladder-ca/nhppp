@@ -3,24 +3,18 @@
 \name{ztdraw_sc_loglinear}
 \alias{ztdraw_sc_loglinear}
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-(t_min, t_max) with a log-linear intensity function (inversion method)}
+(t_min, t_max) with a log-linear intensity function}
 \usage{
-ztdraw_sc_loglinear(
-  alpha = 1,
-  beta = 0,
-  range_t = c(0, 10),
-  rng_stream = NULL,
-  atmost1 = FALSE
-)
+ztdraw_sc_loglinear(intercept, slope, t_min, t_max, atmost1 = FALSE)
 }
 \arguments{
-\item{alpha}{(double) the intercept in the exponent}
+\item{intercept}{(double) the intercept in the exponent}
 
-\item{beta}{(double) the slope in the exponent}
+\item{slope}{(double) the slope in the exponent}
 
-\item{range_t}{(vector, double) min and max of the time interval}
+\item{t_min}{(double) the lower bound of the time interval}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object.}
+\item{t_max}{(double) the upper bound of the time interval}
 
 \item{atmost1}{boolean, 1 event time}
 }
@@ -29,10 +23,8 @@ a vector of at least 1 event times
 }
 \description{
 Sample zt-NHPPP times from an log-linear intensity function
-using the inversion method, optionally using an \code{rstream}
-generator
 }
 \examples{
-x <- ztdraw_sc_loglinear(alpha = 0, beta = 0.2)
+x <- ztdraw_sc_loglinear(intercept = 0, slope = 0.2, t_min = 0, t_max = 10)
 
 }

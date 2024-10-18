@@ -1,6 +1,7 @@
 #' Generic function for simulating from NHPPPs given the intensity function
 #' or the cumulative intensity function.
-#'
+#' 
+#' @description
 #' This is a wrapper to the package's specific functions, and thus somewhat slower.
 #' For time-intensive simulations prefer one of the specific functions.
 #'
@@ -26,8 +27,8 @@ draw <- function(
     line_majorizer_slope = NULL,
     line_majorizer_is_loglinear = FALSE,
     step_majorizer_vector = NULL,
-    t_min  = NULL,
-    t_max  = NULL,
+    t_min = NULL,
+    t_max = NULL,
     atmost1 = FALSE,
     atleast1 = FALSE) {
   if (!is.null(Lambda)) {

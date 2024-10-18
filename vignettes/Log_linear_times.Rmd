@@ -79,10 +79,10 @@ Setup `pop`, the population `data.table`. The person specific parameters $\alpha
 ```{r population}
 pop <- setDT(
   list(
-    id = 1:K, 
+    id = 1:K,
     alpha = stats::rnorm(n = K, mean = -4, sd = 0.5),
-    beta = truncnorm::rtruncnorm(n = K, mean = 0.03, sd = 0.003, a = 0, b = Inf),  
-    T0 = rep(40, K), 
+    beta = truncnorm::rtruncnorm(n = K, mean = 0.03, sd = 0.003, a = 0, b = Inf),
+    T0 = rep(40, K),
     T1 = stats::runif(n = K, min = 50, max = 100)
   )
 )
@@ -109,22 +109,22 @@ Argument `t` can be a scalar, a vector of $K$ ages (times), or a $K \times s$ ma
 
 Scalar arguments, evaluated at `t = 45`
 ```{r} 
-l(t = 45, alpha = -4, beta = 0.03) 
+l(t = 45, alpha = -4, beta = 0.03)
 ```
 
 
 Scalar arguments, evaluated at `t = 45:50` (vector) or as a column matrix 
 The function returns results in the format of the `t` argument. 
 ``` {r}  
-l(t = 45:50, alpha = -4, beta = 0.03) 
+l(t = 45:50, alpha = -4, beta = 0.03)
 
-l(t = matrix(45:50, ncol = 1), alpha = -4, beta = 0.03) 
+l(t = matrix(45:50, ncol = 1), alpha = -4, beta = 0.03)
 ```
 
 
 Vector arguments, using the first 5 people and evaluating all people at `t = 45`
 ```{r}
-l(t = 45, alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+l(t = 45, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
 ```
 
 Matrix arguments are convenient: 
@@ -132,7 +132,7 @@ the rows are people and the columns are the ages (times) -- and they can differ 
 For the first 5 people, we evaluate a different age for each person. 
 The results are returned in a matrix format. 
 ```{r}
-l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), alpha = pop$alpha[1:5], beta = pop$beta[1:5])
 ``` 
 
 For the first 5 people, we evaluate three different ages for each person. We arrange a `t_mat`
@@ -140,11 +140,14 @@ matrix of ages (times) with people in the rows and ages (times) for each person 
 The results are returned in a matrix format. 
 
 ```{r}
-t_mat <- matrix(c(45, 50, 45, 47.4, 30, 
-               45.1, 50.1, 45.5, 47.8, 38, 
-               48, 52.7, 60.1, 70.1, 99.9), ncol = 3, byrow = TRUE); t_mat
+t_mat <- matrix(c(
+  45, 50, 45, 47.4, 30,
+  45.1, 50.1, 45.5, 47.8, 38,
+  48, 52.7, 60.1, 70.1, 99.9
+), ncol = 3, byrow = TRUE)
+t_mat
 
-l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5]) 
+l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
 ```
 
 
@@ -155,7 +158,7 @@ argument.
 
 ```{r}
 t_mat <- matrix(rep(c(45, 50, 55), each = K), ncol = 3, byrow = TRUE)
-l(t = t_mat)  |> head()
+l(t = t_mat) |> head()
 ```
 
 
@@ -209,11 +212,12 @@ tictoc::tic("Method 1 (nonvectorized)")
 t_nonvec_special_case <- rep(NA, K)
 for (k in 1:K) {
   t1 <- nhppp::draw_sc_loglinear(
-    alpha = pop$alpha[k], 
-    beta = pop$beta[k], 
-    range_t = c(pop$T0[k], pop$T1[k]), 
-    atmost1 = TRUE)
-  if(length(t1) != 0) {
+    alpha = pop$alpha[k],
+    beta = pop$beta[k],
+    range_t = c(pop$T0[k], pop$T1[k]),
+    atmost1 = TRUE
+  )
+  if (length(t1) != 0) {
     t_nonvec_special_case[k] <- t1
   }
 }
@@ -261,29 +265,29 @@ have checked it [not shown].  If you do not want to mess with it,
 do not use the option. The function may be already fast enough for your needs).  
 
 ```{r method-2}
-tictoc::tic("Method 2 (vectorized, thinning)") 
-M <- 5 
-break_points <- seq.int(from = 40, to = 100, length.out = M+1)
+tictoc::tic("Method 2 (vectorized, thinning)")
+M <- 5
+break_points <- seq.int(from = 40, to = 100, length.out = M + 1)
 breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 
 lmaj_mat <- nhppp::get_step_majorizer(
-  fun = l, 
-  breaks = breaks_mat, 
-  is_monotone = TRUE)
+  fun = l,
+  breaks = breaks_mat,
+  is_monotone = TRUE
+)
 
-pop[,
-    t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
-      lambda = l,
-      lambda_maj_matrix = lmaj_mat,
-      range_t = c(40, 100),
-      subinterval =  matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE),
-      atmost1 = TRUE, 
-      atmostB = 5
-      )
+pop[
+  ,
+  t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
+    lambda = l,
+    lambda_maj_matrix = lmaj_mat,
+    range_t = c(40, 100),
+    subinterval = matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE),
+    atmost1 = TRUE,
+    atmostB = 5
+  )
 ]
 tictoc::toc(log = TRUE) # timer end
-
-
 ```
 
 
@@ -294,17 +298,18 @@ The `nhppp` package can sample in this case using the `vdraw_cumulative_intensit
 function. Here `range_t` is a matrix with information on each person's $[T_{k0}, T_{k1})$. 
 
 ```{r method-3}
-tictoc::tic("Method 3 (inversion)") 
+tictoc::tic("Method 3 (inversion)")
 range_t <- matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE)
-pop[,
-    t_inversion := nhppp::vdraw_cumulative_intensity(
-      Lambda = L,
-      Lambda_inv = Li, 
-      range_t = range_t,
-      atmost1 = TRUE
-    )
+pop[
+  ,
+  t_inversion := nhppp::vdraw_cumulative_intensity(
+    Lambda = L,
+    Lambda_inv = Li,
+    range_t = range_t,
+    atmost1 = TRUE
+  )
 ]
-tictoc::toc(log  = TRUE) # timer end
+tictoc::toc(log = TRUE) # timer end
 ```
 
 ## Comparisons 

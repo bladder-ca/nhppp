@@ -1,6 +1,7 @@
 #' Vectorized sampling from NHPPPs with piecewise constant intensities
 #' with same interval lengths (C++)
 #'
+#' @description 
 #' Simulate a piecewise constant-rate Poisson Point Process over `(t_min, t_max]` (inversion method)
 #' where the intervals have the same length (are "regular").
 #'

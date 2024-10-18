@@ -59,7 +59,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
 
   L <- c(1, 11, 14, 17)
 
-  r_ppp_regularstep <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max  = 5, atmost1 = FALSE)))
+  r_ppp_regularstep <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max = 5, atmost1 = FALSE)))
   compare_ppp_vectors(ppp1 = r_ppp, ppp2 = r_ppp_regularstep, threshold = 0.1, showQQ = TRUE)
 
 
@@ -73,7 +73,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
       )[1]
     }
   ))
-  r_ppp_regularstep1 <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max  = 5, atmost1 = TRUE)))
+  r_ppp_regularstep1 <- unlist(lapply(integer(10000), function(x) draw_sc_step_regular(Lambda_vector = L, t_min = 1, t_max = 5, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ppp1, ppp2 = r_ppp_regularstep1, threshold = 0.1, showQQ = TRUE)
 })
 
@@ -154,20 +154,20 @@ test_that("NHPPP methods agree on the first time to event with constant rate", {
   L <- function(t) 2 * t
   Li <- function(z) z / 2
 
-  r_ppp <- unlist(lapply(integer(10000), function(x) ppp(t_min =1, t_max = 13, rate = 2, atmost1 = TRUE)))
-  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_ppp <- unlist(lapply(integer(10000), function(x) ppp(t_min = 1, t_max = 13, rate = 2, atmost1 = TRUE)))
+  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_ci_inv, ppp2 = r_ppp, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_ci_orderstats <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_ci_orderstats <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_ci_orderstats, ppp2 = r_ppp, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens_linear <- unlist(lapply(integer(10000), function(x) draw_sc_linear(intercept = 2, slope = 0, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens_linear <- unlist(lapply(integer(10000), function(x) draw_sc_linear(intercept = 2, slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_linear, ppp2 = r_ppp, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_sc_loglinear(intercept = log(2), slope = 0, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_sc_loglinear(intercept = log(2), slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_ppp, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = 2.1, majorizer_slope = 0, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = 2.1, majorizer_slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens, ppp2 = r_ppp, threshold = 0.1, showQQ = TRUE)
 
   r_nhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) draw_intensity_step(lambda = l, majorizer_vector = rep(2.1, 4), time_breaks = c(1, 2, pi, 2 * pi, 13), atmost1 = TRUE)))
@@ -180,14 +180,14 @@ test_that("NHPPP linear intensity agrees with general methods", {
   L <- function(t, intercept = 1, slope = 2, t0 = 1) Lambda_linear_form(t, intercept = intercept, slope = slope, t0 = t0)
   Li <- function(z, intercept = 1, slope = 2, t0 = 1) Lambda_inv_linear_form(z, intercept = intercept, slope = slope, t0 = t0)
 
-  r_nhppp_intens_linear <- unlist(lapply(integer(10000), function(x) draw_sc_linear(intercept = 1, slope = 2,  t_min = 1, t_max  = 13, atmost1 = TRUE)))
-  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens_linear <- unlist(lapply(integer(10000), function(x) draw_sc_linear(intercept = 1, slope = 2, t_min = 1, t_max = 13, atmost1 = TRUE)))
+  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_linear, ppp2 = r_nhppp_ci_inv, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_ci_os <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_ci_os <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_linear, ppp2 = r_nhppp_ci_os, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = l(13), majorizer_slope = 0, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = l(13), majorizer_slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_linear, ppp2 = r_nhppp_intens, threshold = 0.1, showQQ = TRUE)
 
   r_nhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) draw_intensity_step(lambda = l, majorizer_vector = l(2:13), time_breaks = c(1:13), atmost1 = TRUE)))
@@ -200,14 +200,14 @@ test_that("NHPPP loglinear agrees with general methods", {
   L <- function(t, intercept = .1, slope = .02, t0 = 1) Lambda_exp_form(t, intercept = intercept, slope = slope, t0 = t0)
   Li <- function(z, intercept = .1, slope = .02, t0 = 1) Lambda_inv_exp_form(z, intercept = intercept, slope = slope, t0 = t0)
 
-  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_sc_loglinear(intercept = .1, slope = .02,  t_min = 1, t_max  = 13, atmost1 = TRUE)))
-  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens_exp <- unlist(lapply(integer(10000), function(x) draw_sc_loglinear(intercept = .1, slope = .02, t_min = 1, t_max = 13, atmost1 = TRUE)))
+  r_nhppp_ci_inv <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_inversion(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_nhppp_ci_inv, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_ci_os <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_ci_os <- unlist(lapply(integer(10000), function(x) draw_cumulative_intensity_orderstats(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_nhppp_ci_os, threshold = 0.1, showQQ = TRUE)
 
-  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = l(13), majorizer_slope = 0, t_min = 1, t_max  = 13, atmost1 = TRUE)))
+  r_nhppp_intens <- unlist(lapply(integer(10000), function(x) draw_intensity_line(lambda = l, majorizer_intercept = l(13), majorizer_slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_nhppp_intens_exp, ppp2 = r_nhppp_intens, threshold = 0.1, showQQ = TRUE)
 
   r_nhppp_intens_piecewise <- unlist(lapply(integer(10000), function(x) draw_intensity_step(lambda = l, majorizer_vector = l(2:13), time_breaks = c(1:13), atmost1 = TRUE)))

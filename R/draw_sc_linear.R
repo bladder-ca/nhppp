@@ -20,8 +20,8 @@
 #'
 draw_sc_linear <- function(intercept,
                            slope,
-                           t_min, 
-                           t_max, 
+                           t_min,
+                           t_max,
                            atmost1 = FALSE) {
   if ((slope <= 0 && intercept <= 0) || (intercept + slope * t_min < 0)) {
     return(c())
@@ -37,7 +37,7 @@ draw_sc_linear <- function(intercept,
     draw_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_linear_form(t, intercept = intercept, slope = slope, t0 = t_min),
       Lambda_inv = function(z) Lambda_inv_linear_form(z, intercept = intercept, slope = slope, t0 = t_min),
-      t_min = t_min, 
+      t_min = t_min,
       t_max = t_max,
       atmost1 = atmost1
     )

@@ -19,7 +19,7 @@
 #' @export
 draw_sc_step <- function(lambda_vector,
                          time_breaks,
-                         #rng_stream = NULL,
+                         # rng_stream = NULL,
                          atmost1 = FALSE,
                          atleast1 = FALSE) {
   len_time_breaks <- length(time_breaks)

@@ -22,7 +22,7 @@
 #'
 draw_sc_loglinear <- function(intercept,
                               slope,
-                              t_min, 
+                              t_min,
                               t_max,
                               # range_t = c(0, 10),
                               # rng_stream = NULL,
@@ -34,7 +34,7 @@ draw_sc_loglinear <- function(intercept,
     draw_cumulative_intensity_inversion(
       Lambda = function(t) Lambda_exp_form(t, intercept = intercept, slope = slope, t0 = t_min),
       Lambda_inv = function(z) Lambda_inv_exp_form(z, intercept = intercept, slope = slope, t0 = t_min),
-      t_min = t_min, 
+      t_min = t_min,
       t_max = t_max,
       atmost1 = atmost1
     )

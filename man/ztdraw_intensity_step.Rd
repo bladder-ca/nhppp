@@ -5,27 +5,19 @@
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
 (t0, t_max) (thinning method) with piecewise constant_majorizer}
 \usage{
-ztdraw_intensity_step(
-  lambda,
-  lambda_maj_vector = lambda(1:10),
-  times_vector = 0:10,
-  rng_stream = NULL,
-  atmost1 = FALSE
-)
+ztdraw_intensity_step(lambda, majorizer_vector, time_breaks, atmost1 = FALSE)
 }
 \arguments{
 \item{lambda}{(function) the instantaneous rate of the NHPPP.
 A continuous function of time.}
 
-\item{lambda_maj_vector}{(scalar, double) \code{K} constant majorizing rates, one per interval}
+\item{majorizer_vector}{(scalar, double) \code{K} constant majorizing rates, one per interval}
 
-\item{times_vector}{(vector, double) \code{K+1} time points defining \code{K} intervals
+\item{time_breaks}{(vector, double) \code{K+1} time points defining \code{K} intervals
 of constant rates:
 \verb{[t_1 = range_t[1],       t_2)}: the first interval
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
 \verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
-
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -33,8 +25,7 @@ of constant rates:
 a vector of event times (t_) with at least one element
 }
 \description{
-Sample zero-truncated NHPPP times using the thinning method, optionally using
-an \code{rstream} generator
+Sample zero-truncated NHPPP times using the thinning method
 }
 \examples{
 x <- ztdraw_intensity_step(lambda = function(t) exp(.02 * t))

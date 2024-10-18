@@ -13,7 +13,6 @@
 #'
 #' @examples
 #' x <- ppp(rate = 1, t_min = 0, t_max = 10, tol = 10^-6)
-
 ppp <- function(rate, t_min, t_max, atmost1 = FALSE, tol = 10^-6) {
   if (isTRUE(atmost1)) {
     n <- 1
@@ -24,4 +23,3 @@ ppp <- function(rate, t_min, t_max, atmost1 = FALSE, tol = 10^-6) {
   t_ <- cumsum(dt_) + t_min
   return(t_[t_ <= t_max])
 }
-

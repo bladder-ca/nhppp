@@ -2,8 +2,7 @@
 % Please edit documentation in R/draw_intensity.R
 \name{draw_intensity}
 \alias{draw_intensity}
-\title{Generic function for simulating from NHPPPs given the intensity function
-or the cumulative intensity function.}
+\title{Generic function for simulating from NHPPPs given the intensity function.}
 \usage{
 draw_intensity(
   lambda,
@@ -41,6 +40,7 @@ draw_intensity(
 a vector of event times
 }
 \description{
+Sample from NHPPPs given the intensity function
 This is a wrapper to the package's specific functions, and thus somewhat slower.
 For time-intensive simulations prefer one of the specific functions.
 }

@@ -15,17 +15,17 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_cumulative_intensity_inversion(Lambda = function(t) 2*t, Lambda_inv = function(z) z/2, t_min = 0, t_max = 10)
+#' x <- draw_cumulative_intensity_inversion(Lambda = function(t) 2 * t, Lambda_inv = function(z) z / 2, t_min = 0, t_max = 10)
 draw_cumulative_intensity_inversion <- function(Lambda,
                                                 Lambda_inv,
-                                                t_min, 
+                                                t_min,
                                                 t_max,
                                                 atmost1 = FALSE) {
   L_min <- Lambda(t_min)
   L_max <- Lambda(t_max)
   dat_warped_time <- ppp(
     rate = 1,
-    t_min = L_min, 
+    t_min = L_min,
     t_max = L_max,
     atmost1 = atmost1
   )
