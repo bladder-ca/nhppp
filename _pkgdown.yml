@@ -2,3 +2,67 @@ url: https://bladder-ca.github.io/nhppp/
 template:
   bootstrap: 5
 
+
+
+reference: 
+- title: Functions by type 
+
+- subtitle: PPP
+  desc: >
+    Constant intensity Poisson Point Processes
+  contents:
+  - ppp_n
+  - ppp_next_n
+  - ppp_orderstat
+  - ppp_sequential
+  - ztppp
+
+- subtitle: NHPPP wrapper functions 
+  desc: Non-homogeneous Poisson Point Processes wrapper functions 
+  contents:
+  - draw 
+  - vdraw
+
+- subtitle: NHPPP from intensity function 
+  desc: Non-homogeneous Poisson Point Processes from intensity functions
+  contents:
+  - draw_intensity
+  - draw_intensity_step
+  - vdraw_intensity_step_regular
+  - vdraw_intensity_step_regular_R
+  - vdraw_intensity_step_regular_cpp
+  - ztdraw_intensity
+  - ztdraw_intensity_step
+  - vztdraw_intensity_step_regular  
+  - vztdraw_intensity_step_regular_R
+
+
+- subtitle: NHPPP from cumulative intensity function 
+  desc: Non-homogeneous Poisson Point Processes from cumulative intensity functions
+  contents:
+  - draw_cumulative_intensity_inversion
+  - draw_cumulative_intensity_orderstats
+  - vdraw_cumulative_intensity
+  - ztdraw_cumulative_intensity
+
+- subtitle: NHPPP special cases
+  desc: Non-homogeneous Poisson Point Processes from intensity functions
+  contents:
+  - draw_sc_linear
+  - draw_sc_loglinear
+  - draw_sc_step
+  - draw_sc_step_regular
+  - vdraw_sc_step_regular
+  - vdraw_sc_step_regular_R
+  - vdraw_sc_step_regular_cpp
+  - ztdraw_sc_linear
+  - ztdraw_sc_loglinear
+  - vztdraw_sc_step_regular
+  - vztdraw_sc_step_regular_R
+  - vztdraw_sc_step_regular_cpp
+
+- subtitle: Auxiliary functions
+  desc: Auxiliary functions 
+  contents:
+  - get_step_majorizer
+
