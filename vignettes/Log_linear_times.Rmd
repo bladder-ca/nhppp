@@ -341,7 +341,7 @@ qqplot(pop$t_nonvec_special_case, pop$t_inversion)
 
 ## Acknowledgments 
 
-Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example we use in this vignette. 
+Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example in this vignette. 
 
 
 # References 
