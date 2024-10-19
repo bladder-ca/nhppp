@@ -28,11 +28,11 @@ vztdraw_intensity_step_regular(
 \item{lambda_maj_matrix}{(matrix) intensity rates, one per interval}
 
 \item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
-of the time interval for each row of \link{Lambda|lambda} matrix.
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
 The length of this argument is the number of point processes that should be drawn.}
 
 \item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
-of the time interval for each row of \link{Lambda|lambda} matrix.
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
 The length of this argument is the number of point processes that should be drawn.}
 
 \item{t_min}{(scalar | vector | column matrix) is the lower bound

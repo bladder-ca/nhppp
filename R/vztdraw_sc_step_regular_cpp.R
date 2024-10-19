@@ -8,10 +8,10 @@
 #' @param Lambda_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
-#'        of the time interval for each row of [Lambda|lambda] matrix.
+#'        of the time interval for each row of (Lambda|lambda)_maj_matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param rate_matrix_t_max (scalar | vector | column matrix) the upper bound
-#'        of the time interval for each row of [Lambda|lambda] matrix.
+#'        of the time interval for each row of (Lambda|lambda)_maj_matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param t_min (scalar | vector | column matrix) is the lower bound
 #'        of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
