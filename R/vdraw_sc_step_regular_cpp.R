@@ -29,11 +29,11 @@
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular_cpp(
-#'    Lambda_matrix = matrix(1:5, nrow = 1),
-#'    rate_matrix_t_min = 100,
-#'    rate_matrix_t_max = 110,
-#'    atmost1 = FALSE
-#'  )
+#'   Lambda_matrix = matrix(1:5, nrow = 1),
+#'   rate_matrix_t_min = 100,
+#'   rate_matrix_t_max = 110,
+#'   atmost1 = FALSE
+#' )
 #' @export
 #' @keywords internal
 vdraw_sc_step_regular_cpp <- function(
@@ -62,10 +62,10 @@ vdraw_sc_step_regular_cpp <- function(
   mode(rate) <- "numeric"
 
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
-  if (nrow(range_t)>1 && nrow(range_t) != nrow(rate)) {
+  if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if(nrow(range_t)==1 && nrow(rate) != 1) {
+  if (nrow(range_t) == 1 && nrow(rate) != 1) {
     range_t <- range_t[rep(1, nrow(rate)), ]
   }
 
@@ -83,10 +83,10 @@ vdraw_sc_step_regular_cpp <- function(
   if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
 
   subinterval <- cbind(as.vector(t_min), as.vector(t_max))
-  if (nrow(subinterval)>1 && nrow(subinterval) != nrow(rate)) {
+  if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
   }
-  if(nrow(subinterval)==1 && nrow(rate) != 1) {
+  if (nrow(subinterval) == 1 && nrow(rate) != 1) {
     subinterval <- subinterval[rep(1, nrow(rate)), ]
   }
 

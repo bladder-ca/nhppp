@@ -1,9 +1,9 @@
 #' Vectorized simulation from a non homogeneous Poisson Point Process (NHPPP) from
 #'    (t_min, t_max) given the cumulative intensity function and its inverse
 #'
-#' @description  Sample NHPPP times using the cumulative intensity function and its inverse. 
+#' @description  Sample NHPPP times using the cumulative intensity function and its inverse.
 #' @param Lambda (function, double vector) an increasing function
-#'        which is the integrated rate of the NHPPP. 
+#'        which is the integrated rate of the NHPPP.
 #'        It should take a vectorized argument t for times and an optional arguments list.
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
 #'        It should take a vectorized argument z and an optional arguments list.
@@ -16,7 +16,7 @@
 #' @param tol the tolerange for the calulations.
 #' @param atmost1 boolean, draw at most 1 event time per sampled point process.
 #'
-#' @return a matrix of event times with one row per sampled point process. 
+#' @return a matrix of event times with one row per sampled point process.
 #' @export
 #'
 vdraw_cumulative_intensity <- function(Lambda,

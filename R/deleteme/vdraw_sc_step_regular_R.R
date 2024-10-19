@@ -1,22 +1,22 @@
 #' Vectorized sampling from NHPPPs with piecewise constant intensities
 #' with same interval lengths (R)
 #'
-#' @description 
+#' @description
 #' Simulate a piecewise constant-rate Poisson Point Process over `(t_min, t_max]` (inversion method)
 #' where the intervals have the same length (are "regular").
 #' This function is internal, and used mainly for testing the C++ version.
-#' 
+#'
 #' It is superseded by the C++ implementation.
-#' 
+#'
 #'
 #' @param Lambda_matrix (matrix) integrated intensity rates at the end of each interval
 #'        The number of rows is the number of point processes to draw.
 #' @param lambda_matrix (matrix) intensity rates, one per interval
 #'        The number of rows is the number of point processes to draw.
-#' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound 
+#' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
 #'        of the time interval for each row of [Lambda|lambda] matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
-#' @param rate_matrix_t_max (scalar | vector | column matrix) the upper bound 
+#' @param rate_matrix_t_max (scalar | vector | column matrix) the upper bound
 #'        of the time interval for each row of [Lambda|lambda] matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param tol (scalar, double) tolerance for the number of events
@@ -28,7 +28,6 @@
 #' @keywords internal
 #' @examples
 #' x <- vdraw_sc_step_regular_R(Lambda_matrix = matrix(1:5, nrow = 1))
-
 vdraw_sc_step_regular_R <- function(Lambda_matrix = NULL,
                                     lambda_matrix = NULL,
                                     rate_matrix_t_min = NULL,
@@ -44,7 +43,7 @@ vdraw_sc_step_regular_R <- function(Lambda_matrix = NULL,
   }
   n_draws <- nrow(Lambda_matrix)
 
-  if(nrow(range_t)>1 && nrow(range_t) != n_draws) {
+  if (nrow(range_t) > 1 && nrow(range_t) != n_draws) {
     stop("The (rows of) [Lambda|lambda]_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
 

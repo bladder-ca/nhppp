@@ -27,14 +27,14 @@
 #' )
 #' @export
 vztdraw_intensity <- function(
-  lambda = NULL,
-  lambda_args = NULL,
-  Lambda_maj_matrix = NULL,
-  lambda_maj_matrix = NULL,
-  range_t = NULL,
-  tol = 10^-6,
-  atmost1 = FALSE,
-  ...) {
+    lambda = NULL,
+    lambda_args = NULL,
+    Lambda_maj_matrix = NULL,
+    lambda_maj_matrix = NULL,
+    range_t = NULL,
+    tol = 10^-6,
+    atmost1 = FALSE,
+    ...) {
   return(
     vztdraw_intensity_step_regular_R(
       lambda = lambda,

@@ -45,8 +45,8 @@ test_that("vdraw_sc_step_regular() works with t_min and t_max", {
 
   t0_a <- 101
   t1_a <- 109
-  t0_b <- 100+runif(10)
-  t1_b <- 110-runif(10)
+  t0_b <- 100 + runif(10)
+  t1_b <- 110 - runif(10)
 
   expect_no_error(Z <- vdraw_sc_step_regular(
     Lambda_matrix = L,
@@ -98,7 +98,6 @@ test_that("vdraw_sc_step_regular() works with t_min and t_max", {
     t_max = t1_b
   ))
   check_ppp_sample_validity(Z5, t_min = t0_b, t_max = t1_b)
-
 })
 
 test_that("vdraw_sc_step_regular() does not break with matrices whose mode is list", {

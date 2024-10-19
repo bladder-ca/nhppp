@@ -2,11 +2,11 @@
 #'    the intensity function with piecewise constant_majorizers (C++)
 #'
 #' @description
-#' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) using the intensity 
+#' Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) using the intensity
 #' function and piecewise constant_majorizers.
 #'    The majorizers are step functions over equal-length time intevals.
 #'
-#' @param lambda (function) intensity function, vectorized 
+#' @param lambda (function) intensity function, vectorized
 #' @param lambda_args (list) optional arguments to pass to `lambda`
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
@@ -33,11 +33,11 @@
 #'
 #' @examples
 #' x <- vdraw_intensity_step_regular_cpp(
-#'    lambda = function(x, ...) 0.1 * x,
-#'    lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
-#'    rate_matrix_t_min = 1,
-#'    rate_matrix_t_max = 5
-#'  )
+#'   lambda = function(x, ...) 0.1 * x,
+#'   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
+#'   rate_matrix_t_min = 1,
+#'   rate_matrix_t_max = 5
+#' )
 #' @export
 vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              lambda_args = NULL,
@@ -50,7 +50,6 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE,
                                              atmostB = NULL) {
-
   if (is.null(atmostB)) {
     atmostB <- 0 # has to be <=0 to be ignored
   }
@@ -67,14 +66,14 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   mode(rate) <- "numeric"
 
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
-  if (nrow(range_t)>1 && nrow(range_t) != nrow(rate)) {
+  if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if(nrow(range_t)==1 && nrow(rate) != 1) {
+  if (nrow(range_t) == 1 && nrow(rate) != 1) {
     range_t <- range_t[rep(1, nrow(rate)), ]
   }
 
-  
+
   if (is.null(lambda_args)) {
     l_ <- lambda
   } else {
@@ -92,15 +91,15 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
     if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
     subinterval <- cbind(as.vector(t_min), as.vector(t_max))
-    if (nrow(subinterval)>1 && nrow(subinterval) != nrow(rate)) {
+    if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
       stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
     }
-    if(nrow(subinterval)==1 && nrow(rate) != 1) {
+    if (nrow(subinterval) == 1 && nrow(rate) != 1) {
       subinterval <- subinterval[rep(1, nrow(rate)), ]
     }
-    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))  
+    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
   }
-  
+
 
   return(
     .Call(

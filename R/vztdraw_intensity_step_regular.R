@@ -38,9 +38,6 @@ vztdraw_intensity_step_regular <- function(
     t_max = NULL,
     atmost1 = FALSE,
     ...) {
-
-
-
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
   } else if (is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
@@ -48,12 +45,12 @@ vztdraw_intensity_step_regular <- function(
   } else {
     stop("lambda_maj_matrix and Lambda_maj_matrix cannot both be `NULL`")
   }
-  
+
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
-  if (nrow(range_t)>1 && nrow(range_t) != nrow(rate)) {
+  if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if(nrow(range_t)==1 && nrow(rate) != 1) {
+  if (nrow(range_t) == 1 && nrow(rate) != 1) {
     range_t <- range_t[rep(1, nrow(rate)), ]
   }
 
@@ -63,13 +60,13 @@ vztdraw_intensity_step_regular <- function(
     if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
     if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
     subinterval <- cbind(as.vector(t_min), as.vector(t_max))
-    if (nrow(subinterval)>1 && nrow(subinterval) != nrow(rate)) {
+    if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
       stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
     }
-    if(nrow(subinterval)==1 && nrow(rate) != 1) {
+    if (nrow(subinterval) == 1 && nrow(rate) != 1) {
       subinterval <- subinterval[rep(1, nrow(rate)), ]
     }
-    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))  
+    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
   }
 
   Z <- vdraw_intensity_step_regular_forcezt(
@@ -83,7 +80,7 @@ vztdraw_intensity_step_regular <- function(
     t_max = t_max,
     atmost1 = atmost1,
     force_zt_majorizer = TRUE
-  ) 
+  )
 
   has_no_times <- is.na(Z[, 1])
   max_events <- ncol(Z)

@@ -12,7 +12,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works", {
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -22,7 +22,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -32,7 +32,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works", {
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = TRUE
   ))
@@ -42,7 +42,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = TRUE
   ))
@@ -61,7 +61,7 @@ test_that("vdraw_intensity_step_regular_forcezt() does not break with matrices w
   expect_no_error(Z <- vdraw_intensity_step_regular_forcezt(
     lambda = lfun,
     Lambda_maj_matrix = Lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -70,7 +70,7 @@ test_that("vdraw_intensity_step_regular_forcezt() does not break with matrices w
   expect_no_error(Z <- vdraw_intensity_step_regular_forcezt(
     lambda = lfun,
     lambda_maj_matrix = lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -88,7 +88,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works with different majorizer
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -98,7 +98,7 @@ test_that("vdraw_intensity_step_regular_forcezt() works with different majorizer
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj + 10,
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5 ,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))

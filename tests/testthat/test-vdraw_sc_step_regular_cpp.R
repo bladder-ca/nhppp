@@ -131,26 +131,34 @@ test_that("vdraw_sc_step_regular_cpp() uses user-supplied RNGs", {
 
   # seed the old.kind generator (default ) hereon "R"
   set.seed(123)
-  res[["R0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["R0"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   set.seed(123)
-  res[["R1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["R1"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   expect_equal(res[["R0"]], res[["R1"]])
 
   # activate "a" and reseed "R" -- If the function uses the "R", the test will fail
   set.seed(123)
   old.kind <- rlecuyer::.lec.CurrentStream("a")
-  res[["a0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["a0"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   rlecuyer::.lec.CurrentStreamEnd(old.kind)
   expect_false(identical(res[["R0"]], res[["a0"]]))
 
   # activate "b", again, re-seed "R"
   set.seed(123)
   old.kind <- rlecuyer::.lec.CurrentStream("b")
-  res[["b0"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["b0"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   rlecuyer::.lec.CurrentStreamEnd(old.kind)
   expect_false(identical(res[["R0"]], res[["b0"]]))
   expect_false(identical(res[["b0"]], res[["a0"]]))
@@ -163,16 +171,20 @@ test_that("vdraw_sc_step_regular_cpp() uses user-supplied RNGs", {
 
   # activate "a" -- do not reseed "R"
   old.kind <- rlecuyer::.lec.CurrentStream("a")
-  res[["a1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["a1"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   rlecuyer::.lec.CurrentStreamEnd(old.kind)
   expect_equal(res[["a0"]], res[["a1"]])
   expect_false(identical(res[["R0"]], res[["a1"]]))
 
   # activate "b" -- do not reseed "R"
   old.kind <- rlecuyer::.lec.CurrentStream("b")
-  res[["b1"]] <- vdraw_sc_step_regular_cpp(Lambda_matrix = L, rate_matrix_t_min = 100,
-                                           rate_matrix_t_max = 110)
+  res[["b1"]] <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L, rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110
+  )
   rlecuyer::.lec.CurrentStreamEnd(old.kind)
   expect_equal(res[["b0"]], res[["b1"]])
   expect_false(identical(res[["R0"]], res[["b1"]]))

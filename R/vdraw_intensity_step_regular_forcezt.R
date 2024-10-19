@@ -31,9 +31,9 @@
 #' @param tol (scalar, double) tolerance for the number of events
 #' @param atmost1 boolean, draw at most 1 event time
 #' @param force_zt_majorizer boolean, force the majorizer to be zero-truncated.
-#'        This option is used when the function is called to make proposals for 
+#'        This option is used when the function is called to make proposals for
 #'        `vztdraw_intensity_step_regular()`. In general, do not set this option to `TRUE`.
-#'        
+#'
 #' @keywords internal
 vdraw_intensity_step_regular_forcezt <- function(
     lambda = NULL,
@@ -48,7 +48,6 @@ vdraw_intensity_step_regular_forcezt <- function(
     atmost1 = FALSE,
     force_zt_majorizer = FALSE,
     ...) {
-
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     mode(lambda_maj_matrix) <- "numeric"
     rate <- lambda_maj_matrix
@@ -60,16 +59,16 @@ vdraw_intensity_step_regular_forcezt <- function(
   } else {
     stop("lambda_maj_matrix and Lambda_maj_matrix cannot both be `NULL`")
   }
-  
+
   n_intervals <- ncol(rate)
   n_draws <- nrow(rate)
 
 
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
-  if (nrow(range_t)>1 && nrow(range_t) != nrow(rate)) {
+  if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if(nrow(range_t)==1 && nrow(rate) != 1) {
+  if (nrow(range_t) == 1 && nrow(rate) != 1) {
     range_t <- range_t[rep(1, nrow(rate)), ]
   }
   interval_duration <- (range_t[, 2] - range_t[, 1]) / n_intervals

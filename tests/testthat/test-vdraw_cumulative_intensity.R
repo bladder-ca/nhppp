@@ -10,10 +10,10 @@ test_that("vdraw_cumulative_intensity_inversion() works with minimal options", {
   t1_a <- 1.5
   t0_b <- rep(0.5, 10) + runif(n = 10)
   t1_b <- rep(2, 10) + runif(n = 10)
-  t0_c <- matrix(t0_b, nrow=1)
-  t1_c <- matrix(t1_b, nrow=1)
-  t0_d <- matrix(t0_b, ncol=1)
-  t1_d <- matrix(t1_b, ncol=1)
+  t0_c <- matrix(t0_b, nrow = 1)
+  t1_c <- matrix(t1_b, nrow = 1)
+  t0_d <- matrix(t0_b, ncol = 1)
+  t1_d <- matrix(t1_b, ncol = 1)
 
 
   # scalars
