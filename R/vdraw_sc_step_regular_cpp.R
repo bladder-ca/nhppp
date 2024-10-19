@@ -25,7 +25,7 @@
 #' @param atmost1 boolean, draw at most 1 event time
 #' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
 #'
-#' @return a matrix of event times t, with rows corresponding to the sampled point processes. 
+#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular_cpp(
@@ -35,6 +35,7 @@
 #'    atmost1 = FALSE
 #'  )
 #' @export
+#' @keywords internal
 vdraw_sc_step_regular_cpp <- function(
     lambda_matrix = NULL,
     Lambda_matrix = NULL,

@@ -70,15 +70,15 @@ test_that("ztNHPPP linear intensity agrees with linear intensity for low rates",
 test_that("vztdraw_sc_step_regular() agrees with vdraw_sc_step_regular()", {
   set.seed(123)
   Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
-  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
-  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular_R(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vztdraw_sc_step_regular <- r_vztdraw_sc_step_regular[!is.na(r_vztdraw_sc_step_regular)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular, ppp2 = r_vztdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
 
-  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
-  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular_R(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vztdraw_sc_step_regular1 <- r_vztdraw_sc_step_regular1[!is.na(r_vztdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular1, ppp2 = r_vztdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })
@@ -87,15 +87,15 @@ test_that("vztdraw_sc_step_regular() agrees with vdraw_sc_step_regular()", {
 test_that("vztdraw_sc_step_regular_cpp() agrees with vdraw_sc_step_regular()", {
   set.seed(123)
   Lmat <- matrix(rep(c(1, 11, 14, 17), 10000), ncol = 4, byrow = TRUE)
-  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vdraw_sc_step_regular <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vdraw_sc_step_regular <- r_vdraw_sc_step_regular[!is.na(r_vdraw_sc_step_regular)]
-  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = FALSE)
+  r_vztdraw_sc_step_regular <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = FALSE)
   r_vztdraw_sc_step_regular <- r_vztdraw_sc_step_regular[!is.na(r_vztdraw_sc_step_regular)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular, ppp2 = r_vztdraw_sc_step_regular, threshold = 0.1, showQQ = TRUE)
 
-  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vdraw_sc_step_regular1 <- vdraw_sc_step_regular(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vdraw_sc_step_regular1 <- r_vdraw_sc_step_regular1[!is.na(r_vdraw_sc_step_regular1)]
-  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, range_t = c(1, 5), atmost1 = TRUE)
+  r_vztdraw_sc_step_regular1 <- vztdraw_sc_step_regular_cpp(Lambda_matrix = Lmat, rate_matrix_t_min = 1, rate_matrix_t_max = 5, atmost1 = TRUE)
   r_vztdraw_sc_step_regular1 <- r_vztdraw_sc_step_regular1[!is.na(r_vztdraw_sc_step_regular1)]
   compare_ppp_vectors(ppp1 = r_vdraw_sc_step_regular1, ppp2 = r_vztdraw_sc_step_regular1, threshold = 0.1, showQQ = TRUE)
 })
@@ -112,7 +112,7 @@ test_that("ztNHPPP exponential agrees with general methods", {
   r_ztnhppp_ci <- unlist(lapply(integer(10000), function(x) ztdraw_cumulative_intensity(Lambda = L, Lambda_inv = Li, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_exp, ppp2 = r_ztnhppp_ci, threshold = 0.1, showQQ = TRUE)
 
-  r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) ztdraw_intensity(lambda = l, lambda_maj = l(13), t_min = 1, t_max = 13, atmost1 = TRUE)))
+  r_ztnhppp_intens <- unlist(lapply(integer(10000), function(x) ztdraw_intensity(lambda = l, line_majorizer_intercept = l(13), line_majorizer_slope = 0, t_min = 1, t_max = 13, atmost1 = TRUE)))
   compare_ppp_vectors(ppp1 = r_ztnhppp_intens_exp, ppp2 = r_ztnhppp_intens, threshold = 0.1, showQQ = TRUE)
 })
 

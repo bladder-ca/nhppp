@@ -3,7 +3,7 @@ test_that("vztdraw_sc_step_regular_cpp() works", {
   # 1 row matrix
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z0, t_min = 100, t_max = 110, atleast1 = TRUE)
@@ -14,7 +14,7 @@ test_that("vztdraw_sc_step_regular_cpp() works", {
 
   expect_no_error(Z <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = L,
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z, t_min = 100, t_max = 110, atleast1 = TRUE)
@@ -22,14 +22,14 @@ test_that("vztdraw_sc_step_regular_cpp() works", {
 
   expect_no_error(Z1 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = L,
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = TRUE
   ))
   check_ppp_sample_validity(Z1, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
 
   expect_no_error(Z2 <- vztdraw_sc_step_regular_cpp(
     lambda_matrix = l,
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = TRUE
   ))
   check_ppp_sample_validity(Z2, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
@@ -37,7 +37,7 @@ test_that("vztdraw_sc_step_regular_cpp() works", {
   # very small rates
   expect_no_error(Z2 <- vztdraw_sc_step_regular_cpp(
     lambda_matrix = l * 0.001,
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = TRUE
   ))
   check_ppp_sample_validity(Z2, t_min = 100, t_max = 110, atmost1 = TRUE, atleast1 = TRUE)
@@ -55,7 +55,7 @@ test_that("vztdraw_sc_step_regular_cpp() does not break with matrices whose mode
   mode(L) <- "list"
   expect_no_error(Z <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = L,
-    range_t = c(100, 110),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
     atmost1 = FALSE
   ))
 })
@@ -72,7 +72,7 @@ test_that("vztdraw_sc_step_regular_cpp() uses blocked random numbers", {
     set.seed(123)
     expect_no_error(Z[[i]] <- vztdraw_sc_step_regular_cpp(
       Lambda_matrix = L,
-      range_t = c(100, 110),
+      rate_matrix_t_min = 100, rate_matrix_t_max = 110,
       atmost1 = FALSE
     ))
     if (i > 1) {
@@ -86,30 +86,30 @@ test_that("vztdraw_sc_step_regular_cpp() works with subinterval", {
   set.seed(123)
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
-    range_t = cbind(100, 110),
-    subinterval = cbind(100, 110), # matrix
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
+    t_min = 100, t_max = 110, # matrix
     atmost1 = FALSE
   ))
 
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
-    range_t = c(100, 110),
-    subinterval = c(100, 110), # vector
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
+    t_min = 100, t_max = 110, # vector
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z0, t_min = 100, t_max = 110, atmost1 = FALSE, atleast1 = TRUE)
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1),
-    range_t = c(100, 110),
-    subinterval = c(101.01, 108.99),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
+    t_min = 101.01, t_max = 108.99,
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z0, t_min = 101.01, t_max = 108.99, atmost1 = FALSE, atleast1 = TRUE)
 
   expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
     Lambda_matrix = matrix(1:5, nrow = 1) * 10,
-    range_t = c(100, 110),
-    subinterval = c(105.01, 105.99),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
+    t_min = 105.01, t_max = 105.99,
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z0, t_min = 105.01, t_max = 105.99, atmost1 = FALSE, atleast1 = TRUE)

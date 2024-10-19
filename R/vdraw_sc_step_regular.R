@@ -65,10 +65,13 @@ vdraw_sc_step_regular <- function(
   } 
   if (isTRUE(atleast1)) {
     return(
-      vztdraw_sc_step_regular_cpp(
-        Lambda_matrix = Lambda_matrix,
+      vztdraw_sc_step_regular(
         lambda_matrix = lambda_matrix,
-        range_t = range_t,
+        Lambda_matrix = Lambda_matrix,
+        rate_matrix_t_min = rate_matrix_t_min,
+        rate_matrix_t_max = rate_matrix_t_max,
+        t_min = t_min,
+        t_max = t_max,
         atmost1 = atmost1
       )
     )

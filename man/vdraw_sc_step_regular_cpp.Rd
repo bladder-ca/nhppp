@@ -61,3 +61,4 @@ x <- vdraw_sc_step_regular_cpp(
    atmost1 = FALSE
  )
 }
+\keyword{internal}
