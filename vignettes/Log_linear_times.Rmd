@@ -165,7 +165,7 @@ l(t = t_mat) |> head()
 #### Cumulative intensity function $\Lambda(t)$
 
 The cumulative intensity function is $\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s$. 
-It does not matter what we choose for the lower limit of integration in the definition of $\Lambda$ -- the lower limit cancels out in the mathematics of the sampling algorithms.  Thus we are free to 
+It does not matter what we choose for the lower limit of integration in the definition of $\Lambda$. The lower limit cancels out in the mathematics of the sampling algorithms.  Thus we are free to 
 use any lower limit (say 0) for any antiderivative of $\lambda()$ that is convenient (for any integration constant).
 
 With a slight abuse of notation, define 0 as the lower integration limit and write ${\Lambda(t) := \Lambda(0, t) = \int_0^t \lambda(s) \ \textrm{d}s}$.
@@ -202,19 +202,21 @@ densities for each person at a time. This is slower than the other methods,
 but can be practical even for sizeable simulations that will be run once (e.g., 
 for statistical simulation analyses) or when you develop code.  
 
-It's arguments `alpha`, `beta` have the same name as the parameters 
-in our log-linear intensity function $\lambda$. The `range_t` argument asks for
+It's arguments `intercept`, `slope` have the same name as the parameters 
+in our log-linear intensity function $\lambda$. The `t_min`, `t_max` arguments ask for
 the bounds of the interval $[T_{k0}, T_{k1})$. The argument `atmost1` asks only 
-for the first time.  This special case function uses a bespoke inversion algorithm. 
+for the first time. This special case function uses a bespoke inversion algorithm; 
+it's as fast as we can do without vectorization. 
 
 ```{r method-1}
 tictoc::tic("Method 1 (nonvectorized)")
 t_nonvec_special_case <- rep(NA, K)
 for (k in 1:K) {
   t1 <- nhppp::draw_sc_loglinear(
-    alpha = pop$alpha[k],
-    beta = pop$beta[k],
-    range_t = c(pop$T0[k], pop$T1[k]),
+    intercept = pop$alpha[k],
+    slope = pop$beta[k],
+    t_min = pop$T0[k],
+    t_max = pop$T1[k],
     atmost1 = TRUE
   )
   if (length(t1) != 0) {
@@ -255,8 +257,12 @@ bounded). Even if your case is more complex, you should be able to find a
 supremum that works. 
 
 This code samples in a vectorized fashion when you know only $\lambda()$. It creates
-a majorizer matrix over $M=5$ intervals over the whole simulation horizon. You 
-specify the $[T_{k0}, T_{k1})$ intervals for each person via the `subinterval` option. 
+a majorizer matrix over $M=5$ intervals. To let the software know which times 
+correspond to each of the $M$ intervals it suffices to specify a start and stop 
+time for each row of the majorizer matrix with the `rate_matrix_t_min` and `rate_matrix_t_max`
+options. The sampling intervals $[T_{k0}, T_{k1})$for each simulated 
+person are a subset of the interval for which the majorizer matrix is defined, 
+and are specified with the `t_min` and `t_max` options. 
 (The `atmostB` option can be useful to speed up the sampling and minimize memory 
 needs when one is interested in the first event only. The smaller the value, the faster 
 the algorithm but you have to check that you have not specified it to be too small.
@@ -281,8 +287,10 @@ pop[
   t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
     lambda = l,
     lambda_maj_matrix = lmaj_mat,
-    range_t = c(40, 100),
-    subinterval = matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE),
+    rate_matrix_t_min = 40, 
+    rate_matrix_t_max = 100,
+    t_min = pop$T0,
+    t_max = pop$T1,
     atmost1 = TRUE,
     atmostB = 5
   )
@@ -305,7 +313,8 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L,
     Lambda_inv = Li,
-    range_t = range_t,
+    t_min = pop$T0, 
+    t_max = pop$T1, 
     atmost1 = TRUE
   )
 ]
@@ -355,6 +364,11 @@ Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example 
 
 
 ## Bibliography
+
+Since the publication of the paper, the syntax and options of the `nhppp` package have
+evolved. To reproduce the code in the paper, you have to install the version 
+of `nhppp` used in the paper. ALternatively, take a look at the vignettes, 
+which are written to work with the current package.  
 
 Trikalinos TA, Sereda Y. _nhppp: Simulating Nonhomogeneous Poisson Point Processes in R_. arXiv preprint arXiv:2402.00358. 2024 Feb 1.
 
