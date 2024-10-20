@@ -28,3 +28,4 @@ a vector of length 0
 \description{
 Sample NHPPP times using the thinning method
 }
+\keyword{internal}

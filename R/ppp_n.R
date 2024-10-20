@@ -9,7 +9,7 @@
 #'
 #' @return a vector of event times of size `size`
 #' @export
-#'
+#' @keywords internal
 #' @examples
 #' x <- ppp_n(size = 10, range_t = c(0, 10))
 ppp_n <- function(size, range_t = c(0, 10), rng_stream = NULL) {

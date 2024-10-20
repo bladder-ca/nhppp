@@ -17,7 +17,7 @@
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
-#' @export
+#' @keywords internal
 vztdraw_intensity <- function(
     lambda = NULL,
     lambda_args = NULL,

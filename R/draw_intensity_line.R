@@ -13,7 +13,7 @@
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
-#' @export
+#' @keywords internal
 draw_intensity_line <- function(lambda,
                                 majorizer_intercept,
                                 majorizer_slope,

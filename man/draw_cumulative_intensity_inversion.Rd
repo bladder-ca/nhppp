@@ -33,3 +33,4 @@ a vector of length 0
 Sample NHPPP times using the inversion method,
 optionally using an \code{rstream} generator object
 }
+\keyword{internal}

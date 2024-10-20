@@ -27,3 +27,4 @@ a vector of event times (t_) with at least one element
 \description{
 Sample zero-truncated NHPPP times using the thinning method
 }
+\keyword{internal}

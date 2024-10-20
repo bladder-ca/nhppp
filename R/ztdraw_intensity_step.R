@@ -13,7 +13,7 @@
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_) with at least one element
-#' @export
+#' @keywords internal
 ztdraw_intensity_step <- function(lambda,
                                   majorizer_vector,
                                   time_breaks,

@@ -12,6 +12,7 @@
 #'         if no events realize, it will have 0 length
 #' @export
 #'
+#' @keywords internal
 #' @examples
 #' x <- ppp_orderstat(range_t = c(0, 10), rate = 1)
 ppp_orderstat <- function(range_t = c(0, 10), rate = 1, rng_stream = NULL, atmost1 = FALSE) {

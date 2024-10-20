@@ -4,17 +4,18 @@ template:
 
 
 
+
+
 reference: 
 - title: Functions by type 
 
 - subtitle: PPP
   desc: >
-    Constant intensity Poisson Point Processes
+    Constant-intensity Poisson Point Processes
   contents:
-  - ppp_n
+  - ppp
+  - ppp_exactly_n
   - ppp_next_n
-  - ppp_orderstat
-  - ppp_sequential
   - ztppp
 
 - subtitle: NHPPP wrapper functions 
@@ -27,21 +28,12 @@ reference:
   desc: Non-homogeneous Poisson Point Processes from intensity functions
   contents:
   - draw_intensity
-  - draw_intensity_step
-  - vdraw_intensity_step_regular
-  - vdraw_intensity_step_regular_R
-  - vdraw_intensity_step_regular_cpp
-  - ztdraw_intensity
-  - ztdraw_intensity_step
-  - vztdraw_intensity_step_regular  
-  - vztdraw_intensity_step_regular_R
-
+  - vdraw_intensity
 
 - subtitle: NHPPP from cumulative intensity function 
   desc: Non-homogeneous Poisson Point Processes from cumulative intensity functions
   contents:
-  - draw_cumulative_intensity_inversion
-  - draw_cumulative_intensity_orderstats
+  - draw_cumulative_intensity
   - vdraw_cumulative_intensity
   - ztdraw_cumulative_intensity
 
@@ -53,12 +45,9 @@ reference:
   - draw_sc_step
   - draw_sc_step_regular
   - vdraw_sc_step_regular
-  - vdraw_sc_step_regular_R
   - vdraw_sc_step_regular_cpp
   - ztdraw_sc_linear
   - ztdraw_sc_loglinear
-  - vztdraw_sc_step_regular
-  - vztdraw_sc_step_regular_R
   - vztdraw_sc_step_regular_cpp
 
 - subtitle: Auxiliary functions

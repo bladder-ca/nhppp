@@ -12,7 +12,7 @@
 #'
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
-#' @export
+#' @keywords internal
 draw_cumulative_intensity_inversion <- function(Lambda,
                                                 Lambda_inv,
                                                 t_min,
