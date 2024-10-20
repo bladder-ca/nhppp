@@ -46,11 +46,15 @@ Consider the time varying intensity function $\lambda(t) = e^{(0.2t)} (1 + \sin 
 
 ```{r example_lambda}
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
-nhppp::draw(lambda = l, lambda_maj = l(6 * pi), range_t = c(0, 6 * pi)) |>
+nhppp::draw(lambda = l, 
+            line_majorizer_intercept = l(6 * pi),
+            line_majorizer_slope = 0,  
+            t_min = 0, 
+            t_max = 6 * pi) |>
   head(n = 20)
 ```
 
-where `lambda_maj` is a majorizer constant. 
+where `line_majorizer_intercept` and `line_majorizer_slope` define a majorizer constant. 
 
 When available, the integrated intensity function $\Lambda(t) = \int_0^t \lambda(s) \ ds$ and its inverse $\Lambda^{-1}(z)$ result in faster simulation times. For this example, $\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}$; $\Lambda^{-1}(z)$ is constructed numerically upfront (or can be calculated numerically by the function, at a computational cost). 
 
@@ -61,28 +65,10 @@ L <- function(t) {
 }
 Li <- stats::approxfun(x = L(seq(0, 6 * pi, 10^-3)), y = seq(0, 6 * pi, 10^-3), rule = 2)
 
-nhppp::draw(Lambda = L, Lambda_inv = Li, range_t = c(0, 6 * pi)) |>
+nhppp::draw(Lambda = L, Lambda_inv = Li, t_min = 0, t_max = 6 * pi) |>
   head(n = 20)
 ```
 
-## Function naming conventions 
+## Vectorized functions 
 
-1. All functions whose name start with `ppp` or `ztppp` sample from constant or piecewise constant intensity functions, as described below:
-
-- Functions whose names start with `ppp_[sequential|orderstats]` sample event times in an interval with constant intensity functions with the sequential and order statistics algorithms. 
-
-- Function `ztppp()` samples one or more event times in an interval with constant intensity, i.e., from a zero-truncated Poisson process. 
-
-- Functions `ppp_n()` and `ppp_next_n()` sample `n` events in an interval and the next `n` event times after a time `t0`.
-
-2. All functions whose name starts with `draw` or `vdraw` sample from NHPPPs. 
-
-- Functions with names starting with `draw_zt` sample at least one event in the interval, i.e., from a zero-truncated NHPPP. 
-
-- Functions with names starting with `[draw|draw_zt]_intensity[_majorizer]` expect an intensity argument. The third part (`[_majorizer]`) denotes what, if any, majorizer function is used. 
-
-- Functions with names starting with `[draw|draw_zt]_cumulative_intensity[_algorithm]` expect a cumulative (integrated) intensity argument. The third part (`[_algorithm]`) denotes the algorithm used, if more than one algorithms are pertinent.  
-
-- Functions with names starting with `vdraw` are vectorized.
-
-
+See the vignette "Log-linear times". 
