@@ -65,7 +65,7 @@ an interval (thinning method) with piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
 \examples{
-x <- vdraw_intensity_step_regular_cpp(
+x <- vdraw_intensity(
   lambda = function(x, ...) 0.1 * x,
   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
   rate_matrix_t_min = 1,
