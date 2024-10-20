@@ -11,7 +11,7 @@ generator"><meta property="og:image" content="https://bladder-ca.github.io/nhppp
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,33 +48,27 @@ generator</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_sc_linear</span><span class="op">(</span></span>
-<span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  beta <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  rng_stream <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_sc_linear</span><span class="op">(</span><span class="va">intercept</span>, <span class="va">slope</span>, <span class="va">t_min</span>, <span class="va">t_max</span>, atmost1 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dl><dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
 <dd><p>(double) the intercept</p></dd>
 
 
-<dt id="arg-beta">beta<a class="anchor" aria-label="anchor" href="#arg-beta"></a></dt>
+<dt id="arg-slope">slope<a class="anchor" aria-label="anchor" href="#arg-slope"></a></dt>
 <dd><p>(double) the slope</p></dd>
 
 
-<dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, double) min and max of the time interval</p></dd>
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(double) lower bound of the time interval</p></dd>
 
 
-<dt id="arg-rng-stream">rng_stream<a class="anchor" aria-label="anchor" href="#arg-rng-stream"></a></dt>
-<dd><p>(<code>rstream</code>) an <code>rstream</code> object.</p></dd>
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(double) upper bound of the time interval</p></dd>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>
@@ -89,7 +83,7 @@ a vector of length 0</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">draw_sc_linear</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span>, beta <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">draw_sc_linear</span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">0</span>, slope <span class="op">=</span> <span class="fl">0.2</span>, t_min <span class="op">=</span> <span class="fl">0</span>, t_max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

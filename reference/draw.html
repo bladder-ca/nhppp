@@ -9,7 +9,7 @@ For time-intensive simulations prefer one of the specific functions."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,12 +46,15 @@ For time-intensive simulations prefer one of the specific functions.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw</span><span class="op">(</span></span>
-<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  lambda_maj <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Lambda_inv <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  rng_stream <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  line_majorizer_intercept <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  line_majorizer_slope <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  line_majorizer_is_loglinear <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  step_majorizer_vector <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  atleast1 <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -61,31 +64,40 @@ For time-intensive simulations prefer one of the specific functions.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>(function) the instantaneous rate of the NHPPP.
-A continuous function of time.</p></dd>
-
-
-<dt id="arg-lambda-maj">lambda_maj<a class="anchor" aria-label="anchor" href="#arg-lambda-maj"></a></dt>
-<dd><p>(double, vector) the intercept and optional slope of the majorizing
-linear (if <code>exp_maj = FALSE</code>) or log-linear (if <code>exp_maj = TRUE</code>) function in <code>range_t</code>.</p></dd>
-
-
-<dt id="arg-lambda">Lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>(function, double vector) a continuous increasing R to R map
-which is the integrated rate of the NHPPP</p></dd>
+<dl><dt id="arg-lambda">Lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
+<dd><p>(function, double vector) the integrated (cumulative) rate of the NHPPP</p></dd>
 
 
 <dt id="arg-lambda-inv">Lambda_inv<a class="anchor" aria-label="anchor" href="#arg-lambda-inv"></a></dt>
-<dd><p>(function, double vector) the inverse of <code>Lambda()</code></p></dd>
+<dd><p>(function, double vector) the inverse of `Lambda()'</p></dd>
 
 
-<dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, double) min and max of the time interval.</p></dd>
+<dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
+<dd><p>(function) the instantaneous rate</p></dd>
 
 
-<dt id="arg-rng-stream">rng_stream<a class="anchor" aria-label="anchor" href="#arg-rng-stream"></a></dt>
-<dd><p>(<code>rstream</code>) an <code>rstream</code> object or <code>NULL</code></p></dd>
+<dt id="arg-line-majorizer-intercept">line_majorizer_intercept<a class="anchor" aria-label="anchor" href="#arg-line-majorizer-intercept"></a></dt>
+<dd><p>The intercept <code>alpha</code> of the <a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a>linear majorizer function: <code>alpha + beta * t</code> or <code>exp(alpha + beta * t)</code></p></dd>
+
+
+<dt id="arg-line-majorizer-slope">line_majorizer_slope<a class="anchor" aria-label="anchor" href="#arg-line-majorizer-slope"></a></dt>
+<dd><p>The slope <code>beta</code> of the <a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a>linear majorizer function: <code>alpha + beta * t</code> or <code>exp(alpha + beta * t)</code></p></dd>
+
+
+<dt id="arg-line-majorizer-is-loglinear">line_majorizer_is_loglinear<a class="anchor" aria-label="anchor" href="#arg-line-majorizer-is-loglinear"></a></dt>
+<dd><p>(boolean) if <code>TRUE</code> the majorizer is loglinear <code>exp(alpha + beta * t)</code>; if <code>FALSE</code> it is a linear function</p></dd>
+
+
+<dt id="arg-step-majorizer-vector">step_majorizer_vector<a class="anchor" aria-label="anchor" href="#arg-step-majorizer-vector"></a></dt>
+<dd><p>(vector, double) <code>K</code> constant majorizing rates, one per interval; all intervals are of equal length (regular)</p></dd>
+
+
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(double) the lower bound of the interval</p></dd>
+
+
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(double) the upper bound of the interval</p></dd>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>

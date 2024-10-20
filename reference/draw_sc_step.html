@@ -9,7 +9,7 @@ The intervals need not have the same length."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,13 +45,7 @@ The intervals need not have the same length.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_sc_step</span><span class="op">(</span></span>
-<span>  lambda_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  times_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
-<span>  rng_stream <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  atleast1 <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_sc_step</span><span class="op">(</span><span class="va">lambda_vector</span>, <span class="va">time_breaks</span>, atmost1 <span class="op">=</span> <span class="cn">FALSE</span>, atleast1 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,16 +56,12 @@ The intervals need not have the same length.</p>
 <dd><p>(scalar, double) <code>K</code> constant rates, one per interval</p></dd>
 
 
-<dt id="arg-times-vector">times_vector<a class="anchor" aria-label="anchor" href="#arg-times-vector"></a></dt>
+<dt id="arg-time-breaks">time_breaks<a class="anchor" aria-label="anchor" href="#arg-time-breaks"></a></dt>
 <dd><p>(vector, double) <code>K+1</code> time points defining <code>K</code> intervals
 of constant rates:
 <code>[t_1 = range_t[1],       t_2)</code>: the first interval
 <code>[t_k,                t_{k+1})</code>: the <code>k</code>-th interval
 <code>[t_{K}, t_{K+1} = range_t[2])</code>: the <code>K</code>-th (last) interval</p></dd>
-
-
-<dt id="arg-rng-stream">rng_stream<a class="anchor" aria-label="anchor" href="#arg-rng-stream"></a></dt>
-<dd><p>an <code>rstream</code> object</p></dd>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>
@@ -90,7 +80,7 @@ if no events realize, it will have 0 length</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">draw_sc_step</span><span class="op">(</span>lambda_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, times_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">draw_sc_step</span><span class="op">(</span>lambda_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, time_breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

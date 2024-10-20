@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,12 +85,16 @@
 <p>Consider the time varying intensity function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.2</mn><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>sin</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t) = e^{(0.2t)} (1 + \sin t)</annotation></semantics></math>, which is a sinusoidal intensity function with an exponential amplitude. To draw samples over the interval <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>6</mn><mi>π</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(0, 6\pi]</annotation></semantics></math> execute</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">l</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.2</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span></span>
-<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="va">l</span>, lambda_maj <span class="op">=</span> <span class="fu">l</span><span class="op">(</span><span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>, range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="va">l</span>, </span>
+<span>            line_majorizer_intercept <span class="op">=</span> <span class="fu">l</span><span class="op">(</span><span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>,</span>
+<span>            line_majorizer_slope <span class="op">=</span> <span class="fl">0</span>,  </span>
+<span>            t_min <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>            t_max <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] 1.197587 1.238620 1.497499 1.713629 1.761914 2.256739 2.537528 3.622938</span></span>
 <span><span class="co">#&gt;  [9] 5.822574 6.064265 6.645696 6.651551 6.684603 6.875765 6.891348 7.130680</span></span>
 <span><span class="co">#&gt; [17] 7.446557 7.453139 7.545474 7.557381</span></span></code></pre></div>
-<p>where <code>lambda_maj</code> is a majorizer constant.</p>
+<p>where <code>line_majorizer_intercept</code> and <code>line_majorizer_slope</code> define a majorizer constant.</p>
 <p>When available, the integrated intensity function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mi>d</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">\Lambda(t) = \int_0^t \lambda(s) \ ds</annotation></semantics></math> and its inverse <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math> result in faster simulation times. For this example, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msup><mi>e</mi><mrow><mn>0.2</mn><mi>t</mi></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.2</mn><mo>sin</mo><mi>t</mi><mo>−</mo><mo>cos</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>1</mn></mrow><mn>1.04</mn></mfrac><mo>+</mo><mfrac><mrow><msup><mi>e</mi><mrow><mn>0.2</mn><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><mn>0.2</mn></mfrac></mrow><annotation encoding="application/x-tex">\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}</annotation></semantics></math>; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math> is constructed numerically upfront (or can be calculated numerically by the function, at a computational cost).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span></span>
@@ -99,7 +103,7 @@
 <span><span class="op">}</span></span>
 <span><span class="va">Li</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/approxfun.html" class="external-link">approxfun</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu">L</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span>, <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span>, <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, rule <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span>Lambda <span class="op">=</span> <span class="va">L</span>, Lambda_inv <span class="op">=</span> <span class="va">Li</span>, range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span>Lambda <span class="op">=</span> <span class="va">L</span>, Lambda_inv <span class="op">=</span> <span class="va">Li</span>, t_min <span class="op">=</span> <span class="fl">0</span>, t_max <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] 0.01152846 0.23558627 0.32924742 0.49921843 0.63509297 1.36677413</span></span>
 <span><span class="co">#&gt;  [7] 2.38941548 3.19511655 3.28049866 4.62140995 5.96916564 6.37504015</span></span>
@@ -107,25 +111,9 @@
 <span><span class="co">#&gt; [19] 7.94791744 7.96591106</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="function-naming-conventions">Function naming conventions<a class="anchor" aria-label="anchor" href="#function-naming-conventions"></a>
+<h2 id="vectorized-functions">Vectorized functions<a class="anchor" aria-label="anchor" href="#vectorized-functions"></a>
 </h2>
-<ol style="list-style-type: decimal">
-<li>All functions whose name start with <code>ppp</code> or <code>ztppp</code> sample from constant or piecewise constant intensity functions, as described below:</li>
-</ol>
-<ul>
-<li><p>Functions whose names start with <code>ppp_[sequential|orderstats]</code> sample event times in an interval with constant intensity functions with the sequential and order statistics algorithms.</p></li>
-<li><p>Function <code><a href="reference/ztppp.html">ztppp()</a></code> samples one or more event times in an interval with constant intensity, i.e., from a zero-truncated Poisson process.</p></li>
-<li><p>Functions <code><a href="reference/ppp_n.html">ppp_n()</a></code> and <code><a href="reference/ppp_next_n.html">ppp_next_n()</a></code> sample <code>n</code> events in an interval and the next <code>n</code> event times after a time <code>t0</code>.</p></li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>All functions whose name starts with <code>draw</code> or <code>vdraw</code> sample from NHPPPs.</li>
-</ol>
-<ul>
-<li><p>Functions with names starting with <code>draw_zt</code> sample at least one event in the interval, i.e., from a zero-truncated NHPPP.</p></li>
-<li><p>Functions with names starting with <code>[draw|draw_zt]_intensity[_majorizer]</code> expect an intensity argument. The third part (<code>[_majorizer]</code>) denotes what, if any, majorizer function is used.</p></li>
-<li><p>Functions with names starting with <code>[draw|draw_zt]_cumulative_intensity[_algorithm]</code> expect a cumulative (integrated) intensity argument. The third part (<code>[_algorithm]</code>) denotes the algorithm used, if more than one algorithms are pertinent.</p></li>
-<li><p>Functions with names starting with <code>vdraw</code> are vectorized.</p></li>
-</ul>
+<p>See the vignette “Log-linear times”.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

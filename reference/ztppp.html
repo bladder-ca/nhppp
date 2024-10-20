@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,23 +42,23 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ztppp</span><span class="op">(</span>range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, rate <span class="op">=</span> <span class="fl">1</span>, rng_stream <span class="op">=</span> <span class="cn">NULL</span>, atmost1 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ztppp</span><span class="op">(</span><span class="va">rate</span>, <span class="va">t_min</span>, <span class="va">t_max</span>, atmost1 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, double) min and max of the time interval</p></dd>
-
-
-<dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
+<dl><dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
 <dd><p>(scalar, double) constant instantaneous rate</p></dd>
 
 
-<dt id="arg-rng-stream">rng_stream<a class="anchor" aria-label="anchor" href="#arg-rng-stream"></a></dt>
-<dd><p>an <code>rstream</code> object</p></dd>
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(scalar, double) lower bound of the time interval</p></dd>
+
+
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(scalar, double) upper bound of the time interval</p></dd>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>
@@ -72,7 +72,7 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ztppp</span><span class="op">(</span>range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, rate <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ztppp</span><span class="op">(</span>t_min <span class="op">=</span> <span class="fl">0</span>, t_max <span class="op">=</span> <span class="fl">10</span>, rate <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

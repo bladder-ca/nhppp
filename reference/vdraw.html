@@ -9,7 +9,7 @@ For time-intensive simulations prefer one of the specific functions."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,11 +50,18 @@ For time-intensive simulations prefer one of the specific functions.</p>
 <span>  lambda_args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Lambda_maj_matrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lambda_maj_matrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  range_t <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Lambda_inv <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Lambda_args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Lambda_inv_args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rate_matrix_t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rate_matrix_t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">6</span>,</span>
 <span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  atleast1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  use_cpp <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  atmostB <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -63,24 +70,64 @@ For time-intensive simulations prefer one of the specific functions.</p>
 
 
 <dl><dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>(function) a vectorized intensity function, with one or two arguments.
-The first is time. The optional second (should be named <code>lambda_args</code>) is a named list with additional arguments.</p></dd>
+<dd><p>(function) intensity function, vectorized</p></dd>
 
 
 <dt id="arg-lambda-args">lambda_args<a class="anchor" aria-label="anchor" href="#arg-lambda-args"></a></dt>
-<dd><p>(list) optional list of named arguments for <code>lambda()</code></p></dd>
+<dd><p>(list) optional arguments to pass to <code>lambda</code></p></dd>
 
 
 <dt id="arg-lambda-maj-matrix">Lambda_maj_matrix<a class="anchor" aria-label="anchor" href="#arg-lambda-maj-matrix"></a></dt>
-<dd><p>(matrix) for the majorizeintegrated intensity rates at the end of each interval</p></dd>
+<dd><p>(matrix) integrated intensity rates at the end of each interval</p></dd>
 
 
 <dt id="arg-lambda-maj-matrix">lambda_maj_matrix<a class="anchor" aria-label="anchor" href="#arg-lambda-maj-matrix"></a></dt>
 <dd><p>(matrix) intensity rates, one per interval</p></dd>
 
 
-<dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, or matrix) <code>t_min</code> and <code>t_max</code>, possibly vectorized</p></dd>
+<dt id="arg-lambda">Lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
+<dd><p>(function, double vector) an increasing function
+which is the integrated rate of the NHPPP.
+It should take a vectorized argument t for times and an optional arguments list.</p></dd>
+
+
+<dt id="arg-lambda-inv">Lambda_inv<a class="anchor" aria-label="anchor" href="#arg-lambda-inv"></a></dt>
+<dd><p>(function, double vector) the inverse of <code>Lambda()</code>, also in vectorized form
+It should take a vectorized argument z and an optional arguments list.</p></dd>
+
+
+<dt id="arg-lambda-args">Lambda_args<a class="anchor" aria-label="anchor" href="#arg-lambda-args"></a></dt>
+<dd><p>(list) optional arguments to pass to Lambda.</p></dd>
+
+
+<dt id="arg-lambda-inv-args">Lambda_inv_args<a class="anchor" aria-label="anchor" href="#arg-lambda-inv-args"></a></dt>
+<dd><p>(list) optional arguments to pass to Lambda_inv().</p></dd>
+
+
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to <code>rate_matrix_t_min</code>.</p></dd>
+
+
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to <code>rate_matrix_t_max</code>.</p></dd>
+
+
+<dt id="arg-rate-matrix-t-min">rate_matrix_t_min<a class="anchor" aria-label="anchor" href="#arg-rate-matrix-t-min"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.</p></dd>
+
+
+<dt id="arg-rate-matrix-t-max">rate_matrix_t_max<a class="anchor" aria-label="anchor" href="#arg-rate-matrix-t-max"></a></dt>
+<dd><p>(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.</p></dd>
 
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
@@ -92,11 +139,11 @@ The first is time. The optional second (should be named <code>lambda_args</code>
 
 
 <dt id="arg-atleast-">atleast1<a class="anchor" aria-label="anchor" href="#arg-atleast-"></a></dt>
-<dd><p>boolean, draw at least 1 event time in interval</p></dd>
+<dd><p>boolean, draw at least 1 event time</p></dd>
 
 
-<dt id="arg-use-cpp">use_cpp<a class="anchor" aria-label="anchor" href="#arg-use-cpp"></a></dt>
-<dd><p>boolean, use C++ code</p></dd>
+<dt id="arg-atmostb">atmostB<a class="anchor" aria-label="anchor" href="#arg-atmostb"></a></dt>
+<dd><p>If not NULL, draw at most B (B&gt;0) event times. NULL means ignore.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -104,16 +151,6 @@ The first is time. The optional second (should be named <code>lambda_args</code>
     <p>a vector of event times</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">vdraw</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  lambda <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">lambda_args</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">x</span>,</span></span>
-<span class="r-in"><span>  range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  lambda_maj_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>, atleast1 <span class="op">=</span> <span class="cn">FALSE</span>, use_cpp <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

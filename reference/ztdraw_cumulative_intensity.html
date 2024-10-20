@@ -9,7 +9,7 @@ optionally using an rstream generator"><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,14 +45,7 @@ optionally using an <code>rstream</code> generator</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ztdraw_cumulative_intensity</span><span class="op">(</span></span>
-<span>  <span class="va">Lambda</span>,</span>
-<span>  Lambda_inv <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  range_L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">Lambda</span><span class="op">(</span><span class="va">range_t</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fu">Lambda</span><span class="op">(</span><span class="va">range_t</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  rng_stream <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ztdraw_cumulative_intensity</span><span class="op">(</span><span class="va">Lambda</span>, <span class="va">Lambda_inv</span>, <span class="va">t_min</span>, <span class="va">t_max</span>, atmost1 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,16 +61,12 @@ which is the integrated rate of the NHPPP</p></dd>
 <dd><p>(function, double vector) the inverse of <code>Lambda()</code></p></dd>
 
 
-<dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, double) min and max of the time interval</p></dd>
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(double) the lower bound of the time interval</p></dd>
 
 
-<dt id="arg-range-l">range_L<a class="anchor" aria-label="anchor" href="#arg-range-l"></a></dt>
-<dd><p>(vector, double) min and max of the transformed time interval</p></dd>
-
-
-<dt id="arg-rng-stream">rng_stream<a class="anchor" aria-label="anchor" href="#arg-rng-stream"></a></dt>
-<dd><p>(<code>rstream</code>) an <code>rstream</code> object or <code>NULL</code>.</p></dd>
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(double) the upper bound of the time interval</p></dd>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>
@@ -89,11 +78,6 @@ which is the integrated rate of the NHPPP</p></dd>
     <p>a vector of at least 1 event times</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ztdraw_cumulative_intensity</span><span class="op">(</span>Lambda <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="va">t</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

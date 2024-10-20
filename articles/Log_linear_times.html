@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,10 +176,10 @@ are variables in <code>pop</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setDT.html" class="external-link">setDT</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">K</span>, </span>
+<span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">K</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">K</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>    beta <span class="op">=</span> <span class="fu">truncnorm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/truncnorm/man/dtruncnorm.html" class="external-link">rtruncnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">K</span>, mean <span class="op">=</span> <span class="fl">0.03</span>, sd <span class="op">=</span> <span class="fl">0.003</span>, a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>,  </span>
-<span>    T0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">40</span>, <span class="va">K</span><span class="op">)</span>, </span>
+<span>    beta <span class="op">=</span> <span class="fu">truncnorm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/truncnorm/man/dtruncnorm.html" class="external-link">rtruncnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">K</span>, mean <span class="op">=</span> <span class="fl">0.03</span>, sd <span class="op">=</span> <span class="fl">0.003</span>, a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>,</span>
+<span>    T0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">40</span>, <span class="va">K</span><span class="op">)</span>,</span>
 <span>    T1 <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">K</span>, min <span class="op">=</span> <span class="fl">50</span>, max <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -228,16 +228,16 @@ package that take function arguments need the ability to pass optional
 extraneous arguments.</p>
 <p>Scalar arguments, evaluated at <code>t = 45</code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.07065121</span></span></code></pre></div>
 <p>Scalar arguments, evaluated at <code>t = 45:50</code> (vector) or as
 a column matrix The function returns results in the format of the
 <code>t</code> argument.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span><span class="op">:</span><span class="fl">50</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span><span class="op">:</span><span class="fl">50</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.07065121 0.07280286 0.07502004 0.07730474 0.07965902 0.08208500</span></span>
 <span></span>
-<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">45</span><span class="op">:</span><span class="fl">50</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span> </span>
+<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">45</span><span class="op">:</span><span class="fl">50</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, beta <span class="op">=</span> <span class="fl">0.03</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]</span></span>
 <span><span class="co">#&gt; [1,] 0.07065121</span></span>
 <span><span class="co">#&gt; [2,] 0.07280286</span></span>
@@ -248,14 +248,14 @@ a column matrix The function returns results in the format of the
 <p>Vector arguments, using the first 5 people and evaluating all people
 at <code>t = 45</code></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">45</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.04943966 0.06380303 0.05296605 0.03496243 0.06470944</span></span></code></pre></div>
 <p>Matrix arguments are convenient: the rows are people and the columns
 are the ages (times) – and they can differ across persons. For the first
 5 people, we evaluate a different age for each person. The results are
 returned in a matrix format.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">47.4</span>, <span class="fl">30</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">47.4</span>, <span class="fl">30</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]</span></span>
 <span><span class="co">#&gt; [1,] 0.04943966</span></span>
 <span><span class="co">#&gt; [2,] 0.07494128</span></span>
@@ -267,9 +267,12 @@ person. We arrange a <code>t_mat</code> matrix of ages (times) with
 people in the rows and ages (times) for each person in the columns. The
 results are returned in a matrix format.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">t_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">47.4</span>, <span class="fl">30</span>, </span>
-<span>               <span class="fl">45.1</span>, <span class="fl">50.1</span>, <span class="fl">45.5</span>, <span class="fl">47.8</span>, <span class="fl">38</span>, </span>
-<span>               <span class="fl">48</span>, <span class="fl">52.7</span>, <span class="fl">60.1</span>, <span class="fl">70.1</span>, <span class="fl">99.9</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>; <span class="va">t_mat</span></span>
+<code class="sourceCode R"><span><span class="va">t_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">47.4</span>, <span class="fl">30</span>,</span>
+<span>  <span class="fl">45.1</span>, <span class="fl">50.1</span>, <span class="fl">45.5</span>, <span class="fl">47.8</span>, <span class="fl">38</span>,</span>
+<span>  <span class="fl">48</span>, <span class="fl">52.7</span>, <span class="fl">60.1</span>, <span class="fl">70.1</span>, <span class="fl">99.9</span></span>
+<span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">t_mat</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span><span class="co">#&gt; [1,] 45.0 50.0 45.0</span></span>
 <span><span class="co">#&gt; [2,] 47.4 30.0 45.1</span></span>
@@ -277,7 +280,7 @@ results are returned in a matrix format.</p>
 <span><span class="co">#&gt; [4,] 38.0 48.0 52.7</span></span>
 <span><span class="co">#&gt; [5,] 60.1 70.1 99.9</span></span>
 <span></span>
-<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="va">t_mat</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> </span>
+<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="va">t_mat</span>, alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]       [,2]       [,3]</span></span>
 <span><span class="co">#&gt; [1,] 0.04943966 0.05719509 0.04943966</span></span>
 <span><span class="co">#&gt; [2,] 0.06892608 0.03937330 0.06400868</span></span>
@@ -291,7 +294,7 @@ of the whole population. We can then evaluate the intensity function
 for the whole population passing only the <code>t</code> argument.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">55</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="va">t_mat</span><span class="op">)</span>  <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">l</span><span class="op">(</span>t <span class="op">=</span> <span class="va">t_mat</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]       [,2]       [,3]</span></span>
 <span><span class="co">#&gt; [1,] 0.04943966 0.04943966 0.04943966</span></span>
 <span><span class="co">#&gt; [2,] 0.06380303 0.06380303 0.06380303</span></span>
@@ -308,8 +311,8 @@ for the whole population passing only the <code>t</code> argument.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s</annotation></semantics></math>.
 It does not matter what we choose for the lower limit of integration in
 the definition of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
-– the lower limit cancels out in the mathematics of the sampling
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>.
+The lower limit cancels out in the mathematics of the sampling
 algorithms. Thus we are free to use any lower limit (say 0) for any
 antiderivative of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>
@@ -367,28 +370,32 @@ for each person at a time. This is slower than the other methods, but
 can be practical even for sizeable simulations that will be run once
 (e.g., for statistical simulation analyses) or when you develop
 code.</p>
-<p>It’s arguments <code>alpha</code>, <code>beta</code> have the same
-name as the parameters in our log-linear intensity function
+<p>It’s arguments <code>intercept</code>, <code>slope</code> have the
+same name as the parameters in our log-linear intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.
-The <code>range_t</code> argument asks for the bounds of the interval
+The <code>t_min</code>, <code>t_max</code> arguments ask for the bounds
+of the interval
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>.
 The argument <code>atmost1</code> asks only for the first time. This
-special case function uses a bespoke inversion algorithm.</p>
+special case function uses a bespoke inversion algorithm; it’s as fast
+as we can do without vectorization.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 1 (nonvectorized)"</span><span class="op">)</span></span>
 <span><span class="va">t_nonvec_special_case</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="va">K</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">K</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/draw_sc_loglinear.html">draw_sc_loglinear</a></span><span class="op">(</span></span>
-<span>    alpha <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>, </span>
-<span>    beta <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>, </span>
-<span>    range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">T0</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>, <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span>, </span>
-<span>    atmost1 <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    intercept <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>    slope <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>    t_min <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T0</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>    t_max <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>    atmost1 <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">t_nonvec_special_case</span><span class="op">[</span><span class="va">k</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">t1</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Method 1 (nonvectorized): 1.683 sec elapsed</span></span>
+<span><span class="co">#&gt; Method 1 (nonvectorized): 1.516 sec elapsed</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">t_nonvec_special_case</span> <span class="op">:=</span> <span class="va">t_nonvec_special_case</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -406,8 +413,8 @@ such that:
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 of interest.</p>
-<p>The <code><a href="../reference/vdraw_intensity_step_regular_cpp.html">nhppp::vdraw_intensity_step_regular_cpp</a></code> function
-assumes that you will provide the majorizer function as a matrix
+<p>The <code><a href="../reference/vdraw_intensity.html">nhppp::vdraw_intensity</a></code> function assumes that you
+will provide the majorizer function as a matrix
 (<code>lambda_maj_matrix</code>). To create this matrix, split the
 simulation time (here, from age 40 to age 100) in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
@@ -440,9 +447,16 @@ should be able to find a supremum that works.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>.
 It creates a majorizer matrix over
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">M=5</annotation></semantics></math>
-intervals over the whole simulation horizon. You specify the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>
-intervals for each person via the <code>subinterval</code> option. (The
+intervals. To let the software know which times correspond to each of
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+intervals it suffices to specify a start and stop time for each row of
+the majorizer matrix with the <code>rate_matrix_t_min</code> and
+<code>rate_matrix_t_max</code> options. The sampling intervals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>for
+each simulated person are a subset of the interval for which the
+majorizer matrix is defined, and are specified with the
+<code>t_min</code> and <code>t_max</code> options. (The
 <code>atmostB</code> option can be useful to speed up the sampling and
 minimize memory needs when one is interested in the first event only.
 The smaller the value, the faster the algorithm but you have to check
@@ -452,28 +466,32 @@ have checked it [not shown]. If you do not want to mess with it, do not
 use the option. The function may be already fast enough for your
 needs).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 2 (vectorized, thinning)"</span><span class="op">)</span> </span>
-<span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">5</span> </span>
-<span><span class="va">break_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">40</span>, to <span class="op">=</span> <span class="fl">100</span>, length.out <span class="op">=</span> <span class="va">M</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 2 (vectorized, thinning)"</span><span class="op">)</span></span>
+<span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">break_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">40</span>, to <span class="op">=</span> <span class="fl">100</span>, length.out <span class="op">=</span> <span class="va">M</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">breaks_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">break_points</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lmaj_mat</span> <span class="op">&lt;-</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/get_step_majorizer.html">get_step_majorizer</a></span><span class="op">(</span></span>
-<span>  fun <span class="op">=</span> <span class="va">l</span>, </span>
-<span>  breaks <span class="op">=</span> <span class="va">breaks_mat</span>, </span>
-<span>  is_monotone <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  fun <span class="op">=</span> <span class="va">l</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="va">breaks_mat</span>,</span>
+<span>  is_monotone <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pop</span><span class="op">[</span>,</span>
-<span>    <span class="va">t_thinning</span> <span class="op">:=</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_intensity_step_regular_cpp.html">vdraw_intensity_step_regular_cpp</a></span><span class="op">(</span></span>
-<span>      lambda <span class="op">=</span> <span class="va">l</span>,</span>
-<span>      lambda_maj_matrix <span class="op">=</span> <span class="va">lmaj_mat</span>,</span>
-<span>      range_t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">100</span><span class="op">)</span>,</span>
-<span>      subinterval <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">T0</span>, <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>      atmost1 <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>      atmostB <span class="op">=</span> <span class="fl">5</span></span>
-<span>      <span class="op">)</span></span>
+<span><span class="va">pop</span><span class="op">[</span></span>
+<span>  ,</span>
+<span>  <span class="va">t_thinning</span> <span class="op">:=</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_intensity.html">vdraw_intensity</a></span><span class="op">(</span></span>
+<span>    lambda <span class="op">=</span> <span class="va">l</span>,</span>
+<span>    lambda_maj_matrix <span class="op">=</span> <span class="va">lmaj_mat</span>,</span>
+<span>    rate_matrix_t_min <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>    rate_matrix_t_max <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>    t_min <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T0</span>,</span>
+<span>    t_max <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T1</span>,</span>
+<span>    atmost1 <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    atmostB <span class="op">=</span> <span class="fl">5</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.112 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.113 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
@@ -490,18 +508,20 @@ The <code>nhppp</code> package can sample in this case using the
 <code>range_t</code> is a matrix with information on each person’s
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 3 (inversion)"</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 3 (inversion)"</span><span class="op">)</span></span>
 <span><span class="va">range_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">T0</span>, <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">pop</span><span class="op">[</span>,</span>
-<span>    <span class="va">t_inversion</span> <span class="op">:=</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity</a></span><span class="op">(</span></span>
-<span>      Lambda <span class="op">=</span> <span class="va">L</span>,</span>
-<span>      Lambda_inv <span class="op">=</span> <span class="va">Li</span>, </span>
-<span>      range_t <span class="op">=</span> <span class="va">range_t</span>,</span>
-<span>      atmost1 <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>    <span class="op">)</span></span>
+<span><span class="va">pop</span><span class="op">[</span></span>
+<span>  ,</span>
+<span>  <span class="va">t_inversion</span> <span class="op">:=</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity</a></span><span class="op">(</span></span>
+<span>    Lambda <span class="op">=</span> <span class="va">L</span>,</span>
+<span>    Lambda_inv <span class="op">=</span> <span class="va">Li</span>,</span>
+<span>    t_min <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T0</span>,</span>
+<span>    t_max <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T1</span>,</span>
+<span>    atmost1 <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
-<span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log  <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 3 (inversion): 0.016 sec elapsed</span></span></code></pre></div>
+<span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
+<span><span class="co">#&gt; Method 3 (inversion): 0.017 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
@@ -515,11 +535,11 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (nonvectorized): 1.683 sec elapsed. This is the slowest
+<li><p>Method 1 (nonvectorized): 1.516 sec elapsed. This is the slowest
 approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples!</p></li>
-<li><p>Method 2 (vectorized, thinning): 0.112 sec elapsed. This approach
+<li><p>Method 2 (vectorized, thinning): 0.113 sec elapsed. This approach
 is many times faster that then first approach. It is very flexible – it
 can accommodate very complex time varying intensity functions. You
 almost always know
@@ -527,7 +547,7 @@ almost always know
 and can get its majorizer
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 easily and fast.</p></li>
-<li><p>Method 3 (inversion): 0.016 sec elapsed. This approach is many
+<li><p>Method 3 (inversion): 0.017 sec elapsed. This approach is many
 times faster that the second one, but requires implementations for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 and
@@ -564,6 +584,11 @@ numerical example in this vignette.</p>
 <div class="section level2">
 <h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
 </h2>
+<p>Since the publication of the paper, the syntax and options of the
+<code>nhppp</code> package have evolved. To reproduce the code in the
+paper, you have to install the version of <code>nhppp</code> used in the
+paper. ALternatively, take a look at the vignettes, which are written to
+work with the current package.</p>
 <p>Trikalinos TA, Sereda Y. <em>nhppp: Simulating Nonhomogeneous Poisson
 Point Processes in R</em>. arXiv preprint arXiv:2402.00358. 2024 Feb
 1.</p>

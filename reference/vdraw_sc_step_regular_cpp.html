@@ -9,7 +9,7 @@ where the intervals have the same length (are "regular").'><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,8 +48,10 @@ where the intervals have the same length (are "regular").</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vdraw_sc_step_regular_cpp</span><span class="op">(</span></span>
 <span>  lambda_matrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Lambda_matrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  range_t <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  subinterval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rate_matrix_t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rate_matrix_t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fl">6</span>,</span>
 <span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  atmostB <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -68,12 +70,30 @@ where the intervals have the same length (are "regular").</p>
 <dd><p>(matrix) integrated intensity rates at the end of each interval</p></dd>
 
 
-<dt id="arg-range-t">range_t<a class="anchor" aria-label="anchor" href="#arg-range-t"></a></dt>
-<dd><p>(vector, double) <code>t_min</code> and <code>t_max</code></p></dd>
+<dt id="arg-rate-matrix-t-min">rate_matrix_t_min<a class="anchor" aria-label="anchor" href="#arg-rate-matrix-t-min"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.</p></dd>
 
 
-<dt id="arg-subinterval">subinterval<a class="anchor" aria-label="anchor" href="#arg-subinterval"></a></dt>
-<dd><p>(matrix, double) subinterval of <code>range_t</code> to sample from</p></dd>
+<dt id="arg-rate-matrix-t-max">rate_matrix_t_max<a class="anchor" aria-label="anchor" href="#arg-rate-matrix-t-max"></a></dt>
+<dd><p>(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.</p></dd>
+
+
+<dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to <code>rate_matrix_t_min</code>.</p></dd>
+
+
+<dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
+<dd><p>(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to <code>rate_matrix_t_max</code>.</p></dd>
 
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
@@ -90,13 +110,17 @@ where the intervals have the same length (are "regular").</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a vector of event times t
-if no events realize, it will have 0 length</p>
+    <p>a matrix of event times t, with rows corresponding to the sampled point processes.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="vdraw_sc_step_regular.html">vdraw_sc_step_regular</a></span><span class="op">(</span>Lambda_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">vdraw_sc_step_regular_cpp</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  Lambda_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  rate_matrix_t_min <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  rate_matrix_t_max <span class="op">=</span> <span class="fl">110</span>,</span></span>
+<span class="r-in"><span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
