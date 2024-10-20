@@ -26,3 +26,4 @@ Use \code{ppp2} instead.
 \examples{
 x <- ppp_orderstat(range_t = c(0, 10), rate = 1)
 }
+\keyword{internal}

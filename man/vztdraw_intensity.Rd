@@ -43,3 +43,4 @@ Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process 
 an interval (thinning method) with piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
+\keyword{internal}

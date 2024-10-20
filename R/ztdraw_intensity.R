@@ -14,8 +14,7 @@
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of at least 1 event times
-#' @export
-#'
+#' @keywords internal
 ztdraw_intensity <- function(
     lambda,
     line_majorizer_intercept = NULL,

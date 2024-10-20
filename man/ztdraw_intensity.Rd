@@ -40,3 +40,4 @@ Sample from zero-truncated NHPPP given the intensity function
 This is a wrapper to the package's specific functions, and thus somewhat slower.
 For time-intensive simulations prefer one of the specific functions.
 }
+\keyword{internal}

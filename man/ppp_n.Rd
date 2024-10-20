@@ -23,3 +23,4 @@ Use \code{ppp_exactly_n} instead.
 \examples{
 x <- ppp_n(size = 10, range_t = c(0, 10))
 }
+\keyword{internal}

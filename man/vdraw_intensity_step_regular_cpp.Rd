@@ -69,3 +69,4 @@ x <- vdraw_intensity_step_regular_cpp(
   rate_matrix_t_max = 5
 )
 }
+\keyword{internal}

@@ -36,3 +36,4 @@ a vector of at least 1 event times
 \description{
 Sample zero-truncated NHPPP intensity times using the thinning method
 }
+\keyword{internal}

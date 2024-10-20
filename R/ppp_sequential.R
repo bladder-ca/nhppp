@@ -13,6 +13,7 @@
 #'         if no events realize, it will have 0 length
 #' @export
 #'
+#' @keywords internal
 #' @examples
 #' x <- ppp_sequential(range_t = c(0, 10), rate = 1, tol = 10^-6)
 ppp_sequential <- function(range_t = c(0, 10), rate = 1, tol = 10^-6, rng_stream = NULL, atmost1 = FALSE) {

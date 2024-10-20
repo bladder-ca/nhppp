@@ -38,7 +38,7 @@
 #'   rate_matrix_t_min = 1,
 #'   rate_matrix_t_max = 5
 #' )
-#' @export
+#' @keywords internal
 vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              lambda_args = NULL,
                                              Lambda_maj_matrix = NULL,

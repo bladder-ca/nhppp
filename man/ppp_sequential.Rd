@@ -35,3 +35,4 @@ Use \code{ppp} instead.
 \examples{
 x <- ppp_sequential(range_t = c(0, 10), rate = 1, tol = 10^-6)
 }
+\keyword{internal}
