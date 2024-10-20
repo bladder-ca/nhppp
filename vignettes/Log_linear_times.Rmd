@@ -237,7 +237,7 @@ One of the items needed for the thinning algorithm is a piecewise constant
 majorizer function $\lambda_*$ such that: $\lambda_*(t) >= \lambda(t)$ for 
 all $t$ of interest.
  
-The `nhppp::vdraw_intensity_step_regular_cpp` function assumes that 
+The `nhppp::vdraw_intensity` function assumes that 
 you will provide the majorizer function as a matrix (`lambda_maj_matrix`). 
 To create this matrix, split the simulation time (here, from age 40 to age 100) 
 in $M$ equal-length intervals. 
@@ -284,7 +284,7 @@ lmaj_mat <- nhppp::get_step_majorizer(
 
 pop[
   ,
-  t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
+  t_thinning := nhppp::vdraw_intensity(
     lambda = l,
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 40,
