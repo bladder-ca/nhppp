@@ -2,34 +2,49 @@
 % Please edit documentation in R/vdraw_intensity_step_regular_cpp.R
 \name{vdraw_intensity_step_regular_cpp}
 \alias{vdraw_intensity_step_regular_cpp}
-\title{Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers (C++)}
+\title{Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) given
+the intensity function with piecewise constant_majorizers (C++)}
 \usage{
 vdraw_intensity_step_regular_cpp(
   lambda = NULL,
   lambda_args = NULL,
   Lambda_maj_matrix = NULL,
   lambda_maj_matrix = NULL,
-  range_t = NULL,
-  subinterval = NULL,
+  rate_matrix_t_min = NULL,
+  rate_matrix_t_max = NULL,
+  t_min = NULL,
+  t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
   atmostB = NULL
 )
 }
 \arguments{
-\item{lambda}{(function) a vectorized intensity function, with one or two arguments.
-The first is time. The optional second is a named list with additional arguments.}
+\item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional list of named arguments for \code{lambda()}}
+\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
 
-\item{Lambda_maj_matrix}{(matrix) for the majorizeintegrated intensity rates at the end of each interval}
+\item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
 \item{lambda_maj_matrix}{(matrix) intensity rates, one per interval}
 
-\item{range_t}{(vector, or matrix) \code{t_min} and \code{t_max}, possibly vectorized}
+\item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
 
-\item{subinterval}{(matrix, double) subinterval of \code{range_t} to sample from}
+\item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{t_min}{(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_min}.}
+
+\item{t_max}{(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
@@ -42,14 +57,15 @@ a matrix of event times (columns) per draw (rows)
 NAs are structural empty spots
 }
 \description{
-Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers.
+Vectorized sampling from a non homogeneous Poisson Point Process (NHPPP) using the intensity
+function and piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
 \examples{
-Z <- vdraw_intensity_step_regular_cpp(
-  lambda = function(x, lambda_args = NULL) 0.1 * x,
-  range_t = c(1, 10),
-  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
+x <- vdraw_intensity_step_regular_cpp(
+  lambda = function(x, ...) 0.1 * x,
+  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
+  rate_matrix_t_min = 1,
+  rate_matrix_t_max = 5
 )
 }

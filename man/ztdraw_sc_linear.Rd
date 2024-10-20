@@ -5,22 +5,16 @@
 \title{Simulate \code{size} samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
 (t_min, t_max) with linear intensity function}
 \usage{
-ztdraw_sc_linear(
-  alpha = 1,
-  beta = 0,
-  range_t = c(0, 10),
-  rng_stream = NULL,
-  atmost1 = FALSE
-)
+ztdraw_sc_linear(intercept, slope, t_min, t_max, atmost1 = FALSE)
 }
 \arguments{
-\item{alpha}{(double) the intercept}
+\item{intercept}{(double) the intercept}
 
-\item{beta}{(double) the slope}
+\item{slope}{(double) the slope}
 
-\item{range_t}{(vector, double) min and max of the time interval}
+\item{t_min}{(double) the lower bound of the time interval}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object}
+\item{t_max}{(double) the upper bound of the time interval}
 
 \item{atmost1}{(boolean) draw 1 event time}
 }
@@ -33,6 +27,6 @@ using the inversion method, optionally using an \code{rstream}
 generator
 }
 \examples{
-x <- ztdraw_sc_linear(alpha = 0, beta = 0.2)
+x <- ztdraw_sc_linear(intercept = 0, slope = 0.2, t_min = 0, t_max = 10)
 
 }

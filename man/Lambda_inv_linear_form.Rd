@@ -2,20 +2,20 @@
 % Please edit documentation in R/utils-linear.R
 \name{Lambda_inv_linear_form}
 \alias{Lambda_inv_linear_form}
-\title{Inverse of the definite integral of \code{l = alpha + beta*t} at time \code{t}}
+\title{Inverse of the definite integral of \code{l = intercept + slope*t} at time \code{t}}
 \usage{
-Lambda_inv_linear_form(z, alpha, beta, t0)
+Lambda_inv_linear_form(z, intercept, slope, t0)
 }
 \arguments{
 \item{z}{(double) the value of integrated rate for which you want to find the time}
 
-\item{alpha}{(double) the intercept}
+\item{intercept}{(double) the intercept}
 
-\item{beta}{(double) the slope}
+\item{slope}{(double) the slope}
 
 \item{t0}{(double) the starting time}
 }
 \description{
-Inverse of the definite integral of \code{l = alpha + beta*t} only for \verb{l+}.
+Inverse of the definite integral of \code{l = intercept + slope*t} only for \verb{l+}.
 }
 \keyword{internal}

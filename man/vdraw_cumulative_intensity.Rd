@@ -3,40 +3,47 @@
 \name{vdraw_cumulative_intensity}
 \alias{vdraw_cumulative_intensity}
 \title{Vectorized simulation from a non homogeneous Poisson Point Process (NHPPP) from
-(t_min, t_max) (inversion method)}
+(t_min, t_max) given the cumulative intensity function and its inverse}
 \usage{
 vdraw_cumulative_intensity(
   Lambda,
   Lambda_inv,
+  t_min,
+  t_max,
   Lambda_args = NULL,
   Lambda_inv_args = NULL,
-  range_t = NULL,
   tol = 10^-6,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  atleast1 = FALSE
 )
 }
 \arguments{
 \item{Lambda}{(function, double vector) an increasing function
-which is the integrated rate of the NHPPP. It shoudl take a vectorized argument t for times and an optional arguments list}
+which is the integrated rate of the NHPPP.
+It should take a vectorized argument t for times and an optional arguments list.}
 
-\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form}
+\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form
+It should take a vectorized argument z and an optional arguments list.}
 
-\item{Lambda_args}{(list) optional arguments to pass to Lambda}
+\item{t_min}{(scalar | vector | column matrix) the lower bound of the interval for each sampled point process
+The length of this argument is the number of point processes that should be drawn.}
 
-\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv()}
+\item{t_max}{(scalar | vector | column matrix) the upper bound of the interval for each sampled point process
+The length of this argument is the number of point processes that should be drawn.}
 
-\item{range_t}{(vector/matrix double) min and max of the time interval. If a vecor of 2 elements, we assume that 1 series of points is drawn.
-If a matrix, its rows are the number of point processes that should be drawn.}
+\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
 
-\item{tol}{the tolerange for the calulations}
+\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{tol}{the tolerange for the calulations.}
+
+\item{atmost1}{boolean, draw at most 1 event time per sampled point process.}
+
+\item{atleast1}{boolean, draw at least 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-a vector of length 0
+a matrix of event times with one row per sampled point process.
 }
 \description{
-Sample NHPPP times using the inversion method,
-optionally using an \code{rstream} generator object
+Sample NHPPP times using the cumulative intensity function and its inverse.
 }

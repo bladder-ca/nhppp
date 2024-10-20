@@ -31,10 +31,10 @@ test_that("rng_stream_rztpois() works ", {
 
 
 test_that("rztpois() works", {
-  expect_no_error(rztpois(size = 10, lambda = 1))
+  expect_no_error(rztpois(n = 10, lambda = 1))
   # vectorized for lambda
-  expect_no_error(rztpois(size = 10, lambda = rep(1, 10)))
-  expect_no_error(rztpois(size = 10, lambda = 1:10))
+  expect_no_error(rztpois(n = 10, lambda = rep(1, 10)))
+  expect_no_error(rztpois(n = 10, lambda = 1:10))
 
   expect_equal(sum(rztpois(4, c(rep(.0001, 3), 10000)) < 2), 3)
 })

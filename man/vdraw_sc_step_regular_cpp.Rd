@@ -8,8 +8,10 @@ with same interval lengths (C++)}
 vdraw_sc_step_regular_cpp(
   lambda_matrix = NULL,
   Lambda_matrix = NULL,
-  range_t = NULL,
-  subinterval = NULL,
+  rate_matrix_t_min = NULL,
+  rate_matrix_t_max = NULL,
+  t_min = NULL,
+  t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
   atmostB = NULL
@@ -20,9 +22,23 @@ vdraw_sc_step_regular_cpp(
 
 \item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
-\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
+\item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
 
-\item{subinterval}{(matrix, double) subinterval of \code{range_t} to sample from}
+\item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{t_min}{(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_min}.}
+
+\item{t_max}{(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
@@ -31,13 +47,18 @@ vdraw_sc_step_regular_cpp(
 \item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
 }
 \value{
-a vector of event times t
-if no events realize, it will have 0 length
+a matrix of event times t, with rows corresponding to the sampled point processes.
 }
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 where the intervals have the same length (are "regular").
 }
 \examples{
-x <- vdraw_sc_step_regular(Lambda_matrix = matrix(1:5, nrow = 1))
+x <- vdraw_sc_step_regular_cpp(
+  Lambda_matrix = matrix(1:5, nrow = 1),
+  rate_matrix_t_min = 100,
+  rate_matrix_t_max = 110,
+  atmost1 = FALSE
+)
 }
+\keyword{internal}

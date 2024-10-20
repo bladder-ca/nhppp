@@ -20,7 +20,8 @@ a vector of event times t
 if no events realize, it will have 0 length
 }
 \description{
-Simulate a homogeneous Poisson Point Process over (t_min, t_max] (order statistics method)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{ppp2} instead.
 }
 \examples{
 x <- ppp_orderstat(range_t = c(0, 10), rate = 1)

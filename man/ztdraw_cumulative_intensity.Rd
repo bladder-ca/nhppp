@@ -5,14 +5,7 @@
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
 (t_min, t_max) (order statistics method)}
 \usage{
-ztdraw_cumulative_intensity(
-  Lambda,
-  Lambda_inv = NULL,
-  range_t = c(0, 10),
-  range_L = c(Lambda(range_t[1]), Lambda(range_t[2])),
-  rng_stream = NULL,
-  atmost1 = FALSE
-)
+ztdraw_cumulative_intensity(Lambda, Lambda_inv, t_min, t_max, atmost1 = FALSE)
 }
 \arguments{
 \item{Lambda}{(function, double vector) a continuous increasing R to R map
@@ -20,11 +13,9 @@ which is the integrated rate of the NHPPP}
 
 \item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}}
 
-\item{range_t}{(vector, double) min and max of the time interval}
+\item{t_min}{(double) the lower bound of the time interval}
 
-\item{range_L}{(vector, double) min and max of the transformed time interval}
-
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}.}
+\item{t_max}{(double) the upper bound of the time interval}
 
 \item{atmost1}{(boolean) draw at most 1 event time}
 }
@@ -34,7 +25,4 @@ a vector of at least 1 event times
 \description{
 Sample zero-truncated NHPPP times using the order statistics method,
 optionally using an \code{rstream} generator
-}
-\examples{
-x <- ztdraw_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
 }

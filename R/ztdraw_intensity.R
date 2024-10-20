@@ -1,64 +1,49 @@
-#' Simulate `size` samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
-#'    (t0, t_max) (thinning method)
+#' Generic function for simulating from zero-truncated NHPPPs given the intensity function.
 #'
-#' @description Sample zero-truncated NHPPP intensity times using the thinning method, optionally using
-#' an `rstream` generator
+#' @description Sample from zero-truncated NHPPP given the intensity function
+#' This is a wrapper to the package's specific functions, and thus somewhat slower.
+#' For time-intensive simulations prefer one of the specific functions.
 #'
-#' @param lambda (function) the instantaneous rate of the NHPPP.
-#' A continuous function of time.
-#' @param lambda_maj (double, vector) the intercept and optional slope of the majorizing
-#' linear (if `exp_maj = FALSE`) or log-linear (if `exp_maj = TRUE`) function in `range_t`.
-#' @param exp_maj (boolean) if `TRUE` the majorizer is `exp(alpha + beta * t)`
-#' @param range_t (vector, double) min and max of the time interval.
-#' @param rng_stream (`rstream`) an `rstream` object or `NULL`
-#' @param atmost1 (boolean) draw at most 1 event time
+#' @param lambda (function) the instantaneous rate
+#' @param line_majorizer_intercept The intercept `alpha` of the [log]linear majorizer function: `alpha + beta * t` or `exp(alpha + beta * t)`
+#' @param line_majorizer_slope The slope `beta` of the [log]linear majorizer function: `alpha + beta * t` or `exp(alpha + beta * t)`
+#' @param line_majorizer_is_loglinear (boolean) if `TRUE` the majorizer is loglinear `exp(alpha + beta * t)`; if `FALSE` it is a linear function
+#' @param step_majorizer_vector (vector, double) `K` constant majorizing rates, one per interval; all intervals are of equal length (regular)
+#' @param t_min (double) the lower bound of the interval
+#' @param t_max (double) the upper bound of the interval
+#' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of at least 1 event times
 #' @export
 #'
-#' @examples
-#' x <- ztdraw_intensity(lambda = function(t) 1 + sin(t))
-ztdraw_intensity <- function(lambda,
-                             lambda_maj = NULL,
-                             exp_maj = FALSE,
-                             range_t = c(0, 10),
-                             rng_stream = NULL,
-                             atmost1 = FALSE) {
-  if (is.null(lambda_maj)) {
-    alpha <- stats::optimize(
-      f = function(x) lambda(x),
-      interval = range_t,
-      maximum = TRUE
-    )$objective * 1.2
-    beta <- 0
-  } else if (length(lambda_maj) == 1) {
-    alpha <- lambda_maj[1]
-    beta <- 0
-  } else if (length(lambda_maj) == 2) {
-    alpha <- lambda_maj[1]
-    beta <- lambda_maj[2]
+ztdraw_intensity <- function(
+    lambda,
+    line_majorizer_intercept = NULL,
+    line_majorizer_slope = NULL,
+    line_majorizer_is_loglinear = FALSE,
+    step_majorizer_vector = NULL,
+    t_min = NULL,
+    t_max = NULL,
+    atmost1 = FALSE) {
+  if (!is.null(step_majorizer_vector)) {
+    return(
+      ztdraw_intensity_step(
+        lambda = lambda,
+        majorizer_vector = step_majorizer_vector,
+        time_breaks = seq.int(from = t_min, to = t_max, length.out = length(step_majorizer_vector) + 1),
+        atmost1 = atmost1
+      )
+    )
   }
-
-  if (isTRUE(exp_maj)) {
-    ztnhppp_t <- ztdraw_sc_loglinear
-    link <- exp
-  } else {
-    ztnhppp_t <- ztdraw_sc_linear
-    link <- identity
-  }
-
-  while (TRUE) {
-    candidate_times <- ztnhppp_t(alpha = alpha, beta = beta, range_t = range_t, rng_stream = rng_stream, atmost1 = FALSE)
-    u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1, rng_stream = rng_stream)
-    acceptance_prob <- lambda(candidate_times) / link(alpha + beta * candidate_times)
-    if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
-    candidate_times <- candidate_times[u < acceptance_prob]
-    if (length(candidate_times) > 0) {
-      if (atmost1) {
-        return(candidate_times[1])
-      } else {
-        return(candidate_times)
-      }
-    }
-  }
+  return(
+    ztdraw_intensity_line(
+      lambda = lambda,
+      majorizer_intercept = line_majorizer_intercept,
+      majorizer_slope = line_majorizer_slope,
+      majorizer_is_loglinear = line_majorizer_is_loglinear,
+      t_min = t_min,
+      t_max = t_max,
+      atmost1 = atmost1
+    )
+  )
 }

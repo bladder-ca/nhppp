@@ -3,8 +3,8 @@
 #'
 #' @param Lambda_vector (scalar, double) `K` integrated intensity rates at the end of each interval
 #' @param lambda_vector (scalar, double) `K` constant intensity rates, one per interval
-#' @param range_t (vector, double) `t_min` and `t_max`
-#' @param rng_stream an `rstream` object
+#' @param t_min (scalar, double) lower bound of the time interval
+#' @param t_max (scalar, double) upper bound of the time interval
 #' @param atmost1 boolean, draw at most 1 event time
 #' @param atleast1 boolean, draw at least 1 event time
 #'
@@ -13,34 +13,34 @@
 #' @export
 #'
 #' @examples
-#' x <- draw_sc_step_regular(Lambda_vector = 1:5, range_t = c(0, 5))
+#' x <- draw_sc_step_regular(Lambda_vector = 1:5, t_min = 0, t_max = 5)
 #' @export
 draw_sc_step_regular <- function(Lambda_vector = NULL,
                                  lambda_vector = NULL,
-                                 range_t = c(0, 10),
-                                 rng_stream = NULL,
+                                 t_min = NULL,
+                                 t_max = NULL,
                                  atmost1 = FALSE,
                                  atleast1 = FALSE) {
-  # browser()
+  stopifnot(!is.null(t_min) && !is.null(t_max))
   if (is.null(Lambda_vector) && !is.null(lambda_vector)) {
     Lambda_vector <- cumsum(lambda_vector)
   }
   n_intervals <- length(Lambda_vector)
-  interval_length <- (range_t[2] - range_t[1]) / n_intervals
+  interval_length <- (t_max - t_min) / n_intervals
   Lambda_vector <- c(0, Lambda_vector)
 
   if (atleast1 == FALSE) {
-    ppp_t_fun <- ppp_orderstat
+    ppp_t_fun <- ppp2
   } else {
     ppp_t_fun <- ztppp
   }
 
   if (n_intervals == 1) {
-    tau <- ppp_t_fun(range_t = range_t, rate = (Lambda_vector[2] - Lambda_vector[1]) / interval_length, rng_stream = rng_stream, atmost1 = atmost1)
+    tau <- ppp_t_fun(rate = (Lambda_vector[2] - Lambda_vector[1]) / interval_length, t_min = t_min, t_max = t_max, atmost1 = atmost1)
     return(tau[!is.na(tau)])
   }
 
-  tau <- ppp_t_fun(rate = 1, range_t = c(0, Lambda_vector[n_intervals + 1]), rng_stream = rng_stream, atmost1 = atmost1)
+  tau <- ppp_t_fun(rate = 1, t_min = 0, t_max = Lambda_vector[n_intervals + 1], atmost1 = atmost1)
 
   n_events <- length(tau)
   if (n_events == 0 || any(is.na(tau))) {
@@ -56,7 +56,7 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
 
 
 
-  t_ <- range_t[1] +
+  t_ <- t_min +
     interval_length * (
       (Lambda_indices_low[tau_in_interval] - 1) +
         (tau - Lambda_vector[Lambda_indices_low[tau_in_interval]]) /

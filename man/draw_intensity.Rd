@@ -2,41 +2,41 @@
 % Please edit documentation in R/draw_intensity.R
 \name{draw_intensity}
 \alias{draw_intensity}
-\title{Simulate from a non homogeneous Poisson Point Process (NHPPP) from
-(t0, t_max) (thinning method)}
+\title{Generic function for simulating from NHPPPs given the intensity function.}
 \usage{
 draw_intensity(
   lambda,
-  lambda_maj = NULL,
-  exp_maj = FALSE,
-  range_t = c(0, 10),
-  rng_stream = NULL,
+  line_majorizer_intercept = NULL,
+  line_majorizer_slope = NULL,
+  line_majorizer_is_loglinear = FALSE,
+  step_majorizer_vector = NULL,
+  t_min = NULL,
+  t_max = NULL,
   atmost1 = FALSE
 )
 }
 \arguments{
-\item{lambda}{(function) the instantaneous rate of the NHPPP.
-A continuous function of time.}
+\item{lambda}{(function) the instantaneous rate}
 
-\item{lambda_maj}{(double, vector) the intercept and optional slope of the majorizing
-linear (if \code{exp_maj = FALSE}) or log-linear (if \code{exp_maj = TRUE}) function in \code{range_t}.}
+\item{line_majorizer_intercept}{The intercept \code{alpha} of the \link{log}linear majorizer function: \code{alpha + beta * t} or \code{exp(alpha + beta * t)}}
 
-\item{exp_maj}{(boolean) if \code{TRUE} the majorizer is \code{exp(alpha + beta * t)}}
+\item{line_majorizer_slope}{The slope \code{beta} of the \link{log}linear majorizer function: \code{alpha + beta * t} or \code{exp(alpha + beta * t)}}
 
-\item{range_t}{(vector, double) min and max of the time interval.}
+\item{line_majorizer_is_loglinear}{(boolean) if \code{TRUE} the majorizer is loglinear \code{exp(alpha + beta * t)}; if \code{FALSE} it is a linear function}
 
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
+\item{step_majorizer_vector}{(vector, double) \code{K} constant majorizing rates, one per interval; all intervals are of equal length (regular)}
+
+\item{t_min}{(double) the lower bound of the interval}
+
+\item{t_max}{(double) the upper bound of the interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
 \value{
-a vector of event times (t_); if no events realize,
-a vector of length 0
+a vector of event times
 }
 \description{
-Sample NHPPP times using the thinning method, optionally using
-an \code{rstream} generator
-}
-\examples{
-x <- draw_intensity(lambda = function(t) 1 + sin(t))
+Sample from NHPPPs given the intensity function
+This is a wrapper to the package's specific functions, and thus somewhat slower.
+For time-intensive simulations prefer one of the specific functions.
 }

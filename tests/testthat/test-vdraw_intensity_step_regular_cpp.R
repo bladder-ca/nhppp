@@ -12,7 +12,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -22,7 +23,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -32,7 +34,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = TRUE
   ))
@@ -42,7 +45,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = TRUE
   ))
@@ -56,7 +60,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj[1, , drop = FALSE],
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -67,7 +72,8 @@ test_that("vdraw_intensity_step_regular_cpp() works", {
     lambda = lfun,
     lambda_args = l_args,
     Lambda_maj_matrix = Lmaj[1, , drop = FALSE],
-    range_t = cbind(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -86,7 +92,8 @@ test_that("vdraw_intensity_step_regular_cpp() does not break with matrices whose
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     Lambda_maj_matrix = Lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -94,7 +101,8 @@ test_that("vdraw_intensity_step_regular_cpp() does not break with matrices whose
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     lambda_maj_matrix = lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -111,8 +119,10 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     Lambda_maj_matrix = Lmaj,
-    range_t = c(1, 5),
-    subinterval = c(2.3, 4.8),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
+    t_min = 2.3,
+    t_max = 4.8,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -122,8 +132,10 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     lambda_maj_matrix = lmaj,
-    range_t = c(1, 5),
-    subinterval = c(2.3, 4.8),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
+    t_min = 2.3,
+    t_max = 4.8,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -136,8 +148,10 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     lambda_maj_matrix = lmaj[1, , drop = FALSE],
-    range_t = c(1, 5),
-    subinterval = c(2.3, 4.8),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
+    t_min = 2.3,
+    t_max = 4.8,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -147,8 +161,10 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
   expect_no_error(Z <- vdraw_intensity_step_regular_cpp(
     lambda = lfun,
     lambda_maj_matrix = lmaj[1, , drop = FALSE],
-    range_t = cbind(1, 5),
-    subinterval = cbind(2.3, 4.8),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
+    t_min = 2.3,
+    t_max = 4.8,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -166,7 +182,8 @@ test_that("vdraw_intensity_step_regular_cpp() works with different majorizers", 
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -176,7 +193,8 @@ test_that("vdraw_intensity_step_regular_cpp() works with different majorizers", 
     lambda = lfun,
     lambda_args = l_args,
     lambda_maj_matrix = lmaj + 10,
-    range_t = c(1, 5),
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 5,
     tol = 10^-6,
     atmost1 = FALSE
   ))
@@ -206,7 +224,8 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
       lambda = lfun,
       lambda_args = l_args,
       lambda_maj_matrix = lmaj0,
-      range_t = c(1, 5),
+      rate_matrix_t_min = 1,
+      rate_matrix_t_max = 5,
       tol = 10^-6,
       atmost1 = FALSE
     ))
@@ -214,7 +233,5 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
       expect_true(identical(Z0[[1]], Z0[[i]]))
     }
   }
-
   check_ppp_sample_validity(Z0[[1]], t_min = 1, t_max = 5)
-  check_ppp_sample_validity(Z0[[2]], t_min = 1, t_max = 5)
 })

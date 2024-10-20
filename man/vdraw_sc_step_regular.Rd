@@ -3,32 +3,51 @@
 \name{vdraw_sc_step_regular}
 \alias{vdraw_sc_step_regular}
 \title{Vectorized sampling from NHPPPs with piecewise constant intensities
-with same interval lengths (R)}
+with same interval lengths}
 \usage{
 vdraw_sc_step_regular(
-  Lambda_matrix = NULL,
   lambda_matrix = NULL,
-  range_t = c(0, 10),
+  Lambda_matrix = NULL,
+  rate_matrix_t_min = NULL,
+  rate_matrix_t_max = NULL,
+  t_min = NULL,
+  t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atleast1 = FALSE,
-  use_cpp = TRUE
+  atmostB = NULL,
+  atleast1 = FALSE
 )
 }
 \arguments{
-\item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval}
-
 \item{lambda_matrix}{(matrix) intensity rates, one per interval}
 
-\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
+\item{Lambda_matrix}{(matrix) integrated intensity rates at the end of each interval}
+
+\item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{t_min}{(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_min}.}
+
+\item{t_max}{(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
-\item{atleast1}{boolean, draw at least 1 event time (zero-truncated NHPPP)}
+\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
 
-\item{use_cpp}{(boolean, TRUE) use the C++ implementation of the function}
+\item{atleast1}{boolean, draw at least 1 event time}
 }
 \value{
 a vector of event times t
@@ -39,5 +58,10 @@ Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_ma
 where the intervals have the same length (are "regular").
 }
 \examples{
-x <- vdraw_sc_step_regular(Lambda_matrix = matrix(1:5, nrow = 1))
+x <- vdraw_sc_step_regular(
+  Lambda_matrix = matrix(1:5, nrow = 1),
+  rate_matrix_t_min = 100,
+  rate_matrix_t_max = 110,
+  atmost1 = FALSE
+)
 }

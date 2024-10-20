@@ -17,7 +17,8 @@ ppp_n(size, range_t = c(0, 10), rng_stream = NULL)
 a vector of event times of size \code{size}
 }
 \description{
-Simulate specific number of points from a homogeneous Poisson Point Process over (t_min, t_max]
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{ppp_exactly_n} instead.
 }
 \examples{
 x <- ppp_n(size = 10, range_t = c(0, 10))

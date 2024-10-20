@@ -1,33 +1,38 @@
 #' Vectorized simulation from a non homogeneous Poisson Point Process (NHPPP) from
-#'    (t_min, t_max) (inversion method)
+#'    (t_min, t_max) given the cumulative intensity function and its inverse
 #'
-#' @description  Sample NHPPP times using the inversion method,
-#' optionally using an `rstream` generator object
+#' @description  Sample NHPPP times using the cumulative intensity function and its inverse.
 #' @param Lambda (function, double vector) an increasing function
-#'               which is the integrated rate of the NHPPP. It shoudl take a vectorized argument t for times and an optional arguments list
-#' @param Lambda_args (list) optional arguments to pass to Lambda
+#'        which is the integrated rate of the NHPPP.
+#'        It should take a vectorized argument t for times and an optional arguments list.
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
-#' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv()
-#' @param range_t (vector/matrix double) min and max of the time interval. If a vecor of 2 elements, we assume that 1 series of points is drawn.
-#'        If a matrix, its rows are the number of point processes that should be drawn.
-#' @param tol the tolerange for the calulations
-#' @param atmost1 boolean, draw at most 1 event time
+#'        It should take a vectorized argument z and an optional arguments list.
+#' @param t_min (scalar | vector | column matrix) the lower bound of the interval for each sampled point process
+#'        The length of this argument is the number of point processes that should be drawn.
+#' @param t_max (scalar | vector | column matrix) the upper bound of the interval for each sampled point process
+#'        The length of this argument is the number of point processes that should be drawn.
+#' @param Lambda_args (list) optional arguments to pass to Lambda.
+#' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv().
+#' @param tol the tolerange for the calulations.
+#' @param atmost1 boolean, draw at most 1 event time per sampled point process.
+#' @param atleast1 boolean, draw at least 1 event time
 #'
-#' @return a vector of event times (t_); if no events realize,
-#'         a vector of length 0
+#' @return a matrix of event times with one row per sampled point process.
 #' @export
 #'
 vdraw_cumulative_intensity <- function(Lambda,
                                        Lambda_inv,
+                                       t_min,
+                                       t_max,
                                        Lambda_args = NULL,
                                        Lambda_inv_args = NULL,
-                                       range_t = NULL,
                                        tol = 10^-6,
-                                       atmost1 = FALSE) {
-  # browser()
-  if (!is.matrix(range_t)) {
-    range_t <- matrix(range_t, ncol = 2)
+                                       atmost1 = FALSE,
+                                       atleast1 = FALSE) {
+  if (atleast1 == TRUE) {
+    stop("Option `atleast1 = TRUE` has not been implemented yet for vectorized functions.")
   }
+  range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
   range_L <- Lambda(range_t, Lambda_args = Lambda_args)
 
@@ -48,6 +53,5 @@ vdraw_cumulative_intensity <- function(Lambda,
     }
     warped_t[!in_range_L, col] <- NA
   }
-
   return(Lambda_inv(warped_t, Lambda_inv_args = Lambda_inv_args))
 }

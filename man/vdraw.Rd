@@ -10,32 +10,65 @@ vdraw(
   lambda_args = NULL,
   Lambda_maj_matrix = NULL,
   lambda_maj_matrix = NULL,
-  range_t = NULL,
+  Lambda = NULL,
+  Lambda_inv = NULL,
+  Lambda_args = NULL,
+  Lambda_inv_args = NULL,
+  t_min = NULL,
+  t_max = NULL,
+  rate_matrix_t_min = NULL,
+  rate_matrix_t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
   atleast1 = FALSE,
-  use_cpp = FALSE
+  atmostB = NULL
 )
 }
 \arguments{
-\item{lambda}{(function) a vectorized intensity function, with one or two arguments.
-The first is time. The optional second (should be named \code{lambda_args}) is a named list with additional arguments.}
+\item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional list of named arguments for \code{lambda()}}
+\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
 
-\item{Lambda_maj_matrix}{(matrix) for the majorizeintegrated intensity rates at the end of each interval}
+\item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
 \item{lambda_maj_matrix}{(matrix) intensity rates, one per interval}
 
-\item{range_t}{(vector, or matrix) \code{t_min} and \code{t_max}, possibly vectorized}
+\item{Lambda}{(function, double vector) an increasing function
+which is the integrated rate of the NHPPP.
+It should take a vectorized argument t for times and an optional arguments list.}
+
+\item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form
+It should take a vectorized argument z and an optional arguments list.}
+
+\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
+
+\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
+
+\item{t_min}{(scalar | vector | column matrix) is the lower bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_min}.}
+
+\item{t_max}{(scalar | vector | column matrix) is the upper bound
+of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
+times are sampled from the subinterval.
+If omitted, it is equivalent to \code{rate_matrix_t_max}.}
+
+\item{rate_matrix_t_min}{(scalar | vector | column matrix) is the lower bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
+
+\item{rate_matrix_t_max}{(scalar | vector | column matrix) the upper bound
+of the time interval for each row of (Lambda|lambda)_maj_matrix.
+The length of this argument is the number of point processes that should be drawn.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
-\item{atleast1}{boolean, draw at least 1 event time in interval}
+\item{atleast1}{boolean, draw at least 1 event time}
 
-\item{use_cpp}{boolean, use C++ code}
+\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
 }
 \value{
 a vector of event times
@@ -43,12 +76,4 @@ a vector of event times
 \description{
 This is a wrapper to the package's specific functions, and thus slightly slower.
 For time-intensive simulations prefer one of the specific functions.
-}
-\examples{
-Z <- vdraw(
-  lambda = function(x, lambda_args = NULL) 0.1 * x,
-  range_t = c(1, 10),
-  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
-  atmost1 = FALSE, atleast1 = FALSE, use_cpp = TRUE
-)
 }
