@@ -43,10 +43,3 @@ Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process 
 an interval (thinning method) with piecewise constant_majorizers.
 The majorizers are step functions over equal-length time intevals.
 }
-\examples{
-Z <- vztdraw_intensity(
-  lambda = function(x, lambda_args = NULL) 0.1 * x,
-  range_t = c(1, 10),
-  lambda_maj_matrix = matrix(rep(1, 5), nrow = 1)
-)
-}

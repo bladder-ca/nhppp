@@ -27,6 +27,3 @@ a vector of event times (t_) with at least one element
 \description{
 Sample zero-truncated NHPPP times using the thinning method
 }
-\examples{
-x <- ztdraw_intensity_step(lambda = function(t) exp(.02 * t))
-}

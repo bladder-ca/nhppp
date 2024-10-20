@@ -14,9 +14,6 @@
 #'
 #' @return a vector of event times (t_) with at least one element
 #' @export
-#'
-#' @examples
-#' x <- ztdraw_intensity_step(lambda = function(t) exp(.02 * t))
 ztdraw_intensity_step <- function(lambda,
                                   majorizer_vector,
                                   time_breaks,

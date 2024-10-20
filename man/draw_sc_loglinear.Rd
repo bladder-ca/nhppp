@@ -17,10 +17,6 @@ draw_sc_loglinear(intercept, slope, t_min, t_max, atmost1 = FALSE)
 \item{t_max}{(double) upper bound of the time interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
-
-\item{range_t}{(vector, double) min and max of the time interval}
-
-\item{rng_stream}{(\code{rstream}) an \code{rstream} object.}
 }
 \value{
 a vector of event times (t_); if no events realize,

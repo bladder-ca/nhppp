@@ -14,9 +14,6 @@
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
 #' @export
-#'
-#' @examples
-#' x <- draw_intensity_line(lambda = function(t) 2, majorizer_intercept = 2.2, majorizer_slope = 0.1, t_min = 1, t_max = 5)
 draw_intensity_line <- function(lambda,
                                 majorizer_intercept,
                                 majorizer_slope,

@@ -21,10 +21,7 @@ which is the integrated rate of the NHPPP}
 
 \item{t_min}{(double) the lower bound of the time interval}
 
-\item{t_max}{(double) the upper bound of the time interval
-#@param range_t (vector, double) min and max of the time interval
-#@param range_L (vector, double) min and max of the transformed time interval
-#@param rng_stream (\code{rstream}) an \code{rstream} object or \code{NULL}.}
+\item{t_max}{(double) the upper bound of the time interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 }
@@ -35,7 +32,4 @@ a vector of length 0
 \description{
 Sample NHPPP times using the order statistics method,
 optionally using an \code{rstream} generator object.
-}
-\examples{
-x <- draw_cumulative_intensity_orderstats(Lambda = function(t) 2 * t, Lambda_inv = function(z) z / 2, t_min = 0, t_max = 10)
 }

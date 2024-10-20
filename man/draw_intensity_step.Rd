@@ -28,6 +28,3 @@ a vector of length 0
 \description{
 Sample NHPPP times using the thinning method
 }
-\examples{
-x <- draw_intensity_step(lambda = function(t) t * 0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
-}

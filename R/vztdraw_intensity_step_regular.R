@@ -25,7 +25,6 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param atmost1 boolean, draw at most 1 event time
-#'
 #' @keywords internal
 vztdraw_intensity_step_regular <- function(
     lambda = NULL,

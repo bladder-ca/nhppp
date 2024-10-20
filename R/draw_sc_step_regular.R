@@ -5,8 +5,6 @@
 #' @param lambda_vector (scalar, double) `K` constant intensity rates, one per interval
 #' @param t_min (scalar, double) lower bound of the time interval
 #' @param t_max (scalar, double) upper bound of the time interval
-##' @param range_t (vector, double) `t_min` and `t_max`
-##' @param rng_stream an `rstream` object
 #' @param atmost1 boolean, draw at most 1 event time
 #' @param atleast1 boolean, draw at least 1 event time
 #'
@@ -21,8 +19,6 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
                                  lambda_vector = NULL,
                                  t_min = NULL,
                                  t_max = NULL,
-                                 # range_t = c(0, 10),
-                                 rng_stream = NULL,
                                  atmost1 = FALSE,
                                  atleast1 = FALSE) {
   stopifnot(!is.null(t_min) && !is.null(t_max))

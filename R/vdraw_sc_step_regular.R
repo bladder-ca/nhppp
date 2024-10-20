@@ -65,7 +65,7 @@ vdraw_sc_step_regular <- function(
   }
   if (isTRUE(atleast1)) {
     return(
-      vztdraw_sc_step_regular(
+      vztdraw_sc_step_regular_cpp(
         lambda_matrix = lambda_matrix,
         Lambda_matrix = Lambda_matrix,
         rate_matrix_t_min = rate_matrix_t_min,

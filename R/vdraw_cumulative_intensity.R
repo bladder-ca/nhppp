@@ -15,6 +15,7 @@
 #' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv().
 #' @param tol the tolerange for the calulations.
 #' @param atmost1 boolean, draw at most 1 event time per sampled point process.
+#' @param atleast1 boolean, draw at least 1 event time
 #'
 #' @return a matrix of event times with one row per sampled point process.
 #' @export
@@ -26,7 +27,11 @@ vdraw_cumulative_intensity <- function(Lambda,
                                        Lambda_args = NULL,
                                        Lambda_inv_args = NULL,
                                        tol = 10^-6,
-                                       atmost1 = FALSE) {
+                                       atmost1 = FALSE,
+                                       atleast1 = FALSE) {
+  if (atleast1 == TRUE) {
+    stop("Option `atleast1 = TRUE` has not been implemented yet for vectorized functions.")
+  }
   range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
   range_L <- Lambda(range_t, Lambda_args = Lambda_args)

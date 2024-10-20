@@ -48,6 +48,4 @@ if no events realize, it will have 0 length
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 where the intervals have the same length (are "regular").
 }
-\examples{
-x <- vztdraw_sc_step_regular(Lambda_matrix = matrix(1:5, nrow = 1))
-}
+\keyword{internal}

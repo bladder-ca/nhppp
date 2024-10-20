@@ -10,7 +10,6 @@ draw_sc_step_regular(
   lambda_vector = NULL,
   t_min = NULL,
   t_max = NULL,
-  rng_stream = NULL,
   atmost1 = FALSE,
   atleast1 = FALSE
 )
@@ -24,13 +23,9 @@ draw_sc_step_regular(
 
 \item{t_max}{(scalar, double) upper bound of the time interval}
 
-\item{rng_stream}{an \code{rstream} object}
-
 \item{atmost1}{boolean, draw at most 1 event time}
 
 \item{atleast1}{boolean, draw at least 1 event time}
-
-\item{range_t}{(vector, double) \code{t_min} and \code{t_max}}
 }
 \value{
 a vector of event times t

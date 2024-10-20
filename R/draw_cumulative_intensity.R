@@ -12,9 +12,6 @@
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
 #' @export
-#'
-#' @examples
-#' x <- draw_cumulative_intensity(Lambda = function(t) 2 * t, Lambda_inv = function(z) z / 2, t_min = 0, t_max = 10)
 draw_cumulative_intensity <- function(Lambda,
                                       Lambda_inv,
                                       t_min,

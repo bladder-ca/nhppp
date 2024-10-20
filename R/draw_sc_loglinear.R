@@ -9,8 +9,6 @@
 #' @param slope (double) the slope in the exponent
 #' @param t_min (double) lower bound of the time interval
 #' @param t_max (double) upper bound of the time interval
-##' @param range_t (vector, double) min and max of the time interval
-##' @param rng_stream (`rstream`) an `rstream` object.
 #' @param atmost1 boolean, draw at most 1 event time
 #'
 #' @return a vector of event times (t_); if no events realize,
@@ -24,8 +22,6 @@ draw_sc_loglinear <- function(intercept,
                               slope,
                               t_min,
                               t_max,
-                              # range_t = c(0, 10),
-                              # rng_stream = NULL,
                               atmost1 = FALSE) {
   if (slope == 0) {
     return(ppp2(rate = exp(intercept), t_min = t_min, t_max = t_max, atmost1 = atmost1))

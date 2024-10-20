@@ -37,6 +37,3 @@ a vector of length 0
 \description{
 Sample NHPPP times using the thinning method
 }
-\examples{
-x <- draw_intensity_line(lambda = function(t) 2, majorizer_intercept = 2.2, majorizer_slope = 0.1, t_min = 1, t_max = 5)
-}

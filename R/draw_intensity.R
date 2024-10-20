@@ -4,8 +4,6 @@
 #' This is a wrapper to the package's specific functions, and thus somewhat slower.
 #' For time-intensive simulations prefer one of the specific functions.
 #'
-#' @param Lambda (function, double vector) the integrated (cumulative) rate of the NHPPP
-#' @param Lambda_inv (function, double vector) the inverse of `Lambda()'
 #' @param lambda (function) the instantaneous rate
 #' @param line_majorizer_intercept The intercept `alpha` of the [log]linear majorizer function: `alpha + beta * t` or `exp(alpha + beta * t)`
 #' @param line_majorizer_slope The slope `beta` of the [log]linear majorizer function: `alpha + beta * t` or `exp(alpha + beta * t)`

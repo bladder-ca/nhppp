@@ -76,7 +76,7 @@ vdraw_intensity <- function(
 
   if (isTRUE(atleast1)) {
     return(
-      vztdraw_intensity_step_regular_R(
+      vztdraw_intensity_step_regular(
         lambda = lambda,
         lambda_args = lambda_args,
         Lambda_maj_matrix = Lambda_maj_matrix,

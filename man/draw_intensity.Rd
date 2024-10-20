@@ -31,10 +31,6 @@ draw_intensity(
 \item{t_max}{(double) the upper bound of the interval}
 
 \item{atmost1}{boolean, draw at most 1 event time}
-
-\item{Lambda}{(function, double vector) the integrated (cumulative) rate of the NHPPP}
-
-\item{Lambda_inv}{(function, double vector) the inverse of `Lambda()'}
 }
 \value{
 a vector of event times

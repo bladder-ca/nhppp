@@ -13,7 +13,8 @@ vdraw_cumulative_intensity(
   Lambda_args = NULL,
   Lambda_inv_args = NULL,
   tol = 10^-6,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  atleast1 = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ The length of this argument is the number of point processes that should be draw
 \item{tol}{the tolerange for the calulations.}
 
 \item{atmost1}{boolean, draw at most 1 event time per sampled point process.}
+
+\item{atleast1}{boolean, draw at least 1 event time}
 }
 \value{
 a matrix of event times with one row per sampled point process.

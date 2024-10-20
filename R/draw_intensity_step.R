@@ -15,9 +15,6 @@
 #' @return a vector of event times (t_); if no events realize,
 #'         a vector of length 0
 #' @export
-#'
-#' @examples
-#' x <- draw_intensity_step(lambda = function(t) t * 0 + 2, time_breaks = c(0, 1, pi, 2 * pi, 10), majorizer_vector = c(2, 2.1, 2.9, 4))
 draw_intensity_step <- function(lambda,
                                 majorizer_vector,
                                 time_breaks,

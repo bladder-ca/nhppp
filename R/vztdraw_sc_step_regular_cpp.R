@@ -25,11 +25,7 @@
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length
-#' @export
-#'
-#' @examples
-#' x <- vztdraw_sc_step_regular(Lambda_matrix = matrix(1:5, nrow = 1))
-#' @export
+#' @keywords internal
 vztdraw_sc_step_regular_cpp <- function(
     lambda_matrix = NULL,
     Lambda_matrix = NULL,

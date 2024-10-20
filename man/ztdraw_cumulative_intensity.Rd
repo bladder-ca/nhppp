@@ -26,6 +26,3 @@ a vector of at least 1 event times
 Sample zero-truncated NHPPP times using the order statistics method,
 optionally using an \code{rstream} generator
 }
-\examples{
-x <- ztdraw_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
-}

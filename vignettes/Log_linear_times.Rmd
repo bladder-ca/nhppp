@@ -287,7 +287,7 @@ pop[
   t_thinning := nhppp::vdraw_intensity_step_regular_cpp(
     lambda = l,
     lambda_maj_matrix = lmaj_mat,
-    rate_matrix_t_min = 40, 
+    rate_matrix_t_min = 40,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
@@ -313,8 +313,8 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L,
     Lambda_inv = Li,
-    t_min = pop$T0, 
-    t_max = pop$T1, 
+    t_min = pop$T0,
+    t_max = pop$T1,
     atmost1 = TRUE
   )
 ]

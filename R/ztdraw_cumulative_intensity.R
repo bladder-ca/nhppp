@@ -12,9 +12,6 @@
 #'
 #' @return a vector of at least 1 event times
 #' @export
-#'
-#' @examples
-#' x <- ztdraw_cumulative_intensity(Lambda = function(t) t + cos(t) - 1)
 ztdraw_cumulative_intensity <- function(Lambda,
                                         Lambda_inv,
                                         t_min,

@@ -13,9 +13,6 @@
 #'
 #' @return a vector of at least 1 event times
 #' @export
-#'
-#' @examples
-#' x <- draw_intensity_line(lambda = function(t) 2, majorizer_intercept = 2.2, majorizer_slope = 0.1, t_min = 1, t_max = 5)
 ztdraw_intensity_line <- function(lambda,
                                   majorizer_intercept,
                                   majorizer_slope,
