@@ -1,0 +1,101 @@
+---
+title: "A simple discrete event simulation model of a cancer's natural history"
+author: "TA Trikalinos" 
+date: "2024-10-17"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A simple discrete event simulation model of a cancer's natural history}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  % \VignetteDepends{tictoc}
+---
+
+```{r, include = FALSE}
+set.seed(20241017)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+K <- 10^5
+```
+
+
+## The simulation world 
+
+We will model a cancer's natural history in a population. We index people by $k \in [K] := \{1, \dots, K \}$. The following assumptions fix a simulation world. 
+
+1. All types of events can be modeleld with nonhomogeneous Poisson point processes (NHPPPs).  
+
+1. Persons are alive and cancer free at 40 years of age. No person will live past 110 years. 
+All people can die from causes other than the cancer of interest (hereafter, _death from other causes_). Write $\rho_k(t)$ for the corresponding intensity function. 
+
+1. Some persons will develop a preclinical cancer with a time-varying intensity function $\lambda_k(t)$. 
+Some preclinical cancers may progress to clinical cancer with an intensity function $\mu_t(t)$, at which point they are considered diagnosed. 
+
+1. Once people develop preclinical cancer they can die from cancer with intensity 
+function $\nu_k(t)$. The cancer death rate does not explicitly 
+depend on whether the cancer has been diagnosed or not.  Thus, we have two 
+competing causes of death: death due to cancer and due to other causes. 
+
+1. Some people may be exposed to an environmental toxin, with exposure that 
+varies over time. Write $\xi_k(t) \ge 0$ for the exposure function. 
+Positive values mean that a person is exposed at that particular instance. 
+(The never exposed have zeros throughout their life.) We will assume that 
+the exposure to said toxin is a risk factor only for cancer development, and 
+that the toxin has no cumulative effects -- only the instantaneous exposure 
+levels matter. 
+
+
+## Setup 
+Load `nhppp` and `data.table`. (If you prefer to not use `data.table`, you 
+should be able to implement this example in base `R` with little trouble.)
+
+```{r setup}
+library(data.table)
+library(nhppp)
+```
+
+
+## Simulation model 
+
+We now fix the mathematical description of the model. We will simulate $K = `r K`$ 
+males and females (with equal probability) from the 2015 birth cohort. 
+
+```{r pop}
+pop <- data.table(id  = 1:N, 
+                  birth_cohort = 2015,
+                  spawn_age = 40, 
+                  max_simulation_age = 110, 
+                  sex = sample(c("male", "female"), N, replace = TRUE),
+                  param_cancer_emergence_shape = runif(N, 7, 9), 
+                  param_cancer_emergence_scale = rnorm(N, 150, 20), 
+                  param_cancer_death_rate = runif(N, 0.08, 1.5),
+                  param_cancer_dx_rate = runif(N, .20, .27), 
+                  param_toxin_exposure_irr = exp(rnorm(N, log(4), 1))
+                  )
+```
+
+#### Death from other causes 
+The death from other causes $\rho_k(t)$
+depends on the age ($t$, measured in years), sex (male or female), and birth 
+year of person $k$. Function $\rho$ is is a piecewise constant over each year 
+of age. It is a `regular' step function (all steps have the same length of one 
+year). 
+
+
+
+
+
+## Overview 
+
+We will start by simulating a single person. We will then vectorize the simulation 
+over the $K=`r K`$ people. 
+We will then package everything in an `R6` class object to simplify (and make 
+safer) users' interaction with the model. 
+
+## Simulation model specification  
+
+We will simulate a population of $K=`r K`$ people.  
+
+
+
