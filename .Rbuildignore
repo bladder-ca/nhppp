@@ -16,3 +16,4 @@ tools
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^data-raw$

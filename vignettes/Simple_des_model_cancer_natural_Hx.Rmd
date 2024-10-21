@@ -62,16 +62,17 @@ We now fix the mathematical description of the model. We will simulate $K = `r K
 males and females (with equal probability) from the 2015 birth cohort. 
 
 ```{r pop}
-pop <- data.table(id  = 1:N, 
+pop <- data.table(id  = 1:K, 
                   birth_cohort = 2015,
                   spawn_age = 40, 
                   max_simulation_age = 110, 
-                  sex = sample(c("male", "female"), N, replace = TRUE),
-                  param_cancer_emergence_shape = runif(N, 7, 9), 
-                  param_cancer_emergence_scale = rnorm(N, 150, 20), 
-                  param_cancer_death_rate = runif(N, 0.08, 1.5),
-                  param_cancer_dx_rate = runif(N, .20, .27), 
-                  param_toxin_exposure_irr = exp(rnorm(N, log(4), 1))
+                  sex = sample(c("male", "female"), K, replace = TRUE)
+                  #,
+                  #param_cancer_emergence_shape = runif(N, 7, 9), 
+                  #param_cancer_emergence_scale = rnorm(N, 150, 20), 
+                  #param_cancer_death_rate = runif(N, 0.08, 1.5),
+                  #param_cancer_dx_rate = runif(N, .20, .27), 
+                  #param_toxin_exposure_irr = exp(rnorm(N, log(4), 1))
                   )
 ```
 
