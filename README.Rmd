@@ -46,11 +46,13 @@ Consider the time varying intensity function $\lambda(t) = e^{(0.2t)} (1 + \sin 
 
 ```{r example_lambda}
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
-nhppp::draw(lambda = l, 
-            line_majorizer_intercept = l(6 * pi),
-            line_majorizer_slope = 0,  
-            t_min = 0, 
-            t_max = 6 * pi) |>
+nhppp::draw(
+  lambda = l,
+  line_majorizer_intercept = l(6 * pi),
+  line_majorizer_slope = 0,
+  t_min = 0,
+  t_max = 6 * pi
+) |>
   head(n = 20)
 ```
 

@@ -307,7 +307,6 @@ function. Here `range_t` is a matrix with information on each person's $[T_{k0},
 
 ```{r method-3}
 tictoc::tic("Method 3 (inversion)")
-range_t <- matrix(c(pop$T0, pop$T1), ncol = 2, byrow = FALSE)
 pop[
   ,
   t_inversion := nhppp::vdraw_cumulative_intensity(
@@ -365,10 +364,9 @@ Thanks to Carolyn Rutter and Hui Hsuan Chan for providing the numerical example 
 
 ## Bibliography
 
-Since the publication of the paper, the syntax and options of the `nhppp` package have
-evolved. To reproduce the code in the paper, you have to install the version 
-of `nhppp` used in the paper. ALternatively, take a look at the vignettes, 
-which are written to work with the current package.  
-
 Trikalinos TA, Sereda Y. _nhppp: Simulating Nonhomogeneous Poisson Point Processes in R_. arXiv preprint arXiv:2402.00358. 2024 Feb 1.
 
+Since the publication of the paper, the syntax and options of the `nhppp` package have
+evolved. To reproduce the code in the paper, you have to install the version 
+of `nhppp` used in the paper. Alternatively, take a look at the vignettes, 
+which are written to work with the current package.  
