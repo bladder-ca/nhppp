@@ -54,11 +54,13 @@ interval $(0, 6\pi]$ execute
 
 ``` r
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
-nhppp::draw(lambda = l, 
-            line_majorizer_intercept = l(6 * pi),
-            line_majorizer_slope = 0,  
-            t_min = 0, 
-            t_max = 6 * pi) |>
+nhppp::draw(
+  lambda = l,
+  line_majorizer_intercept = l(6 * pi),
+  line_majorizer_slope = 0,
+  t_min = 0,
+  t_max = 6 * pi
+) |>
   head(n = 20)
 #>  [1] 1.197587 1.238620 1.497499 1.713629 1.761914 2.256739 2.537528 3.622938
 #>  [9] 5.822574 6.064265 6.645696 6.651551 6.684603 6.875765 6.891348 7.130680

@@ -113,4 +113,20 @@ test_that("vztdraw_sc_step_regular_cpp() works with subinterval", {
     atmost1 = FALSE
   ))
   check_ppp_sample_validity(Z0, t_min = 105.01, t_max = 105.99, atmost1 = FALSE, atleast1 = TRUE)
+
+  expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
+    Lambda_matrix = matrix(1:5, nrow = 1),
+    rate_matrix_t_min = 100, rate_matrix_t_max = 110,
+    t_min = 101.01, t_max = 108.99,
+    atmost1 = TRUE
+  ))
+  check_ppp_sample_validity(Z0, t_min = 101.01, t_max = 108.99, atmost1 = TRUE, atleast1 = TRUE)
+
+  expect_no_error(Z0 <- vztdraw_sc_step_regular_cpp(
+    Lambda_matrix = matrix(1:500, nrow = 10),
+    rate_matrix_t_min = 0, rate_matrix_t_max = 10,
+    t_min = 0, t_max = 5,
+    atmost1 = TRUE
+  ))
+  check_ppp_sample_validity(Z0, t_min = 0, t_max = 5, atmost1 = TRUE, atleast1 = TRUE)
 })
