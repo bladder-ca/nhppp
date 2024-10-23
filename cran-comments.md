@@ -7,3 +7,5 @@
 * We add two vignettes (one for sampling loglinear times and one for building a simple DES model). 
 
 * We adopt new unified syntax.
+
+* We added a site hosted on GitHub pages. 
