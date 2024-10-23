@@ -43,6 +43,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/Log_linear_times.html">Sampling log-linear times</a></li>
+    <li><a class="dropdown-item" href="articles/Simple_des_model_cancer_natural_Hx.html">A simple discrete event simulation model of a cancer's natural history</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -85,11 +86,13 @@
 <p>Consider the time varying intensity function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.2</mn><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>sin</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t) = e^{(0.2t)} (1 + \sin t)</annotation></semantics></math>, which is a sinusoidal intensity function with an exponential amplitude. To draw samples over the interval <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>6</mn><mi>π</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(0, 6\pi]</annotation></semantics></math> execute</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">l</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.2</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span></span>
-<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="va">l</span>, </span>
-<span>            line_majorizer_intercept <span class="op">=</span> <span class="fu">l</span><span class="op">(</span><span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>,</span>
-<span>            line_majorizer_slope <span class="op">=</span> <span class="fl">0</span>,  </span>
-<span>            t_min <span class="op">=</span> <span class="fl">0</span>, </span>
-<span>            t_max <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span></span>
+<span>  lambda <span class="op">=</span> <span class="va">l</span>,</span>
+<span>  line_majorizer_intercept <span class="op">=</span> <span class="fu">l</span><span class="op">(</span><span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>,</span>
+<span>  line_majorizer_slope <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  t_min <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">pi</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] 1.197587 1.238620 1.497499 1.713629 1.761914 2.256739 2.537528 3.622938</span></span>
 <span><span class="co">#&gt;  [9] 5.822574 6.064265 6.645696 6.651551 6.684603 6.875765 6.891348 7.130680</span></span>

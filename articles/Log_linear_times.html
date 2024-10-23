@@ -40,6 +40,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/Log_linear_times.html">Sampling log-linear times</a></li>
+    <li><a class="dropdown-item" href="../articles/Simple_des_model_cancer_natural_Hx.html">A simple discrete event simulation model of a cancer's natural history</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -395,7 +396,7 @@ as we can do without vectorization.</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Method 1 (nonvectorized): 1.516 sec elapsed</span></span>
+<span><span class="co">#&gt; Method 1 (nonvectorized): 1.514 sec elapsed</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">t_nonvec_special_case</span> <span class="op">:=</span> <span class="va">t_nonvec_special_case</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -491,7 +492,7 @@ needs).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.113 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.111 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
@@ -509,7 +510,6 @@ The <code>nhppp</code> package can sample in this case using the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 3 (inversion)"</span><span class="op">)</span></span>
-<span><span class="va">range_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">T0</span>, <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">pop</span><span class="op">[</span></span>
 <span>  ,</span>
 <span>  <span class="va">t_inversion</span> <span class="op">:=</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity</a></span><span class="op">(</span></span>
@@ -521,7 +521,7 @@ The <code>nhppp</code> package can sample in this case using the
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 3 (inversion): 0.017 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 3 (inversion): 0.016 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
@@ -535,11 +535,11 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (nonvectorized): 1.516 sec elapsed. This is the slowest
+<li><p>Method 1 (nonvectorized): 1.514 sec elapsed. This is the slowest
 approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples!</p></li>
-<li><p>Method 2 (vectorized, thinning): 0.113 sec elapsed. This approach
+<li><p>Method 2 (vectorized, thinning): 0.111 sec elapsed. This approach
 is many times faster that then first approach. It is very flexible – it
 can accommodate very complex time varying intensity functions. You
 almost always know
@@ -547,7 +547,7 @@ almost always know
 and can get its majorizer
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 easily and fast.</p></li>
-<li><p>Method 3 (inversion): 0.017 sec elapsed. This approach is many
+<li><p>Method 3 (inversion): 0.016 sec elapsed. This approach is many
 times faster that the second one, but requires implementations for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 and
@@ -584,14 +584,14 @@ numerical example in this vignette.</p>
 <div class="section level2">
 <h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
 </h2>
-<p>Since the publication of the paper, the syntax and options of the
-<code>nhppp</code> package have evolved. To reproduce the code in the
-paper, you have to install the version of <code>nhppp</code> used in the
-paper. ALternatively, take a look at the vignettes, which are written to
-work with the current package.</p>
 <p>Trikalinos TA, Sereda Y. <em>nhppp: Simulating Nonhomogeneous Poisson
 Point Processes in R</em>. arXiv preprint arXiv:2402.00358. 2024 Feb
 1.</p>
+<p>Since the publication of the paper, the syntax and options of the
+<code>nhppp</code> package have evolved. To reproduce the code in the
+paper, you have to install the version of <code>nhppp</code> used in the
+paper. Alternatively, take a look at the vignettes, which are written to
+work with the current package.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
