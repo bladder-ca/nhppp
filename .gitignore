@@ -69,3 +69,5 @@ vignettes/articles/cache/
 .Rproj.user
 inst/doc
 docs
+/doc/
+/Meta/
