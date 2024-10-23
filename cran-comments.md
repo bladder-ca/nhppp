@@ -2,6 +2,8 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This is a new version of the package. It adds vectorized functions and many numerical tests/checks. 
+* This is a new and major version of the package. 
 
-* Based on a comment from Uwe Ligges, I fixed the arXiv DOI in the DESCRIPTION file.
+* We add two vignettes (one for sampling loglinear times and one for building a simple DES model). 
+
+* We adopt new unified syntax.
