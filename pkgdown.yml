@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   Log_linear_times: Log_linear_times.html
   Simple_des_model_cancer_natural_Hx: Simple_des_model_cancer_natural_Hx.html
-last_built: 2024-10-23T01:55Z
+last_built: 2024-10-24T23:26Z
 urls:
   reference: https://bladder-ca.github.io/nhppp/reference
   article: https://bladder-ca.github.io/nhppp/articles
