@@ -1,8 +1,14 @@
+# nhppp (development version)
+
+* CRAN release
+
 # nhppp 1.0.0
 
 # nhppp 0.2.1
 
 # nhppp 0.2.0
+
+* CRAN release
 
 # nhppp 0.1.4
 
