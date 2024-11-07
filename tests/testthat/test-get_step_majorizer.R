@@ -4,6 +4,7 @@ test_that("get_step_majorizer() works", {
     fun = abs,
     breaks = -10:10, is_monotone = FALSE, K = 1
   ))
+  expect_true(is.vector(l1))
   l1_fun <- stats::approxfun(y = l1, x = -10:9, method = "constant", rule = 2)
   x <- seq(-10, 10, length.out = 1000)
   expect_true(sum(l1_fun(x) < abs(x)) == 0)
@@ -14,6 +15,7 @@ test_that("get_step_majorizer() works", {
     fun = abs,
     breaks = matrix(-10:10, nrow = 1), is_monotone = FALSE, K = 1
   ))
+  expect_true(is.matrix(l1))
   l1_fun <- stats::approxfun(y = l1, x = -10:9, method = "constant", rule = 2)
   x <- seq(-10, 10, length.out = 1000)
   expect_true(sum(l1_fun(x) < abs(x)) == 0)
@@ -25,6 +27,7 @@ test_that("get_step_majorizer() works", {
     fun = abs,
     breaks = breaks_mat, is_monotone = FALSE, K = 1
   ))
+  expect_true(is.matrix(l1))
   for (r in 1:4) {
     l1_fun <- stats::approxfun(y = l1[r, ], x = breaks_mat[r, 1:20], method = "constant", rule = 2)
     x <- seq(breaks_mat[r, 1], breaks_mat[r, 21], length.out = 1000)
