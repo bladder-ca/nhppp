@@ -24,6 +24,7 @@ A vector of length \code{M} with the values of the piecewise constant majorizer
 \description{
 Return a piecewise constant (step) majorizer for K-Lipschitz functions
 over an interval. The function is vectorized over the \code{breaks} argument.
+The returned object has the same dimensions as \code{breaks}.
 }
 \examples{
 get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
