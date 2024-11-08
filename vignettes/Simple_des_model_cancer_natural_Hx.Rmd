@@ -11,12 +11,12 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-set.seed(20241017)
+set.seed(20241018)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-K <- 10^4
+K <- 10^5
 ```
 
 

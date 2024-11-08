@@ -48,6 +48,7 @@ NumericMatrix vztdraw_sc_step_regular2(
 
 
     N = rztpois(L1 - L0);
+    N = std::min(N, n_max_events);
     for (int i = 0; i != N; ++i){
       U[i] = R::runif(L0, L1);
     }
