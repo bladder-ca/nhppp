@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +130,7 @@ example in base <code>R</code> with little trouble.)</p>
 </h2>
 <p>We now fix the mathematical description of the model. We will
 simulate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{4}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>
 males and females (with equal probability) from the 2015 birth
 cohort.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -446,13 +446,13 @@ Bibliography explains how this function works.)</p>
 <span></span>
 <span><span class="va">lambda_star</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]</span></span>
-<span><span class="co">#&gt; [1,] 1.662507 1.662520 1.662549 1.662608 1.662719 1.662918 1.663257 1.663810</span></span>
-<span><span class="co">#&gt; [2,] 1.662539 1.662591 1.662691 1.662869 1.663168 1.663648 1.664388 1.665489</span></span>
-<span><span class="co">#&gt; [3,] 1.662542 1.662609 1.662752 1.663035 1.663554 1.664454 1.665944 1.668315</span></span>
+<span><span class="co">#&gt; [1,] 1.664784 1.664424 1.664424 1.664554 1.665456 1.665944 1.667683 1.669700</span></span>
+<span><span class="co">#&gt; [2,] 1.662535 1.662590 1.662706 1.662929 1.663331 1.664018 1.665139 1.666900</span></span>
+<span><span class="co">#&gt; [3,] 1.662512 1.662533 1.662580 1.662677 1.662861 1.663191 1.663756 1.664682</span></span>
 <span><span class="co">#&gt;          [,9]    [,10]</span></span>
-<span><span class="co">#&gt; [1,] 1.664681 1.666012</span></span>
-<span><span class="co">#&gt; [2,] 1.667083 1.669331</span></span>
-<span><span class="co">#&gt; [3,] 1.671963 1.677415</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 1.672383 1.677464</span></span>
+<span><span class="co">#&gt; [2,] 1.669577 1.673531</span></span>
+<span><span class="co">#&gt; [3,] 1.666145 1.668387</span></span></code></pre></div>
 <p>And now, we can sample the cancer generation times, and create a
 variable to identify patients with cancer.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -492,7 +492,7 @@ we already know the intensity
 and we can easily create a majorizer function for it, as we did when we
 generated cancer emergence times. This would be plenty fast for our
 small simulation with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{4}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>
 and requires no additional mathematics.</p>
 <p>We can sample even faster if we can analytically obtain the
 cumulative intensity function
@@ -598,7 +598,7 @@ commented out code below.</p>
 <span>  <span class="va">age_clinical_cancer_dx</span> <span class="op">:=</span> <span class="cn">NA</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 0.003 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.004 sec elapsed</span></span></code></pre></div>
 <p>With <code>nhppp</code>, we can use the
 <code><a href="../reference/vdraw_sc_step_regular.html">vdraw_sc_step_regular()</a></code> function that samples from
 piecewise constant intensities. (A constant function over an interval is
@@ -631,62 +631,62 @@ worth showing.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># pop$age_cancer_emergence |&gt; summary()</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span></span>
-<span><span class="co">#&gt;        id         birth_cohort    spawn_age  max_simulation_age</span></span>
-<span><span class="co">#&gt;  Min.   :    1   Min.   :2015   Min.   :40   Min.   :110       </span></span>
-<span><span class="co">#&gt;  1st Qu.: 2501   1st Qu.:2015   1st Qu.:40   1st Qu.:110       </span></span>
-<span><span class="co">#&gt;  Median : 5000   Median :2015   Median :40   Median :110       </span></span>
-<span><span class="co">#&gt;  Mean   : 5000   Mean   :2015   Mean   :40   Mean   :110       </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 7500   3rd Qu.:2015   3rd Qu.:40   3rd Qu.:110       </span></span>
-<span><span class="co">#&gt;  Max.   :10000   Max.   :2015   Max.   :40   Max.   :110       </span></span>
-<span><span class="co">#&gt;                                                                </span></span>
+<span><span class="co">#&gt;        id          birth_cohort    spawn_age  max_simulation_age</span></span>
+<span><span class="co">#&gt;  Min.   :     1   Min.   :2015   Min.   :40   Min.   :110       </span></span>
+<span><span class="co">#&gt;  1st Qu.: 25001   1st Qu.:2015   1st Qu.:40   1st Qu.:110       </span></span>
+<span><span class="co">#&gt;  Median : 50000   Median :2015   Median :40   Median :110       </span></span>
+<span><span class="co">#&gt;  Mean   : 50000   Mean   :2015   Mean   :40   Mean   :110       </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 75000   3rd Qu.:2015   3rd Qu.:40   3rd Qu.:110       </span></span>
+<span><span class="co">#&gt;  Max.   :100000   Max.   :2015   Max.   :40   Max.   :110       </span></span>
+<span><span class="co">#&gt;                                                                 </span></span>
 <span><span class="co">#&gt;      sex            age_dead_from_other_causes exposure_start_age</span></span>
-<span><span class="co">#&gt;  Length:10000       Min.   : 40.00             Min.   : 12.01    </span></span>
+<span><span class="co">#&gt;  Length:100000      Min.   : 40.01             Min.   : 12.00    </span></span>
 <span><span class="co">#&gt;  Class :character   1st Qu.: 72.82             1st Qu.:110.00    </span></span>
-<span><span class="co">#&gt;  Mode  :character   Median : 82.54             Median :110.00    </span></span>
-<span><span class="co">#&gt;                     Mean   : 80.17             Mean   : 92.71    </span></span>
-<span><span class="co">#&gt;                     3rd Qu.: 89.55             3rd Qu.:110.00    </span></span>
-<span><span class="co">#&gt;                     Max.   :110.00             Max.   :110.00    </span></span>
+<span><span class="co">#&gt;  Mode  :character   Median : 82.57             Median :110.00    </span></span>
+<span><span class="co">#&gt;                     Mean   : 80.20             Mean   : 92.69    </span></span>
+<span><span class="co">#&gt;                     3rd Qu.: 89.58             3rd Qu.:110.00    </span></span>
+<span><span class="co">#&gt;                     Max.   :109.87             Max.   :110.00    </span></span>
 <span><span class="co">#&gt;                                                                  </span></span>
 <span><span class="co">#&gt;  exposure_stop_age maximum_exposure param_cancer_emergence_shape</span></span>
-<span><span class="co">#&gt;  Min.   : 13.78    Min.   :0.0000   Min.   :7.000               </span></span>
-<span><span class="co">#&gt;  1st Qu.:110.00    1st Qu.:0.0000   1st Qu.:7.491               </span></span>
-<span><span class="co">#&gt;  Median :110.00    Median :0.0000   Median :7.987               </span></span>
-<span><span class="co">#&gt;  Mean   :101.92    Mean   :0.1221   Mean   :7.989               </span></span>
-<span><span class="co">#&gt;  3rd Qu.:110.00    3rd Qu.:0.0000   3rd Qu.:8.481               </span></span>
-<span><span class="co">#&gt;  Max.   :110.00    Max.   :0.9998   Max.   :9.000               </span></span>
+<span><span class="co">#&gt;  Min.   : 13.32    Min.   :0.00     Min.   :7.000               </span></span>
+<span><span class="co">#&gt;  1st Qu.:110.00    1st Qu.:0.00     1st Qu.:7.501               </span></span>
+<span><span class="co">#&gt;  Median :110.00    Median :0.00     Median :8.002               </span></span>
+<span><span class="co">#&gt;  Mean   :101.76    Mean   :0.12     Mean   :8.001               </span></span>
+<span><span class="co">#&gt;  3rd Qu.:110.00    3rd Qu.:0.00     3rd Qu.:8.502               </span></span>
+<span><span class="co">#&gt;  Max.   :110.00    Max.   :1.00     Max.   :9.000               </span></span>
 <span><span class="co">#&gt;                                                                 </span></span>
 <span><span class="co">#&gt;  param_cancer_emergence_scale param_toxin_exposure_diff age_cancer_emergence</span></span>
-<span><span class="co">#&gt;  Min.   : 81.73               Min.   :0.000000          Min.   : 40.19      </span></span>
-<span><span class="co">#&gt;  1st Qu.:136.20               1st Qu.:0.006734          1st Qu.: 59.45      </span></span>
-<span><span class="co">#&gt;  Median :149.56               Median :0.010018          Median : 71.85      </span></span>
-<span><span class="co">#&gt;  Mean   :149.79               Mean   :0.010122          Mean   : 70.34      </span></span>
-<span><span class="co">#&gt;  3rd Qu.:163.17               3rd Qu.:0.013482          3rd Qu.: 81.85      </span></span>
-<span><span class="co">#&gt;  Max.   :231.62               Max.   :0.028532          Max.   :101.70      </span></span>
-<span><span class="co">#&gt;                                                         NA's   :9548        </span></span>
+<span><span class="co">#&gt;  Min.   : 67.46               Min.   :0.000000          Min.   : 40.01      </span></span>
+<span><span class="co">#&gt;  1st Qu.:136.42               1st Qu.:0.006624          1st Qu.: 57.42      </span></span>
+<span><span class="co">#&gt;  Median :149.99               Median :0.010004          Median : 72.15      </span></span>
+<span><span class="co">#&gt;  Mean   :149.94               Mean   :0.010052          Mean   : 70.12      </span></span>
+<span><span class="co">#&gt;  3rd Qu.:163.48               3rd Qu.:0.013392          3rd Qu.: 82.73      </span></span>
+<span><span class="co">#&gt;  Max.   :234.05               Max.   :0.032101          Max.   :107.68      </span></span>
+<span><span class="co">#&gt;                                                         NA's   :95613       </span></span>
 <span><span class="co">#&gt;  with_cancer     param_cancer_death_intercept param_cancer_death_slope</span></span>
-<span><span class="co">#&gt;  Mode :logical   Min.   :-3.733               Min.   :4.129e-07       </span></span>
-<span><span class="co">#&gt;  FALSE:9548      1st Qu.:-3.134               1st Qu.:7.549e-04       </span></span>
-<span><span class="co">#&gt;  TRUE :452       Median :-3.002               Median :1.518e-03       </span></span>
-<span><span class="co">#&gt;                  Mean   :-3.000               Mean   :1.501e-03       </span></span>
-<span><span class="co">#&gt;                  3rd Qu.:-2.866               3rd Qu.:2.239e-03       </span></span>
-<span><span class="co">#&gt;                  Max.   :-2.226               Max.   :2.999e-03       </span></span>
+<span><span class="co">#&gt;  Mode :logical   Min.   :-3.817               Min.   :3.500e-09       </span></span>
+<span><span class="co">#&gt;  FALSE:95613     1st Qu.:-3.134               1st Qu.:7.468e-04       </span></span>
+<span><span class="co">#&gt;  TRUE :4387      Median :-3.000               Median :1.507e-03       </span></span>
+<span><span class="co">#&gt;                  Mean   :-3.000               Mean   :1.502e-03       </span></span>
+<span><span class="co">#&gt;                  3rd Qu.:-2.866               3rd Qu.:2.257e-03       </span></span>
+<span><span class="co">#&gt;                  Max.   :-2.140               Max.   :3.000e-03       </span></span>
 <span><span class="co">#&gt;                                                                       </span></span>
 <span><span class="co">#&gt;  age_dead_from_cancer_causes    age_dead      param_clinical_cancer_dx_rate</span></span>
-<span><span class="co">#&gt;  Min.   : 42.96              Min.   : 40.00   Min.   :0.200                </span></span>
-<span><span class="co">#&gt;  1st Qu.: 62.55              1st Qu.: 72.25   1st Qu.:0.217                </span></span>
-<span><span class="co">#&gt;  Median : 75.08              Median : 82.17   Median :0.235                </span></span>
-<span><span class="co">#&gt;  Mean   : 73.72              Mean   : 79.81   Mean   :0.235                </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 85.19              3rd Qu.: 89.32   3rd Qu.:0.254                </span></span>
-<span><span class="co">#&gt;  Max.   :105.72              Max.   :110.00   Max.   :0.270                </span></span>
-<span><span class="co">#&gt;  NA's   :9749                                 NA's   :9548                 </span></span>
+<span><span class="co">#&gt;  Min.   : 40.20              Min.   : 40.01   Min.   :0.20                 </span></span>
+<span><span class="co">#&gt;  1st Qu.: 61.91              1st Qu.: 72.35   1st Qu.:0.22                 </span></span>
+<span><span class="co">#&gt;  Median : 73.63              Median : 82.26   Median :0.24                 </span></span>
+<span><span class="co">#&gt;  Mean   : 72.40              Mean   : 79.87   Mean   :0.24                 </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 83.16              3rd Qu.: 89.36   3rd Qu.:0.25                 </span></span>
+<span><span class="co">#&gt;  Max.   :108.17              Max.   :109.87   Max.   :0.27                 </span></span>
+<span><span class="co">#&gt;  NA's   :97768                                NA's   :95613                </span></span>
 <span><span class="co">#&gt;  age_clinical_cancer_dx</span></span>
-<span><span class="co">#&gt;  Min.   : 40.45        </span></span>
-<span><span class="co">#&gt;  1st Qu.: 60.03        </span></span>
-<span><span class="co">#&gt;  Median : 73.32        </span></span>
-<span><span class="co">#&gt;  Mean   : 71.21        </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 81.37        </span></span>
-<span><span class="co">#&gt;  Max.   :100.73        </span></span>
-<span><span class="co">#&gt;  NA's   :9689</span></span></code></pre></div>
+<span><span class="co">#&gt;  Min.   : 40.31        </span></span>
+<span><span class="co">#&gt;  1st Qu.: 58.56        </span></span>
+<span><span class="co">#&gt;  Median : 72.68        </span></span>
+<span><span class="co">#&gt;  Mean   : 70.95        </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 82.96        </span></span>
+<span><span class="co">#&gt;  Max.   :106.46        </span></span>
+<span><span class="co">#&gt;  NA's   :96980</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
