@@ -21,6 +21,7 @@ NumericMatrix vdraw_intensity_step_regular(
   NumericMatrix Lambda_maj(n_draws, n_intervals);
   NumericMatrix lambda_maj(n_draws, n_intervals);
 
+double epsilon = std::numeric_limits<double>::epsilon();
 
   if(!is_cumulative) {
     lambda_maj = rate_maj;
@@ -64,16 +65,7 @@ NumericMatrix vdraw_intensity_step_regular(
       //interval = floor(Zstar(draw, ev) / interval_duration(draw));
       interval = floor(Zstar(draw, ev) - range_t(draw, 0)) / interval_duration(draw);
       acceptance_prob = (lambda_star(draw, ev)/lambda_maj(draw, interval));
-      if(acceptance_prob > 1 || acceptance_prob < 0) {
-        // double zs = Zstar(draw, ev); 
-        // double ls = lambda_star(draw, ev); 
-        // double lm = lambda_maj(draw, ev); 
-        // double lm1 = lambda_maj(draw, interval); 
-        // double Lm = Lambda_maj(draw, ev); 
-        // double Lm1 = Lambda_maj(draw, interval);  
-        // double rm = rate_maj(draw, ev);
-        // double rm1 = rate_maj(draw, interval);
-
+      if(acceptance_prob > 1.0 + epsilon || acceptance_prob < 0.0 - epsilon) {
         std::string str = "Majorizer error? Pr(acceptance) = ";
         str += std::to_string(acceptance_prob);
         throw std::range_error(str);
