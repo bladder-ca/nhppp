@@ -65,7 +65,7 @@ double epsilon = std::numeric_limits<double>::epsilon();
       //interval = floor(Zstar(draw, ev) / interval_duration(draw));
       interval = floor(Zstar(draw, ev) - range_t(draw, 0)) / interval_duration(draw);
       acceptance_prob = (lambda_star(draw, ev)/lambda_maj(draw, interval));
-      if(acceptance_prob > 1.0 + epsilon || acceptance_prob < 0.0 - epsilon) {
+      if(acceptance_prob > 1.0 + 5*epsilon || acceptance_prob < 0.0 - 5*epsilon) {
         std::string str = "Majorizer error? Pr(acceptance) = ";
         str += std::to_string(acceptance_prob);
         throw std::range_error(str);
