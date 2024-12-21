@@ -25,7 +25,7 @@ NumericMatrix vdraw_sc_step_regular2(
     Lambda = rate;
   }
 
-  int n_max_events = R::qpois(1.0 - tol, max(Lambda), 1, 0);
+  int n_max_events = safe_double_to_int(R::qpois(1.0 - tol, max(Lambda), 1, 0));
   if(atmostB>0 && atmostB < n_max_events) {
     n_max_events = atmostB;
   }

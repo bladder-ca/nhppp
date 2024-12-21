@@ -23,7 +23,7 @@ NumericMatrix vdraw_sc_step_regular(
     Lambda = rate;
   }
 
-  int n_max_events = R::qpois(1.0 - tol, max(Lambda), 1, 0);
+  int n_max_events = safe_double_to_int(R::qpois(1.0 - tol, max(Lambda), 1, 0));
   if(n_max_events == 0) {
     NumericMatrix Z(n_draws, 1); 
     std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;

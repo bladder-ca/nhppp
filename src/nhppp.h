@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include <Rcpp.h>
 #include <Rmath.h>
@@ -83,6 +84,8 @@ Rcpp::NumericMatrix step_regular_inverse(
   const Rcpp::NumericMatrix & range_t, 
   bool atmost1
 );
+
+int safe_double_to_int(const double x);
 
 int rztpois(const double lambda);
 
