@@ -101,16 +101,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // step_regular_inverse
-Rcpp::NumericMatrix step_regular_inverse(int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericMatrix& range_t, bool atmost1);
+Rcpp::NumericMatrix step_regular_inverse(const int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericMatrix& range_t, const bool atmost1);
 RcppExport SEXP _nhppp_step_regular_inverse(SEXP max_eventsSEXP, SEXP LambdaSEXP, SEXP TauSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type max_events(max_eventsSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_events(max_eventsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Tau(TauSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type range_t(range_tSEXP);
-    Rcpp::traits::input_parameter< bool >::type atmost1(atmost1SEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
     rcpp_result_gen = Rcpp::wrap(step_regular_inverse(max_events, Lambda, Tau, range_t, atmost1));
     return rcpp_result_gen;
 END_RCPP

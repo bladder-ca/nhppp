@@ -3,11 +3,11 @@
 
 // [[Rcpp::export]]
 Rcpp::NumericMatrix step_regular_inverse(
-  int max_events,
+  const int max_events,
   const Rcpp::NumericMatrix & Lambda,
   const Rcpp::NumericMatrix & Tau, 
   const Rcpp::NumericMatrix & range_t, 
-  bool atmost1
+  const bool atmost1
 ) {
 
 
