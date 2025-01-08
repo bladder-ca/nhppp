@@ -13,7 +13,7 @@ Authors@R:
              role = c("aut"),
              comment = c(ORCID = "0000-0002-4017-4561"))
     )
-Description: Simulates events from one dimensional nonhomogeneous Poisson point processes (NHPPPs) as per Trikalinos and Sereda (2024, <doi:10.48550/arXiv.2402.00358>). Functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function (Cinlar E, "Theory of stochastic processes" (1975, ISBN:0486497996)); the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme (Lewis PAW, Shedler, GS (1979) <doi:10.1002/nav.3800260304>).
+Description: Simulates events from one dimensional nonhomogeneous Poisson point processes (NHPPPs) as per Trikalinos and Sereda (2024, <doi:10.48550/arXiv.2402.00358> and 2024, <doi:10.1371/journal.pone.0311311>). Functions are based on three algorithms that provably sample from a target NHPPP: the time-transformation of a homogeneous Poisson process (of intensity one) via the inverse of the integrated intensity function (Cinlar E, "Theory of stochastic processes" (1975, ISBN:0486497996)); the generation of a Poisson number of order statistics from a fixed density function; and the thinning of a majorizing NHPPP via an acceptance-rejection scheme (Lewis PAW, Shedler, GS (1979) <doi:10.1002/nav.3800260304>).
 License: GPL (>= 3)
 Imports: 
     lifecycle,
@@ -34,8 +34,8 @@ Suggests:
     truncnorm,
     withr
 Config/Needs/website: rmarkdown
-URL: https://bladder-ca.github.io/nhppp/, https://github.com/bladder-ca/nhppp, https://github.com/bladder-ca/nhppp-fast
-BugReports: https://github.com/bladder-ca/nhppp-fast/issues
+URL: https://bladder-ca.github.io/nhppp/, https://github.com/bladder-ca/nhppp
+BugReports: https://github.com/bladder-ca/nhppp/issues
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
