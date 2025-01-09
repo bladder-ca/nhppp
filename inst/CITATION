@@ -3,7 +3,8 @@ bibentry(
   title= "nhppp: Simulating Nonhomogeneous Poisson Point Processes in R",
   author= "Trikalinos, Thomas A and Sereda, Yuliia",
   journal= "arXiv preprint arXiv:2402.00358",
-  year= "2024"
+  year= "2024", 
+  doi = "10.48550/arXiv.2402.00358"
 )
 
 
@@ -16,5 +17,5 @@ bibentry(
   volume   = "19",
   number   = "11",
   pages    = "e0311311",
-  doi      = "https://doi.org/10.1371/journal.pone.0311311"
+  doi      = "10.1371/journal.pone.0311311"
 )
