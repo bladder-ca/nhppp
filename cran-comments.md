@@ -10,4 +10,6 @@
 
 * Some tests were added to check the behavior of the package on edge cases in x86 and AArch64 hardware. 
 
+* Corrected inst/CITATION fixing the doi fields for the citations based on feedback from U Ligges.  
+
  
