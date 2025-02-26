@@ -44,6 +44,11 @@ vztdraw_sc_step_regular_cpp <- function(
     stop("lambda_matrix and Lambda_matrix cannot both be `NULL`")
   }
   mode(rate) <- "numeric"
+  num_na <- sum(is.na(rate))
+  if(num_na>0){
+    rate_argument <- if(is_cumulative_rate) "Lambda_matrix" else "lambda_matrix"
+    stop("The ", rate_argument, " contains ", num_na, " NA values")
+  }
 
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
   if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {

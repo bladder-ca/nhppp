@@ -135,3 +135,27 @@ test_that("vdraw_sc_step_regular() uses blocked random numbers", {
     }
   }
 })
+
+
+test_that("vdraw_sc_step_regular() handles NA values in rate matrices", {
+  set.seed(123)
+  l <- matrix(rep(1, 50), ncol = 5)
+  L <- mat_cumsum_columns(l)
+
+  l[1, 1] <- NA
+  L[1, 2] <- NA
+
+  expect_error(vdraw_sc_step_regular(
+    lambda_matrix = l,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    atmost1 = FALSE
+  ))
+
+  expect_error(vdraw_sc_step_regular(
+    Lambda_matrix = L,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    atmost1 = FALSE
+  ))
+})  
