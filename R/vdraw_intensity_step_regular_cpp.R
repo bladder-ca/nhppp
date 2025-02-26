@@ -58,8 +58,8 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   mode(rate) <- "numeric"
 
   num_na <- sum(is.na(rate))
-  if(num_na>0){
-    rate_argument <- if(is_cumulative_rate) "Lambda_maj_matrix" else "lambda_maj_matrix"
+  if (num_na > 0) {
+    rate_argument <- if (is_cumulative_rate) "Lambda_maj_matrix" else "lambda_maj_matrix"
     stop("The ", rate_argument, " contains ", num_na, " NA values")
   }
 

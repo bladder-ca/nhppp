@@ -45,8 +45,8 @@ vztdraw_sc_step_regular_cpp <- function(
   }
   mode(rate) <- "numeric"
   num_na <- sum(is.na(rate))
-  if(num_na>0){
-    rate_argument <- if(is_cumulative_rate) "Lambda_matrix" else "lambda_matrix"
+  if (num_na > 0) {
+    rate_argument <- if (is_cumulative_rate) "Lambda_matrix" else "lambda_matrix"
     stop("The ", rate_argument, " contains ", num_na, " NA values")
   }
 

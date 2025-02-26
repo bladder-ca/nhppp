@@ -158,4 +158,4 @@ test_that("vdraw_sc_step_regular() handles NA values in rate matrices", {
     rate_matrix_t_max = 110,
     atmost1 = FALSE
   ))
-})  
+})

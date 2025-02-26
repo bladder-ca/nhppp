@@ -202,7 +202,7 @@ test_that("vdraw_sc_step_regular_cpp() handles NA values in rate matrices", {
 
   l[1, 1] <- NA
   L[1, 2] <- NA
-  
+
   expect_error(vdraw_sc_step_regular_cpp(
     lambda_matrix = l,
     rate_matrix_t_min = 100,
@@ -210,7 +210,7 @@ test_that("vdraw_sc_step_regular_cpp() handles NA values in rate matrices", {
     tol = 10^-6,
     atmost1 = FALSE
   ))
-  
+
   expect_error(vdraw_sc_step_regular_cpp(
     Lambda_matrix = L,
     rate_matrix_t_min = 100,
