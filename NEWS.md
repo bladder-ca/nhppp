@@ -1,4 +1,4 @@
-# nhppp (development version)
+# nhppp 1.0.3
 
 # nhppp 1.0.2
 

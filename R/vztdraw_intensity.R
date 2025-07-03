@@ -7,7 +7,9 @@
 #'
 #' @param lambda (function) a vectorized intensity function, with one or two arguments.
 #'  The first is time. The optional second is a named list with additional arguments.
-#' @param lambda_args (list) optional list of named arguments for `lambda()`
+#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
+#'        If you have arguments for `lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param Lambda_maj_matrix (matrix) for the majorizeintegrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized

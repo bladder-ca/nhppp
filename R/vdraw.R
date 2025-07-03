@@ -6,7 +6,9 @@
 #' For time-intensive simulations prefer one of the specific functions.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional arguments to pass to `lambda`
+#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
+#'        If you have arguments for `lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param Lambda (function, double vector) an increasing function
@@ -14,8 +16,12 @@
 #'        It should take a vectorized argument t for times and an optional arguments list.
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
 #'        It should take a vectorized argument z and an optional arguments list.
-#' @param Lambda_args (list) optional arguments to pass to Lambda.
-#' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv().
+#' @param Lambda_args (list) optional named list of arguments to pass to `Lambda`.
+#'        If you have arguments for `Lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
+#' @param Lambda_inv_args (list) optional named list of arguments to pass to `Lambda_inv`.
+#'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param t_min (scalar | vector | column matrix) is the lower bound
 #'        of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 #'        times are sampled from the subinterval.
