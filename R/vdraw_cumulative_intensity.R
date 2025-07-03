@@ -11,8 +11,12 @@
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param t_max (scalar | vector | column matrix) the upper bound of the interval for each sampled point process
 #'        The length of this argument is the number of point processes that should be drawn.
-#' @param Lambda_args (list) optional arguments to pass to Lambda.
-#' @param Lambda_inv_args (list) optional arguments to pass to Lambda_inv().
+#' @param Lambda_args (list) optional named list of arguments to pass to `Lambda`.
+#'        If you have arguments for `Lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
+#' @param Lambda_inv_args (list) optional named list of arguments to pass to `Lambda_inv`.
+#'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param tol the tolerange for the calulations.
 #' @param atmost1 boolean, draw at most 1 event time per sampled point process.
 #' @param atleast1 boolean, draw at least 1 event time

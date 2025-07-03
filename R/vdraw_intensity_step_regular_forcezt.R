@@ -11,7 +11,9 @@
 #'    This function is used for obtainning proposals for `vztdraw_intensity_step_regular()`
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional arguments to pass to `lambda`
+#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
+#'        If you have arguments for `lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
