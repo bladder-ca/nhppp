@@ -50,6 +50,7 @@ vdraw_intensity_step_regular_forcezt <- function(
     atmost1 = FALSE,
     force_zt_majorizer = FALSE,
     ...) {
+  #browser()
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     mode(lambda_maj_matrix) <- "numeric"
     rate <- lambda_maj_matrix
@@ -122,6 +123,8 @@ vdraw_intensity_step_regular_forcezt <- function(
     t(lambda_maj_matrix)[idx_adjusted],
     nrow = nrow(lambda_maj_idx), ncol = ncol(lambda_maj_idx), byrow = FALSE
   )
+
+  #browser()
 
   accept <- ifelse(lambda(Z_star, lambda_args) / lambda_maj > U, TRUE, NA)
   Z <- Z_star * accept

@@ -1,7 +1,7 @@
 ## add tests that have lambda_maj < lambda
 ## add tests that have lamda_args
 
-test_that("vztdraw_intensity_step_regular() works", {
+test_that("vztdraw_intensity_step_regular() works when `lambda` has non-vectorized arguments", {
   set.seed(123)
   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)
@@ -44,6 +44,55 @@ test_that("vztdraw_intensity_step_regular() works", {
   ))
   check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
 })
+
+
+test_that("vztdraw_intensity_step_regular() works when `lambda` has vectorized arguments", {
+  set.seed(123)
+  N <- 1000
+  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$vector_arguments$exponent
+  l_args <- list(
+    vector_arguments = data.table::data.table(exponent = seq(from = 0.5, to = 2, length.out = N))
+    )
+  lmaj <- matrix(1, nrow = N, ncol = 5)
+  Lmaj <- mat_cumsum_columns(lmaj)
+
+  expect_no_error(Z <- vztdraw_intensity_step_regular(
+    lambda = lfun,
+    lambda_args = l_args,
+    lambda_maj_matrix = lmaj,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
+
+  expect_no_error(Z <- vztdraw_intensity_step_regular(
+    lambda = lfun,
+    lambda_args = l_args,
+    Lambda_maj_matrix = Lmaj,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
+
+  expect_no_error(Z <- vztdraw_intensity_step_regular(
+    lambda = lfun,
+    lambda_args = l_args,
+    lambda_maj_matrix = lmaj,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    atmost1 = TRUE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
+
+  expect_no_error(Z <- vztdraw_intensity_step_regular(
+    lambda = lfun,
+    lambda_args = l_args,
+    Lambda_maj_matrix = Lmaj,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    atmost1 = TRUE
+  ))
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmost1 = TRUE)
+})
+
 
 
 

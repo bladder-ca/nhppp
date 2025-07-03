@@ -7,7 +7,9 @@
 #'    The majorizers are step functions over equal-length time intevals.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional arguments to pass to `lambda`
+#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
+#'        If you have arguments for `lambda` that vary by draw, they should be passed as
+#'        a data.table named `vector_arguments`.
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
@@ -37,6 +39,8 @@ vztdraw_intensity_step_regular <- function(
     t_max = NULL,
     atmost1 = FALSE,
     ...) {
+
+  #browser()
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
   } else if (is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
@@ -81,10 +85,20 @@ vztdraw_intensity_step_regular <- function(
     force_zt_majorizer = TRUE
   )
 
+  #browser()
   has_no_times <- is.na(Z[, 1])
   max_events <- ncol(Z)
 
+  if (sum(has_no_times) > 0 && !is.null(lambda_args$vector_arguments)) {
+    stopifnot(data.table::is.data.table(lambda_args$vector_arguments))
+    original_vector_arguments <- lambda_args$vector_arguments
+  }
+
+
   while (sum(has_no_times) > 0) {
+    if(!is.null(lambda_args$vector_arguments)) {
+      lambda_args$vector_arguments <- original_vector_arguments[which(has_no_times==TRUE), , drop = FALSE]
+    }
     Z_add <- vdraw_intensity_step_regular_forcezt(
       lambda = lambda,
       lambda_args = lambda_args,
