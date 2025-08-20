@@ -79,7 +79,7 @@ Trikalinos</h4>
 <h2 id="simulation-description">Simulation description<a class="anchor" aria-label="anchor" href="#simulation-description"></a>
 </h2>
 <p>Assume a population of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{6}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>
 individuals indexed by
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>K</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in [K] := \{ 1, \dots, K\}</annotation></semantics></math>.
 We will sample events from Gompertz processes over the age (time)
@@ -132,19 +132,19 @@ are variables in <code>pop</code>.</p>
 <span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">setindex</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">pop</span></span>
 <span><span class="co">#&gt; Index: &lt;id&gt;</span></span>
-<span><span class="co">#&gt;               id    T0       T1</span></span>
-<span><span class="co">#&gt;            &lt;int&gt; &lt;num&gt;    &lt;num&gt;</span></span>
-<span><span class="co">#&gt;       1:       1    20 95.12126</span></span>
-<span><span class="co">#&gt;       2:       2    20 61.79684</span></span>
-<span><span class="co">#&gt;       3:       3    20 99.27175</span></span>
-<span><span class="co">#&gt;       4:       4    20 90.76692</span></span>
-<span><span class="co">#&gt;       5:       5    20 61.40517</span></span>
-<span><span class="co">#&gt;      ---                       </span></span>
-<span><span class="co">#&gt;  999996:  999996    20 79.90306</span></span>
-<span><span class="co">#&gt;  999997:  999997    20 92.23822</span></span>
-<span><span class="co">#&gt;  999998:  999998    20 96.23102</span></span>
-<span><span class="co">#&gt;  999999:  999999    20 67.21445</span></span>
-<span><span class="co">#&gt; 1000000: 1000000    20 64.96352</span></span></code></pre></div>
+<span><span class="co">#&gt;             id    T0       T1</span></span>
+<span><span class="co">#&gt;          &lt;int&gt; &lt;num&gt;    &lt;num&gt;</span></span>
+<span><span class="co">#&gt;      1:      1    20 95.12126</span></span>
+<span><span class="co">#&gt;      2:      2    20 61.79684</span></span>
+<span><span class="co">#&gt;      3:      3    20 99.27175</span></span>
+<span><span class="co">#&gt;      4:      4    20 90.76692</span></span>
+<span><span class="co">#&gt;      5:      5    20 61.40517</span></span>
+<span><span class="co">#&gt;     ---                      </span></span>
+<span><span class="co">#&gt;  99996:  99996    20 69.09209</span></span>
+<span><span class="co">#&gt;  99997:  99997    20 74.66979</span></span>
+<span><span class="co">#&gt;  99998:  99998    20 84.32928</span></span>
+<span><span class="co">#&gt;  99999:  99999    20 98.94195</span></span>
+<span><span class="co">#&gt; 100000: 100000    20 80.85864</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -168,8 +168,8 @@ and
 <p>A cumulative intensity function is</p>
 <p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Λ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>a</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><msub><mi>b</mi><mi>k</mi></msub><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda_k(t) = a_k (e^{b_k t} - 1)</annotation></semantics></math>,</p>
 <p>with the integration constant was arbitrarily set so that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Lambda(0) = 0</annotation></semantics></math>,
-and its inverse is</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Lambda(0) = 0</annotation></semantics></math>.
+The inverse cumulative intensity function is</p>
 <p>$^{-1}(z) = b_k^{-1}  ( -1 ) $.</p>
 <div class="section level4">
 <h4 id="vectorized-specification-of-the-gompertz-lambda-lambda-and-lambda-1">Vectorized specification of the Gompertz
@@ -194,7 +194,7 @@ functions that take as default the values in <code>pop</code>.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">Li_gompertz</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span>, <span class="va">a</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">a_gompertz</span>, <span class="va">b</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">b_gompertz</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">z</span><span class="op">/</span><span class="va">a</span><span class="op">)</span> <span class="op">+</span><span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">z</span><span class="op">/</span><span class="va">a</span> <span class="op">+</span><span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
 <span><span class="op">}</span></span>
 <span> </span></code></pre></div>
 </div>
@@ -291,7 +291,7 @@ needs).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 1 (vectorized, thinning): 2.13 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 1 (vectorized, thinning): 0.227 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="method-2-vectorized-sampling-using-lambda-and-lambda-1">Method 2: Vectorized sampling using
@@ -320,7 +320,7 @@ The <code>nhppp</code> package can sample in this case using the
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, inversion): 0.134 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, inversion): 0.008 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
@@ -334,9 +334,9 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (vectorized, thinning): 2.13 sec elapsed. This is the
+<li><p>Method 1 (vectorized, thinning): 0.227 sec elapsed. This is the
 slower approach – but still not bad for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>6</mn></msup><annotation encoding="application/x-tex">10^{6}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples! It uses the thinning algorithm which is very flexible – it can
 accommodate very complex time varying intensity functions. You almost
 always know
@@ -344,7 +344,7 @@ always know
 and can get its majorizer
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 easily and fast.</p></li>
-<li><p>Method 2 (vectorized, inversion): 0.134 sec elapsed. This
+<li><p>Method 2 (vectorized, inversion): 0.008 sec elapsed. This
 approach is many times faster that the previous one, but requires
 implementations for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
@@ -356,11 +356,11 @@ and
 <div class="section level3">
 <h3 id="simulated-times">Simulated times<a class="anchor" aria-label="anchor" href="#simulated-times"></a>
 </h3>
-<p>Both methods sample correctly from the specified log-linear process.
+<p>Both methods sample correctly from the specified Gompertz process.
 There is no approximation at play.</p>
 <p>The QQ plots compare the simulated times with the two methods. The
 agreement is excellent over this population of size
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{6}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>.
 As
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
 increases the agreement remains excellent (not shown here - try it for
@@ -370,6 +370,94 @@ A set of QQ plots should suffice here.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html" class="external-link">qqplot</a></span><span class="op">(</span><span class="va">pop</span><span class="op">$</span><span class="va">t_thinning</span>, <span class="va">pop</span><span class="op">$</span><span class="va">t_inversion</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Gompertz_processes_files/figure-html/qq-plot-1.png" alt="QQ plot comparing simulated times with the two methods. The QQ plot indicates excellent agreement." width="700"></p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="simulating-all-event-trajectories">Simulating all event trajectories<a class="anchor" aria-label="anchor" href="#simulating-all-event-trajectories"></a>
+</h2>
+<p>In the above, we simulated the time to first event. Let’s simulate
+all times that realize from that process in the interval of interest.
+You can use either method; we demonstrate with the faster one.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity</a></span><span class="op">(</span></span>
+<span>    Lambda <span class="op">=</span> <span class="va">L_gompertz</span>,</span>
+<span>    Lambda_inv <span class="op">=</span> <span class="va">Li_gompertz</span>,</span>
+<span>    t_min <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T0</span>,</span>
+<span>    t_max <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T1</span>,</span>
+<span>    atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="co"># a lot of events!</span></span>
+<span><span class="co">#&gt; [1] 100000     87</span></span></code></pre></div>
+<p>There is at least one person among the 10^{5} simulated persons with
+87 total events in the interval of interest.</p>
+</div>
+<div class="section level2">
+<h2 id="demonstrating-that-we-simulate-from-the-correct-intensity-function">Demonstrating that we simulate from the correct intensity
+function<a class="anchor" aria-label="anchor" href="#demonstrating-that-we-simulate-from-the-correct-intensity-function"></a>
+</h2>
+<p>Let’s fix the parameter values for all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+people and do a histogram of the simulated times. They match the shape
+of the intensity function over the interval
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mn>0</mn></msub><mo>,</mo><msub><mi>T</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_0, T_1)</annotation></semantics></math>,
+scaled to unit area,
+i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow></mfrac><annotation encoding="application/x-tex">\frac{\lambda(t)}{\big(\Lambda(T_1)-\Lambda(T_0) \big)}</annotation></semantics></math>.
+Run more samples to convince yourself – or also calculate the
+Wasserstein distance of the empirical and theoretical distribution, as
+described in the numerical analyses in the <code>nhppp</code> paper.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">'ggplot2'</span><span class="op">)</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setDT.html" class="external-link">setDT</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span> </span>
+<span>  <span class="va">pop2</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span>
+<span>    T0 <span class="op">=</span> <span class="fl">20</span>, </span>
+<span>    T1 <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>    a <span class="op">=</span> <span class="fl">0.005</span>, </span>
+<span>    b <span class="op">=</span> <span class="fl">0.090</span></span>
+<span>  <span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">setindex</a></span><span class="op">(</span><span class="va">pop2</span>, <span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="va">pop2</span></span>
+<span>  </span>
+<span>  <span class="co">## re-define functions to use `pop2` by default </span></span>
+<span>  <span class="co">##    clunckiness of `nhppp` -- help us improve it!</span></span>
+<span>  <span class="va">l</span>  <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">a</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span>, <span class="va">b</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span>, <span class="va">...</span><span class="op">)</span> <span class="va">a</span> <span class="op">*</span> <span class="va">b</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">b</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span></span>
+<span>  <span class="va">L</span>  <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">a</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span>, <span class="va">b</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span>, <span class="va">...</span><span class="op">)</span> <span class="va">a</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">b</span> <span class="op">*</span> <span class="va">t</span><span class="op">)</span> <span class="op">-</span> <span class="va">a</span></span>
+<span>  <span class="va">Li</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span>, <span class="va">a</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span>, <span class="va">b</span> <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">z</span><span class="op">/</span><span class="va">a</span> <span class="op">+</span><span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
+<span>  </span>
+<span>  <span class="co">## get all times (full trajectories)</span></span>
+<span>  <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">nhppp</span><span class="fu">::</span><span class="fu"><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity</a></span><span class="op">(</span></span>
+<span>      Lambda <span class="op">=</span> <span class="va">L</span>,</span>
+<span>      Lambda_inv <span class="op">=</span> <span class="va">Li</span>,</span>
+<span>      t_min <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">T0</span>,</span>
+<span>      t_max <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">T1</span>,</span>
+<span>      atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">## ignore non-realized times </span></span>
+<span>  <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span>
+<span>  <span class="va">Z</span> <span class="op">&lt;-</span> <span class="va">Z</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span><span class="op">]</span></span>
+<span>  </span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">20</span>, to <span class="op">=</span> <span class="fl">100</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="co">## normalize the hazard rate to have area 1 between 20 and 100</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">l</span><span class="op">(</span><span class="va">x</span>, a <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, b <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span></span>
+<span>        <span class="fu">L</span><span class="op">(</span><span class="fl">100</span>, a <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, b <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> </span>
+<span>        <span class="fu">L</span><span class="op">(</span><span class="fl">20</span>, a <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">a</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, b <span class="op">=</span> <span class="va">pop2</span><span class="op">$</span><span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span>       <span class="op">)</span></span>
+<span>  </span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">110</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Z</span>, y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>      bins <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>      fill <span class="op">=</span> <span class="st">"gray"</span>, </span>
+<span>      color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, </span>
+<span>      color <span class="op">=</span> <span class="st">"red"</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Histogram of all simulated Gompertz times"</span>, x <span class="op">=</span> <span class="st">"Time"</span>, y <span class="op">=</span> <span class="st">"Empirical and theoretical density"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="Gompertz_processes_files/figure-html/histogram-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
