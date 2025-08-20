@@ -76,9 +76,9 @@ A cumulative intensity function is
 
 $\Lambda_k(t) = \big(\frac{t}{\sigma_k}\big)^{\alpha_k}$, 
 
-with the integration constant arbitrarily set so that $\Lambda(0) = 0$, and its inverse is 
+with the integration constant arbitrarily set so that $\Lambda(0) = 0$. The inverse cumulative intensity function is 
 
-$\Lambda^{-1}(z) = \sigma_k \ z^{1/\alpha}$.
+$\Lambda^{-1}(z) = \sigma_k \ z^{1/\alpha_k}$.
 
 
 
@@ -211,7 +211,7 @@ but requires implementations for $\Lambda$ and $\Lambda^{-1}$.
 
 ### Simulated times 
 
-Both methods sample correctly from the specified log-linear process. There 
+Both methods sample correctly from the specified Weibull process. There 
 is no approximation at play.
 
 The QQ plots compare the simulated times with the two methods. The agreement 
@@ -222,6 +222,62 @@ A set of QQ plots should suffice here.
 
 ```{r qq-plot, fig.alt="QQ plot comparing simulated times with the two methods. The QQ plot indicates excellent agreement."}
 qqplot(pop$t_thinning, pop$t_inversion)
+```
+
+## Demonstrating that we simulate from the correct intensity function 
+
+Let's fix the parameter values for all $K$ people and do a histogram of the simulated times. They match the shape of the intensity function over the interval $[T_0, T_1)$, scaled to unit area, i.e. $\frac{\lambda(t)}{\big(\Lambda(T_1)-\Lambda(T_0) \big)}$. Run more samples to convince yourself -- or also calculate the Wasserstein distance of the empirical and theoretical distribution, as described in the numerical analyses in the `nhppp` paper. 
+
+```{r histogram}
+pop2 <- setDT(list(id = 1:10000)) 
+pop2[, `:=`(
+  T0 = 20, 
+  T1 = 100, 
+  a = 2.78, 
+  s = 74
+)]
+setindex(pop2, id)
+pop2
+
+## re-define functions to use `pop2` by default 
+##    clunckiness of `nhppp` -- help us improve it!
+l  <- function(t, a = pop2$a, s = pop2$s, ...) a/s * (t/s)^(a-1)
+L  <- function(t, a = pop2$a, s = pop2$s, ...) (t/s)^a
+Li <- function(z, a = pop2$a, s = pop2$s, ...)  s * z^(1/a)
+
+## get all times (full trajectories)
+Z <- nhppp::vdraw_cumulative_intensity(
+    Lambda = L,
+    Lambda_inv = Li,
+    t_min = pop2$T0,
+    t_max = pop2$T1,
+    atmost1 = FALSE
+  )
+
+## ignore non-realized times 
+Z <- as.vector(Z)
+Z <- Z[!is.na(Z)]
+
+x <- seq(from = 20, to = 100, length.out = 100)
+## normalize the hazard rate to have area 1 between 20 and 100
+y <- l(x, a = pop2$a[1], s = pop2$s[1]) / (
+      L(100, a = pop2$a[1], s = pop2$s[1]) - 
+      L(20, a = pop2$a[1], s = pop2$s[1])
+     )
+
+
+library(ggplot2)
+ggplot(xlim = c(0, 110)) +
+  geom_histogram(
+    aes(x = Z, y = after_stat(density)), 
+    bins = 100, 
+    fill = "gray", 
+    color = "white") +
+  geom_line(
+    aes(x = x, y = y), 
+    color = "red"
+  ) +
+  labs(title = "Histogram of all simulated Weibull times", x = "Time", y = "Empirical and theoretical density")
 ```
 
 ## Acknowledgments 
