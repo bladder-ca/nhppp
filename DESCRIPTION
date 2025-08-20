@@ -26,13 +26,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
     data.table,
+    ggplot2,
     knitr,
     rlecuyer,
     rmarkdown,
     testthat,
     tictoc,
     truncnorm,
-    withr
+    withr, 
 Config/Needs/website: rmarkdown
 URL: https://bladder-ca.github.io/nhppp/, https://github.com/bladder-ca/nhppp
 BugReports: https://github.com/bladder-ca/nhppp/issues
