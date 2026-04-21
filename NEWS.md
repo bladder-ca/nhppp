@@ -1,4 +1,8 @@
-# nhppp 1.0.4
+# nhppp 1.0.5 
+* CRAN release
+
+# nhppp 1.0.4 
+* Corrected the language field in DESCRIPTION to `en`
 
 # nhppp 1.0.3
 
