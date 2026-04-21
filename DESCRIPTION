@@ -1,6 +1,6 @@
 Package: nhppp
 Title: Simulating Nonhomogeneous Poisson Point Processes 
-Version: 1.0.4
+Version: 1.0.5
 Authors@R: 
     c(person(given = "Thomas", 
              family = "Trikalinos", 
