@@ -512,7 +512,7 @@ pop[
   age_clinical_cancer_dx := NA
 ]
 tictoc::toc()
-#> 0.004 sec elapsed
+#> 0.003 sec elapsed
 ```
 
 With `nhppp`, we can use the
