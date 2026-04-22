@@ -179,7 +179,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 1 (vectorized, thinning): 0.255 sec elapsed
+#> Method 1 (vectorized, thinning): 0.216 sec elapsed
 ```
 
 ### Method 2: Vectorized sampling using $\Lambda{()}$ and $\Lambda^{- 1}{()}$
@@ -217,7 +217,7 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (vectorized, thinning): 0.255 sec elapsed. This is the
+1.  Method 1 (vectorized, thinning): 0.216 sec elapsed. This is the
     slower approach – but still not bad for $10^{5}$ samples! It uses
     the thinning algorithm which is very flexible – it can accommodate
     very complex time varying intensity functions. You almost always

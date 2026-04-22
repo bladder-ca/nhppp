@@ -69,7 +69,7 @@ Trikalinos</h4>
             
             <h4 data-toc-skip class="date">2025-08-20</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/vignettes/Gompertz_processes.Rmd" class="external-link"><code>vignettes/Gompertz_processes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.0.5/vignettes/Gompertz_processes.Rmd" class="external-link"><code>vignettes/Gompertz_processes.Rmd</code></a></small>
       <div class="d-none name"><code>Gompertz_processes.Rmd</code></div>
     </div>
 
@@ -291,7 +291,7 @@ needs).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 1 (vectorized, thinning): 0.255 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 1 (vectorized, thinning): 0.216 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="method-2-vectorized-sampling-using-lambda-and-lambda-1">Method 2: Vectorized sampling using
@@ -334,7 +334,7 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (vectorized, thinning): 0.255 sec elapsed. This is the
+<li><p>Method 1 (vectorized, thinning): 0.216 sec elapsed. This is the
 slower approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples! It uses the thinning algorithm which is very flexible – it can

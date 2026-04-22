@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/bladder-ca/nhppp/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/bladder-ca/nhppp/blob/v1.0.5/inst/CITATION)
 
 Trikalinos, A T, Sereda, Yuliia (2024). “nhppp: Simulating
 Nonhomogeneous Poisson Point Processes in R.” *arXiv preprint
