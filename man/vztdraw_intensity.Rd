@@ -20,7 +20,9 @@ vztdraw_intensity(
 \item{lambda}{(function) a vectorized intensity function, with one or two arguments.
 The first is time. The optional second is a named list with additional arguments.}
 
-\item{lambda_args}{(list) optional list of named arguments for \code{lambda()}}
+\item{lambda_args}{(list) optional named list of arguments to pass to \code{lambda}.
+If you have arguments for \code{lambda} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
 \item{Lambda_maj_matrix}{(matrix) for the majorizeintegrated intensity rates at the end of each interval}
 

@@ -22,7 +22,9 @@ vdraw_intensity_step_regular_cpp(
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
+\item{lambda_args}{(list) optional named list of arguments to pass to \code{lambda}.
+If you have arguments for \code{lambda} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 

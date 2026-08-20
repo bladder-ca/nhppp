@@ -100,6 +100,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// step_general_inverse
+Rcpp::NumericMatrix step_general_inverse(const int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericMatrix& time_breaks, const bool atmost1);
+RcppExport SEXP _nhppp_step_general_inverse(SEXP max_eventsSEXP, SEXP LambdaSEXP, SEXP TauSEXP, SEXP time_breaksSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type max_events(max_eventsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Lambda(LambdaSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(step_general_inverse(max_events, Lambda, Tau, time_breaks, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
 // step_regular_inverse
 Rcpp::NumericMatrix step_regular_inverse(const int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericMatrix& range_t, const bool atmost1);
 RcppExport SEXP _nhppp_step_regular_inverse(SEXP max_eventsSEXP, SEXP LambdaSEXP, SEXP TauSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
@@ -134,6 +149,38 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vdraw_sc_step_general
+NumericMatrix vdraw_sc_step_general(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const double tol, const bool atmost1);
+RcppExport SEXP _nhppp_vdraw_sc_step_general(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_general(rate, is_cumulative, time_breaks, tol, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vdraw_sc_step_general2
+NumericMatrix vdraw_sc_step_general2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const double tol, const bool atmost1, const int atmostB);
+RcppExport SEXP _nhppp_vdraw_sc_step_general2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP atmostBSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_general2(rate, is_cumulative, time_breaks, subinterval, tol, atmost1, atmostB));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vdraw_sc_step_regular
 NumericMatrix vdraw_sc_step_regular(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
 RcppExport SEXP _nhppp_vdraw_sc_step_regular(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
@@ -163,6 +210,35 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
     Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
     rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, atmost1, atmostB));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vztdraw_sc_step_general
+NumericMatrix vztdraw_sc_step_general(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const bool atmost1);
+RcppExport SEXP _nhppp_vztdraw_sc_step_general(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_general(rate, is_cumulative, time_breaks, atmost1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vztdraw_sc_step_general2
+NumericMatrix vztdraw_sc_step_general2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const bool atmost1);
+RcppExport SEXP _nhppp_vztdraw_sc_step_general2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP atmost1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_general2(rate, is_cumulative, time_breaks, subinterval, atmost1));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -205,10 +281,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_matrix_diff_columns_inplace", (DL_FUNC) &_nhppp_matrix_diff_columns_inplace, 1},
     {"_nhppp_rztpois", (DL_FUNC) &_nhppp_rztpois, 1},
     {"_nhppp_rztpois_vec", (DL_FUNC) &_nhppp_rztpois_vec, 1},
+    {"_nhppp_step_general_inverse", (DL_FUNC) &_nhppp_step_general_inverse, 5},
     {"_nhppp_step_regular_inverse", (DL_FUNC) &_nhppp_step_regular_inverse, 5},
     {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 9},
+    {"_nhppp_vdraw_sc_step_general", (DL_FUNC) &_nhppp_vdraw_sc_step_general, 5},
+    {"_nhppp_vdraw_sc_step_general2", (DL_FUNC) &_nhppp_vdraw_sc_step_general2, 7},
     {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
     {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 7},
+    {"_nhppp_vztdraw_sc_step_general", (DL_FUNC) &_nhppp_vztdraw_sc_step_general, 4},
+    {"_nhppp_vztdraw_sc_step_general2", (DL_FUNC) &_nhppp_vztdraw_sc_step_general2, 5},
     {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},
     {"_nhppp_vztdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular2, 5},
     {NULL, NULL, 0}

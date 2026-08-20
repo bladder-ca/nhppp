@@ -31,9 +31,13 @@ The length of this argument is the number of point processes that should be draw
 \item{t_max}{(scalar | vector | column matrix) the upper bound of the interval for each sampled point process
 The length of this argument is the number of point processes that should be drawn.}
 
-\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
+\item{Lambda_args}{(list) optional named list of arguments to pass to \code{Lambda}.
+If you have arguments for \code{Lambda} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
-\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
+\item{Lambda_inv_args}{(list) optional named list of arguments to pass to \code{Lambda_inv}.
+If you have arguments for \code{Lambda_inv} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
 \item{tol}{the tolerange for the calulations.}
 

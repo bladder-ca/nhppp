@@ -27,7 +27,9 @@ vdraw(
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
+\item{lambda_args}{(list) optional named list of arguments to pass to \code{lambda}.
+If you have arguments for \code{lambda} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
@@ -40,9 +42,13 @@ It should take a vectorized argument t for times and an optional arguments list.
 \item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form
 It should take a vectorized argument z and an optional arguments list.}
 
-\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
+\item{Lambda_args}{(list) optional named list of arguments to pass to \code{Lambda}.
+If you have arguments for \code{Lambda} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
-\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
+\item{Lambda_inv_args}{(list) optional named list of arguments to pass to \code{Lambda_inv}.
+If you have arguments for \code{Lambda_inv} that vary by draw, they should be passed as
+a data.table named \code{vector_arguments}.}
 
 \item{t_min}{(scalar | vector | column matrix) is the lower bound
 of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,

@@ -78,10 +78,58 @@ Rcpp::NumericMatrix vdraw_intensity_step_regular(
 
 
 Rcpp::NumericMatrix step_regular_inverse(
-  const int max_events, 
+  const int max_events,
   const Rcpp::NumericMatrix & Lambda,
-  const Rcpp::NumericMatrix & Tau, 
-  const Rcpp::NumericMatrix & range_t, 
+  const Rcpp::NumericMatrix & Tau,
+  const Rcpp::NumericMatrix & range_t,
+  const bool atmost1
+);
+
+int find_break_interval(
+  const Rcpp::NumericMatrix & B,
+  const int row,
+  const double t,
+  double & f
+);
+
+Rcpp::NumericMatrix step_general_inverse(
+  const int max_events,
+  const Rcpp::NumericMatrix & Lambda,
+  const Rcpp::NumericMatrix & Tau,
+  const Rcpp::NumericMatrix & time_breaks,
+  const bool atmost1
+);
+
+Rcpp::NumericMatrix vdraw_sc_step_general(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const double tol,
+  const bool atmost1
+);
+
+Rcpp::NumericMatrix vdraw_sc_step_general2(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
+  const double tol,
+  const bool atmost1,
+  const int atmostB
+);
+
+Rcpp::NumericMatrix vztdraw_sc_step_general(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const bool atmost1
+);
+
+Rcpp::NumericMatrix vztdraw_sc_step_general2(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
   const bool atmost1
 );
 

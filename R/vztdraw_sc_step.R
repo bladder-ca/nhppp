@@ -1,0 +1,67 @@
+#' Vectorized sampling from zero-truncated NHPPPs with piecewise constant
+#' intensities over arbitrary interval bounds (C++)
+#'
+#' @description
+#' Simulate piecewise constant-rate Poisson Point Processes conditional on
+#' observing at least one event, where the intervals need not have the same
+#' length. The interval bounds are given in `time_breaks`, either once for all
+#' point processes or per point process. This generalizes the zero-truncated
+#' regular-grid sampler used by `vdraw_sc_step_regular(atleast1 = TRUE)`.
+#'
+#' @param lambda_matrix (matrix) intensity rates, one per interval
+#' @param Lambda_matrix (matrix) integrated intensity rates at the end of each interval
+#' @param time_breaks (vector | matrix) the bounds of the intervals over which
+#'        the rates apply. With `K` intervals (`K = ncol([Lambda|lambda]_matrix)`),
+#'        either a vector of `K+1` increasing values (the same bounds for all
+#'        point processes) or a matrix with `K+1` columns whose i-th row holds
+#'        the bounds for the i-th point process (a 1-row matrix is recycled for
+#'        all point processes).
+#' @param t_min (scalar | vector | column matrix) is the lower bound
+#'        of a subinterval of `(time_breaks[, 1], time_breaks[, K+1]]`. If set,
+#'        times are sampled from the subinterval.
+#'        If omitted, it is equivalent to `time_breaks[, 1]`.
+#' @param t_max (scalar | vector | column matrix) the upper bound
+#'        of a subinterval of `(time_breaks[, 1], time_breaks[, K+1]]`. If set,
+#'        times are sampled from the subinterval.
+#'        If omitted, it is equivalent to `time_breaks[, K+1]`.
+#' @param atmost1 boolean, draw at most 1 event time
+#'
+#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
+#'
+#' @examples
+#' x <- vztdraw_sc_step(
+#'   lambda_matrix = matrix(rep(1, 50), nrow = 10),
+#'   time_breaks = c(100, 100.5, 102, 106, 109, 110),
+#'   atmost1 = FALSE
+#' )
+#' @export
+vztdraw_sc_step <- function(
+    lambda_matrix = NULL,
+    Lambda_matrix = NULL,
+    time_breaks = NULL,
+    t_min = NULL,
+    t_max = NULL,
+    atmost1 = FALSE) {
+  args <- .prep_vdraw_sc_step_args(
+    lambda_matrix = lambda_matrix,
+    Lambda_matrix = Lambda_matrix,
+    time_breaks = time_breaks,
+    t_min = t_min,
+    t_max = t_max
+  )
+
+  if (is.null(args$subinterval)) {
+    return(
+      .Call(
+        `_nhppp_vztdraw_sc_step_general`,
+        args$rate, args$is_cumulative, args$time_breaks, atmost1
+      )
+    )
+  }
+  return(
+    .Call(
+      `_nhppp_vztdraw_sc_step_general2`,
+      args$rate, args$is_cumulative, args$time_breaks, args$subinterval, atmost1
+    )
+  )
+}
