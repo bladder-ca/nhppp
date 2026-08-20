@@ -19,3 +19,6 @@ tools
 ^data-raw$
 ^doc$
 ^Meta$
+^CLAUDE\.md$
+^\.claude$
+^agents$
