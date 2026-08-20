@@ -29,13 +29,21 @@ vztdraw_intensity <- function(
     tol = 10^-6,
     atmost1 = FALSE,
     ...) {
+  if (is.matrix(range_t)) {
+    rate_matrix_t_min <- range_t[, 1]
+    rate_matrix_t_max <- range_t[, 2]
+  } else {
+    rate_matrix_t_min <- range_t[1]
+    rate_matrix_t_max <- range_t[2]
+  }
   return(
     vztdraw_intensity_step_regular(
       lambda = lambda,
       lambda_args = lambda_args,
       Lambda_maj_matrix = Lambda_maj_matrix,
       lambda_maj_matrix = lambda_maj_matrix,
-      range_t = range_t,
+      rate_matrix_t_min = rate_matrix_t_min,
+      rate_matrix_t_max = rate_matrix_t_max,
       tol = tol,
       atmost1 = atmost1,
       ...

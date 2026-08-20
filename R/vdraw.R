@@ -62,7 +62,7 @@ vdraw <- function(
     atleast1 = FALSE,
     atmostB = NULL) {
   if (!is.null(lambda) &&
-    !(is.null(lambda_maj_matrix) & is.null(lambda_maj_matrix))) {
+    !(is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix))) {
     return(
       vdraw_intensity(
         lambda = lambda,
