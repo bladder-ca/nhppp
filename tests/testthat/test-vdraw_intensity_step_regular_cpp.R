@@ -235,3 +235,38 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
   }
   check_ppp_sample_validity(Z0[[1]], t_min = 1, t_max = 5)
 })
+
+
+test_that("vdraw_intensity_step_regular_cpp() locates the majorizer interval when dt != 1", {
+  # Regression: the interval lookup computed floor(t - t0)/dt (misplaced
+  # parenthesis), which is correct only when dt == 1. With a tight,
+  # non-constant majorizer and dt = 0.25 the wrong interval makes
+  # Pr(acceptance) > 1 and the kernel throws "Majorizer error".
+  set.seed(123)
+  lfun <- function(x, ...) x
+  n_rows <- 100
+  breaks <- matrix(rep(seq(1, 3, length.out = 9), each = n_rows), nrow = n_rows)
+  lmaj <- get_step_majorizer(fun = lfun, breaks = breaks, is_monotone = TRUE)
+
+  expect_no_error(Z1 <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_maj_matrix = lmaj,
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 3,
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z1, t_min = 1, t_max = 3)
+
+  # distributional agreement with a loose majorizer (thinning ratio correct)
+  expect_no_error(Z2 <- vdraw_intensity_step_regular_cpp(
+    lambda = lfun,
+    lambda_maj_matrix = lmaj + 10,
+    rate_matrix_t_min = 1,
+    rate_matrix_t_max = 3,
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z2, t_min = 1, t_max = 3)
+  compare_ppp_vectors(ppp1 = Z1, ppp2 = Z2, threshold = 0.1, showQQ = FALSE)
+})

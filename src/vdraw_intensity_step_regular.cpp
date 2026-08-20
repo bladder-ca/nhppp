@@ -62,8 +62,9 @@ double epsilon = std::numeric_limits<double>::epsilon();
       if(NumericVector::is_na(Zstar(draw, ev))) {
         break;
       }
-      //interval = floor(Zstar(draw, ev) / interval_duration(draw));
-      interval = floor(Zstar(draw, ev) - range_t(draw, 0)) / interval_duration(draw);
+      interval = (int)std::floor((Zstar(draw, ev) - range_t(draw, 0)) / interval_duration(draw));
+      if(interval > n_intervals - 1) interval = n_intervals - 1;
+      if(interval < 0) interval = 0;
       acceptance_prob = (lambda_star(draw, ev)/lambda_maj(draw, interval));
       if(acceptance_prob > 1.0 + 5*epsilon || acceptance_prob < 0.0 - 5*epsilon) {
         std::string str = "Majorizer error? Pr(acceptance) = ";

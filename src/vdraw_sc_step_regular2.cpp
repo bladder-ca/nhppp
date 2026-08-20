@@ -39,7 +39,7 @@ NumericMatrix vdraw_sc_step_regular2(
   NumericMatrix Z(n_draws, n_max_events);
   std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
   int i0, i1, j0, ev;
-  double f0, f1, L0, L1, tau, L_at_start_of_j0; 
+  double r0, r1, f0, f1, L0, L1, tau, L_at_start_of_j0;
   int ev_max = 0;
   for (int draw = 0; draw != n_draws; ++draw){
 
@@ -48,14 +48,26 @@ NumericMatrix vdraw_sc_step_regular2(
     // i0, i1, the indices of the intervals for the subinterval bounds
     // f0 (f1) the fraction of the interval i0 (i1) where the lower (upper) subinterval lies
     // L0, L1 , the cumulative intensity at the subinterval bounds 
-    i0 = floor((subinterval(draw, 0) - range_t(draw, 0)) / interval_duration[draw]);
-    f0 = (subinterval(draw, 0) - range_t(draw,0)) / interval_duration[draw] - i0; 
+    // indices clamped to [0, n_intervals-1] and fractions to [0, 1] so that
+    // subinterval bounds at the top of range_t do not index past Lambda
+    r0 = (subinterval(draw, 0) - range_t(draw, 0)) / interval_duration[draw];
+    i0 = (int)std::floor(r0);
+    if(i0 > n_intervals - 1) i0 = n_intervals - 1;
+    if(i0 < 0) i0 = 0;
+    f0 = r0 - i0;
+    if(f0 > 1.0) f0 = 1.0;
+    if(f0 < 0.0) f0 = 0.0;
     L0 = (i0!=0)?L[i0-1]:0;
     L0 = simple_lerp(L0, L[i0], f0);
-    i1 = floor((subinterval(draw, 1) - range_t(draw, 0)) / interval_duration[draw]);
-    f1 = (subinterval(draw, 1) - range_t(draw,0)) / interval_duration[draw] - i1; 
+    r1 = (subinterval(draw, 1) - range_t(draw, 0)) / interval_duration[draw];
+    i1 = (int)std::floor(r1);
+    if(i1 > n_intervals - 1) i1 = n_intervals - 1;
+    if(i1 < 0) i1 = 0;
+    f1 = r1 - i1;
+    if(f1 > 1.0) f1 = 1.0;
+    if(f1 < 0.0) f1 = 0.0;
     L1 = (i1!=0)?L[i1-1]:0;
-    L1 = (i1 != n_intervals)?simple_lerp(L1,L[i1], f1):L[i1-1];
+    L1 = simple_lerp(L1, L[i1], f1);
 
     tau = L0; 
     j0 = i0;
