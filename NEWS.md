@@ -13,6 +13,9 @@ New features
   at interval ends) forms are supported, as are t_min/t_max subintervals,
   atmost1, atmostB, and atleast1 (which routes to the zero-truncated
   sampler), matching the vdraw_sc_step_regular() interface.
+- New vignette "Step intensities over arbitrary intervals" showcasing
+  vdraw_sc_step() / vztdraw_sc_step() on standard demographic age bands,
+  with a timing study against vdraw_sc_step_regular().
 - Implementation: new C++ kernels (vdraw_sc_step_general[2],
   vztdraw_sc_step_general[2], step_general_inverse, find_break_interval)
   that mirror the *_regular kernels with the three regularity operations
