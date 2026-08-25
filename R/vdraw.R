@@ -37,9 +37,16 @@
 #'        of the time interval for each row of (Lambda|lambda)_maj_matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
+#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times. Generalizes `atmost1`.
+#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
+#' @param atleastK `NULL` or a positive integer: condition on at least K events.
+#'        Generalizes `atleast1`. With `lambda` (thinning), only
+#'        `atleastK = 1` is implemented.
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel (approximation knob, not an exact contract).
+#' @param atmostB deprecated alias for `budget_cap`.
 
 #'
 #' @return a vector of event times
@@ -59,7 +66,10 @@ vdraw <- function(
     rate_matrix_t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
+    atmostK = NULL,
     atleast1 = FALSE,
+    atleastK = NULL,
+    budget_cap = NULL,
     atmostB = NULL) {
   if (!is.null(lambda) &&
     !(is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix))) {
@@ -75,7 +85,10 @@ vdraw <- function(
         t_max = t_max,
         tol = tol,
         atmost1 = atmost1,
+        atmostK = atmostK,
         atleast1 = atleast1,
+        atleastK = atleastK,
+        budget_cap = budget_cap,
         atmostB = atmostB
       )
     )
@@ -91,7 +104,8 @@ vdraw <- function(
       Lambda_inv_args = Lambda_inv_args,
       tol = tol,
       atmost1 = atmost1,
-      atleast1 = atleast1
+      atleast1 = atleast1,
+      atleastK = atleastK
     )
   )
 }

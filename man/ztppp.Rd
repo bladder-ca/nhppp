@@ -4,7 +4,7 @@
 \alias{ztppp}
 \title{Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]}
 \usage{
-ztppp(rate, t_min, t_max, atmost1 = FALSE)
+ztppp(rate, t_min, t_max, atmost1 = FALSE, atmostK = NULL, atleastK = 1)
 }
 \arguments{
 \item{rate}{(scalar, double) constant instantaneous rate}
@@ -13,13 +13,21 @@ ztppp(rate, t_min, t_max, atmost1 = FALSE)
 
 \item{t_max}{(scalar, double) upper bound of the time interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times of the conditioned process. Generalizes \code{atmost1}.}
+
+\item{atleastK}{positive integer: condition on at least K events in
+\verb{(t_min, t_max]}. \code{atleastK = 1} is the zero-truncated process.}
 }
 \value{
 a vector of event times of size \code{size}
 }
 \description{
-Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]
+Simulate a constant-rate Poisson Point Process conditional on
+observing at least \code{atleastK} events (\code{atleastK = 1}, the default, is the
+zero-truncated process).
 }
 \examples{
 x <- ztppp(t_min = 0, t_max = 10, rate = 0.001)

@@ -8,18 +8,27 @@
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`
 #' @param t_min (double) the lower bound of the time interval
 #' @param t_max (double) the upper bound of the time interval
-#' @param atmost1 (boolean) draw at most 1 event time
+#' @param atmost1 (boolean) report at most 1 event time (alias for `atmostK = 1`)
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times of the conditioned process. Generalizes `atmost1`.
+#' @param atleastK positive integer: condition on at least K events in the
+#'        interval. `atleastK = 1` (default) is the zero-truncated process.
 #'
-#' @return a vector of at least 1 event times
+#' @return a vector of at least `atleastK` event times
 #' @export
 ztdraw_cumulative_intensity <- function(Lambda,
                                         Lambda_inv,
                                         t_min,
                                         t_max,
-                                        atmost1 = FALSE) {
-  tmp_u <- ztppp(rate = 1, t_min = Lambda(t_min), t_max = Lambda(t_max))
-  if (atmost1 == TRUE) {
-    tmp_u <- tmp_u[1]
-  }
+                                        atmost1 = FALSE,
+                                        atmostK = NULL,
+                                        atleastK = 1) {
+  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  atleastK <- .resolve_atleastK(atleast1 = FALSE, atleastK = atleastK)
+  if (atleastK < 1L) stop("`atleastK` must be >= 1 for the truncated (zt) samplers")
+  tmp_u <- ztppp(
+    rate = 1, t_min = Lambda(t_min), t_max = Lambda(t_max),
+    atmostK = if (atmostK > 0L) atmostK else NULL, atleastK = atleastK
+  )
   return(Lambda_inv(tmp_u))
 }

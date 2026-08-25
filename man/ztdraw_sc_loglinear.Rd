@@ -5,7 +5,15 @@
 \title{Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
 (t_min, t_max) with a log-linear intensity function}
 \usage{
-ztdraw_sc_loglinear(intercept, slope, t_min, t_max, atmost1 = FALSE)
+ztdraw_sc_loglinear(
+  intercept,
+  slope,
+  t_min,
+  t_max,
+  atmost1 = FALSE,
+  atmostK = NULL,
+  atleastK = 1
+)
 }
 \arguments{
 \item{intercept}{(double) the intercept in the exponent}
@@ -16,10 +24,16 @@ ztdraw_sc_loglinear(intercept, slope, t_min, t_max, atmost1 = FALSE)
 
 \item{t_max}{(double) the upper bound of the time interval}
 
-\item{atmost1}{boolean, 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times of the conditioned process. Generalizes \code{atmost1}.}
+
+\item{atleastK}{positive integer: condition on at least K events in the
+interval. \code{atleastK = 1} (default) is the zero-truncated process.}
 }
 \value{
-a vector of at least 1 event times
+a vector of at least \code{atleastK} event times
 }
 \description{
 Sample zt-NHPPP times from an log-linear intensity function

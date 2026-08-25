@@ -36,10 +36,21 @@ test_that("vdraw_sc_step() works with shared irregular breaks", {
   expect_no_error(Z <- vdraw_sc_step(
     lambda_matrix = l,
     time_breaks = b,
-    atmostB = 2
+    budget_cap = 2
   ))
   expect_true(ncol(Z) <= 2)
   check_ppp_sample_validity(Z, t_min = 100, t_max = 110)
+
+  # the deprecated alias still works, with a warning
+  expect_warning(
+    Z <- vdraw_sc_step(
+      lambda_matrix = l,
+      time_breaks = b,
+      atmostB = 2
+    ),
+    "deprecated"
+  )
+  expect_true(ncol(Z) <= 2)
 
   # atleast1 routes to the zero-truncated sampler
   expect_no_error(Z <- vdraw_sc_step(

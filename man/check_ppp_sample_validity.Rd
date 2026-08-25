@@ -10,7 +10,9 @@ check_ppp_sample_validity(
   t_max = NULL,
   size = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  atleast1 = FALSE,
+  atmostk = NULL,
+  atleastk = NULL
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ check_ppp_sample_validity(
 \item{atmost1}{(boolean) optional: at most one sample returned}
 
 \item{atleast1}{(boolean) optional: at least one sample returned}
+
+\item{atmostk}{(integer) optional: at most \code{k} samples returned per row}
+
+\item{atleastk}{(integer) optional: at least \code{k} samples returned per row}
 }
 \value{
 None

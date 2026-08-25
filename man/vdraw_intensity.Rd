@@ -16,7 +16,10 @@ vdraw_intensity(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  atmostK = NULL,
   atleast1 = FALSE,
+  atleastK = NULL,
+  budget_cap = NULL,
   atmostB = NULL
 )
 }
@@ -51,11 +54,20 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times. Generalizes \code{atmost1}.}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
+
+\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events.
+Only \code{atleastK = 1} is implemented for this thinning-based sampler.}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the majorizer kernel (approximation knob).}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
 }
 \value{
 a matrix of event times (columns) per draw (rows)

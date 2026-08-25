@@ -44,14 +44,24 @@ read_code <- function(codeFile) {
 #' @param size (double) optional: the size of the vector
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
+#' @param atmostk (integer) optional: at most `k` samples returned
+#' @param atleastk (integer) optional: at least `k` samples returned
 #' @return None
 #' @keywords internal
-check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
+check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL,
+                                      atmost1 = FALSE, atleast1 = FALSE,
+                                      atmostk = NULL, atleastk = NULL) {
   times <- times[!is.na(times)]
   if (atleast1) {
     testthat::expect_true(length(times) >= 1)
   }
-  if (length(times != 0)) {
+  if (!is.null(atleastk)) {
+    testthat::expect_true(length(times) >= atleastk)
+  }
+  if (!is.null(atmostk)) {
+    testthat::expect_true(length(times) <= atmostk)
+  }
+  if (length(times) != 0) {
     testthat::expect_identical(times, sort(times))
     testthat::expect_identical(times, unique(times))
     testthat::expect_true(min(times, Inf) >= t_min)
@@ -82,11 +92,18 @@ check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL, a
 #' @param size (double) optional: the size of the vector
 #' @param atmost1 (boolean) optional: at most one sample returned
 #' @param atleast1 (boolean) optional: at least one sample returned
+#' @param atmostk (integer) optional: at most `k` samples returned per row
+#' @param atleastk (integer) optional: at least `k` samples returned per row
 #' @return None
 #' @keywords internal
-check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, atmost1 = FALSE, atleast1 = FALSE) {
+check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL,
+                                      atmost1 = FALSE, atleast1 = FALSE,
+                                      atmostk = NULL, atleastk = NULL) {
   if (!is.matrix(times)) {
-    check_ppp_vector_validity(times = times, t_min = t_min, t_max = t_max, size = size, atmost1 = atmost1, atleast1 = atleast1)
+    check_ppp_vector_validity(
+      times = times, t_min = t_min, t_max = t_max, size = size,
+      atmost1 = atmost1, atleast1 = atleast1, atmostk = atmostk, atleastk = atleastk
+    )
   } else {
     if (length(t_min) == 1) {
       t_min <- rep(t_min, nrow(times))
@@ -101,7 +118,10 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL, a
     for (i in 1:nrow(times)) {
       tmax_i <- if (!is.null(t_max)) t_max[i] else NULL
       testthat::expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
-      check_ppp_vector_validity(times = times[i, ], t_min = t_min[i], t_max = tmax_i, size = size, atmost1 = atmost1, atleast1 = atleast1)
+      check_ppp_vector_validity(
+        times = times[i, ], t_min = t_min[i], t_max = tmax_i, size = size,
+        atmost1 = atmost1, atleast1 = atleast1, atmostk = atmostk, atleastk = atleastk
+      )
     }
   }
 }

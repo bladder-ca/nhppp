@@ -14,8 +14,13 @@
 #' @param step_majorizer_vector (vector, double) `K` constant majorizing rates, one per interval; all intervals are of equal length (regular)
 #' @param t_min (double) the lower bound of the interval
 #' @param t_max (double) the upper bound of the interval
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time in interval
+#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times. Generalizes `atmost1`.
+#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
+#' @param atleastK `NULL` or a positive integer: condition on at least K events
+#'        in the interval. Generalizes `atleast1`. With `lambda` (thinning),
+#'        only `atleastK = 1` is implemented.
 #'
 #' @return a vector of event times
 #' @export
@@ -30,29 +35,44 @@ draw <- function(
     t_min = NULL,
     t_max = NULL,
     atmost1 = FALSE,
-    atleast1 = FALSE) {
+    atmostK = NULL,
+    atleast1 = FALSE,
+    atleastK = NULL) {
+  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  atleastK <- .resolve_atleastK(atleast1, atleastK)
+
   if (!is.null(Lambda)) {
-    if (atleast1) {
-      func <- ztdraw_cumulative_intensity
-    } else {
-      func <- draw_cumulative_intensity
+    if (atleastK >= 1L) {
+      return(ztdraw_cumulative_intensity(
+        Lambda = Lambda,
+        Lambda_inv = Lambda_inv,
+        t_min = t_min,
+        t_max = t_max,
+        atmostK = if (atmostK > 0L) atmostK else NULL,
+        atleastK = atleastK
+      ))
     }
-    return(func(
+    z <- draw_cumulative_intensity(
       Lambda = Lambda,
       Lambda_inv = Lambda_inv,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = atmost1
-    ))
+      atmost1 = (atmostK == 1L)
+    )
+    if (atmostK > 1L && length(z) > atmostK) z <- z[seq_len(atmostK)]
+    return(z)
   }
 
   if (!is.null(lambda)) {
-    if (atleast1) {
+    if (atleastK >= 2L) {
+      stop("`atleastK >= 2` has not been implemented for the thinning-based (intensity) samplers.")
+    }
+    if (atleastK == 1L) {
       func <- ztdraw_intensity
     } else {
       func <- draw_intensity
     }
-    return(func(
+    z <- func(
       lambda = lambda,
       line_majorizer_intercept = line_majorizer_intercept,
       line_majorizer_slope = line_majorizer_slope,
@@ -60,7 +80,9 @@ draw <- function(
       step_majorizer_vector = step_majorizer_vector,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = atmost1
-    ))
+      atmost1 = (atmostK == 1L)
+    )
+    if (atmostK > 1L && length(z) > atmostK) z <- z[seq_len(atmostK)]
+    return(z)
   }
 }

@@ -1,5 +1,52 @@
 # nhppp (development version)
 
+* Unify the sc-step C++ kernels; add atleastK/atmostK truncation options; rename atmostB to budget_cap
+
+New features
+- `atleastK`: all sc-step samplers (scalar and vectorized) and the
+  `Lambda`-based scalar samplers can condition on observing at least K
+  events (`atleastK = 1` is the existing zero-truncated case; the
+  `atleast1` flag remains as an alias). Sampling uses the exact
+  conditional order-statistics construction with a K-truncated Poisson
+  count, drawn by inversion of the CDF restricted to the truncation
+  region (upper-tail form, numerically stable when `P(N >= K)` is tiny;
+  new primitives `rbtpois()` in R and `rbtpois`/`rbtpois_vec` in C++).
+  The thinning-based (intensity) samplers support only `atleastK = 1`
+  and error otherwise.
+- `atmostK`: report only the earliest K event times (`atmost1` remains
+  as an alias). For the truncated samplers the K smallest of all
+  conditioned order statistics are reported, so `atleastK > atmostK`
+  is well defined. `atleastK = atmostK = K` yields exactly K events.
+- `budget_cap` replaces `atmostB` (soft-deprecated alias with a warning):
+  it caps the computational event budget of the vectorized kernels and is
+  an approximation knob (jointly with the `1 - tol` quantile bound), not
+  an exact contract like `atmostK`. It is now honored uniformly by all
+  vectorized sc-step paths (the whole-range regular path used to ignore
+  `atmostB` silently) and never truncates below `atleastK`.
+
+Internals
+- The eight sc-step C++ kernels (regular/general x plain/zt x
+  whole-range/subinterval) are unified into two template algorithm cores
+  over two grid policies (`src/sc_step_core.h`); whole-range sampling is
+  the subinterval special case. Net deletion of ~300 lines with no
+  performance loss: the whole-range paths are ~6x faster (the fixed-size
+  blocked Exp(1) draw is replaced by lazy per-event draws), the
+  zero-truncated paths ~1.5x faster, and the subinterval paths ~1.2x
+  faster in the included benchmark (`benchmarks/bench_sc_step_unify.R`).
+- The zero-truncated kernels now honor `tol` instead of a hard-coded
+  `.99999` event-count quantile.
+- Copy/allocation fixes: no per-event row materialization in the interval
+  search, fused Lambda construction, no dead matrix pre-allocations,
+  column trimming skips the copy when nothing is trimmed, 1-row
+  `range_t`/`t_min`/`t_max` inputs are shared across rows instead of
+  being replicated at the R level.
+
+Breaking change (random streams only)
+- Same-seed results differ from 1.0.5.x for the vectorized sc-step and
+  zero-truncated samplers: the package guarantees the sampled process
+  distribution, not the number or order of RNG calls. Users relying on
+  common random numbers should block RNG streams themselves.
+
 * Generalize vectorized sc-step samplers to arbitrary interval bounds; fix four latent bugs
 
 New features

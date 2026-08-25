@@ -10,7 +10,9 @@ check_ppp_vector_validity(
   t_max = NULL,
   size = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  atleast1 = FALSE,
+  atmostk = NULL,
+  atleastk = NULL
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ check_ppp_vector_validity(
 \item{atmost1}{(boolean) optional: at most one sample returned}
 
 \item{atleast1}{(boolean) optional: at least one sample returned}
+
+\item{atmostk}{(integer) optional: at most \code{k} samples returned}
+
+\item{atleastk}{(integer) optional: at least \code{k} samples returned}
 }
 \value{
 None

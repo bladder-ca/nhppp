@@ -79,10 +79,12 @@ test_that("vdraw_intensity_step_regular_forcezt() does not break with matrices w
 
 
 test_that("vdraw_intensity_step_regular_forcezt() works with different majorizers", {
+  # larger fixture than the sibling tests: the decile comparison below needs
+  # the extra events to stay clear of its stochastic threshold
   set.seed(123)
   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)
-  lmaj <- matrix(rep(1, 1000), ncol = 5)
+  lmaj <- matrix(rep(1, 10000), ncol = 5)
 
   expect_no_error(Z1 <- vdraw_intensity_step_regular_forcezt(
     lambda = lfun,

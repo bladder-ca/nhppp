@@ -11,7 +11,9 @@ draw_sc_step_regular(
   t_min = NULL,
   t_max = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  atmostK = NULL,
+  atleast1 = FALSE,
+  atleastK = NULL
 )
 }
 \arguments{
@@ -23,9 +25,15 @@ draw_sc_step_regular(
 
 \item{t_max}{(scalar, double) upper bound of the time interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times. Generalizes \code{atmost1}.}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
+
+\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events
+in the interval. Generalizes \code{atleast1}.}
 }
 \value{
 a vector of event times t

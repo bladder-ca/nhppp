@@ -11,7 +11,11 @@ vztdraw_sc_step(
   time_breaks = NULL,
   t_min = NULL,
   t_max = NULL,
-  atmost1 = FALSE
+  tol = 10^-6,
+  atmost1 = FALSE,
+  atmostK = NULL,
+  atleastK = 1,
+  budget_cap = NULL
 )
 }
 \arguments{
@@ -36,7 +40,22 @@ of a subinterval of \verb{(time_breaks[, 1], time_breaks[, K+1]]}. If set,
 times are sampled from the subinterval.
 If omitted, it is equivalent to \code{time_breaks[, K+1]}.}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{tol}{(scalar, double) tolerance for the number of events}
+
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1}).
+The sample is drawn from the conditioned process and the earliest
+event is reported.}
+
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times of the conditioned process. Generalizes \code{atmost1}.}
+
+\item{atleastK}{positive integer: condition on at least K events in the
+sampled (sub)interval. \code{atleastK = 1} (default) is the zero-truncated
+process.}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the kernel (approximation knob; never truncates below
+\code{atleastK}).}
 }
 \value{
 a matrix of event times t, with rows corresponding to the sampled point processes.

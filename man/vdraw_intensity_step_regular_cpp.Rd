@@ -16,6 +16,7 @@ vdraw_intensity_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  budget_cap = NULL,
   atmostB = NULL
 )
 }
@@ -52,7 +53,10 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{atmost1}{boolean, draw at most 1 event time}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the majorizer kernel (approximation knob).}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
 }
 \value{
 a matrix of event times (columns) per draw (rows)

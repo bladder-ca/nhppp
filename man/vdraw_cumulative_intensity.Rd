@@ -14,7 +14,8 @@ vdraw_cumulative_intensity(
   Lambda_inv_args = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  atleast1 = FALSE,
+  atleastK = NULL
 )
 }
 \arguments{
@@ -43,7 +44,10 @@ a data.table named \code{vector_arguments}.}
 
 \item{atmost1}{boolean, draw at most 1 event time per sampled point process.}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{atleast1}{boolean, draw at least 1 event time (not implemented)}
+
+\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events
+(not implemented for this sampler)}
 }
 \value{
 a matrix of event times with one row per sampled point process.
