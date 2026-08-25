@@ -28,7 +28,7 @@
   } else {
     stop("lambda_matrix and Lambda_matrix cannot both be `NULL`")
   }
-  mode(rate) <- "numeric"
+  if (!is.double(rate)) storage.mode(rate) <- "double"
 
   num_na <- sum(is.na(rate))
   if (num_na > 0) {
@@ -42,7 +42,7 @@
   if (!is.matrix(time_breaks)) {
     time_breaks <- matrix(time_breaks, nrow = 1)
   }
-  mode(time_breaks) <- "numeric"
+  if (!is.double(time_breaks)) storage.mode(time_breaks) <- "double"
   if (any(!is.finite(time_breaks))) {
     stop("time_breaks contains NA or non-finite values")
   }
@@ -65,12 +65,11 @@
   } else {
     if (is.null(t_min)) t_min <- time_breaks[, 1, drop = FALSE]
     if (is.null(t_max)) t_max <- time_breaks[, K1, drop = FALSE]
+    # a 1-row subinterval is shared across all point processes (the C++
+    # kernel selects row 0), so it is not replicated here
     subinterval <- cbind(as.vector(t_min), as.vector(t_max))
     if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
       stop("The (rows of) [Lambda|lambda]_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
-    }
-    if (nrow(subinterval) == 1 && nrow(rate) != 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ]
     }
     stopifnot(
       all(subinterval[, 1] >= time_breaks[, 1]),
@@ -115,9 +114,17 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `time_breaks[, K+1]`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
-#' @param atleast1 boolean, draw at least 1 event time
+#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times. Generalizes `atmost1`.
+#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
+#' @param atleastK `NULL` or a positive integer: condition on at least K events
+#'        in the sampled (sub)interval. Generalizes `atleast1`.
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel. This is an approximation knob (it truncates the
+#'        extreme tail of the event-count distribution together with the
+#'        `1 - tol` quantile bound), not an exact contract like `atmostK`.
+#' @param atmostB deprecated alias for `budget_cap`.
 #'
 #' @return a matrix of event times t, with rows corresponding to the sampled point processes.
 #'
@@ -144,24 +151,14 @@ vdraw_sc_step <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostB = NULL,
-    atleast1 = FALSE) {
-  if (atleast1) {
-    return(
-      vztdraw_sc_step(
-        lambda_matrix = lambda_matrix,
-        Lambda_matrix = Lambda_matrix,
-        time_breaks = time_breaks,
-        t_min = t_min,
-        t_max = t_max,
-        atmost1 = atmost1
-      )
-    )
-  }
-
-  if (is.null(atmostB)) {
-    atmostB <- 0 # has to be <=0 in the C++ argument to be ignored
-  }
+    atmostK = NULL,
+    atleast1 = FALSE,
+    atleastK = NULL,
+    budget_cap = NULL,
+    atmostB = NULL) {
+  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  atleastK <- .resolve_atleastK(atleast1, atleastK)
+  budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
 
   args <- .prep_vdraw_sc_step_args(
     lambda_matrix = lambda_matrix,
@@ -171,23 +168,26 @@ vdraw_sc_step <- function(
     t_max = t_max
   )
 
-  if (is.null(args$subinterval)) {
-    Z <- .Call(
-      `_nhppp_vdraw_sc_step_general`,
-      args$rate, args$is_cumulative, args$time_breaks, tol, atmost1
+  subinterval <- args$subinterval
+  if (is.null(subinterval)) {
+    # whole-range sampling: the subinterval is the outer bounds
+    subinterval <- args$time_breaks[, c(1, ncol(args$time_breaks)), drop = FALSE]
+  }
+
+  if (atleastK >= 1L) {
+    return(
+      .Call(
+        `_nhppp_vztdraw_sc_step_general2`,
+        args$rate, args$is_cumulative, args$time_breaks, subinterval,
+        tol, atmostK, atleastK, budget_cap
+      )
     )
-    # the whole-range kernel has no atmostB argument; event times are sorted
-    # within a row, so keeping the first B columns keeps the earliest B events
-    if (atmostB > 0 && ncol(Z) > atmostB) {
-      Z <- Z[, 1:atmostB, drop = FALSE]
-    }
-    return(Z)
   }
   return(
     .Call(
       `_nhppp_vdraw_sc_step_general2`,
-      args$rate, args$is_cumulative, args$time_breaks, args$subinterval,
-      tol, atmost1, atmostB
+      args$rate, args$is_cumulative, args$time_breaks, subinterval,
+      tol, atmostK, budget_cap
     )
   )
 }

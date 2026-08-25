@@ -1,7 +1,10 @@
-#include "nhppp.h"
+#include "sc_step_core.h"
 
-using namespace Rcpp; 
+using namespace Rcpp;
 
+// Inversion sampler on a regular grid (equal-length intervals given by
+// range_t, 1 or n_draws rows). Whole-range sampling passes
+// subinterval == range_t. atmostK / budget_cap <= 0 mean "off".
 // [[Rcpp::export]]
 NumericMatrix vdraw_sc_step_regular2(
   const NumericMatrix & rate,
@@ -9,92 +12,10 @@ NumericMatrix vdraw_sc_step_regular2(
   const NumericMatrix & range_t,
   const NumericMatrix & subinterval,
   const double tol,
-  const bool atmost1, 
-  const int atmostB
+  const int atmostK,
+  const int budget_cap
 ) {
-  int n_intervals = rate.cols();
-  int n_draws = rate.rows();  
-  NumericVector interval_duration = (range_t(_,1) - range_t(_,0))/n_intervals;
-  NumericMatrix Lambda(n_draws, n_intervals);
-  if(!is_cumulative) {
-    Lambda = matrix_cumsum_columns(rate);
-    for(int i = 0; i!= n_intervals; ++i){
-      Lambda.column(i) = Lambda.column(i) * interval_duration; 
-    }
-  } else {
-    Lambda = rate;
-  }
-
-  int n_max_events = safe_double_to_int(R::qpois(1.0 - tol, max(Lambda), 1, 0));
-  if(atmostB>0 && atmostB < n_max_events) {
-    n_max_events = atmostB;
-  }
-  
-  if(n_max_events == 0) {
-    NumericMatrix Z(n_draws, 1); 
-    std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
-    return(Z);
-  }
-
-  NumericMatrix Z(n_draws, n_max_events);
-  std::fill( Z.begin(), Z.end(), NumericVector::get_na() ) ;
-  int i0, i1, j0, ev;
-  double r0, r1, f0, f1, L0, L1, tau, L_at_start_of_j0;
-  int ev_max = 0;
-  for (int draw = 0; draw != n_draws; ++draw){
-
-    auto L = Lambda.row(draw);
-    
-    // i0, i1, the indices of the intervals for the subinterval bounds
-    // f0 (f1) the fraction of the interval i0 (i1) where the lower (upper) subinterval lies
-    // L0, L1 , the cumulative intensity at the subinterval bounds 
-    // indices clamped to [0, n_intervals-1] and fractions to [0, 1] so that
-    // subinterval bounds at the top of range_t do not index past Lambda
-    r0 = (subinterval(draw, 0) - range_t(draw, 0)) / interval_duration[draw];
-    i0 = static_cast<int>(std::floor(r0));
-    if(i0 > n_intervals - 1) i0 = n_intervals - 1;
-    if(i0 < 0) i0 = 0;
-    f0 = r0 - i0;
-    if(f0 > 1.0) f0 = 1.0;
-    if(f0 < 0.0) f0 = 0.0;
-    L0 = (i0!=0)?L[i0-1]:0;
-    L0 = simple_lerp(L0, L[i0], f0);
-    r1 = (subinterval(draw, 1) - range_t(draw, 0)) / interval_duration[draw];
-    i1 = static_cast<int>(std::floor(r1));
-    if(i1 > n_intervals - 1) i1 = n_intervals - 1;
-    if(i1 < 0) i1 = 0;
-    f1 = r1 - i1;
-    if(f1 > 1.0) f1 = 1.0;
-    if(f1 < 0.0) f1 = 0.0;
-    L1 = (i1!=0)?L[i1-1]:0;
-    L1 = simple_lerp(L1, L[i1], f1);
-
-    tau = L0; 
-    j0 = i0;
-    ev = 0; 
-    while(true){
-      tau += R::rexp(1);
-      if (tau > L1) {
-        break; 
-      }
-      j0 = find_upper_bound_index(L, j0, tau); 
-      if(j0 == -1) {
-        break;
-      }
-      L_at_start_of_j0 = (j0>0) ? L[j0-1] : 0;
-      Z(draw, ev) = range_t(draw, 0) + interval_duration[draw] * 
-          (j0 + (tau - L_at_start_of_j0)/(L[j0] - L_at_start_of_j0));
-      if(atmost1){
-        break;
-      }
-      ev_max = std::max(ev_max, ev);
-      ev++;
-      if(ev == n_max_events) {
-        break;
-      }
-    }
-  }
-
-  return Z(Rcpp::Range(0, n_draws-1), Rcpp::Range(0, ev_max));
+  const nhppp::RegularGrid grid(range_t, rate.cols());
+  return nhppp::sc_step_core(rate, is_cumulative, grid, subinterval,
+                             tol, atmostK, budget_cap);
 }
-

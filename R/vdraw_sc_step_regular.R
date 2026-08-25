@@ -22,9 +22,17 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
-#' @param atleast1 boolean, draw at least 1 event time
+#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times. Generalizes `atmost1`.
+#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
+#' @param atleastK `NULL` or a positive integer: condition on at least K events
+#'        in the sampled (sub)interval. Generalizes `atleast1`.
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel. This is an approximation knob (it truncates the
+#'        extreme tail of the event-count distribution together with the
+#'        `1 - tol` quantile bound), not an exact contract like `atmostK`.
+#' @param atmostB deprecated alias for `budget_cap`.
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length
@@ -46,24 +54,16 @@ vdraw_sc_step_regular <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostB = NULL,
-    atleast1 = FALSE) {
-  if (isFALSE(atleast1)) {
-    return(
-      vdraw_sc_step_regular_cpp(
-        lambda_matrix = lambda_matrix,
-        Lambda_matrix = Lambda_matrix,
-        rate_matrix_t_min = rate_matrix_t_min,
-        rate_matrix_t_max = rate_matrix_t_max,
-        t_min = t_min,
-        t_max = t_max,
-        tol = tol,
-        atmost1 = atmost1,
-        atmostB = atmostB
-      )
-    )
-  }
-  if (isTRUE(atleast1)) {
+    atmostK = NULL,
+    atleast1 = FALSE,
+    atleastK = NULL,
+    budget_cap = NULL,
+    atmostB = NULL) {
+  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  atleastK <- .resolve_atleastK(atleast1, atleastK)
+  budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
+
+  if (atleastK >= 1L) {
     return(
       vztdraw_sc_step_regular_cpp(
         lambda_matrix = lambda_matrix,
@@ -72,9 +72,24 @@ vdraw_sc_step_regular <- function(
         rate_matrix_t_max = rate_matrix_t_max,
         t_min = t_min,
         t_max = t_max,
-        atmost1 = atmost1
+        tol = tol,
+        atmostK = if (atmostK > 0L) atmostK else NULL,
+        atleastK = atleastK,
+        budget_cap = if (budget_cap > 0L) budget_cap else NULL
       )
     )
   }
-  stop("never here")
+  return(
+    vdraw_sc_step_regular_cpp(
+      lambda_matrix = lambda_matrix,
+      Lambda_matrix = Lambda_matrix,
+      rate_matrix_t_min = rate_matrix_t_min,
+      rate_matrix_t_max = rate_matrix_t_max,
+      t_min = t_min,
+      t_max = t_max,
+      tol = tol,
+      atmostK = if (atmostK > 0L) atmostK else NULL,
+      budget_cap = if (budget_cap > 0L) budget_cap else NULL
+    )
+  )
 }

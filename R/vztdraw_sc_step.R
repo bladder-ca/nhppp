@@ -24,7 +24,18 @@
 #'        of a subinterval of `(time_breaks[, 1], time_breaks[, K+1]]`. If set,
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `time_breaks[, K+1]`.
-#' @param atmost1 boolean, draw at most 1 event time
+#' @param tol (scalar, double) tolerance for the number of events
+#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`).
+#'        The sample is drawn from the conditioned process and the earliest
+#'        event is reported.
+#' @param atmostK `NULL` or a positive integer: report only the earliest K
+#'        event times of the conditioned process. Generalizes `atmost1`.
+#' @param atleastK positive integer: condition on at least K events in the
+#'        sampled (sub)interval. `atleastK = 1` (default) is the zero-truncated
+#'        process.
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel (approximation knob; never truncates below
+#'        `atleastK`).
 #'
 #' @return a matrix of event times t, with rows corresponding to the sampled point processes.
 #'
@@ -41,7 +52,16 @@ vztdraw_sc_step <- function(
     time_breaks = NULL,
     t_min = NULL,
     t_max = NULL,
-    atmost1 = FALSE) {
+    tol = 10^-6,
+    atmost1 = FALSE,
+    atmostK = NULL,
+    atleastK = 1,
+    budget_cap = NULL) {
+  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  atleastK <- .resolve_atleastK(atleast1 = FALSE, atleastK = atleastK)
+  if (atleastK < 1L) stop("`atleastK` must be >= 1 for the truncated (zt) samplers")
+  budget_cap <- .resolve_budget_cap(budget_cap, NULL)
+
   args <- .prep_vdraw_sc_step_args(
     lambda_matrix = lambda_matrix,
     Lambda_matrix = Lambda_matrix,
@@ -50,18 +70,17 @@ vztdraw_sc_step <- function(
     t_max = t_max
   )
 
-  if (is.null(args$subinterval)) {
-    return(
-      .Call(
-        `_nhppp_vztdraw_sc_step_general`,
-        args$rate, args$is_cumulative, args$time_breaks, atmost1
-      )
-    )
+  subinterval <- args$subinterval
+  if (is.null(subinterval)) {
+    # whole-range sampling: the subinterval is the outer bounds
+    subinterval <- args$time_breaks[, c(1, ncol(args$time_breaks)), drop = FALSE]
   }
+
   return(
     .Call(
       `_nhppp_vztdraw_sc_step_general2`,
-      args$rate, args$is_cumulative, args$time_breaks, args$subinterval, atmost1
+      args$rate, args$is_cumulative, args$time_breaks, subinterval,
+      tol, atmostK, atleastK, budget_cap
     )
   )
 }
