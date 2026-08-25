@@ -40,7 +40,7 @@ NumericMatrix vztdraw_sc_step_regular2(
     // indices clamped to [0, n_intervals-1] and fractions to [0, 1] so that
     // subinterval bounds at the top of range_t do not index past Lambda
     r0 = (subinterval(draw, 0) - range_t(draw, 0)) / interval_duration[draw];
-    i0 = (int)std::floor(r0);
+    i0 = static_cast<int>(std::floor(r0));
     if(i0 > n_intervals - 1) i0 = n_intervals - 1;
     if(i0 < 0) i0 = 0;
     f0 = r0 - i0;
@@ -49,7 +49,7 @@ NumericMatrix vztdraw_sc_step_regular2(
     L0 = (i0!=0)?L[i0-1]:0;
     L0 = simple_lerp(L0, L[i0], f0);
     r1 = (subinterval(draw, 1) - range_t(draw, 0)) / interval_duration[draw];
-    i1 = (int)std::floor(r1);
+    i1 = static_cast<int>(std::floor(r1));
     if(i1 > n_intervals - 1) i1 = n_intervals - 1;
     if(i1 < 0) i1 = 0;
     f1 = r1 - i1;
