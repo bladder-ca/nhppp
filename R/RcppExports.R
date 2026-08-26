@@ -37,8 +37,12 @@ rztpois_vec <- function(lambda) {
     .Call(`_nhppp_rztpois_vec`, lambda)
 }
 
-vdraw_intensity_step_regular <- function(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmost1, budget_cap) {
-    .Call(`_nhppp_vdraw_intensity_step_regular`, lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmost1, budget_cap)
+vdraw_intensity_step_general <- function(lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap) {
+    .Call(`_nhppp_vdraw_intensity_step_general`, lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap)
+}
+
+vdraw_intensity_step_regular <- function(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap) {
+    .Call(`_nhppp_vdraw_intensity_step_regular`, lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap)
 }
 
 vdraw_sc_step_general2 <- function(rate, is_cumulative, time_breaks, subinterval, tol, atmostK, budget_cap) {

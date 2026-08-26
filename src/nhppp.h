@@ -83,7 +83,20 @@ Rcpp::NumericMatrix vdraw_intensity_step_regular(
   const Rcpp::NumericMatrix & subinterval,
   const bool use_subinterval,
   const double tol,
-  const bool atmost1,
+  const int atmostK,
+  const int atleastK,
+  const int budget_cap);
+
+Rcpp::NumericMatrix vdraw_intensity_step_general(
+  const Rcpp::Function & lambda,
+  const Rcpp::NumericMatrix & rate_maj,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
+  const bool use_subinterval,
+  const double tol,
+  const int atmostK,
+  const int atleastK,
   const int budget_cap);
 
 int safe_double_to_int(const double x);

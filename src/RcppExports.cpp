@@ -112,9 +112,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vdraw_intensity_step_general
+NumericMatrix vdraw_intensity_step_general(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const bool use_subinterval, const double tol, const int atmostK, const int atleastK, const int budget_cap);
+RcppExport SEXP _nhppp_vdraw_intensity_step_general(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP use_subintervalSEXP, SEXP tolSEXP, SEXP atmostKSEXP, SEXP atleastKSEXP, SEXP budget_capSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Function& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate_maj(rate_majSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type use_subinterval(use_subintervalSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type atmostK(atmostKSEXP);
+    Rcpp::traits::input_parameter< const int >::type atleastK(atleastKSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_general(lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vdraw_intensity_step_regular
-NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinterval, const double tol, const bool atmost1, const int budget_cap);
-RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintervalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP budget_capSEXP) {
+NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinterval, const double tol, const int atmostK, const int atleastK, const int budget_cap);
+RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintervalSEXP, SEXP tolSEXP, SEXP atmostKSEXP, SEXP atleastKSEXP, SEXP budget_capSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,9 +145,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
     Rcpp::traits::input_parameter< const bool >::type use_subinterval(use_subintervalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
+    Rcpp::traits::input_parameter< const int >::type atmostK(atmostKSEXP);
+    Rcpp::traits::input_parameter< const int >::type atleastK(atleastKSEXP);
     Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmost1, budget_cap));
+    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -212,7 +233,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_rbtpois_vec", (DL_FUNC) &_nhppp_rbtpois_vec, 2},
     {"_nhppp_rztpois", (DL_FUNC) &_nhppp_rztpois, 1},
     {"_nhppp_rztpois_vec", (DL_FUNC) &_nhppp_rztpois_vec, 1},
-    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 9},
+    {"_nhppp_vdraw_intensity_step_general", (DL_FUNC) &_nhppp_vdraw_intensity_step_general, 10},
+    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 10},
     {"_nhppp_vdraw_sc_step_general2", (DL_FUNC) &_nhppp_vdraw_sc_step_general2, 7},
     {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 7},
     {"_nhppp_vztdraw_sc_step_general2", (DL_FUNC) &_nhppp_vztdraw_sc_step_general2, 8},

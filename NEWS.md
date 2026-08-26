@@ -16,7 +16,11 @@ New features
 - `atmostK`: report only the earliest K event times (`atmost1` remains
   as an alias). For the truncated samplers the K smallest of all
   conditioned order statistics are reported, so `atleastK > atmostK`
-  is well defined. `atleastK = atmostK = K` yields exactly K events.
+  is well defined. `atleastK = atmostK = K` yields exactly K events —
+  note these are the earliest K of an `N >= K` realization, which is
+  NOT the process conditioned on exactly K events; the latter is
+  obtained from an `atleastK = K` draw by keeping a uniformly random
+  (not the earliest) size-K subset of the events.
 - `budget_cap` replaces `atmostB` (soft-deprecated alias with a warning):
   it caps the computational event budget of the vectorized kernels and is
   an approximation knob (jointly with the `1 - tol` quantile bound), not
@@ -41,11 +45,33 @@ Internals
   `range_t`/`t_min`/`t_max` inputs are shared across rows instead of
   being replicated at the R level.
 
+Thinning (intensity) family
+- New `vdraw_intensity_step()`: vectorized thinning sampler with piecewise
+  constant majorizers over arbitrary interval bounds (`time_breaks`, as in
+  `vdraw_sc_step()`); the target intensity remains an arbitrary vectorized
+  R function. Generalizes `vdraw_intensity()`, which assumes equal-length
+  intervals. Both share one C++ template core (`src/intensity_step_core.h`).
+- `atleastK` on the vectorized thinning samplers (`vdraw_intensity()`,
+  `vdraw_intensity_step()`): conditioning is by rejection — candidate
+  realizations are proposed from the majorizer conditioned on at least K
+  majorizer events (exact, since K accepted events imply K majorizer
+  events), thinned, and rows with fewer than K survivors are resampled.
+  The per-round acceptance probability degrades in K and in the looseness
+  of the majorizer; there is no iteration cap. The scalar thinning
+  samplers remain at `atleastK = 1`.
+- The thinning kernels now error when `lambda` exceeds the majorizer also
+  on the conditioned path (the old R-only zero-truncated path silently
+  capped acceptance probabilities above 1, sampling from the wrong
+  process when the majorizer was invalid). The internal
+  `vdraw_intensity_step_regular_forcezt()` is removed, superseded by the
+  conditioned C++ kernel.
+
 Breaking change (random streams only)
-- Same-seed results differ from 1.0.5.x for the vectorized sc-step and
-  zero-truncated samplers: the package guarantees the sampled process
-  distribution, not the number or order of RNG calls. Users relying on
-  common random numbers should block RNG streams themselves.
+- Same-seed results differ from 1.0.5.x for the vectorized sc-step,
+  zero-truncated, and thinning samplers: the package guarantees the
+  sampled process distribution, not the number or order of RNG calls.
+  Users relying on common random numbers should block RNG streams
+  themselves.
 
 * Generalize vectorized sc-step samplers to arbitrary interval bounds; fix four latent bugs
 

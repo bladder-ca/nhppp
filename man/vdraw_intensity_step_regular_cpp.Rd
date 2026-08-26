@@ -16,6 +16,8 @@ vdraw_intensity_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  atmostK = NULL,
+  atleastK = NULL,
   budget_cap = NULL,
   atmostB = NULL
 )
@@ -51,7 +53,18 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times. Generalizes \code{atmost1}. Ignored (all accepted events are
+returned) when \code{atleastK >= 1} — the conditional rejection loop
+needs the full survivor count and truncates after convergence.}
+
+\item{atleastK}{\code{NULL}, or a positive integer: draw the majorizer
+candidates conditioned on at least K majorizer events. NOTE: this
+does not by itself condition the thinned process on K accepted
+events; rows with fewer than K survivors must be resampled by the
+caller (see \code{vztdraw_intensity_step_regular()}).}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the majorizer kernel (approximation knob).}

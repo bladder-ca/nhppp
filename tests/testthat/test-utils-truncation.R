@@ -214,16 +214,16 @@ test_that("scalar samplers honor atleastK/atmostK", {
 test_that("unimplemented and inconsistent options error", {
   lmat <- matrix(rep(1, 50), ncol = 5)
 
-  # thinning-based samplers only support atleastK = 1
-  expect_error(
-    vdraw_intensity(
-      lambda = function(x, ...) 0.1 * x,
-      lambda_maj_matrix = lmat,
-      rate_matrix_t_min = 1, rate_matrix_t_max = 5,
-      atleastK = 2
-    ),
-    "not been implemented"
+  # the vectorized thinning sampler now supports atleastK >= 2
+  Z <- vdraw_intensity(
+    lambda = function(x, ...) 0.1 * x,
+    lambda_maj_matrix = lmat,
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    atleastK = 2
   )
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atleastk = 2)
+
+  # ... but the scalar thinning path does not
   expect_error(
     draw(
       lambda = function(t) 0.1 * t,

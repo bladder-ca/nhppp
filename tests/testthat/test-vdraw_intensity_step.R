@@ -1,0 +1,126 @@
+test_that("vdraw_intensity_step() samples on irregular grids", {
+  set.seed(20260826)
+  n_draws <- 500
+  lfun <- function(x, ...) 0.1 * x
+  lmaj <- matrix(rep(1, 5 * n_draws), ncol = 5)
+  breaks <- c(1, 1.5, 3, 4, 4.5, 5)
+
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks
+  )
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5)
+
+  # subinterval
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks,
+    t_min = 2, t_max = 4.2
+  )
+  check_ppp_sample_validity(Z, t_min = 2, t_max = 4.2)
+
+  # per-row breaks; row 10 spans (10, 14] where lambda reaches 1.4, so the
+  # majorizer must be at least that
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = 1.5 * lmaj[1:10, ],
+    time_breaks = matrix(rep(breaks, each = 10), nrow = 10) + 0:9
+  )
+  check_ppp_sample_validity(Z, t_min = 1 + 0:9, t_max = 5 + 0:9)
+
+  # atmostK on the thinning path
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, atmostK = 2
+  )
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmostk = 2)
+
+  # invalid majorizer errors
+  expect_error(
+    vdraw_intensity_step(
+      lambda = function(x, ...) 2 * x, lambda_maj_matrix = lmaj,
+      time_breaks = breaks
+    ),
+    "Majorizer"
+  )
+})
+
+
+test_that("thinning with a tight majorizer reproduces the conditioned sc_step law", {
+  # lambda == majorizer == constant 0.6: acceptance probability is 1, so the
+  # conditioned thinned process must equal the conditioned piecewise-constant
+  # process: counts ~ K-truncated Poisson(0.6 * 4), times uniform.
+  set.seed(20260827)
+  n_draws <- 10000
+  rate <- 0.6
+  lfun <- function(x, ...) rate * (x > 0)
+  lmaj <- matrix(rep(rate, 5 * n_draws), ncol = 5)
+  breaks <- c(1, 1.5, 3, 4, 4.5, 5)
+  k <- 3L
+
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, atleastK = k
+  )
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atleastk = k)
+
+  counts <- rowSums(!is.na(Z))
+  lam <- rate * 4
+  sup <- k:max(counts)
+  pmf <- dpois(sup, lam) / ppois(k - 1, lam, lower.tail = FALSE)
+  obs <- tabulate(factor(counts, levels = sup), nbins = length(sup))
+  chi <- suppressWarnings(stats::chisq.test(obs, p = pmf, rescale.p = TRUE))
+  expect_gt(chi$p.value, 0.001)
+
+  expect_gt(
+    suppressWarnings(stats::ks.test(as.vector(Z[!is.na(Z)]), "punif", 1, 5))$p.value,
+    0.001
+  )
+})
+
+
+test_that("conditioned thinning agrees across grids and majorizers", {
+  set.seed(20260828)
+  n_draws <- 2000
+  lfun <- function(x, ...) 0.2 * x
+  breaks <- seq(1, 5, length.out = 6)
+
+  # regular vs general grid on equal-spaced breaks (distributional)
+  Z_reg <- vdraw_intensity(
+    lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * n_draws), ncol = 5),
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5, atleastK = 2
+  )
+  Z_gen <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * n_draws), ncol = 5),
+    time_breaks = breaks, atleastK = 2
+  )
+  check_ppp_sample_validity(Z_reg, t_min = 1, t_max = 5, atleastk = 2)
+  check_ppp_sample_validity(Z_gen, t_min = 1, t_max = 5, atleastk = 2)
+  compare_ppp_vectors(ppp1 = Z_reg, ppp2 = Z_gen, threshold = 0.1, showQQ = FALSE)
+
+  # a looser majorizer must sample the same conditioned process
+  Z_loose <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = matrix(rep(3, 5 * n_draws), ncol = 5),
+    time_breaks = breaks, atleastK = 2
+  )
+  compare_ppp_vectors(ppp1 = Z_gen, ppp2 = Z_loose, threshold = 0.1, showQQ = FALSE)
+
+  # atleastK = atmostK -> exactly K accepted events per row
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * 200), ncol = 5),
+    time_breaks = breaks, atleastK = 2, atmostK = 2
+  )
+  expect_true(all(rowSums(!is.na(Z)) == 2))
+})
+
+
+test_that("vztdraw_intensity_step() handles vectorized lambda arguments", {
+  set.seed(20260829)
+  N <- 300
+  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$vector_arguments$exponent
+  l_args <- list(
+    vector_arguments = data.table::data.table(exponent = seq(from = 0.5, to = 2, length.out = N))
+  )
+  lmaj <- matrix(5.5, nrow = N, ncol = 5) # max lambda = .2 * 5^2 = 5
+
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_args = l_args, lambda_maj_matrix = lmaj,
+    time_breaks = c(1, 1.5, 3, 4, 4.5, 5), atleastK = 2
+  )
+  check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atleastk = 2)
+})

@@ -61,8 +61,9 @@ event times. Generalizes \code{atmost1}.}
 
 \item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
 
-\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events.
-Only \code{atleastK = 1} is implemented for this thinning-based sampler.}
+\item{atleastK}{\code{NULL} or a positive integer: condition on at least K
+accepted events (rejection resampling; see
+\code{vztdraw_intensity_step_regular()}). Generalizes \code{atleast1}.}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the majorizer kernel (approximation knob).}

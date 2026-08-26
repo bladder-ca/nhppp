@@ -2,8 +2,8 @@
 % Please edit documentation in R/vztdraw_intensity_step_regular.R
 \name{vztdraw_intensity_step_regular}
 \alias{vztdraw_intensity_step_regular}
-\title{Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers (R)}
+\title{Vectorized sampling from a K-truncated non homogeneous Poisson Point Process (NHPPP) from
+an interval (thinning method) with piecewise constant majorizers (R)}
 \usage{
 vztdraw_intensity_step_regular(
   lambda = NULL,
@@ -14,7 +14,10 @@ vztdraw_intensity_step_regular(
   rate_matrix_t_max = NULL,
   t_min = NULL,
   t_max = NULL,
+  tol = 10^-6,
   atmost1 = FALSE,
+  atmostK = NULL,
+  atleastK = 1,
   ...
 )
 }
@@ -47,11 +50,31 @@ of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 times are sampled from the subinterval.
 If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{tol}{(scalar, double) tolerance for the number of events}
+
+\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1}).
+The realization is drawn from the conditioned process and the
+earliest event is reported.}
+
+\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
+event times of the conditioned process. Generalizes \code{atmost1}.}
+
+\item{atleastK}{positive integer: condition on at least K accepted events.}
+
+\item{...}{absorbed (for wrapper compatibility)}
 }
 \description{
-Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers.
-The majorizers are step functions over equal-length time intevals.
+Vectorized thinning sampler conditional on observing at least \code{atleastK}
+events (\code{atleastK = 1}, the default, is the zero-truncated process).
+The majorizers are step functions over equal-length time intervals.
+
+Conditioning is by rejection: candidate realizations are proposed from the
+majorizer conditioned on at least K majorizer events (exact, because
+at least K accepted events implies at least K majorizer events), thinned
+against \code{lambda}, and rows with fewer than K surviving events are
+resampled until the condition holds. The per-round acceptance probability
+degrades in K and in the looseness of the majorizer, so a tight majorizer
+matters much more here than in the unconditional sampler. There is no
+iteration cap.
 }
 \keyword{internal}

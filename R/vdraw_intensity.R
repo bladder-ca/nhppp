@@ -31,8 +31,9 @@
 #' @param atmostK `NULL` or a positive integer: report only the earliest K
 #'        event times. Generalizes `atmost1`.
 #' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
-#' @param atleastK `NULL` or a positive integer: condition on at least K events.
-#'        Only `atleastK = 1` is implemented for this thinning-based sampler.
+#' @param atleastK `NULL` or a positive integer: condition on at least K
+#'        accepted events (rejection resampling; see
+#'        `vztdraw_intensity_step_regular()`). Generalizes `atleast1`.
 #' @param budget_cap `NULL` or a positive integer: cap the computational event
 #'        budget of the majorizer kernel (approximation knob).
 #' @param atmostB deprecated alias for `budget_cap`.
@@ -71,12 +72,8 @@ vdraw_intensity <- function(
   atleastK <- .resolve_atleastK(atleast1, atleastK)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
 
-  if (atleastK >= 2L) {
-    stop("`atleastK >= 2` has not been implemented for the thinning-based (intensity) samplers.")
-  }
-
-  if (atleastK == 0L) {
-    Z <- vdraw_intensity_step_regular_cpp(
+  if (atleastK >= 1L) {
+    return(vztdraw_intensity_step_regular(
       lambda = lambda,
       lambda_args = lambda_args,
       Lambda_maj_matrix = Lambda_maj_matrix,
@@ -86,27 +83,21 @@ vdraw_intensity <- function(
       t_min = t_min,
       t_max = t_max,
       tol = tol,
-      atmost1 = (atmostK == 1L),
-      budget_cap = if (budget_cap > 0L) budget_cap else NULL
-    )
-  } else {
-    Z <- vztdraw_intensity_step_regular(
-      lambda = lambda,
-      lambda_args = lambda_args,
-      Lambda_maj_matrix = Lambda_maj_matrix,
-      lambda_maj_matrix = lambda_maj_matrix,
-      rate_matrix_t_min = rate_matrix_t_min,
-      rate_matrix_t_max = rate_matrix_t_max,
-      t_min = t_min,
-      t_max = t_max,
-      tol = tol,
-      atmost1 = (atmostK == 1L)
-    )
+      atmostK = if (atmostK > 0L) atmostK else NULL,
+      atleastK = atleastK
+    ))
   }
-  # accepted times are sorted within a row, so the first K columns hold the
-  # earliest K events
-  if (atmostK > 1L && ncol(Z) > atmostK) {
-    Z <- Z[, seq_len(atmostK), drop = FALSE]
-  }
-  return(Z)
+  return(vdraw_intensity_step_regular_cpp(
+    lambda = lambda,
+    lambda_args = lambda_args,
+    Lambda_maj_matrix = Lambda_maj_matrix,
+    lambda_maj_matrix = lambda_maj_matrix,
+    rate_matrix_t_min = rate_matrix_t_min,
+    rate_matrix_t_max = rate_matrix_t_max,
+    t_min = t_min,
+    t_max = t_max,
+    tol = tol,
+    atmostK = if (atmostK > 0L) atmostK else NULL,
+    budget_cap = if (budget_cap > 0L) budget_cap else NULL
+  ))
 }
