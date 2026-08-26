@@ -20,9 +20,11 @@ vdraw(
   rate_matrix_t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostK = NULL,
+  report_first_K = NULL,
+  report_last_K = NULL,
   atleast1 = FALSE,
-  atleastK = NULL,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL,
   budget_cap = NULL,
   atmostB = NULL
 )
@@ -73,16 +75,23 @@ The length of this argument is the number of point processes that should be draw
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
 
-\item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
 
-\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events.
-Generalizes \code{atleast1}. With \code{lambda} (thinning), only
-\code{atleastK = 1} is implemented.}
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events.}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the kernel (approximation knob, not an exact contract).}

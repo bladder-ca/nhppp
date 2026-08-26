@@ -11,17 +11,17 @@
 // candidate times that are accepted with probability
 // lambda(t) / lambda_maj(interval of t).
 //
-// atleastK >= 1 draws the candidates from the majorizer CONDITIONED on
-// >= K events (sc_step_zt_core). This does not by itself guarantee >= K
-// ACCEPTED events — the caller (R-level rejection loop) must count the
-// survivors per row and resample the rows that fail; because
-// {N_accepted >= K} is a subset of {N_majorizer >= K}, restricting the
-// proposal to the conditioned majorizer leaves the accepted conditional
-// law exact. For the same reason, when atleastK >= 1 ALL accepted events
-// are stored (no atmostK break): the caller needs the full survivor count
-// to verify the condition, and applies atmostK after convergence.
-// In the unconditional case (atleastK <= 0) events are accepted in time
-// order, so breaking after atmostK accepted yields exactly the earliest K.
+// gen_at_least_K >= 1 draws the candidates from the majorizer CONDITIONED
+// on >= K events (only the lower bound may be pushed into the proposal:
+// {N_acc >= K} implies {N_maj >= K}, but an upper bound on N_maj would
+// over-restrict and bias the accepted law). Conditioning the ACCEPTED
+// count is the caller's job: the R-level rejection loop counts survivors
+// per row against [gen_at_least_K, gen_at_most_K] and resamples the rows
+// that fail. When gen_at_least_K >= 1 ALL accepted events are stored (the
+// caller needs the full survivor count; reporting happens after
+// convergence). In the unconditional case events are accepted in time
+// order, so report_first_K may stop early and report_last_K compacts the
+// row after the fact.
 
 namespace nhppp {
 
@@ -30,11 +30,15 @@ Rcpp::NumericMatrix intensity_step_core(const Rcpp::Function& lambda,
                                         const Rcpp::NumericMatrix& rate_maj,
                                         const bool is_cumulative, const Grid& g,
                                         const Rcpp::NumericMatrix& subinterval,
-                                        const double tol, const int atmostK,
-                                        const int atleastK, const int budget_cap) {
+                                        const double tol,
+                                        const int report_first_K,
+                                        const int report_last_K,
+                                        const int gen_at_least_K,
+                                        const int budget_cap) {
   const int n_intervals = rate_maj.cols();
   const int n_draws = rate_maj.rows();
   const double epsilon = std::numeric_limits<double>::epsilon();
+  const bool conditioned = (gen_at_least_K >= 1);
 
   // Lambda_maj: cumulative majorizer at interval ends; lambda_maj: per-interval
   // rates. One of the two aliases rate_maj (read-only), the other is built.
@@ -53,13 +57,14 @@ Rcpp::NumericMatrix intensity_step_core(const Rcpp::Function& lambda,
     }
   }
 
-  // candidates: all majorizer events (atmostK off — thinning must see them all)
+  // candidates: all majorizer events (no reporting cap — thinning must see them all)
   Rcpp::NumericMatrix Zstar =
-      (atleastK >= 1)
-          ? sc_step_zt_core(Lambda_maj, true, g, subinterval, tol,
-                            /*atmostK=*/0, atleastK, budget_cap)
+      conditioned
+          ? sc_step_orderstat_core(Lambda_maj, true, g, subinterval, tol,
+                                   /*report_first_K=*/0, /*report_last_K=*/0,
+                                   gen_at_least_K, /*gen_at_most_K=*/0, budget_cap)
           : sc_step_core(Lambda_maj, true, g, subinterval, tol,
-                         /*atmostK=*/0, budget_cap);
+                         /*report_first_K=*/0, /*report_last_K=*/0, budget_cap);
 
   Rcpp::NumericMatrix lambda_star = lambda(Zstar);
 
@@ -85,13 +90,16 @@ Rcpp::NumericMatrix intensity_step_core(const Rcpp::Function& lambda,
 
       if(acceptance_prob > (R::runif(0.0, 1.0))) {
         Z(draw, acc_i) = Zstar(draw, ev);
-        max_acc_i = std::max(max_acc_i, acc_i);
         ++acc_i;
-        if(atleastK < 1 && atmostK > 0 && acc_i == atmostK) {
+        if(!conditioned && report_first_K > 0 && acc_i == report_first_K) {
           break;
         }
       }
     }
+    if (!conditioned) {
+      acc_i = compact_last(Z, draw, acc_i, report_last_K);
+    }
+    if (acc_i > 0) max_acc_i = std::max(max_acc_i, acc_i - 1);
   }
 
   return trim_columns(Z, max_acc_i, n_draws);

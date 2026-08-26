@@ -14,13 +14,20 @@
 #' @param step_majorizer_vector (vector, double) `K` constant majorizing rates, one per interval; all intervals are of equal length (regular)
 #' @param t_min (double) the lower bound of the interval
 #' @param t_max (double) the upper bound of the interval
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times. Generalizes `atmost1`.
-#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
-#' @param atleastK `NULL` or a positive integer: condition on at least K events
-#'        in the interval. Generalizes `atleast1`. With `lambda` (thinning),
-#'        only `atleastK = 1` is implemented.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events. With `lambda` (thinning),
+#'        only `generate_at_least_K = 1` is implemented.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events. Not implemented with `lambda`
+#'        (thinning).
 #'
 #' @return a vector of event times
 #' @export
@@ -35,21 +42,26 @@ draw <- function(
     t_min = NULL,
     t_max = NULL,
     atmost1 = FALSE,
-    atmostK = NULL,
+    report_first_K = NULL,
+    report_last_K = NULL,
     atleast1 = FALSE,
-    atleastK = NULL) {
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
-  atleastK <- .resolve_atleastK(atleast1, atleastK)
+    generate_at_least_K = NULL,
+    generate_at_most_K = NULL) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
+  conditioned <- (gen_$at_least > 0L || gen_$at_most > 0L)
 
   if (!is.null(Lambda)) {
-    if (atleastK >= 1L) {
+    if (conditioned) {
       return(ztdraw_cumulative_intensity(
         Lambda = Lambda,
         Lambda_inv = Lambda_inv,
         t_min = t_min,
         t_max = t_max,
-        atmostK = if (atmostK > 0L) atmostK else NULL,
-        atleastK = atleastK
+        report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+        report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+        generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
+        generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL
       ))
     }
     z <- draw_cumulative_intensity(
@@ -57,17 +69,16 @@ draw <- function(
       Lambda_inv = Lambda_inv,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = (atmostK == 1L)
+      atmost1 = (rep_$first == 1L)
     )
-    if (atmostK > 1L && length(z) > atmostK) z <- z[seq_len(atmostK)]
-    return(z)
+    return(.report_slice_vector(z, rep_))
   }
 
   if (!is.null(lambda)) {
-    if (atleastK >= 2L) {
-      stop("`atleastK >= 2` has not been implemented for the thinning-based (intensity) samplers.")
+    if (gen_$at_least >= 2L || gen_$at_most > 0L) {
+      stop("only `generate_at_least_K = 1` has been implemented for the scalar thinning-based (intensity) samplers.")
     }
-    if (atleastK == 1L) {
+    if (gen_$at_least == 1L) {
       func <- ztdraw_intensity
     } else {
       func <- draw_intensity
@@ -80,9 +91,8 @@ draw <- function(
       step_majorizer_vector = step_majorizer_vector,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = (atmostK == 1L)
+      atmost1 = (rep_$first == 1L)
     )
-    if (atmostK > 1L && length(z) > atmostK) z <- z[seq_len(atmostK)]
-    return(z)
+    return(.report_slice_vector(z, rep_))
   }
 }

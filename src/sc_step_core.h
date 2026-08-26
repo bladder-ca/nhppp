@@ -8,20 +8,32 @@
 // Two grid policies describe the time axis (equal-length intervals vs
 // arbitrary breaks); two template cores implement the exact algorithms of
 // Trikalinos & Sereda (arXiv:2402.00358):
-//   sc_step_core    - inversion of a unit-rate Exp(1) walk on the Lambda
-//                     scale; events are generated in time order, so stopping
-//                     after atmostK events yields exactly the earliest K.
-//   sc_step_zt_core - conditional order statistics: N ~ Pois(L1-L0) given
-//                     N >= atleastK, then N sorted uniforms on (L0, L1);
-//                     under atmostK the K smallest of all N are reported
-//                     (the count N itself is never truncated by atmostK).
+//   sc_step_core      - inversion of a unit-rate Exp(1) walk on the Lambda
+//                       scale; the UNCONDITIONAL sampler.
+//   sc_step_orderstat_core - conditional order statistics:
+//                       N ~ Pois(L1-L0) truncated to
+//                       [gen_at_least_K, gen_at_most_K], then N sorted
+//                       uniforms on (L0, L1); the CONDITIONED sampler.
 // Both cores sample on a per-draw subinterval; whole-range sampling is the
 // special case subinterval == full range.
 //
+// Option classes (all ints, <= 0 = off):
+//   report_first_K / report_last_K - REPORTING truncations: return only the
+//     earliest / latest min(N, K) events of the realization; the count law
+//     is unchanged. At most one may be set (enforced at the R level). The
+//     sequential core generates in time order, so report_first_K may stop
+//     generation early; report_last_K requires the full realization first.
+//   gen_at_least_K / gen_at_most_K - GENERATION conditioning: change the
+//     sampled law to X | K1 <= N <= K2 (orderstat core only; the sequential
+//     walk cannot condition on the future total).
+//   budget_cap - computational cap on the event budget (approximation knob,
+//     together with the 1 - tol quantile bound); never truncates the count
+//     below gen_at_least_K.
+//
 // Grids and the subinterval matrix may have 1 row (shared across draws) or
 // one row per draw. Cumulative Lambda columns hold values at interval ends
-// (no leading zero). Zero-event rows are NA-filled; output is trimmed to the
-// max event count (min 1 column).
+// (no leading zero). Empty rows are NA-filled; output is trimmed to the max
+// reported event count (min 1 column).
 
 namespace nhppp {
 
@@ -141,14 +153,30 @@ inline Rcpp::NumericMatrix trim_columns(Rcpp::NumericMatrix& Z, const int ev_max
   return Z(Rcpp::Range(0, n_draws - 1), Rcpp::Range(0, ev_max));
 }
 
-// Inversion sampler (Exp(1) walk). atmostK / budget_cap <= 0 mean "off";
-// they act identically here because events arrive in time order.
+// Keep only the latest n_keep of the n_generated (ascending) events in row d.
+inline int compact_last(Rcpp::NumericMatrix& Z, const int d,
+                        const int n_generated, const int n_keep) {
+  if (n_keep <= 0 || n_generated <= n_keep) {
+    return n_generated;
+  }
+  for (int i = 0; i != n_keep; ++i) {
+    Z(d, i) = Z(d, n_generated - n_keep + i);
+  }
+  for (int i = n_keep; i != n_generated; ++i) {
+    Z(d, i) = Rcpp::NumericVector::get_na();
+  }
+  return n_keep;
+}
+
+// Unconditional inversion sampler (Exp(1) walk). Events arrive in time
+// order, so report_first_K may cut generation short; report_last_K must let
+// the walk run to the end of the (sub)interval and compacts afterwards.
 template <class Grid>
 Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
                                  const bool is_cumulative, const Grid& g,
                                  const Rcpp::NumericMatrix& subinterval,
-                                 const double tol, const int atmostK,
-                                 const int budget_cap) {
+                                 const double tol, const int report_first_K,
+                                 const int report_last_K, const int budget_cap) {
   const int K = rate.cols();
   const int n_draws = rate.rows();
   const bool shared_sub = (subinterval.rows() == 1);
@@ -156,7 +184,9 @@ Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
 
   int n_max_events = safe_double_to_int(R::qpois(1.0 - tol, Rcpp::max(Lambda), 1, 0));
   if (budget_cap > 0 && budget_cap < n_max_events) n_max_events = budget_cap;
-  if (atmostK > 0 && atmostK < n_max_events) n_max_events = atmostK;
+  if (report_first_K > 0 && report_first_K < n_max_events) n_max_events = report_first_K;
+  // report_last_K cannot shrink the generation budget: the whole realization
+  // must be generated before the last K are known
   if (n_max_events == 0) {
     return na_matrix(n_draws, 1);
   }
@@ -183,34 +213,44 @@ Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
       if (j0 == -1) break;
       const double L_prev = (j0 > 0) ? L[j0 - 1] : 0.0;
       Z(d, ev) = g.time_at(d, j0, (tau - L_prev) / (L[j0] - L_prev));
-      ev_max = std::max(ev_max, ev);
       ++ev;
       if (ev == n_max_events) break;
     }
+    ev = compact_last(Z, d, ev, report_last_K);
+    if (ev > 0) ev_max = std::max(ev_max, ev - 1);
   }
   return trim_columns(Z, ev_max, n_draws);
 }
 
-// Conditional order-statistics sampler for N >= atleastK (atleastK >= 1).
-// budget_cap (and the 1 - tol quantile) cap the count N, but never below
-// atleastK; atmostK caps only how many of the N order statistics are
-// reported (the K smallest), not N itself.
+// Conditional order-statistics sampler for gen_at_least_K <= N <=
+// gen_at_most_K (either bound may be off). budget_cap (and the 1 - tol
+// quantile) cap the count N, but never below gen_at_least_K; the reporting
+// options select which min(N, K) order statistics are returned and never
+// affect N itself.
 template <class Grid>
-Rcpp::NumericMatrix sc_step_zt_core(const Rcpp::NumericMatrix& rate,
-                                    const bool is_cumulative, const Grid& g,
-                                    const Rcpp::NumericMatrix& subinterval,
-                                    const double tol, const int atmostK,
-                                    const int atleastK, const int budget_cap) {
+Rcpp::NumericMatrix sc_step_orderstat_core(const Rcpp::NumericMatrix& rate,
+                                           const bool is_cumulative, const Grid& g,
+                                           const Rcpp::NumericMatrix& subinterval,
+                                           const double tol,
+                                           const int report_first_K,
+                                           const int report_last_K,
+                                           const int gen_at_least_K,
+                                           const int gen_at_most_K,
+                                           const int budget_cap) {
   const int K = rate.cols();
   const int n_draws = rate.rows();
   const bool shared_sub = (subinterval.rows() == 1);
+  const int k_min = (gen_at_least_K > 0) ? gen_at_least_K : 0;
   const Rcpp::NumericMatrix Lambda = build_Lambda(rate, is_cumulative, g);
 
   int n_count_cap = safe_double_to_int(R::qpois(1.0 - tol, Rcpp::max(Lambda), 1, 0));
   if (budget_cap > 0 && budget_cap < n_count_cap) n_count_cap = budget_cap;
-  if (n_count_cap < atleastK) n_count_cap = atleastK;
+  if (gen_at_most_K > 0 && gen_at_most_K < n_count_cap) n_count_cap = gen_at_most_K;
+  if (n_count_cap < k_min) n_count_cap = k_min;
   if (n_count_cap < 1) n_count_cap = 1;
-  const int n_cols = (atmostK > 0 && atmostK < n_count_cap) ? atmostK : n_count_cap;
+  int n_cols = n_count_cap;
+  if (report_first_K > 0 && report_first_K < n_cols) n_cols = report_first_K;
+  if (report_last_K > 0 && report_last_K < n_cols) n_cols = report_last_K;
 
   Rcpp::NumericMatrix Z = na_matrix(n_draws, n_cols);
   std::vector<double> L(K);
@@ -225,16 +265,23 @@ Rcpp::NumericMatrix sc_step_zt_core(const Rcpp::NumericMatrix& rate,
     const int i1 = g.locate(d, subinterval(sr, 1), f1);
     const double L1 = simple_lerp((i1 != 0) ? L[i1 - 1] : 0.0, L[i1], f1);
 
-    int N = rbtpois(L1 - L0, atleastK);
+    int N = rbtpois(L1 - L0, k_min, gen_at_most_K);
     if (N > n_count_cap) N = n_count_cap;
-    if (N == 0) { // only when L1 == L0 (measure-zero subinterval)
+    if (N == 0) { // legitimate under a pure upper bound; else measure-zero subinterval
       continue;
     }
     for (int i = 0; i != N; ++i) {
       U[i] = R::runif(L0, L1);
     }
-    const int n_report = (atmostK > 0 && atmostK < N) ? atmostK : N;
-    if (n_report < N) {
+    int n_report = N;
+    int offset = 0;
+    if (report_first_K > 0 && report_first_K < N) {
+      n_report = report_first_K;
+    } else if (report_last_K > 0 && report_last_K < N) {
+      n_report = report_last_K;
+      offset = N - report_last_K;
+    }
+    if (offset == 0 && n_report < N) {
       std::partial_sort(U.begin(), U.begin() + n_report, U.begin() + N);
     } else {
       std::sort(U.begin(), U.begin() + N);
@@ -242,10 +289,10 @@ Rcpp::NumericMatrix sc_step_zt_core(const Rcpp::NumericMatrix& rate,
 
     int j0 = i0;
     for (int i = 0; i != n_report; ++i) {
-      j0 = upper_bound_index(L.data(), K, j0, U[i]);
+      j0 = upper_bound_index(L.data(), K, j0, U[offset + i]);
       if (j0 == -1) break;
       const double L_prev = (j0 > 0) ? L[j0 - 1] : 0.0;
-      Z(d, i) = g.time_at(d, j0, (U[i] - L_prev) / (L[j0] - L_prev));
+      Z(d, i) = g.time_at(d, j0, (U[offset + i] - L_prev) / (L[j0] - L_prev));
       ev_max = std::max(ev_max, i);
     }
   }

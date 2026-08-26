@@ -5,12 +5,19 @@
 #' @param lambda_vector (scalar, double) `K` constant intensity rates, one per interval
 #' @param t_min (scalar, double) lower bound of the time interval
 #' @param t_max (scalar, double) upper bound of the time interval
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times. Generalizes `atmost1`.
-#' @param atleast1 boolean, condition on at least 1 event (alias for `atleastK = 1`)
-#' @param atleastK `NULL` or a positive integer: condition on at least K events
-#'        in the interval. Generalizes `atleast1`.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation — the count law is
+#'        unchanged).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events.
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length
@@ -24,9 +31,11 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
                                  t_min = NULL,
                                  t_max = NULL,
                                  atmost1 = FALSE,
-                                 atmostK = NULL,
+                                 report_first_K = NULL,
+                                 report_last_K = NULL,
                                  atleast1 = FALSE,
-                                 atleastK = NULL) {
+                                 generate_at_least_K = NULL,
+                                 generate_at_most_K = NULL) {
   stopifnot(!is.null(t_min) && !is.null(t_max))
   if (is.null(Lambda_vector) && !is.null(lambda_vector)) {
     Lambda_vector <- cumsum(lambda_vector)
@@ -34,24 +43,26 @@ draw_sc_step_regular <- function(Lambda_vector = NULL,
   n_intervals <- length(Lambda_vector)
   interval_length <- (t_max - t_min) / n_intervals
   Lambda_vector <- c(0, Lambda_vector)
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
-  atleastK <- .resolve_atleastK(atleast1, atleastK)
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
 
-  if (atleastK >= 1L) {
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
     ppp_t_fun <- function(rate, t_min, t_max, atmost1) {
       ztppp(
         rate = rate, t_min = t_min, t_max = t_max,
-        atmostK = if (atmostK > 0L) atmostK else NULL, atleastK = atleastK
+        report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+        report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+        generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
+        generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL
       )
     }
   } else {
     ppp_t_fun <- function(rate, t_min, t_max, atmost1) {
       z <- ppp2(rate = rate, t_min = t_min, t_max = t_max, atmost1 = atmost1)
-      if (atmostK > 1L && length(z) > atmostK) z <- z[seq_len(atmostK)]
-      return(z)
+      return(.report_slice_vector(z, rep_))
     }
   }
-  atmost1 <- (atmostK == 1L)
+  atmost1 <- (rep_$first == 1L)
 
   if (n_intervals == 1) {
     tau <- ppp_t_fun(rate = (Lambda_vector[2] - Lambda_vector[1]) / interval_length, t_min = t_min, t_max = t_max, atmost1 = atmost1)

@@ -13,8 +13,10 @@ vztdraw_sc_step(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostK = NULL,
-  atleastK = 1,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL,
   budget_cap = NULL
 )
 }
@@ -42,20 +44,28 @@ If omitted, it is equivalent to \code{time_breaks[, K+1]}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1}).
-The sample is drawn from the conditioned process and the earliest
-event is reported.}
+\item{atmost1}{boolean, report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times of the conditioned process. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization (never
+affects the conditioned count itself). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
 
-\item{atleastK}{positive integer: condition on at least K events in the
-sampled (sub)interval. \code{atleastK = 1} (default) is the zero-truncated
-process.}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+events in the sampled (sub)interval. The default 1 is the
+zero-truncated process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K events. May be combined with \code{generate_at_least_K}
+(K1 <= K2; K1 = K2 conditions on exactly K events).}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the kernel (approximation knob; never truncates below
-\code{atleastK}).}
+\code{generate_at_least_K}).}
 }
 \value{
 a matrix of event times t, with rows corresponding to the sampled point processes.

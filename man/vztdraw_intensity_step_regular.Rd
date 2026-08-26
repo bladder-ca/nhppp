@@ -16,8 +16,10 @@ vztdraw_intensity_step_regular(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostK = NULL,
-  atleastK = 1,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL,
   ...
 )
 }
@@ -52,29 +54,38 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1}).
-The realization is drawn from the conditioned process and the
-earliest event is reported.}
+\item{atmost1}{boolean, report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times of the conditioned process. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization.}
 
-\item{atleastK}{positive integer: condition on at least K accepted events.}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+accepted events. The default 1 is the zero-truncated process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K accepted events (rejection on the upper bound).}
 
 \item{...}{absorbed (for wrapper compatibility)}
 }
 \description{
-Vectorized thinning sampler conditional on observing at least \code{atleastK}
-events (\code{atleastK = 1}, the default, is the zero-truncated process).
+Vectorized thinning sampler conditional on the accepted event count lying
+in \verb{[generate_at_least_K, generate_at_most_K]} (\code{generate_at_least_K = 1}
+alone, the default, is the zero-truncated process).
 The majorizers are step functions over equal-length time intervals.
 
 Conditioning is by rejection: candidate realizations are proposed from the
-majorizer conditioned on at least K majorizer events (exact, because
-at least K accepted events implies at least K majorizer events), thinned
-against \code{lambda}, and rows with fewer than K surviving events are
-resampled until the condition holds. The per-round acceptance probability
-degrades in K and in the looseness of the majorizer, so a tight majorizer
-matters much more here than in the unconditional sampler. There is no
-iteration cap.
+majorizer conditioned on at least K1 majorizer events (only the lower
+bound may be pushed into the proposal — at least K1 accepted events
+implies at least K1 majorizer events, whereas an upper bound on the
+majorizer count would over-restrict and bias the accepted law), thinned
+against \code{lambda}, and rows whose surviving count falls outside
+\verb{[K1, K2]} are resampled until the condition holds. The per-round
+acceptance probability degrades in the strictness of the bounds and in
+the looseness of the majorizer, so a tight majorizer matters much more
+here than in the unconditional sampler. There is no iteration cap.
 }
 \keyword{internal}

@@ -27,7 +27,7 @@ test_that("vdraw_intensity_step() samples on irregular grids", {
 
   # atmostK on the thinning path
   Z <- vdraw_intensity_step(
-    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, atmostK = 2
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, report_first_K = 2
   )
   check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atmostk = 2)
 
@@ -55,7 +55,7 @@ test_that("thinning with a tight majorizer reproduces the conditioned sc_step la
   k <- 3L
 
   Z <- vdraw_intensity_step(
-    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, atleastK = k
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks, generate_at_least_K = k
   )
   check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atleastk = k)
 
@@ -71,6 +71,20 @@ test_that("thinning with a tight majorizer reproduces the conditioned sc_step la
     suppressWarnings(stats::ks.test(as.vector(Z[!is.na(Z)]), "punif", 1, 5))$p.value,
     0.001
   )
+
+  # upper-bound conditioning (rejection on the accepted count): with the
+  # tight majorizer the counts must follow the right-truncated Poisson
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks,
+    generate_at_least_K = 1, generate_at_most_K = 3
+  )
+  counts <- rowSums(!is.na(Z))
+  expect_true(all(counts >= 1 & counts <= 3))
+  sup <- 1:3
+  pmf <- dpois(sup, lam) / sum(dpois(sup, lam))
+  obs <- tabulate(factor(counts, levels = sup), nbins = 3)
+  chi <- suppressWarnings(stats::chisq.test(obs, p = pmf, rescale.p = TRUE))
+  expect_gt(chi$p.value, 0.001)
 })
 
 
@@ -83,11 +97,11 @@ test_that("conditioned thinning agrees across grids and majorizers", {
   # regular vs general grid on equal-spaced breaks (distributional)
   Z_reg <- vdraw_intensity(
     lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * n_draws), ncol = 5),
-    rate_matrix_t_min = 1, rate_matrix_t_max = 5, atleastK = 2
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5, generate_at_least_K = 2
   )
   Z_gen <- vdraw_intensity_step(
     lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * n_draws), ncol = 5),
-    time_breaks = breaks, atleastK = 2
+    time_breaks = breaks, generate_at_least_K = 2
   )
   check_ppp_sample_validity(Z_reg, t_min = 1, t_max = 5, atleastk = 2)
   check_ppp_sample_validity(Z_gen, t_min = 1, t_max = 5, atleastk = 2)
@@ -96,14 +110,14 @@ test_that("conditioned thinning agrees across grids and majorizers", {
   # a looser majorizer must sample the same conditioned process
   Z_loose <- vdraw_intensity_step(
     lambda = lfun, lambda_maj_matrix = matrix(rep(3, 5 * n_draws), ncol = 5),
-    time_breaks = breaks, atleastK = 2
+    time_breaks = breaks, generate_at_least_K = 2
   )
   compare_ppp_vectors(ppp1 = Z_gen, ppp2 = Z_loose, threshold = 0.1, showQQ = FALSE)
 
   # atleastK = atmostK -> exactly K accepted events per row
   Z <- vdraw_intensity_step(
     lambda = lfun, lambda_maj_matrix = matrix(rep(1.2, 5 * 200), ncol = 5),
-    time_breaks = breaks, atleastK = 2, atmostK = 2
+    time_breaks = breaks, generate_at_least_K = 2, report_first_K = 2
   )
   expect_true(all(rowSums(!is.na(Z)) == 2))
 })
@@ -120,7 +134,7 @@ test_that("vztdraw_intensity_step() handles vectorized lambda arguments", {
 
   Z <- vdraw_intensity_step(
     lambda = lfun, lambda_args = l_args, lambda_maj_matrix = lmaj,
-    time_breaks = c(1, 1.5, 3, 4, 4.5, 5), atleastK = 2
+    time_breaks = c(1, 1.5, 3, 4, 4.5, 5), generate_at_least_K = 2
   )
   check_ppp_sample_validity(Z, t_min = 1, t_max = 5, atleastk = 2)
 })

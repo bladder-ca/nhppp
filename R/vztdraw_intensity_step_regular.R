@@ -2,18 +2,21 @@
 #'    an interval (thinning method) with piecewise constant majorizers (R)
 #'
 #' @description
-#' Vectorized thinning sampler conditional on observing at least `atleastK`
-#' events (`atleastK = 1`, the default, is the zero-truncated process).
+#' Vectorized thinning sampler conditional on the accepted event count lying
+#' in `[generate_at_least_K, generate_at_most_K]` (`generate_at_least_K = 1`
+#' alone, the default, is the zero-truncated process).
 #' The majorizers are step functions over equal-length time intervals.
 #'
 #' Conditioning is by rejection: candidate realizations are proposed from the
-#' majorizer conditioned on at least K majorizer events (exact, because
-#' at least K accepted events implies at least K majorizer events), thinned
-#' against `lambda`, and rows with fewer than K surviving events are
-#' resampled until the condition holds. The per-round acceptance probability
-#' degrades in K and in the looseness of the majorizer, so a tight majorizer
-#' matters much more here than in the unconditional sampler. There is no
-#' iteration cap.
+#' majorizer conditioned on at least K1 majorizer events (only the lower
+#' bound may be pushed into the proposal — at least K1 accepted events
+#' implies at least K1 majorizer events, whereas an upper bound on the
+#' majorizer count would over-restrict and bias the accepted law), thinned
+#' against `lambda`, and rows whose surviving count falls outside
+#' `[K1, K2]` are resampled until the condition holds. The per-round
+#' acceptance probability degrades in the strictness of the bounds and in
+#' the looseness of the majorizer, so a tight majorizer matters much more
+#' here than in the unconditional sampler. There is no iteration cap.
 #'
 #' @param lambda (function) intensity function, vectorized
 #' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
@@ -36,12 +39,16 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`).
-#'        The realization is drawn from the conditioned process and the
-#'        earliest event is reported.
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times of the conditioned process. Generalizes `atmost1`.
-#' @param atleastK positive integer: condition on at least K accepted events.
+#' @param atmost1 boolean, report at most 1 event time of the conditioned
+#'        process (alias for `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times of the conditioned realization.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times of the conditioned realization (ascending order).
+#' @param generate_at_least_K non-negative integer: condition on at least K
+#'        accepted events. The default 1 is the zero-truncated process.
+#' @param generate_at_most_K `NULL` or a positive integer: condition on at
+#'        most K accepted events (rejection on the upper bound).
 #' @param ... absorbed (for wrapper compatibility)
 #' @keywords internal
 vztdraw_intensity_step_regular <- function(
@@ -55,12 +62,16 @@ vztdraw_intensity_step_regular <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostK = NULL,
-    atleastK = 1,
+    report_first_K = NULL,
+    report_last_K = NULL,
+    generate_at_least_K = 1,
+    generate_at_most_K = NULL,
     ...) {
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
-  atleastK <- .resolve_atleastK(atleast1 = FALSE, atleastK = atleastK)
-  if (atleastK < 1L) stop("`atleastK` must be >= 1 for the truncated (zt) samplers")
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(FALSE, generate_at_least_K, generate_at_most_K)
+  if (gen_$at_least == 0L && gen_$at_most == 0L) {
+    stop("at least one of `generate_at_least_K`/`generate_at_most_K` must be set for the conditioned (zt) samplers")
+  }
 
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     n_draws <- nrow(lambda_maj_matrix)
@@ -99,12 +110,16 @@ vztdraw_intensity_step_regular <- function(
       t_min = t_min[rows],
       t_max = t_max[rows],
       tol = tol,
-      atleastK = atleastK
+      generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL
     )
   }
 
+  fails_condition <- function(counts) {
+    (counts < gen_$at_least) | (gen_$at_most > 0L & counts > gen_$at_most)
+  }
+
   Z <- draw_round(seq_len(n_draws))
-  needs_redraw <- rowSums(!is.na(Z)) < atleastK
+  needs_redraw <- fails_condition(rowSums(!is.na(Z)))
 
   while (any(needs_redraw)) {
     Z_add <- draw_round(which(needs_redraw))
@@ -118,13 +133,8 @@ vztdraw_intensity_step_regular <- function(
     }
 
     Z[needs_redraw, ] <- Z_add
-    needs_redraw <- rowSums(!is.na(Z)) < atleastK
+    needs_redraw <- fails_condition(rowSums(!is.na(Z)))
   }
 
-  # accepted times are sorted within a row: the first K columns hold the
-  # earliest K events of the conditioned realization
-  if (atmostK > 0L && ncol(Z) > atmostK) {
-    Z <- Z[, seq_len(atmostK), drop = FALSE]
-  }
-  return(Z)
+  return(.report_slice(Z, rep_))
 }

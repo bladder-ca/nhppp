@@ -16,9 +16,11 @@ draw(
   t_min = NULL,
   t_max = NULL,
   atmost1 = FALSE,
-  atmostK = NULL,
+  report_first_K = NULL,
+  report_last_K = NULL,
   atleast1 = FALSE,
-  atleastK = NULL
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -40,16 +42,25 @@ draw(
 
 \item{t_max}{(double) the upper bound of the interval}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
 
-\item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
 
-\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events
-in the interval. Generalizes \code{atleast1}. With \code{lambda} (thinning),
-only \code{atleastK = 1} is implemented.}
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events. With \code{lambda} (thinning),
+only \code{generate_at_least_K = 1} is implemented.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events. Not implemented with \code{lambda}
+(thinning).}
 }
 \value{
 a vector of event times

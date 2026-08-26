@@ -2,9 +2,9 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rbtpois}
 \alias{rbtpois}
-\title{K-truncated Poisson random samples (basic R)}
+\title{Truncated Poisson random samples (basic R)}
 \usage{
-rbtpois(n, lambda, k = 1)
+rbtpois(n, lambda, k_min = 1, k_max = Inf)
 }
 \arguments{
 \item{n}{Integer, number of samples}
@@ -12,19 +12,22 @@ rbtpois(n, lambda, k = 1)
 \item{lambda}{Positive number (scalar or vector), the mean of the original
 (untruncated) Poisson distribution}
 
-\item{k}{Positive integer, the minimum count conditioned on}
+\item{k_min}{Non-negative integer, the minimum count conditioned on}
+
+\item{k_max}{Positive integer or \code{Inf}, the maximum count conditioned on}
 }
 \value{
-a vector of counts (all \verb{>= k}) of size \code{n}
+a vector of counts (all in \verb{[k_min, k_max]}) of size \code{n}
 }
 \description{
 Sample from a Poisson distribution conditional on the count
-being at least \code{k}, by inversion of the CDF restricted to the truncation
-region. \code{k = 1} is the zero-truncated distribution (\code{rztpois()}); \code{k >= 2}
-samples the upper tail directly (\code{p ~ U(0, P(N >= k))} with the upper-tail
-quantile), which stays accurate when \code{P(N >= k)} is tiny.
+being in \verb{[k_min, k_max]}, by inversion of the CDF restricted to the
+truncation region (upper-tail parameterization, accurate when the region
+is deep in the right tail). \verb{k_min = 1, k_max = Inf} is the zero-truncated
+distribution (\code{rztpois()}).
 }
 \examples{
-rbtpois(10, 1, k = 3)
+rbtpois(10, 1, k_min = 3)
+rbtpois(10, 1, k_min = 0, k_max = 2)
 }
 \keyword{internal}

@@ -128,56 +128,63 @@ rztpois <- function(n, lambda) {
   return(x)
 }
 
-#' K-truncated Poisson random samples (basic R)
+#' Truncated Poisson random samples (basic R)
 #'
 #' @description Sample from a Poisson distribution conditional on the count
-#' being at least `k`, by inversion of the CDF restricted to the truncation
-#' region. `k = 1` is the zero-truncated distribution (`rztpois()`); `k >= 2`
-#' samples the upper tail directly (`p ~ U(0, P(N >= k))` with the upper-tail
-#' quantile), which stays accurate when `P(N >= k)` is tiny.
+#' being in `[k_min, k_max]`, by inversion of the CDF restricted to the
+#' truncation region (upper-tail parameterization, accurate when the region
+#' is deep in the right tail). `k_min = 1, k_max = Inf` is the zero-truncated
+#' distribution (`rztpois()`).
 #'
 #' @param n Integer, number of samples
 #' @param lambda Positive number (scalar or vector), the mean of the original
 #'        (untruncated) Poisson distribution
-#' @param k Positive integer, the minimum count conditioned on
+#' @param k_min Non-negative integer, the minimum count conditioned on
+#' @param k_max Positive integer or `Inf`, the maximum count conditioned on
 #'
-#' @return a vector of counts (all `>= k`) of size `n`
+#' @return a vector of counts (all in `[k_min, k_max]`) of size `n`
 #' @export
 #' @keywords internal
 #' @examples
-#' rbtpois(10, 1, k = 3)
-rbtpois <- function(n, lambda, k = 1) {
-  if (k <= 1) {
+#' rbtpois(10, 1, k_min = 3)
+#' rbtpois(10, 1, k_min = 0, k_max = 2)
+rbtpois <- function(n, lambda, k_min = 1, k_max = Inf) {
+  bounded <- is.finite(k_max)
+  if (!bounded && k_min == 1) {
     return(rztpois(n = n, lambda = lambda))
   }
-  tail_mass <- stats::ppois(k - 1, lambda = lambda, lower.tail = FALSE) # P(N >= k)
-  p <- stats::runif(n = n) * tail_mass
+  tail_hi <- if (k_min >= 1) stats::ppois(k_min - 1, lambda = lambda, lower.tail = FALSE) else 1 # P(N >= k_min)
+  tail_lo <- if (bounded) stats::ppois(k_max, lambda = lambda, lower.tail = FALSE) else 0 # P(N > k_max)
+  p <- tail_lo + stats::runif(n = n) * (tail_hi - tail_lo)
   x <- stats::qpois(p = p, lambda = lambda, lower.tail = FALSE)
   return(x)
 }
 
-#' K-truncated Poisson random samples from `rstream` objects
+#' Truncated Poisson random samples from `rstream` objects
 #'
 #' @description Sample from `rstream` objects a Poisson count conditional on
-#' being at least `k` (see `rbtpois()`).
+#' being in `[k_min, k_max]` (see `rbtpois()`).
 #' @param size Integer, number of samples
 #' @param lambda Positive number, the mean of the original
 #'        (untruncated) Poisson distribution
-#' @param k Positive integer, the minimum count conditioned on
+#' @param k_min Non-negative integer, the minimum count conditioned on
+#' @param k_max Positive integer or `Inf`, the maximum count conditioned on
 #' @param rng_stream (`rstream`) an `rstream` object or `NULL`
 #'
-#' @return a vector of counts (all `>= k`) of size `size`
+#' @return a vector of counts (all in `[k_min, k_max]`) of size `size`
 #' @keywords internal
 #' @export
 #' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
-#' rng_stream_rbtpois(10, lambda = 1, k = 2)
-rng_stream_rbtpois <- function(size = 1, lambda = 1, k = 1, rng_stream = NULL) {
-  if (k <= 1) {
+#' rng_stream_rbtpois(10, lambda = 1, k_min = 2)
+rng_stream_rbtpois <- function(size = 1, lambda = 1, k_min = 1, k_max = Inf, rng_stream = NULL) {
+  bounded <- is.finite(k_max)
+  if (!bounded && k_min == 1) {
     return(rng_stream_rztpois(size = size, lambda = lambda, rng_stream = rng_stream))
   }
-  tail_mass <- stats::ppois(k - 1, lambda = lambda, lower.tail = FALSE) # P(N >= k)
+  tail_hi <- if (k_min >= 1) stats::ppois(k_min - 1, lambda = lambda, lower.tail = FALSE) else 1
+  tail_lo <- if (bounded) stats::ppois(k_max, lambda = lambda, lower.tail = FALSE) else 0
   u <- rng_stream_runif(size = size, rng_stream = rng_stream)
-  x <- stats::qpois(p = u * tail_mass, lambda = lambda, lower.tail = FALSE)
+  x <- stats::qpois(p = tail_lo + u * (tail_hi - tail_lo), lambda = lambda, lower.tail = FALSE)
   return(x)
 }

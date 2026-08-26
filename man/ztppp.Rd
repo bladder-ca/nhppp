@@ -2,9 +2,18 @@
 % Please edit documentation in R/ztppp.R
 \name{ztppp}
 \alias{ztppp}
-\title{Simulate a zero-truncated homogeneous Poisson Point Process over (t_min, t_max]}
+\title{Simulate a count-conditioned homogeneous Poisson Point Process over (t_min, t_max]}
 \usage{
-ztppp(rate, t_min, t_max, atmost1 = FALSE, atmostK = NULL, atleastK = 1)
+ztppp(
+  rate,
+  t_min,
+  t_max,
+  atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL
+)
 }
 \arguments{
 \item{rate}{(scalar, double) constant instantaneous rate}
@@ -13,21 +22,34 @@ ztppp(rate, t_min, t_max, atmost1 = FALSE, atmostK = NULL, atleastK = 1)
 
 \item{t_max}{(scalar, double) upper bound of the time interval}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{boolean, report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times of the conditioned process. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization (never
+affects the conditioned count itself). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
 
-\item{atleastK}{positive integer: condition on at least K events in
-\verb{(t_min, t_max]}. \code{atleastK = 1} is the zero-truncated process.}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+events in \verb{(t_min, t_max]}. The default 1 is the zero-truncated
+process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K events. May be combined with \code{generate_at_least_K}
+(K1 <= K2).}
 }
 \value{
-a vector of event times of size \code{size}
+a vector of event times
 }
 \description{
 Simulate a constant-rate Poisson Point Process conditional on
-observing at least \code{atleastK} events (\code{atleastK = 1}, the default, is the
-zero-truncated process).
+the event count lying in \verb{[generate_at_least_K, generate_at_most_K]}
+(\code{generate_at_least_K = 1} alone, the default, is the zero-truncated
+process; \code{generate_at_least_K = generate_at_most_K = K} conditions on
+exactly K events).
 }
 \examples{
 x <- ztppp(t_min = 0, t_max = 10, rate = 0.001)

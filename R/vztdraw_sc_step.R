@@ -25,17 +25,23 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `time_breaks[, K+1]`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`).
-#'        The sample is drawn from the conditioned process and the earliest
-#'        event is reported.
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times of the conditioned process. Generalizes `atmost1`.
-#' @param atleastK positive integer: condition on at least K events in the
-#'        sampled (sub)interval. `atleastK = 1` (default) is the zero-truncated
-#'        process.
+#' @param atmost1 boolean, report at most 1 event time of the conditioned
+#'        process (alias for `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times of the conditioned realization (never
+#'        affects the conditioned count itself). At most one of
+#'        `report_first_K`/`report_last_K` may be set.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times of the conditioned realization (ascending order).
+#' @param generate_at_least_K non-negative integer: condition on at least K
+#'        events in the sampled (sub)interval. The default 1 is the
+#'        zero-truncated process.
+#' @param generate_at_most_K `NULL` or a positive integer: condition on at
+#'        most K events. May be combined with `generate_at_least_K`
+#'        (K1 <= K2; K1 = K2 conditions on exactly K events).
 #' @param budget_cap `NULL` or a positive integer: cap the computational event
 #'        budget of the kernel (approximation knob; never truncates below
-#'        `atleastK`).
+#'        `generate_at_least_K`).
 #'
 #' @return a matrix of event times t, with rows corresponding to the sampled point processes.
 #'
@@ -54,12 +60,16 @@ vztdraw_sc_step <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostK = NULL,
-    atleastK = 1,
+    report_first_K = NULL,
+    report_last_K = NULL,
+    generate_at_least_K = 1,
+    generate_at_most_K = NULL,
     budget_cap = NULL) {
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
-  atleastK <- .resolve_atleastK(atleast1 = FALSE, atleastK = atleastK)
-  if (atleastK < 1L) stop("`atleastK` must be >= 1 for the truncated (zt) samplers")
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(FALSE, generate_at_least_K, generate_at_most_K)
+  if (gen_$at_least == 0L && gen_$at_most == 0L) {
+    stop("at least one of `generate_at_least_K`/`generate_at_most_K` must be set for the conditioned (zt) samplers")
+  }
   budget_cap <- .resolve_budget_cap(budget_cap, NULL)
 
   args <- .prep_vdraw_sc_step_args(
@@ -80,7 +90,7 @@ vztdraw_sc_step <- function(
     .Call(
       `_nhppp_vztdraw_sc_step_general2`,
       args$rate, args$is_cumulative, args$time_breaks, subinterval,
-      tol, atmostK, atleastK, budget_cap
+      tol, rep_$first, rep_$last, gen_$at_least, gen_$at_most, budget_cap
     )
   )
 }

@@ -2,9 +2,15 @@
 % Please edit documentation in R/utils-rngstream.R
 \name{rng_stream_rbtpois}
 \alias{rng_stream_rbtpois}
-\title{K-truncated Poisson random samples from \code{rstream} objects}
+\title{Truncated Poisson random samples from \code{rstream} objects}
 \usage{
-rng_stream_rbtpois(size = 1, lambda = 1, k = 1, rng_stream = NULL)
+rng_stream_rbtpois(
+  size = 1,
+  lambda = 1,
+  k_min = 1,
+  k_max = Inf,
+  rng_stream = NULL
+)
 }
 \arguments{
 \item{size}{Integer, number of samples}
@@ -12,18 +18,20 @@ rng_stream_rbtpois(size = 1, lambda = 1, k = 1, rng_stream = NULL)
 \item{lambda}{Positive number, the mean of the original
 (untruncated) Poisson distribution}
 
-\item{k}{Positive integer, the minimum count conditioned on}
+\item{k_min}{Non-negative integer, the minimum count conditioned on}
+
+\item{k_max}{Positive integer or \code{Inf}, the maximum count conditioned on}
 
 \item{rng_stream}{(\code{rstream}) an \code{rstream} object or \code{NULL}}
 }
 \value{
-a vector of counts (all \verb{>= k}) of size \code{size}
+a vector of counts (all in \verb{[k_min, k_max]}) of size \code{size}
 }
 \description{
 Sample from \code{rstream} objects a Poisson count conditional on
-being at least \code{k} (see \code{rbtpois()}).
+being in \verb{[k_min, k_max]} (see \code{rbtpois()}).
 }
 \examples{
-rng_stream_rbtpois(10, lambda = 1, k = 2)
+rng_stream_rbtpois(10, lambda = 1, k_min = 2)
 }
 \keyword{internal}

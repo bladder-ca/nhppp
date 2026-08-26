@@ -1,32 +1,39 @@
 # nhppp (development version)
 
-* Unify the sc-step C++ kernels; add atleastK/atmostK truncation options; rename atmostB to budget_cap
+* Unify the sc-step C++ kernels; separate reporting from count conditioning
+  (report_first_K/report_last_K vs generate_at_least_K/generate_at_most_K);
+  rename atmostB to budget_cap
 
-New features
-- `atleastK`: all sc-step samplers (scalar and vectorized) and the
-  `Lambda`-based scalar samplers can condition on observing at least K
-  events (`atleastK = 1` is the existing zero-truncated case; the
-  `atleast1` flag remains as an alias). Sampling uses the exact
-  conditional order-statistics construction with a K-truncated Poisson
-  count, drawn by inversion of the CDF restricted to the truncation
-  region (upper-tail form, numerically stable when `P(N >= K)` is tiny;
-  new primitives `rbtpois()` in R and `rbtpois`/`rbtpois_vec` in C++).
-  The thinning-based (intensity) samplers support only `atleastK = 1`
-  and error otherwise.
-- `atmostK`: report only the earliest K event times (`atmost1` remains
-  as an alias). For the truncated samplers the K smallest of all
-  conditioned order statistics are reported, so `atleastK > atmostK`
-  is well defined. `atleastK = atmostK = K` yields exactly K events —
-  note these are the earliest K of an `N >= K` realization, which is
-  NOT the process conditioned on exactly K events; the latter is
-  obtained from an `atleastK = K` draw by keeping a uniformly random
-  (not the earliest) size-K subset of the events.
+New features — two orthogonal truncation option classes
+- REPORTING (`report_first_K`, `report_last_K`; at most one may be set):
+  return only the earliest / latest min(N, K) events of the realization.
+  These are reporting truncations — the count law of the sampled process
+  is unchanged. `atmost1` remains as the alias for `report_first_K = 1`.
+- GENERATION conditioning (`generate_at_least_K`, `generate_at_most_K`;
+  combinable with K1 <= K2): change the sampled law to X | K1 <= N <= K2.
+  `generate_at_least_K = 1` alone is the zero-truncated case (`atleast1`
+  remains as its alias); `generate_at_least_K = generate_at_most_K = K`
+  conditions on exactly K events — which is NOT the same object as
+  reporting the first K of an `N >= K` draw (the reported-first-K times
+  are biased early relative to the exactly-K law). Conditioned sampling
+  uses the exact order-statistics construction with a doubly-truncated
+  Poisson count, drawn by inversion of the CDF restricted to the
+  truncation region (upper-tail parameterization, numerically stable deep
+  in the right tail; primitives `rbtpois()` in R and
+  `rbtpois`/`rbtpois_vec` in C++). Any generation bound routes to the
+  order-statistics kernels; without generation bounds the sequential
+  inversion kernels are used (they cannot condition on the future total).
+- The vectorized thinning samplers support both generation bounds by
+  rejection resampling (proposals push only the lower bound into the
+  majorizer; the accepted-count condition is verified per row). The
+  scalar thinning samplers support only `generate_at_least_K = 1`.
 - `budget_cap` replaces `atmostB` (soft-deprecated alias with a warning):
   it caps the computational event budget of the vectorized kernels and is
   an approximation knob (jointly with the `1 - tol` quantile bound), not
-  an exact contract like `atmostK`. It is now honored uniformly by all
-  vectorized sc-step paths (the whole-range regular path used to ignore
-  `atmostB` silently) and never truncates below `atleastK`.
+  an exact reporting or conditioning contract. It is now honored uniformly
+  by all vectorized sc-step paths (the whole-range regular path used to
+  ignore `atmostB` silently) and never truncates the conditioned count
+  below `generate_at_least_K`.
 
 Internals
 - The eight sc-step C++ kernels (regular/general x plain/zt x
@@ -51,14 +58,15 @@ Thinning (intensity) family
   `vdraw_sc_step()`); the target intensity remains an arbitrary vectorized
   R function. Generalizes `vdraw_intensity()`, which assumes equal-length
   intervals. Both share one C++ template core (`src/intensity_step_core.h`).
-- `atleastK` on the vectorized thinning samplers (`vdraw_intensity()`,
-  `vdraw_intensity_step()`): conditioning is by rejection — candidate
-  realizations are proposed from the majorizer conditioned on at least K
-  majorizer events (exact, since K accepted events imply K majorizer
-  events), thinned, and rows with fewer than K survivors are resampled.
-  The per-round acceptance probability degrades in K and in the looseness
-  of the majorizer; there is no iteration cap. The scalar thinning
-  samplers remain at `atleastK = 1`.
+- Count conditioning on the vectorized thinning samplers
+  (`vdraw_intensity()`, `vdraw_intensity_step()`): conditioning is by
+  rejection — candidate realizations are proposed from the majorizer
+  conditioned on at least K1 majorizer events (exact: only the lower bound
+  may be pushed into the proposal), thinned, and rows whose accepted count
+  falls outside `[K1, K2]` are resampled. The per-round acceptance
+  probability degrades in the strictness of the bounds and in the
+  looseness of the majorizer; there is no iteration cap. The scalar
+  thinning samplers support only `generate_at_least_K = 1`.
 - The thinning kernels now error when `lambda` exceeds the majorizer also
   on the conditioned path (the old R-only zero-truncated path silently
   capped acceptance probabilities above 1, sampling from the wrong

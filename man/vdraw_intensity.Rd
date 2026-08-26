@@ -16,9 +16,11 @@ vdraw_intensity(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostK = NULL,
+  report_first_K = NULL,
+  report_last_K = NULL,
   atleast1 = FALSE,
-  atleastK = NULL,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL,
   budget_cap = NULL,
   atmostB = NULL
 )
@@ -54,16 +56,26 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K accepted event times (reporting truncation — the count
+law is unchanged). At most one of \code{report_first_K}/\code{report_last_K}
+may be set.}
 
-\item{atleast1}{boolean, condition on at least 1 event (alias for \code{atleastK = 1})}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K accepted event times (ascending order; reporting truncation).}
 
-\item{atleastK}{\code{NULL} or a positive integer: condition on at least K
-accepted events (rejection resampling; see
-\code{vztdraw_intensity_step_regular()}). Generalizes \code{atleast1}.}
+\item{atleast1}{boolean, condition on at least 1 accepted event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition on at
+least K accepted events (rejection resampling; see
+\code{vztdraw_intensity_step_regular()}).}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K accepted events (rejection resampling on the upper bound).}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the majorizer kernel (approximation knob).}

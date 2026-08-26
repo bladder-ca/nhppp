@@ -22,13 +22,17 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times. Generalizes `atmost1`.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (the count law is unchanged). At most one of
+#'        `report_first_K`/`report_last_K` may be set.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; the count law is unchanged).
 #' @param budget_cap `NULL` or a positive integer: cap the computational event
 #'        budget of the kernel. This is an approximation knob (it truncates the
 #'        extreme tail of the event-count distribution together with the
-#'        `1 - tol` quantile bound), not an exact contract like `atmostK`.
+#'        `1 - tol` quantile bound), not an exact reporting contract.
 #' @param atmostB deprecated alias for `budget_cap`.
 #'
 #' @return a matrix of event times t, with rows corresponding to the sampled point processes.
@@ -51,10 +55,11 @@ vdraw_sc_step_regular_cpp <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostK = NULL,
+    report_first_K = NULL,
+    report_last_K = NULL,
     budget_cap = NULL,
     atmostB = NULL) {
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
 
   if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
@@ -98,7 +103,8 @@ vdraw_sc_step_regular_cpp <- function(
   return(
     .Call(
       `_nhppp_vdraw_sc_step_regular2`,
-      rate, is_cumulative_rate, range_t, subinterval, tol, atmostK, budget_cap
+      rate, is_cumulative_rate, range_t, subinterval, tol,
+      rep_$first, rep_$last, budget_cap
     )
   )
 }

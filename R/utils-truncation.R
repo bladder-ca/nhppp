@@ -1,56 +1,73 @@
-#' Resolve the `atmost1`/`atmostK` pair into the C++ argument
-#'
-#' @description `atmostK` (report only the earliest K events) generalizes
-#' `atmost1`; the boolean is kept as an alias for `atmostK = 1`. Returns an
-#' integer with 0 meaning "no cap" (the C++ kernels treat `<= 0` as off).
-#'
-#' @param atmost1 boolean, report at most 1 event time
-#' @param atmostK `NULL` or a positive integer scalar
+# Resolution of the reporting / generation-conditioning / budget options
+# shared by the samplers.
+#
+# Two orthogonal option classes:
+# - REPORTING (`report_first_K`, `report_last_K`): act on one realization,
+#   returning only the earliest / latest min(N, K) events; the count law is
+#   unchanged. At most one may be set. `atmost1` is the alias for
+#   `report_first_K = 1`.
+# - GENERATION conditioning (`generate_at_least_K`, `generate_at_most_K`):
+#   change the sampled law to X | K1 <= N <= K2 (order-statistics sampling
+#   path). Both may be set (K1 <= K2); K1 = K2 conditions on exactly K
+#   events. `atleast1` is the alias for `generate_at_least_K = 1`.
+# - `budget_cap` (formerly `atmostB`): computational cap on the event budget
+#   of the vectorized kernels — an approximation knob (jointly with the
+#   `1 - tol` quantile bound), not an exact contract; it never truncates the
+#   count below `generate_at_least_K`.
+
 #' @noRd
-.resolve_atmostK <- function(atmost1 = FALSE, atmostK = NULL) {
-  if (is.null(atmostK)) {
-    return(if (isTRUE(atmost1)) 1L else 0L)
+.check_pos_int <- function(x, name) {
+  x <- as.integer(x)
+  if (length(x) != 1L || is.na(x) || x < 1L) {
+    stop("`", name, "` must be a positive integer scalar")
   }
-  atmostK <- as.integer(atmostK)
-  if (length(atmostK) != 1L || is.na(atmostK) || atmostK < 1L) {
-    stop("`atmostK` must be a positive integer scalar")
-  }
-  if (isTRUE(atmost1) && atmostK != 1L) {
-    stop("`atmost1 = TRUE` contradicts `atmostK = ", atmostK, "`; specify one of the two")
-  }
-  return(atmostK)
+  return(x)
 }
 
-#' Resolve the `atleast1`/`atleastK` pair into the C++ argument
+#' Resolve the reporting options into the C++ arguments
 #'
-#' @description `atleastK` (condition on at least K events) generalizes
-#' `atleast1`; the boolean is kept as an alias for `atleastK = 1`. Returns an
-#' integer with 0 meaning "no conditioning" (untruncated sampler).
-#'
-#' @param atleast1 boolean, condition on at least 1 event
-#' @param atleastK `NULL` or a positive integer scalar
+#' @description Returns `list(first = , last = )` as integers with 0 meaning
+#' "off". At most one of the two may be active; `atmost1` is the alias for
+#' `report_first_K = 1`.
 #' @noRd
-.resolve_atleastK <- function(atleast1 = FALSE, atleastK = NULL) {
-  if (is.null(atleastK)) {
-    return(if (isTRUE(atleast1)) 1L else 0L)
+.resolve_reporting <- function(atmost1 = FALSE, report_first_K = NULL, report_last_K = NULL) {
+  first <- if (is.null(report_first_K)) 0L else .check_pos_int(report_first_K, "report_first_K")
+  last <- if (is.null(report_last_K)) 0L else .check_pos_int(report_last_K, "report_last_K")
+  if (isTRUE(atmost1)) {
+    if (first == 0L && last == 0L) {
+      first <- 1L
+    } else if (first != 1L || last != 0L) {
+      stop("`atmost1 = TRUE` contradicts the `report_first_K`/`report_last_K` settings; specify one form")
+    }
   }
-  atleastK <- as.integer(atleastK)
-  if (length(atleastK) != 1L || is.na(atleastK) || atleastK < 1L) {
-    stop("`atleastK` must be a positive integer scalar")
+  if (first > 0L && last > 0L) {
+    stop("only one of `report_first_K` and `report_last_K` may be set")
   }
-  if (isTRUE(atleast1) && atleastK != 1L) {
-    stop("`atleast1 = TRUE` contradicts `atleastK = ", atleastK, "`; specify one of the two")
+  return(list(first = first, last = last))
+}
+
+#' Resolve the generation-conditioning options into the C++ arguments
+#'
+#' @description Returns `list(at_least = , at_most = )` as integers with 0
+#' meaning "off". `atleast1` is the alias for `generate_at_least_K = 1`.
+#' @noRd
+.resolve_generation <- function(atleast1 = FALSE, generate_at_least_K = NULL, generate_at_most_K = NULL) {
+  at_least <- if (is.null(generate_at_least_K)) 0L else .check_pos_int(generate_at_least_K, "generate_at_least_K")
+  at_most <- if (is.null(generate_at_most_K)) 0L else .check_pos_int(generate_at_most_K, "generate_at_most_K")
+  if (isTRUE(atleast1)) {
+    if (at_least == 0L) {
+      at_least <- 1L
+    } else if (at_least != 1L) {
+      stop("`atleast1 = TRUE` contradicts `generate_at_least_K = ", at_least, "`; specify one form")
+    }
   }
-  return(atleastK)
+  if (at_least > 0L && at_most > 0L && at_least > at_most) {
+    stop("`generate_at_least_K = ", at_least, "` exceeds `generate_at_most_K = ", at_most, "`")
+  }
+  return(list(at_least = at_least, at_most = at_most))
 }
 
 #' Resolve `budget_cap`, honoring the deprecated `atmostB` alias
-#'
-#' @description `budget_cap` (formerly `atmostB`) caps the computational
-#' event budget of the vectorized kernels. It is an approximation knob (it
-#' truncates the extreme tail of the event-count distribution together with
-#' the `1 - tol` quantile bound), not an exact contract like `atmostK`.
-#' Returns an integer with 0 meaning "no cap".
 #' @noRd
 .resolve_budget_cap <- function(budget_cap = NULL, atmostB = NULL) {
   if (!is.null(atmostB)) {
@@ -64,14 +81,48 @@
   if (is.null(budget_cap)) {
     return(0L)
   }
-  budget_cap <- as.integer(budget_cap)
-  if (length(budget_cap) != 1L || is.na(budget_cap) || budget_cap < 1L) {
-    stop("`budget_cap` must be a positive integer scalar")
-  }
-  return(budget_cap)
+  return(.check_pos_int(budget_cap, "budget_cap"))
 }
 
-# Note: `atleastK > atmostK` is deliberately allowed — conditioning on at
-# least K events and reporting only the earliest M < K is well-defined (the
-# zt kernels draw the conditioned count N, then report the M smallest order
-# statistics).
+# Note: `generate_at_least_K > report_first_K` (or `> report_last_K`) is
+# deliberately allowed — conditioning on at least K events and reporting only
+# M < K of them is well-defined (the conditioned count N is drawn first; the
+# reporting slice is taken from the N order statistics).
+
+#' Apply resolved reporting options to a left-aligned NA-padded event matrix
+#' @param Z matrix of ascending event times per row, NA-padded on the right
+#' @param rep_ result of `.resolve_reporting()`
+#' @noRd
+.report_slice <- function(Z, rep_) {
+  if (rep_$first > 0L) {
+    if (ncol(Z) > rep_$first) {
+      Z <- Z[, seq_len(rep_$first), drop = FALSE]
+    }
+    return(Z)
+  }
+  if (rep_$last > 0L) {
+    counts <- rowSums(!is.na(Z))
+    n_col_out <- max(1L, min(rep_$last, max(counts)))
+    out <- matrix(NA_real_, nrow = nrow(Z), ncol = n_col_out)
+    for (i in seq_len(nrow(Z))) {
+      if (counts[i] > 0L) {
+        keep <- min(rep_$last, counts[i])
+        out[i, seq_len(keep)] <- Z[i, (counts[i] - keep + 1L):counts[i]]
+      }
+    }
+    return(out)
+  }
+  return(Z)
+}
+
+#' Apply resolved reporting options to an ascending event-time vector
+#' @noRd
+.report_slice_vector <- function(x, rep_) {
+  if (rep_$first > 0L && length(x) > rep_$first) {
+    return(x[seq_len(rep_$first)])
+  }
+  if (rep_$last > 0L && length(x) > rep_$last) {
+    return(x[(length(x) - rep_$last + 1L):length(x)])
+  }
+  return(x)
+}

@@ -11,8 +11,10 @@ ztdraw_sc_linear(
   t_min,
   t_max,
   atmost1 = FALSE,
-  atmostK = NULL,
-  atleastK = 1
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -24,16 +26,23 @@ ztdraw_sc_linear(
 
 \item{t_max}{(double) the upper bound of the time interval}
 
-\item{atmost1}{(boolean) report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{(boolean) report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times of the conditioned process. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization.}
 
-\item{atleastK}{positive integer: condition on at least K events in the
-interval. \code{atleastK = 1} (default) is the zero-truncated process.}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+events in the interval. The default 1 is the zero-truncated process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K events.}
 }
 \value{
-a vector of at least \code{atleastK} event times
+a vector of event times of the conditioned process
 }
 \description{
 Sample zero-truncated NHPPP times from a linear intensity function

@@ -14,7 +14,8 @@ vdraw_sc_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostK = NULL,
+  report_first_K = NULL,
+  report_last_K = NULL,
   budget_cap = NULL,
   atmostB = NULL
 )
@@ -44,15 +45,20 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, report at most 1 event time (alias for \code{atmostK = 1})}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostK}{\code{NULL} or a positive integer: report only the earliest K
-event times. Generalizes \code{atmost1}.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (the count law is unchanged). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; the count law is unchanged).}
 
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the kernel. This is an approximation knob (it truncates the
 extreme tail of the event-count distribution together with the
-\code{1 - tol} quantile bound), not an exact contract like \code{atmostK}.}
+\code{1 - tol} quantile bound), not an exact reporting contract.}
 
 \item{atmostB}{deprecated alias for \code{budget_cap}.}
 }

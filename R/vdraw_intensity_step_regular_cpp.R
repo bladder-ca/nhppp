@@ -27,16 +27,21 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, report at most 1 event time (alias for `atmostK = 1`)
-#' @param atmostK `NULL` or a positive integer: report only the earliest K
-#'        event times. Generalizes `atmost1`. Ignored (all accepted events are
-#'        returned) when `atleastK >= 1` — the conditional rejection loop
-#'        needs the full survivor count and truncates after convergence.
-#' @param atleastK `NULL`, or a positive integer: draw the majorizer
-#'        candidates conditioned on at least K majorizer events. NOTE: this
-#'        does not by itself condition the thinned process on K accepted
-#'        events; rows with fewer than K survivors must be resampled by the
-#'        caller (see `vztdraw_intensity_step_regular()`).
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K accepted event times. Ignored (all accepted events are
+#'        returned) when `generate_at_least_K >= 1` — the conditional
+#'        rejection loop needs the full survivor count and applies reporting
+#'        after convergence.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K accepted event times (ascending order). Same conditional-path
+#'        caveat as `report_first_K`.
+#' @param generate_at_least_K `NULL`, or a positive integer: draw the
+#'        majorizer candidates conditioned on at least K majorizer events.
+#'        NOTE: this does not by itself condition the thinned process on K
+#'        accepted events; rows with too few survivors must be resampled by
+#'        the caller (see `vztdraw_intensity_step_regular()`).
 #' @param budget_cap `NULL` or a positive integer: cap the computational event
 #'        budget of the majorizer kernel (approximation knob).
 #' @param atmostB deprecated alias for `budget_cap`.
@@ -54,12 +59,13 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              t_max = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE,
-                                             atmostK = NULL,
-                                             atleastK = NULL,
+                                             report_first_K = NULL,
+                                             report_last_K = NULL,
+                                             generate_at_least_K = NULL,
                                              budget_cap = NULL,
                                              atmostB = NULL) {
-  atmostK <- .resolve_atmostK(atmost1, atmostK)
-  atleastK <- .resolve_atleastK(atleast1 = FALSE, atleastK = atleastK)
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(FALSE, generate_at_least_K, NULL)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
 
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
@@ -115,7 +121,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     .Call(
       `_nhppp_vdraw_intensity_step_regular`, l_,
       rate, is_cumulative_rate, range_t, subinterval, use_subinterval,
-      tol, atmostK, atleastK, budget_cap
+      tol, rep_$first, rep_$last, gen_$at_least, budget_cap
     )
   )
 }

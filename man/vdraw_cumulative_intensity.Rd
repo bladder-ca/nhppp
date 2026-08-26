@@ -14,8 +14,11 @@ vdraw_cumulative_intensity(
   Lambda_inv_args = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
   atleast1 = FALSE,
-  atleastK = NULL
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -42,12 +45,22 @@ a data.table named \code{vector_arguments}.}
 
 \item{tol}{the tolerange for the calulations.}
 
-\item{atmost1}{boolean, draw at most 1 event time per sampled point process.}
+\item{atmost1}{boolean, report at most 1 event time per sampled point
+process (alias for \code{report_first_K = 1}).}
 
-\item{atleast1}{boolean, draw at least 1 event time (not implemented)}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
 
-\item{atleastK}{\code{NULL} or a positive integer: condition on at least K events
-(not implemented for this sampler)}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (not implemented for this sampler)}
+
+\item{atleast1}{boolean, condition on at least 1 event (not implemented)}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition on at
+least K events (not implemented for this sampler)}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K events (not implemented for this sampler)}
 }
 \value{
 a matrix of event times with one row per sampled point process.

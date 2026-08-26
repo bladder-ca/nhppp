@@ -39,7 +39,8 @@ Rcpp::NumericMatrix vdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const int atmostK,
+  const int report_first_K,
+  const int report_last_K,
   const int budget_cap
 );
 
@@ -49,7 +50,8 @@ Rcpp::NumericMatrix vdraw_sc_step_general2(
   const Rcpp::NumericMatrix & time_breaks,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const int atmostK,
+  const int report_first_K,
+  const int report_last_K,
   const int budget_cap
 );
 
@@ -59,8 +61,10 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const int atmostK,
-  const int atleastK,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int gen_at_most_K,
   const int budget_cap
 );
 
@@ -70,8 +74,10 @@ Rcpp::NumericMatrix vztdraw_sc_step_general2(
   const Rcpp::NumericMatrix & time_breaks,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const int atmostK,
-  const int atleastK,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int gen_at_most_K,
   const int budget_cap
 );
 
@@ -83,8 +89,9 @@ Rcpp::NumericMatrix vdraw_intensity_step_regular(
   const Rcpp::NumericMatrix & subinterval,
   const bool use_subinterval,
   const double tol,
-  const int atmostK,
-  const int atleastK,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
   const int budget_cap);
 
 Rcpp::NumericMatrix vdraw_intensity_step_general(
@@ -95,15 +102,17 @@ Rcpp::NumericMatrix vdraw_intensity_step_general(
   const Rcpp::NumericMatrix & subinterval,
   const bool use_subinterval,
   const double tol,
-  const int atmostK,
-  const int atleastK,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
   const int budget_cap);
 
 int safe_double_to_int(const double x);
 
-int rbtpois(const double lambda, const int k);
+int rbtpois(const double lambda, const int k_min, const int k_max);
 
-Rcpp::IntegerVector rbtpois_vec(const Rcpp::NumericVector & lambda, const int k);
+Rcpp::IntegerVector rbtpois_vec(const Rcpp::NumericVector & lambda,
+                                const int k_min, const int k_max);
 
 int rztpois(const double lambda);
 

@@ -18,10 +18,17 @@
 #'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
 #'        a data.table named `vector_arguments`.
 #' @param tol the tolerange for the calulations.
-#' @param atmost1 boolean, draw at most 1 event time per sampled point process.
-#' @param atleast1 boolean, draw at least 1 event time (not implemented)
-#' @param atleastK `NULL` or a positive integer: condition on at least K events
-#'        (not implemented for this sampler)
+#' @param atmost1 boolean, report at most 1 event time per sampled point
+#'        process (alias for `report_first_K = 1`).
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (not implemented for this sampler)
+#' @param atleast1 boolean, condition on at least 1 event (not implemented)
+#' @param generate_at_least_K `NULL` or a positive integer: condition on at
+#'        least K events (not implemented for this sampler)
+#' @param generate_at_most_K `NULL` or a positive integer: condition on at
+#'        most K events (not implemented for this sampler)
 #'
 #' @return a matrix of event times with one row per sampled point process.
 #' @export
@@ -34,19 +41,26 @@ vdraw_cumulative_intensity <- function(Lambda,
                                        Lambda_inv_args = NULL,
                                        tol = 10^-6,
                                        atmost1 = FALSE,
+                                       report_first_K = NULL,
+                                       report_last_K = NULL,
                                        atleast1 = FALSE,
-                                       atleastK = NULL) {
-  if (.resolve_atleastK(atleast1, atleastK) >= 1L) {
-    stop("Options `atleast1`/`atleastK` have not been implemented yet for `vdraw_cumulative_intensity()`.")
+                                       generate_at_least_K = NULL,
+                                       generate_at_most_K = NULL) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
+    stop("The generation-conditioning options have not been implemented yet for `vdraw_cumulative_intensity()`.")
+  }
+  if (rep_$last > 0L) {
+    stop("`report_last_K` has not been implemented yet for `vdraw_cumulative_intensity()`.")
   }
   range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
   range_L <- Lambda(range_t, Lambda_args = Lambda_args)
 
-  if (isTRUE(atmost1)) {
-    N_cols <- 1
-  } else {
-    N_cols <- max(stats::qpois(p = 1 - tol, lambda = 1 * (range_L[, 2] - range_L[, 1])))
+  N_cols <- max(stats::qpois(p = 1 - tol, lambda = 1 * (range_L[, 2] - range_L[, 1])))
+  if (rep_$first > 0L && rep_$first < N_cols) {
+    N_cols <- rep_$first
   }
 
   warped_t <- matrix(stats::rexp(n = N_cols * N_rows, rate = 1), ncol = N_cols)

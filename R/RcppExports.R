@@ -25,8 +25,8 @@ matrix_diff_columns_inplace <- function(X) {
     invisible(.Call(`_nhppp_matrix_diff_columns_inplace`, X))
 }
 
-rbtpois_vec <- function(lambda, k) {
-    .Call(`_nhppp_rbtpois_vec`, lambda, k)
+rbtpois_vec <- function(lambda, k_min, k_max) {
+    .Call(`_nhppp_rbtpois_vec`, lambda, k_min, k_max)
 }
 
 rztpois <- function(lambda) {
@@ -37,27 +37,27 @@ rztpois_vec <- function(lambda) {
     .Call(`_nhppp_rztpois_vec`, lambda)
 }
 
-vdraw_intensity_step_general <- function(lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap) {
-    .Call(`_nhppp_vdraw_intensity_step_general`, lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap)
+vdraw_intensity_step_general <- function(lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap) {
+    .Call(`_nhppp_vdraw_intensity_step_general`, lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap)
 }
 
-vdraw_intensity_step_regular <- function(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap) {
-    .Call(`_nhppp_vdraw_intensity_step_regular`, lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, atmostK, atleastK, budget_cap)
+vdraw_intensity_step_regular <- function(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap) {
+    .Call(`_nhppp_vdraw_intensity_step_regular`, lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap)
 }
 
-vdraw_sc_step_general2 <- function(rate, is_cumulative, time_breaks, subinterval, tol, atmostK, budget_cap) {
-    .Call(`_nhppp_vdraw_sc_step_general2`, rate, is_cumulative, time_breaks, subinterval, tol, atmostK, budget_cap)
+vdraw_sc_step_general2 <- function(rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, budget_cap) {
+    .Call(`_nhppp_vdraw_sc_step_general2`, rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, budget_cap)
 }
 
-vdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, atmostK, budget_cap) {
-    .Call(`_nhppp_vdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, atmostK, budget_cap)
+vdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, budget_cap) {
+    .Call(`_nhppp_vdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, budget_cap)
 }
 
-vztdraw_sc_step_general2 <- function(rate, is_cumulative, time_breaks, subinterval, tol, atmostK, atleastK, budget_cap) {
-    .Call(`_nhppp_vztdraw_sc_step_general2`, rate, is_cumulative, time_breaks, subinterval, tol, atmostK, atleastK, budget_cap)
+vztdraw_sc_step_general2 <- function(rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap) {
+    .Call(`_nhppp_vztdraw_sc_step_general2`, rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap)
 }
 
-vztdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, atmostK, atleastK, budget_cap) {
-    .Call(`_nhppp_vztdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, atmostK, atleastK, budget_cap)
+vztdraw_sc_step_regular2 <- function(rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap) {
+    .Call(`_nhppp_vztdraw_sc_step_regular2`, rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap)
 }
 
