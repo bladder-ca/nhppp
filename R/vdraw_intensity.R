@@ -63,6 +63,21 @@
 #'   rate_matrix_t_min = 1,
 #'   rate_matrix_t_max = 5
 #' )
+#'
+#' # shared and per-row lambda arguments in the structured container,
+#' # conditioned on at least one event
+#' l <- function(t, a) a$shared$scale * t^a$row_args$exponent
+#' x <- vdraw_intensity(
+#'   lambda = l,
+#'   lambda_args = list(
+#'     shared = list(scale = 0.1),
+#'     row_args = data.frame(exponent = seq(1, 1.9, by = 0.1))
+#'   ),
+#'   lambda_maj_matrix = matrix(rep(3, 50), nrow = 10),
+#'   rate_matrix_t_min = 1,
+#'   rate_matrix_t_max = 5,
+#'   generate_at_least_K = 1
+#' )
 #' @export
 
 

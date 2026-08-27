@@ -137,10 +137,10 @@ time for each row of the majorizer matrix with the `rate_matrix_t_min` and `rate
 options. The sampling intervals $[T_{k0}, T_{k1})$for each simulated 
 person are a subset of the interval for which the majorizer matrix is defined, 
 and are specified with the `t_min` and `t_max` options. 
-(The `atmostB` option can be useful to speed up the sampling and minimize memory 
+(The `budget_cap` option can be useful to speed up the sampling and minimize memory 
 needs when one is interested in the first event only. The smaller the value, the faster 
 the algorithm but you have to check that you have not specified it to be too small.
-In this example, `atmostB = 5` is fine -- it returns exact solutions; but we 
+In this example, `budget_cap = 5` is fine -- it returns exact solutions; but we 
 have checked it [not shown].  If you do not want to mess with it, 
 do not use the option. The function may be already fast enough for your needs). 
 
@@ -166,7 +166,7 @@ pop[
     t_min = pop$T0,
     t_max = pop$T1,
     atmost1 = TRUE,
-    atmostB = 5
+    budget_cap = 5
   )
 ]
 tictoc::toc(log = TRUE) # timer end

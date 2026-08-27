@@ -91,14 +91,20 @@ equal-length ("regular") intervals.
 # one set of interval bounds for all point processes
 x <- vdraw_sc_step(
   lambda_matrix = matrix(rep(1, 50), nrow = 10),
-  time_breaks = c(100, 100.5, 102, 106, 109, 110),
-  atmost1 = FALSE
+  time_breaks = c(100, 100.5, 102, 106, 109, 110)
 )
 
 # separate interval bounds per point process
 x <- vdraw_sc_step(
   lambda_matrix = matrix(rep(1, 50), nrow = 10),
-  time_breaks = matrix(rep(c(100, 100.5, 102, 106, 109, 110), each = 10), nrow = 10) + 0:9,
-  atmost1 = FALSE
+  time_breaks = matrix(rep(c(100, 100.5, 102, 106, 109, 110), each = 10), nrow = 10) + 0:9
+)
+
+# condition on 2 to 4 events and report only the earliest two
+x <- vdraw_sc_step(
+  lambda_matrix = matrix(rep(1, 50), nrow = 10),
+  time_breaks = c(100, 100.5, 102, 106, 109, 110),
+  generate_at_least_K = 2, generate_at_most_K = 4,
+  report_first_K = 2
 )
 }

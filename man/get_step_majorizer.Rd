@@ -35,4 +35,12 @@ The returned object has the same dimensions as \code{breaks}.
 }
 \examples{
 get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
+
+# a lambda that takes the structured args container
+get_step_majorizer(
+  fun = function(t, a) a$shared$scale * abs(t),
+  breaks = matrix(rep(-5:5, each = 3), nrow = 3),
+  is_monotone = FALSE, K = 2,
+  fun_args = list(shared = list(scale = 2))
+)
 }

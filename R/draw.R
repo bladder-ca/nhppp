@@ -30,6 +30,22 @@
 #'        (thinning).
 #'
 #' @return a vector of event times
+#' @examples
+#' # thinning, with a constant majorizer line
+#' x <- draw(
+#'   lambda = function(t) 1 + sin(t),
+#'   line_majorizer_intercept = 2,
+#'   line_majorizer_slope = 0,
+#'   t_min = 0, t_max = 10
+#' )
+#'
+#' # inversion, conditioned on at least one event
+#' x <- draw(
+#'   Lambda = function(t) 2 * t,
+#'   Lambda_inv = function(z) z / 2,
+#'   t_min = 0, t_max = 10,
+#'   atleast1 = TRUE
+#' )
 #' @export
 draw <- function(
     Lambda = NULL,

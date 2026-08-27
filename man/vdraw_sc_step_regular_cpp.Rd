@@ -73,8 +73,7 @@ where the intervals have the same length (are "regular").
 x <- vdraw_sc_step_regular_cpp(
   Lambda_matrix = matrix(1:5, nrow = 1),
   rate_matrix_t_min = 100,
-  rate_matrix_t_max = 110,
-  atmost1 = FALSE
+  rate_matrix_t_max = 110
 )
 }
 \keyword{internal}

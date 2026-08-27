@@ -40,6 +40,23 @@
 #'        Poisson number of events.
 #'
 #' @return a matrix of event times with one row per sampled point process.
+#' @examples
+#' Z <- vdraw_cumulative_intensity(
+#'   Lambda = function(t) t^1.5,
+#'   Lambda_inv = function(z) z^(1 / 1.5),
+#'   t_min = 0,
+#'   t_max = rep(2, 10)
+#' )
+#'
+#' # arguments in the structured container; conditioned on exactly two events
+#' Z <- vdraw_cumulative_intensity(
+#'   Lambda = function(t, a) t^a$shared$p,
+#'   Lambda_inv = function(z, a) z^(1 / a$shared$p),
+#'   t_min = 0,
+#'   t_max = rep(2, 10),
+#'   Lambda_args = list(shared = list(p = 1.5)),
+#'   generate_at_least_K = 2, generate_at_most_K = 2
+#' )
 #' @export
 #'
 vdraw_cumulative_intensity <- function(Lambda,

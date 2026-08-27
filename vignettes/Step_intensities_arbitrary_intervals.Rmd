@@ -83,7 +83,13 @@ mean(!is.na(Z[, 1])) # proportion of people with at least one event
 
 As with the other `vdraw_*()` functions, `Lambda_matrix` (cumulative
 intensities at the interval ends) can be given instead of `lambda_matrix`,
-and `atmost1` / `atmostB` / `atleast1` work the same way.
+and the truncation options work the same way: `report_first_K` /
+`report_last_K` report only the earliest or latest K events of a
+realization (`atmost1` is the alias for `report_first_K = 1`);
+`generate_at_least_K` / `generate_at_most_K` condition the sampled process
+on its number of events (`atleast1` is the alias for
+`generate_at_least_K = 1`); and `budget_cap` caps the computational event
+budget.
 
 ### The sampled times follow the target intensity
 
@@ -176,8 +182,9 @@ summary(as.vector(t_first))
 
 ## Zero-truncated sampling
 
-`vztdraw_sc_step()` -- equivalently `vdraw_sc_step(atleast1 = TRUE)` --
-conditions on at least one event in the sampled interval. This is the
+`vztdraw_sc_step()` -- equivalently `vdraw_sc_step(generate_at_least_K = 1)`
+or its alias `atleast1 = TRUE` -- conditions on at least one event in the
+sampled interval. This is the
 natural tool when simulating people who are known to become cases, e.g.,
 drawing an age at diagnosis for each of $K$ cases:
 

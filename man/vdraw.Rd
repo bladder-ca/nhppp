@@ -114,3 +114,20 @@ a vector of event times
 This is a wrapper to the package's specific functions, and thus slightly slower.
 For time-intensive simulations prefer one of the specific functions.
 }
+\examples{
+# thinning (lambda and a majorizer matrix)
+x <- vdraw(
+  lambda = function(t, ...) 1 + sin(t),
+  lambda_maj_matrix = matrix(rep(2, 50), nrow = 10),
+  rate_matrix_t_min = 0,
+  rate_matrix_t_max = 5
+)
+
+# inversion (Lambda and its inverse), conditioned on at least one event
+x <- vdraw(
+  Lambda = function(t) 2 * t,
+  Lambda_inv = function(z) z / 2,
+  t_min = 0, t_max = rep(5, 10),
+  atleast1 = TRUE
+)
+}

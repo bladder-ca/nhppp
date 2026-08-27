@@ -102,4 +102,12 @@ x <- vdraw_intensity_step(
   lambda_maj_matrix = matrix(rep(1, 5), nrow = 1),
   time_breaks = c(1, 1.5, 3, 4, 4.5, 5)
 )
+
+# conditioned on exactly two events
+x <- vdraw_intensity_step(
+  lambda = function(x, ...) 0.1 * x,
+  lambda_maj_matrix = matrix(rep(1, 50), nrow = 10),
+  time_breaks = c(1, 1.5, 3, 4, 4.5, 5),
+  generate_at_least_K = 2, generate_at_most_K = 2
+)
 }

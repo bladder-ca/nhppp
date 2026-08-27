@@ -48,8 +48,14 @@
 #' @examples
 #' x <- vztdraw_sc_step(
 #'   lambda_matrix = matrix(rep(1, 50), nrow = 10),
+#'   time_breaks = c(100, 100.5, 102, 106, 109, 110)
+#' )
+#'
+#' # equivalently, via the general conditioning option
+#' x <- vdraw_sc_step(
+#'   lambda_matrix = matrix(rep(1, 50), nrow = 10),
 #'   time_breaks = c(100, 100.5, 102, 106, 109, 110),
-#'   atmost1 = FALSE
+#'   generate_at_least_K = 1
 #' )
 #' @export
 vztdraw_sc_step <- function(
