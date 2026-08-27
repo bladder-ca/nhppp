@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sampling log-linear times">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@ Trikalinos</h4>
             
             <h4 data-toc-skip class="date">2024-10-17</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.0.5/vignettes/Log_linear_times.Rmd" class="external-link"><code>vignettes/Log_linear_times.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/vignettes/Log_linear_times.Rmd" class="external-link"><code>vignettes/Log_linear_times.Rmd</code></a></small>
       <div class="d-none name"><code>Log_linear_times.Rmd</code></div>
     </div>
 
@@ -81,7 +81,7 @@ Trikalinos</h4>
 <p>Assume a population of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">K = 10^{5}</annotation></semantics></math>
 individuals indexed by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>K</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in [K] := \{ 1, \dots, K\}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mi>K</mi><mo stretchy="false" form="postfix">]</mo><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in [K] := \{ 1, \dots, K\}</annotation></semantics></math>.
 For person
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
 we want to simulate the first occurrence of an event (e.g., emergence of
@@ -103,24 +103,24 @@ develop clinical cancer over their simulated lifetime.</p>
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>50</mn><mo>,</mo><mn>100</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">b_k \sim U(50 , 100)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>50</mn><mo>,</mo><mn>100</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">b_k \sim U(50 , 100)</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">U()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">U()</annotation></semantics></math>
 is the uniform distribution.</p>
 <p>We use the log-linear intensity function</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><msub><mi>β</mi><mi>k</mi></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda_k(t) = e^{\alpha_k + \beta_k t}</annotation></semantics></math>,</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>e</mi><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><msub><mi>β</mi><mi>k</mi></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda_k(t) = e^{\alpha_k + \beta_k t}</annotation></semantics></math>,</p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 is age in years. The parameters
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>,</mo><msub><mi>β</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_k, \beta_k</annotation></semantics></math>
 are random over the individuals in the population with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>4</mn><mo>,</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha_k \sim N(-4, 0.5)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>4</mn><mo>,</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\alpha_k \sim N(-4, 0.5)</annotation></semantics></math>,
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>+</mo></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.03</mn><mo>,</mo><mn>0.003</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta_k \sim N_{0+}(0.03, 0.003)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>+</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mn>0.03</mn><mo>,</mo><mn>0.003</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\beta_k \sim N_{0+}(0.03, 0.003)</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N()</annotation></semantics></math>
 is a normal distribution and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mrow><mn>0</mn><mo>+</mo></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_{0+}()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mrow><mn>0</mn><mo>+</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_{0+}()</annotation></semantics></math>
 is a truncated normal distribution with support
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, \infty)</annotation></semantics></math>.</p>
 </div>
@@ -136,18 +136,18 @@ functions in a non-vectorized fashion. Yet this will be slowest
 approach.</p></li>
 <li><p>Simulate all persons in a vectorized way using only the intensity
 function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
 When you only know
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math><code>nhppp</code> uses the thinning algorithm. It is a very flexible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math><code>nhppp</code> uses the thinning algorithm. It is a very flexible
 approach because it does not require a lot of information – just
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
 This will by much faster than the first option, but not as fast as the
 third option.</p></li>
 <li><p>Simulate all persons in a vectorized way using the cumulative
 intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>
 and its inverse
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math>,
 which are defined below. When you have analytic expressions for these
 objects, you get the fastest sampling in the <code>nhppp</code> package.
 Then the package can use the <code>inversion</code> or the
@@ -168,6 +168,11 @@ between the different ways one can simulate this problem. The
 distributed samples.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'data.table'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     %notin%</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bladder-ca.github.io/nhppp/">nhppp</a></span><span class="op">)</span></span></code></pre></div>
 <p>Setup <code>pop</code>, the population <code>data.table</code>. The
 person specific parameters
@@ -211,7 +216,7 @@ vectorized form. For an example, take a look at the intensity function
 below. The other functions have the same bahavior.</p>
 <div class="section level4">
 <h4 id="intensity-function-lambda">Intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#intensity-function-lambda"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#intensity-function-lambda"></a>
 </h4>
 <p>Define a vectorized form of the intensity function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -292,7 +297,7 @@ results are returned in a matrix format.</p>
 <p>The defaults for the <code>alpha</code> and <code>beta</code>
 arguments of the <code>l()</code> functions are the respective columns
 of the whole population. We can then evaluate the intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>
 for the whole population passing only the <code>t</code> argument.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">55</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -307,25 +312,25 @@ for the whole population passing only the <code>t</code> argument.</p>
 </div>
 <div class="section level4">
 <h4 id="cumulative-intensity-function-lambdat">Cumulative intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#cumulative-intensity-function-lambdat"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#cumulative-intensity-function-lambdat"></a>
 </h4>
 <p>The cumulative intensity function is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>t</mi></msubsup><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">\Lambda(a, t) = \int_a^t \lambda(s) \ \textrm{d}s</annotation></semantics></math>.
 It does not matter what we choose for the lower limit of integration in
 the definition of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>.
 The lower limit cancels out in the mathematics of the sampling
 algorithms. Thus we are free to use any lower limit (say 0) for any
 antiderivative of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>
 that is convenient (for any integration constant).</p>
 <p>With a slight abuse of notation, define 0 as the lower integration
 limit and write
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:=</mo><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">{\Lambda(t) := \Lambda(0, t) = \int_0^t \lambda(s) \ \textrm{d}s}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow><annotation encoding="application/x-tex">{\Lambda(t) := \Lambda(0, t) = \int_0^t \lambda(s) \ \textrm{d}s}</annotation></semantics></math>.
 For the log-linear intensity in this example,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mi>β</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mi>t</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t) = \frac{1}{\beta} (e^{\alpha + \beta t} - e^\alpha)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>β</mi></mfrac><mo stretchy="false" form="prefix">(</mo><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mi>t</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda(t) = \frac{1}{\beta} (e^{\alpha + \beta t} - e^\alpha)</annotation></semantics></math>.</p>
 <p>The vectorized version of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 for our example is</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">alpha</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span>, <span class="va">beta</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -334,26 +339,26 @@ for our example is</p>
 </div>
 <div class="section level4">
 <h4 id="inverse-cumulative-intensity-function-lambda-1z">Inverse cumulative intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#inverse-cumulative-intensity-function-lambda-1z"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#inverse-cumulative-intensity-function-lambda-1z"></a>
 </h4>
 <p>By its construction,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 is a strictly positive monotone function in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
 and thus invertible. The inverse of the cumulative intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>
 is defined as the function that recovers the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 when you pass it the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>.
 The definition is that it satisfies
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">{\Lambda^{-1} \big ( \Lambda(t) \big ) = t}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>=</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">{\Lambda^{-1} \big ( \Lambda(t) \big ) = t}</annotation></semantics></math>.
 In our example,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mi>z</mi><mo>+</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>α</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mi>/</mi><mi>β</mi></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z) = \big(\log(\beta z + e^\alpha) - \alpha\big)/\beta</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mi>z</mi><mo>+</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>α</mi><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mi>/</mi><mi>β</mi></mrow><annotation encoding="application/x-tex">\Lambda^{-1}(z) = \big(\log(\beta z + e^\alpha) - \alpha\big)/\beta</annotation></semantics></math>,
 which is easily derived from the formula of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda(t)</annotation></semantics></math>.</p>
 <p>The vectorized implementation of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>
 for our example is</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Li</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span>, <span class="va">alpha</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">alpha</span>, <span class="va">beta</span> <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -397,12 +402,12 @@ as we can do without vectorization.</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Method 1 (nonvectorized): 1.563 sec elapsed</span></span>
+<span><span class="co">#&gt; Method 1 (nonvectorized): 1.524 sec elapsed</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">t_nonvec_special_case</span> <span class="op">:=</span> <span class="va">t_nonvec_special_case</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-vectorized-sampling-using-only-lambda">Method 2: Vectorized sampling using only
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-2-vectorized-sampling-using-only-lambda"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-2-vectorized-sampling-using-only-lambda"></a>
 </h2>
 <p>When you only know the intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>,
@@ -411,7 +416,7 @@ as we can do without vectorization.</p>
 constant majorizer function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 such that:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mo>=</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_*(t) &gt;= \lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mo>=</mo><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_*(t) &gt;= \lambda(t)</annotation></semantics></math>
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 of interest.</p>
@@ -430,7 +435,7 @@ over the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>-th
 interval. Any supremum will do – but the algorithm is most efficient
 when you give it the least upper bound – practically, the maximum of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 over all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 in the interval. For monotone intensity functions, such as the function
@@ -446,7 +451,7 @@ functions and for nonmonotone continuous Lipschitz functions (functions
 whose maximum slope is bounded). Even if your case is more complex, you
 should be able to find a supremum that works.</p>
 <p>This code samples in a vectorized fashion when you know only
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda()</annotation></semantics></math>.
 It creates a majorizer matrix over
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">M=5</annotation></semantics></math>
 intervals. To let the software know which times correspond to each of
@@ -493,18 +498,18 @@ needs).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.113 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.112 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-3-vectorized-sampling-using-lambda-and-lambda-1"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda^{-1}()</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#method-3-vectorized-sampling-using-lambda-and-lambda-1"></a>
 </h2>
 <p>The most efficient sampling is possible when one knows
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda()</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Lambda^{-1}()</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Lambda^{-1}()</annotation></semantics></math>.
 The <code>nhppp</code> package can sample in this case using the
 <code><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity()</a></code> function. Here
 <code>range_t</code> is a matrix with information on each person’s
@@ -536,11 +541,11 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (nonvectorized): 1.563 sec elapsed. This is the slowest
+<li><p>Method 1 (nonvectorized): 1.524 sec elapsed. This is the slowest
 approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples!</p></li>
-<li><p>Method 2 (vectorized, thinning): 0.113 sec elapsed. This approach
+<li><p>Method 2 (vectorized, thinning): 0.112 sec elapsed. This approach
 is many times faster that then first approach. It is very flexible – it
 can accommodate very complex time varying intensity functions. You
 almost always know
@@ -550,9 +555,9 @@ and can get its majorizer
 easily and fast.</p></li>
 <li><p>Method 3 (inversion): 0.016 sec elapsed. This approach is many
 times faster that the second one, but requires implementations for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>Λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>.</p></li>
 </ol>
 </div>
 <div class="section level3">
@@ -605,7 +610,7 @@ work with the current package.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

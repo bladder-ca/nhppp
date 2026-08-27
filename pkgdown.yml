@@ -1,12 +1,12 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   Gompertz_processes: Gompertz_processes.html
   Log_linear_times: Log_linear_times.html
   Simple_des_model_cancer_natural_Hx: Simple_des_model_cancer_natural_Hx.html
   Weibull_processes: Weibull_processes.html
-last_built: 2026-04-22T00:00Z
+last_built: 2026-08-27T20:05Z
 urls:
   reference: https://bladder-ca.github.io/nhppp/reference
   article: https://bladder-ca.github.io/nhppp/articles

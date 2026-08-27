@@ -19,6 +19,7 @@ You can install the release version of nhppp from
 [CRAN](https://cran.r-project.org) with:
 
 ``` r
+
 install.packages("nhppp")
 ```
 
@@ -26,6 +27,7 @@ You can install the development version of nhppp from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("bladder-ca/nhppp")
 ```
@@ -40,11 +42,12 @@ non-vectorized function, but `nhppp` includes vectorized functions that
 are fast and have small memory footprint.
 
 Consider the time varying intensity function
-$\lambda(t) = e^{(0.2t)}\left( 1 + \sin t \right)$, which is a
-sinusoidal intensity function with an exponential amplitude. To draw
-samples over the interval $(0,6\pi\rbrack$ execute
+$`\lambda(t) = e^{(0.2t)} (1 + \sin t)`$, which is a sinusoidal
+intensity function with an exponential amplitude. To draw samples over
+the interval $`(0, 6\pi]`$ execute
 
 ``` r
+
 l <- function(t) (1 + sin(t)) * exp(0.2 * t)
 nhppp::draw(
   lambda = l,
@@ -63,13 +66,14 @@ where `line_majorizer_intercept` and `line_majorizer_slope` define a
 majorizer constant.
 
 When available, the integrated intensity function
-$\Lambda(t) = \int_{0}^{t}\lambda(s)\ ds$ and its inverse
-$\Lambda^{- 1}(z)$ result in faster simulation times. For this example,
-$\Lambda(t) = \frac{e^{0.2t}\left( 0.2\sin t - \cos t \right) + 1}{1.04} + \frac{e^{0.2t} - 1}{0.2}$;
-$\Lambda^{- 1}(z)$ is constructed numerically upfront (or can be
+$`\Lambda(t) = \int_0^t \lambda(s) \ ds`$ and its inverse
+$`\Lambda^{-1}(z)`$ result in faster simulation times. For this example,
+$`\Lambda(t) = \frac{e^{0.2t}(0.2 \sin t - \cos t)+1}{1.04} + \frac{e^{0.2t} - 1}{0.2}`$;
+$`\Lambda^{-1}(z)`$ is constructed numerically upfront (or can be
 calculated numerically by the function, at a computational cost).
 
 ``` r
+
 L <- function(t) {
   exp(0.2 * t) * (0.2 * sin(t) - cos(t)) / 1.04 +
     exp(0.2 * t) / 0.2 - 4.038462

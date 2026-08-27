@@ -1,6 +1,10 @@
 # Changelog
 
+## nhppp (development version)
+
 ## nhppp 1.0.5
+
+CRAN release: 2026-04-21
 
 - CRAN release
 

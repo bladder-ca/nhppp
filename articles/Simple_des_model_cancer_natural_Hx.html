@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="A simple discrete event simulation model of a cancer's natural history">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@ Y Sereda, S Chrysanthopoulou, F Alarid-Escudero</h4>
             
             <h4 data-toc-skip class="date">2024-10-17</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.0.5/vignettes/Simple_des_model_cancer_natural_Hx.Rmd" class="external-link"><code>vignettes/Simple_des_model_cancer_natural_Hx.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/vignettes/Simple_des_model_cancer_natural_Hx.Rmd" class="external-link"><code>vignettes/Simple_des_model_cancer_natural_Hx.Rmd</code></a></small>
       <div class="d-none name"><code>Simple_des_model_cancer_natural_Hx.Rmd</code></div>
     </div>
 
@@ -80,7 +80,7 @@ Y Sereda, S Chrysanthopoulou, F Alarid-Escudero</h4>
 </h2>
 <p>We will model a cancer’s natural history in a population. We index
 people by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>K</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in [K] := \{1, \dots, K \}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mi>K</mi><mo stretchy="false" form="postfix">]</mo><mo>:=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in [K] := \{1, \dots, K \}</annotation></semantics></math>.
 The following assumptions fix a simulation world.</p>
 <ol style="list-style-type: decimal">
 <li><p>All types of events can be modeleld with nonhomogeneous Poisson
@@ -88,11 +88,11 @@ point processes (NHPPPs).</p></li>
 <li><p>Persons are alive and cancer free at 40 years of age. No person
 will live past 110 years. All people can die from causes other than the
 cancer of interest (hereafter, <em>death from other causes</em>). Write
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\rho_k(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho_k(t)</annotation></semantics></math>
 for the corresponding intensity function.</p></li>
 <li><p>Some people may be exposed to an environmental toxin, with
 exposure that varies over time. Write
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_k(t) \ge 0</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_k(t) \ge 0</annotation></semantics></math>
 for the exposure function. Positive values mean that a person is exposed
 at that particular instance. (The never exposed have zeros throughout
 their life.) We will assume that the exposure to said toxin is a risk
@@ -103,14 +103,14 @@ for the effect of the toxin instantaneous exposure on developing
 cancer.</p></li>
 <li><p>Some persons will develop a preclinical cancer with a
 time-varying intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><munder><mrow><msub><mi>λ</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">non-risk factor part</mtext></munder><mo>+</mo><munder><munder><mrow><msub><mi>δ</mi><mi>k</mi></msub><mspace width="0.222em"></mspace><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">risk factor part</mtext></munder></mrow><annotation encoding="application/x-tex">\lambda_{k}(t) = \underbrace{\lambda_{k0}(t)}_{\textrm{non-risk factor part}} + \underbrace{\delta_k \ \xi_k(t)}_{\textrm{risk factor part}}</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><munder><mrow><msub><mi>λ</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">non-risk factor part</mtext></munder><mo>+</mo><munder><munder><mrow><msub><mi>δ</mi><mi>k</mi></msub><mspace width="0.222em"></mspace><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">risk factor part</mtext></munder></mrow><annotation encoding="application/x-tex">\lambda_{k}(t) = \underbrace{\lambda_{k0}(t)}_{\textrm{non-risk factor part}} + \underbrace{\delta_k \ \xi_k(t)}_{\textrm{risk factor part}}</annotation></semantics></math>.</p></li>
 <li><p>Some preclinical cancers may progress to clinical cancer with an
 intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_k(t)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu_k(t)</annotation></semantics></math>,
 at which point they are considered diagnosed.</p></li>
 <li><p>Once people develop preclinical cancer they can die from cancer
 with intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\nu_k(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu_k(t)</annotation></semantics></math>.
 The cancer death rate does not explicitly depend on whether the cancer
 has been diagnosed or not. Thus, we have two competing causes of death:
 death due to cancer and due to other causes.</p></li>
@@ -124,6 +124,11 @@ to not use <code>data.table</code>, you should be able to implement this
 example in base <code>R</code> with little trouble.)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'data.table'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     %notin%</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bladder-ca.github.io/nhppp/">nhppp</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -158,7 +163,7 @@ cohort.</p>
 <h3 id="death-from-other-causes">Death from other causes<a class="anchor" aria-label="anchor" href="#death-from-other-causes"></a>
 </h3>
 <p>The death from other causes
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\rho_k(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho_k(t)</annotation></semantics></math>
 depends on the age
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
 measured in years), sex (male or female), and birth year of person
@@ -247,32 +252,32 @@ phenomenological model. We will assume that</p>
 <li><p>People may be exposed to the environmental toxin with probability
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>t</mi><mi>a</mi><mi>r</mi><mi>t</mi></mrow></msub><mo>=</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">p_{start} = 0.20</annotation></semantics></math>.</p></li>
 <li><p>For those who will be exposed, the start age of exposure is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>12</mn><mo>,</mo><mn>35</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t_{k0} \sim U(12, 35)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>12</mn><mo>,</mo><mn>35</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_{k0} \sim U(12, 35)</annotation></semantics></math>,
 provided that they are still alive.</p></li>
 <li><p>Among those who are exposed, the probability that their exposure
 will eventually stop is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>t</mi><mi>o</mi><mi>p</mi></mrow></msub><mo>=</mo><mn>0.60</mn></mrow><annotation encoding="application/x-tex">p_{stop} = 0.60</annotation></semantics></math>.</p></li>
 <li><p>In the pertinent subgroup of persons, the duration of the
 exposure is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>35</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">d_k \sim U(1, 35)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>35</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">d_k \sim U(1, 35)</annotation></semantics></math>,
 if they are still alive.</p></li>
 <li><p>For people with at least some exposure to the toxin, for all
 times in the exposure window
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>t</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(t_{k0}, t_{k1}]</annotation></semantics></math>
 the exposure levels are
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>Ξ</mi><mi>k</mi></msub><mo>⋅</mo><mo minsize="1.8" maxsize="1.8" stretchy="false" form="prefix">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mo>cos</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>cos</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.45</mn><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo minsize="1.8" maxsize="1.8" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\xi_k(t) = \Xi_k \cdot \Big(\frac{1}{2} +\frac{1}{4}\big(\cos(0.5 t) + \cos(0.45 t) \big) \Big)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi mathvariant="normal">Ξ</mi><mi>k</mi></msub><mo>⋅</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">cos</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.5</mn><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mrow><mi mathvariant="normal">cos</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.45</mn><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\xi_k(t) = \Xi_k \cdot \Big(\frac{1}{2} +\frac{1}{4}\big(\cos(0.5 t) + \cos(0.45 t) \big) \Big)</annotation></semantics></math>,
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 is a person’s age and the amplitude (maximum exposure)
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Xi_k</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Xi_k</annotation></semantics></math>
 has model
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Ξ</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.2</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Xi_k \sim U(0.2, 1)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Ξ</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>0.2</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Xi_k \sim U(0.2, 1)</annotation></semantics></math>.
 Otherwise,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_k(t) = 0</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_k(t) = 0</annotation></semantics></math>.</p></li>
 </ol>
 <p>We now add the per-person parameters for exposure histories in the
 population data.table. For people who will never be exposed we set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Xi_k</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Xi_k</annotation></semantics></math>
 to zero, and their exposure start and stop ages at the
 <code>max_simuation_age</code>. This avoids <code>if ... else</code>
 statements, and is still pretty fast. If you run a massive model,
@@ -305,11 +310,11 @@ though, you may want to be smarter about it.</p>
 <span><span class="co"># cleanup</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">will_start_exposure</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span><span class="op">[</span>, <span class="va">will_stop_exposure</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span></span></code></pre></div>
 <p>We implement
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\xi_k(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\xi_k(t)</annotation></semantics></math>
 as a function that is vectorized over all its arguments. The arguments
 <code>start_age</code>, <code>stop_age</code>, <code>max_exposure</code>
 correspond to the variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo>,</mo><mi>Ξ</mi></mrow><annotation encoding="application/x-tex">t_{k0}, t_{k1}, \Xi</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo>,</mo><mi mathvariant="normal">Ξ</mi></mrow><annotation encoding="application/x-tex">t_{k0}, t_{k1}, \Xi</annotation></semantics></math>
 in the equation above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xi</span> <span class="op">&lt;-</span> <span class="va">toxin_exposure</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">max_exposure</span>, <span class="va">start_age</span>, <span class="va">stop_age</span><span class="op">)</span> <span class="op">{</span></span>
@@ -322,7 +327,7 @@ intervals<a class="anchor" aria-label="anchor" href="#emergence-of-pre-clinical-
 </h3>
 <p>Assume that the intensity function for cancer emergence in the
 absence of toxin exposure is</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub></mrow><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub></mrow></mfrac><mo minsize="1.8" maxsize="1.8" stretchy="false" form="prefix">(</mo><mfrac><mi>t</mi><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub></mrow></mfrac><msup><mo minsize="1.8" maxsize="1.8" stretchy="false" form="postfix">)</mo><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda_{k0}(t) = \frac{shape_k}{scale_k} \Big(\frac{t}{scale_k}\Big)^{shape_k -1}</annotation></semantics></math>,</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub></mrow><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub></mrow></mfrac><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><mfrac><mi>t</mi><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub></mrow></mfrac><msup><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda_{k0}(t) = \frac{shape_k}{scale_k} \Big(\frac{t}{scale_k}\Big)^{shape_k -1}</annotation></semantics></math>,</p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 is age in years.</p>
@@ -332,13 +337,13 @@ case of an NHPPP). The parameters
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">scale_k</annotation></semantics></math>
 are assumed to vary across people according to the models
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>7</mn><mo>,</mo><mn>9</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">shape_k \sim U(7, 9)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><msub><mi>e</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>7</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">shape_k \sim U(7, 9)</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>150</mn><mo>,</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">scale_k \sim N(150, 20)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><msub><mi>e</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mn>150</mn><mo>,</mo><mn>20</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">scale_k \sim N(150, 20)</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">U(\cdot)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">U(\cdot)</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(\cdot)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(\cdot)</annotation></semantics></math>
 stand for uniform and normal distributions. We sample these values for
 each person in the population.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -351,19 +356,19 @@ the <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">s
 the cancer emergence times for people without toxin exposure, but not
 for people with toxin exposures.) Accounting for toxin exposure
 histories, the intensity function for cancer emergence is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>l</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mi>k</mi></msub><msub><mi>ξ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_{k}(t) = l_{k0}(t) + \delta_k \xi_k(t)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>l</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>δ</mi><mi>k</mi></msub><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_{k}(t) = l_{k0}(t) + \delta_k \xi_k(t)</annotation></semantics></math>.</p>
 <p>We will assume that the toxin exposure effect
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\delta_k</annotation></semantics></math>
 is distributed as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>δ</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>N</mi><mo>+</mo></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>0.5</mn><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\delta_k \sim N_+\big(2, 0.5\big)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>δ</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>N</mi><mo>+</mo></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>0.5</mn><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\delta_k \sim N_+\big(2, 0.5\big)</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mo>+</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_+(\cdot)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mo>+</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_+(\cdot)</annotation></semantics></math>
 is a slab and smear normal distribution.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span><span class="op">[</span>, <span class="va">param_toxin_exposure_diff</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">0.01</span>, <span class="fl">0.005</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>We need to sample from an NHPPP with an intensity function that
 varies over time as per
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_k(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_k(t)</annotation></semantics></math>.
 We will use <code>nhppp</code>’s <code><a href="../reference/vdraw_intensity.html">vdraw_intensity()</a></code>
 function, which needs</p>
 <ol style="list-style-type: decimal">
@@ -401,13 +406,13 @@ it is in vectorized form.</p>
 <span>      <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>We also need a piecewise constant <em>majorizer</em> function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_*(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_*(t)</annotation></semantics></math>.
 We say that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_*(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_*(t)</annotation></semantics></math>
 majorizes
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda_*(t) \ge \lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mo>*</mo></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_*(t) \ge \lambda(t)</annotation></semantics></math>
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 of interest. The function expects a <em>regular step</em> majorizer
@@ -481,9 +486,9 @@ assume that the intensity from cancer deaths is loglinear in time, that
 is</p>
 <p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mi>k</mi></msub><mo>=</mo><msup><mi>e</mi><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><msub><mi>β</mi><mi>k</mi></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\nu_k = e^{\alpha_k + \beta_k t}</annotation></semantics></math>,</p>
 <p>with parameters
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>3</mn><mo>,</mo><mn>0.2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha_k \sim N(-3, 0.2)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>3</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\alpha_k \sim N(-3, 0.2)</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>k</mi></msub><mspace width="0.222em"></mspace><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0.003</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta_k ~ U(0, 0.003)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>k</mi></msub><mspace width="0.222em"></mspace><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0.003</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\beta_k ~ U(0, 0.003)</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span><span class="op">[</span>, <span class="va">param_cancer_death_intercept</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="op">-</span><span class="fl">3</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">param_cancer_death_slope</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">0</span>, <span class="fl">0.003</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
@@ -497,18 +502,18 @@ small simulation with
 and requires no additional mathematics.</p>
 <p>We can sample even faster if we can analytically obtain the
 cumulative intensity function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mrow><msub><mi>ν</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow></mrow><annotation encoding="application/x-tex">N_k(t) = \int_0^t{\nu_k(s) \ \textrm{d}s}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>t</mi></msubsup><mrow><msub><mi>ν</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">d</mtext><mi>s</mi></mrow></mrow><annotation encoding="application/x-tex">N_k(t) = \int_0^t{\nu_k(s) \ \textrm{d}s}</annotation></semantics></math>,
 and its inverse
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mi>k</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_k^{-1}(z)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_k^{-1}(z)</annotation></semantics></math>.
 (The inverse function recovers
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 from the value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_k(t)</annotation></semantics></math>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><msubsup><mi>N</mi><mi>k</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>N</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t = N_k^{-1}\big( N_k(t)\big)</annotation></semantics></math>).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_k(t)</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><msubsup><mi>N</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>N</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t = N_k^{-1}\big( N_k(t)\big)</annotation></semantics></math>).
 This sampling is done with <code>nhppp</code>’s
 <code><a href="../reference/vdraw_cumulative_intensity.html">vdraw_cumulative_intensity()</a></code> function.</p>
 <p>A bit of calculus can yield
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msub><mi>β</mi><mi>k</mi></msub></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><msub><mi>β</mi><mi>k</mi></msub><mi>t</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><msub><mi>α</mi><mi>k</mi></msub></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_k(t) = \frac{1}{\beta_k} (e^{\alpha_k + \beta_k t} - e^{\alpha_k})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><msub><mi>β</mi><mi>k</mi></msub></mfrac><mo stretchy="false" form="prefix">(</mo><msup><mi>e</mi><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>+</mo><msub><mi>β</mi><mi>k</mi></msub><mi>t</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><msub><mi>α</mi><mi>k</mi></msub></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_k(t) = \frac{1}{\beta_k} (e^{\alpha_k + \beta_k t} - e^{\alpha_k})</annotation></semantics></math>,
 which we can implement in vectorized form and with default parameters
 already set:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -520,7 +525,7 @@ already set:</p>
 <span>  <span class="op">)</span> <span class="op">/</span> <span class="va">P</span><span class="op">$</span><span class="va">param_cancer_death_slope</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The inverse
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mi>k</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_k^{-1}(\cdot)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_k^{-1}(\cdot)</annotation></semantics></math>
 is</p>
 <p>$N_k^{-1}(z) = ( ( _k z + e^_k ) - _k )/_k $</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -573,7 +578,7 @@ clinical cancers with intensity function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math>.
 We will assume that clinical diagnosis has constant rate which is
 distributed according to the model</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:=</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.20</mn><mo>,</mo><mn>0.27</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_k(t) := \mu_k \sim U(0.20, 0.27)</annotation></semantics></math>,</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>:=</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>∼</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>0.20</mn><mo>,</mo><mn>0.27</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu_k(t) := \mu_k \sim U(0.20, 0.27)</annotation></semantics></math>,</p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 indexes over people with cancer.</p>
@@ -599,7 +604,7 @@ commented out code below.</p>
 <span>  <span class="va">age_clinical_cancer_dx</span> <span class="op">:=</span> <span class="cn">NA</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 0.003 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.007 sec elapsed</span></span></code></pre></div>
 <p>With <code>nhppp</code>, we can use the
 <code><a href="../reference/vdraw_sc_step_regular.html">vdraw_sc_step_regular()</a></code> function that samples from
 piecewise constant intensities. (A constant function over an interval is
@@ -623,7 +628,7 @@ worth showing.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 0.009 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.011 sec elapsed</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -640,12 +645,12 @@ worth showing.</p>
 <span><span class="co">#&gt;  3rd Qu.: 75000   3rd Qu.:2015   3rd Qu.:40   3rd Qu.:110       </span></span>
 <span><span class="co">#&gt;  Max.   :100000   Max.   :2015   Max.   :40   Max.   :110       </span></span>
 <span><span class="co">#&gt;                                                                 </span></span>
-<span><span class="co">#&gt;      sex            age_dead_from_other_causes exposure_start_age</span></span>
-<span><span class="co">#&gt;  Length:100000      Min.   : 40.01             Min.   : 12.00    </span></span>
-<span><span class="co">#&gt;  Class :character   1st Qu.: 72.82             1st Qu.:110.00    </span></span>
-<span><span class="co">#&gt;  Mode  :character   Median : 82.57             Median :110.00    </span></span>
-<span><span class="co">#&gt;                     Mean   : 80.20             Mean   : 92.69    </span></span>
-<span><span class="co">#&gt;                     3rd Qu.: 89.58             3rd Qu.:110.00    </span></span>
+<span><span class="co">#&gt;         sex         age_dead_from_other_causes exposure_start_age</span></span>
+<span><span class="co">#&gt;  Length   :100000   Min.   : 40.01             Min.   : 12.00    </span></span>
+<span><span class="co">#&gt;  N.unique :     2   1st Qu.: 72.82             1st Qu.:110.00    </span></span>
+<span><span class="co">#&gt;  N.blank  :     0   Median : 82.57             Median :110.00    </span></span>
+<span><span class="co">#&gt;  Min.nchar:     4   Mean   : 80.20             Mean   : 92.69    </span></span>
+<span><span class="co">#&gt;  Max.nchar:     6   3rd Qu.: 89.58             3rd Qu.:110.00    </span></span>
 <span><span class="co">#&gt;                     Max.   :109.87             Max.   :110.00    </span></span>
 <span><span class="co">#&gt;                                                                  </span></span>
 <span><span class="co">#&gt;  exposure_stop_age maximum_exposure param_cancer_emergence_shape</span></span>
@@ -660,10 +665,10 @@ worth showing.</p>
 <span><span class="co">#&gt;  Min.   : 67.46               Min.   :0.000000          Min.   : 40.01      </span></span>
 <span><span class="co">#&gt;  1st Qu.:136.42               1st Qu.:0.006624          1st Qu.: 57.42      </span></span>
 <span><span class="co">#&gt;  Median :149.99               Median :0.010004          Median : 72.15      </span></span>
-<span><span class="co">#&gt;  Mean   :149.94               Mean   :0.010052          Mean   : 70.11      </span></span>
+<span><span class="co">#&gt;  Mean   :149.94               Mean   :0.010052          Mean   : 70.12      </span></span>
 <span><span class="co">#&gt;  3rd Qu.:163.48               3rd Qu.:0.013392          3rd Qu.: 82.73      </span></span>
-<span><span class="co">#&gt;  Max.   :234.05               Max.   :0.032101          Max.   :107.67      </span></span>
-<span><span class="co">#&gt;                                                         NA's   :95613       </span></span>
+<span><span class="co">#&gt;  Max.   :234.05               Max.   :0.032101          Max.   :107.68      </span></span>
+<span><span class="co">#&gt;                                                         NAs    :95613       </span></span>
 <span><span class="co">#&gt;  with_cancer     param_cancer_death_intercept param_cancer_death_slope</span></span>
 <span><span class="co">#&gt;  Mode :logical   Min.   :-3.817               Min.   :3.550e-09       </span></span>
 <span><span class="co">#&gt;  FALSE:95613     1st Qu.:-3.134               1st Qu.:7.468e-04       </span></span>
@@ -673,13 +678,13 @@ worth showing.</p>
 <span><span class="co">#&gt;                  Max.   :-2.140               Max.   :3.000e-03       </span></span>
 <span><span class="co">#&gt;                                                                       </span></span>
 <span><span class="co">#&gt;  age_dead_from_cancer_causes    age_dead      param_clinical_cancer_dx_rate</span></span>
-<span><span class="co">#&gt;  Min.   : 40.20              Min.   : 40.01   Min.   :0.200                </span></span>
-<span><span class="co">#&gt;  1st Qu.: 61.91              1st Qu.: 72.35   1st Qu.:0.217                </span></span>
-<span><span class="co">#&gt;  Median : 73.62              Median : 82.26   Median :0.235                </span></span>
-<span><span class="co">#&gt;  Mean   : 72.40              Mean   : 79.87   Mean   :0.235                </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 83.16              3rd Qu.: 89.36   3rd Qu.:0.252                </span></span>
-<span><span class="co">#&gt;  Max.   :108.17              Max.   :109.87   Max.   :0.270                </span></span>
-<span><span class="co">#&gt;  NA's   :97768                                NA's   :95613                </span></span>
+<span><span class="co">#&gt;  Min.   : 40.20              Min.   : 40.01   Min.   :0.2000               </span></span>
+<span><span class="co">#&gt;  1st Qu.: 61.91              1st Qu.: 72.35   1st Qu.:0.2173               </span></span>
+<span><span class="co">#&gt;  Median : 73.63              Median : 82.26   Median :0.2354               </span></span>
+<span><span class="co">#&gt;  Mean   : 72.40              Mean   : 79.87   Mean   :0.2351               </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 83.16              3rd Qu.: 89.36   3rd Qu.:0.2525               </span></span>
+<span><span class="co">#&gt;  Max.   :108.17              Max.   :109.87   Max.   :0.2700               </span></span>
+<span><span class="co">#&gt;  NAs    :97768                                NAs    :95613                </span></span>
 <span><span class="co">#&gt;  age_clinical_cancer_dx</span></span>
 <span><span class="co">#&gt;  Min.   : 40.31        </span></span>
 <span><span class="co">#&gt;  1st Qu.: 58.56        </span></span>
@@ -687,7 +692,7 @@ worth showing.</p>
 <span><span class="co">#&gt;  Mean   : 70.95        </span></span>
 <span><span class="co">#&gt;  3rd Qu.: 82.96        </span></span>
 <span><span class="co">#&gt;  Max.   :106.46        </span></span>
-<span><span class="co">#&gt;  NA's   :96980</span></span></code></pre></div>
+<span><span class="co">#&gt;  NAs    :96980</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
@@ -712,7 +717,7 @@ work with the current package.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
