@@ -23,6 +23,13 @@ New features — two orthogonal truncation option classes
   `rbtpois`/`rbtpois_vec` in C++). Any generation bound routes to the
   order-statistics kernels; without generation bounds the sequential
   inversion kernels are used (they cannot condition on the future total).
+- `vdraw_cumulative_intensity()` supports the full option set: any
+  generation bound switches from sequential inversion to the exact
+  order-statistics construction on the `Lambda` scale (doubly-truncated
+  Poisson count; the ascending uniforms on
+  `(Lambda(t_min), Lambda(t_max))` are drawn as normalized Exp(1)
+  spacings and mapped through `Lambda_inv`), and `report_last_K` is
+  honored on all paths.
 - The vectorized thinning samplers support both generation bounds by
   rejection resampling (proposals push only the lower bound into the
   majorizer; the accepted-count condition is verified per row). The

@@ -311,14 +311,6 @@ test_that("unimplemented and inconsistent options error", {
     ),
     "scalar thinning"
   )
-  expect_error(
-    vdraw_cumulative_intensity(
-      Lambda = function(t, ...) 0.2 * t, Lambda_inv = function(z, ...) 5 * z,
-      t_min = 0, t_max = 10, generate_at_least_K = 2
-    ),
-    "not been implemented"
-  )
-
   # flag/integer contradictions and exclusivity
   expect_error(
     vdraw_sc_step_regular_cpp(

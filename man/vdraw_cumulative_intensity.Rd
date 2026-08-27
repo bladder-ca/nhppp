@@ -55,15 +55,21 @@ process (alias for \code{report_first_K = 1}).}
 earliest K event times (reporting truncation).}
 
 \item{report_last_K}{\code{NULL} or a positive integer: report only the latest
-K event times (not implemented for this sampler)}
+K event times (reporting truncation).}
 
-\item{atleast1}{boolean, condition on at least 1 event (not implemented)}
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1}).}
 
-\item{generate_at_least_K}{\code{NULL} or a positive integer: condition on at
-least K events (not implemented for this sampler)}
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events in \verb{(t_min, t_max)}.}
 
-\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
-most K events (not implemented for this sampler)}
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events in \verb{(t_min, t_max)}. May be
+combined with \code{generate_at_least_K} (K1 <= K2); equal bounds
+condition on exactly K events. Any generation bound switches the
+sampler from sequential inversion to the order-statistics
+construction on the \code{Lambda} scale with a doubly-truncated
+Poisson number of events.}
 }
 \value{
 a matrix of event times with one row per sampled point process.

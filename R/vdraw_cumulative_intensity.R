@@ -26,12 +26,18 @@
 #' @param report_first_K `NULL` or a positive integer: report only the
 #'        earliest K event times (reporting truncation).
 #' @param report_last_K `NULL` or a positive integer: report only the latest
-#'        K event times (not implemented for this sampler)
-#' @param atleast1 boolean, condition on at least 1 event (not implemented)
-#' @param generate_at_least_K `NULL` or a positive integer: condition on at
-#'        least K events (not implemented for this sampler)
-#' @param generate_at_most_K `NULL` or a positive integer: condition on at
-#'        most K events (not implemented for this sampler)
+#'        K event times (reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`).
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events in `(t_min, t_max)`.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events in `(t_min, t_max)`. May be
+#'        combined with `generate_at_least_K` (K1 <= K2); equal bounds
+#'        condition on exactly K events. Any generation bound switches the
+#'        sampler from sequential inversion to the order-statistics
+#'        construction on the `Lambda` scale with a doubly-truncated
+#'        Poisson number of events.
 #'
 #' @return a matrix of event times with one row per sampled point process.
 #' @export
@@ -51,12 +57,6 @@ vdraw_cumulative_intensity <- function(Lambda,
                                        generate_at_most_K = NULL) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
-  if (gen_$at_least > 0L || gen_$at_most > 0L) {
-    stop("The generation-conditioning options have not been implemented yet for `vdraw_cumulative_intensity()`.")
-  }
-  if (rep_$last > 0L) {
-    stop("`report_last_K` has not been implemented yet for `vdraw_cumulative_intensity()`.")
-  }
   range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
 
@@ -84,24 +84,48 @@ vdraw_cumulative_intensity <- function(Lambda,
     .call_with_args(Lambda, range_t, fa_$container)
   }
 
-  N_cols <- max(stats::qpois(p = 1 - tol, lambda = 1 * (range_L[, 2] - range_L[, 1])))
-  if (rep_$first > 0L && rep_$first < N_cols) {
-    N_cols <- rep_$first
-  }
-
-  warped_t <- matrix(stats::rexp(n = N_cols * N_rows, rate = 1), ncol = N_cols)
-  matrix_cumsum_columns_inplace(warped_t)
-  warped_t <- warped_t + range_L[, 1]
-  for (col in 1:N_cols) {
-    in_range_L <- (warped_t[, col] <= range_L[, 2])
-    if (col > 1 && all(!in_range_L)) {
-      warped_t <- warped_t[, 1:(col - 1)]
-      break
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
+    # Order statistics on the Lambda scale: conditional on the number of
+    # events N in (t_min, t_max), the Lambda-transformed times are N
+    # ascending uniforms on (Lambda(t_min), Lambda(t_max)). Draw N from the
+    # doubly-truncated Poisson, then the ascending uniforms as normalized
+    # Exp(1) spacings (S_1 / S_(N+1), ..., S_N / S_(N+1)), which vectorizes
+    # across rows with unequal N.
+    mu <- range_L[, 2] - range_L[, 1]
+    N_events <- rbtpois_vec(mu, gen_$at_least, gen_$at_most)
+    # the 1 - tol count quantile is the same approximation knob as the
+    # unconditioned path; it never truncates below generate_at_least_K
+    N_events <- as.integer(
+      pmin(N_events, pmax(gen_$at_least, stats::qpois(p = 1 - tol, lambda = mu)))
+    )
+    N_cols <- max(1L, N_events)
+    warped_t <- matrix(stats::rexp(n = (N_cols + 1L) * N_rows, rate = 1), ncol = N_cols + 1L)
+    matrix_cumsum_columns_inplace(warped_t)
+    S_total <- warped_t[cbind(seq_len(N_rows), N_events + 1L)]
+    warped_t <- warped_t[, seq_len(N_cols), drop = FALSE] * (mu / S_total) + range_L[, 1]
+    warped_t[col(warped_t) > N_events] <- NA
+  } else {
+    N_cols <- max(stats::qpois(p = 1 - tol, lambda = 1 * (range_L[, 2] - range_L[, 1])))
+    if (rep_$first > 0L && rep_$first < N_cols) {
+      N_cols <- rep_$first
     }
-    warped_t[!in_range_L, col] <- NA
+
+    warped_t <- matrix(stats::rexp(n = N_cols * N_rows, rate = 1), ncol = N_cols)
+    matrix_cumsum_columns_inplace(warped_t)
+    warped_t <- warped_t + range_L[, 1]
+    for (col in 1:N_cols) {
+      in_range_L <- (warped_t[, col] <= range_L[, 2])
+      if (col > 1 && all(!in_range_L)) {
+        warped_t <- warped_t[, 1:(col - 1), drop = FALSE]
+        break
+      }
+      warped_t[!in_range_L, col] <- NA
+    }
   }
-  if (use_legacy_call) {
-    return(Lambda_inv(warped_t, Lambda_inv_args = Lambda_inv_args))
+  Z <- if (use_legacy_call) {
+    Lambda_inv(warped_t, Lambda_inv_args = Lambda_inv_args)
+  } else {
+    .call_with_args(Lambda_inv, warped_t, fa_$container)
   }
-  return(.call_with_args(Lambda_inv, warped_t, fa_$container))
+  return(.report_slice(Z, rep_))
 }
