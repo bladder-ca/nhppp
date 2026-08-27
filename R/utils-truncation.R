@@ -115,6 +115,31 @@
   return(Z)
 }
 
+#' Uniformly subsample rows of an event matrix down to exactly K events
+#'
+#' @description For a left-aligned NA-padded matrix whose rows all hold at
+#' least K ascending event times, keep a uniformly random size-K subset per
+#' row (in time order). Used by the exactly-K thinning special case: given
+#' the count, event times are conditionally iid, so a uniformly random
+#' subset of any row with K_s >= K events is an exact draw from the process
+#' conditioned on exactly K events — for every K_s alike, which is why no
+#' knowledge of the integrated target intensity is needed. The subset must
+#' be chosen blind to the positions (never the earliest K, which is the
+#' `report_first_K` object and follows a different law).
+#' @noRd
+.subsample_exactly_K <- function(Z, K) {
+  counts <- rowSums(!is.na(Z))
+  out <- matrix(NA_real_, nrow = nrow(Z), ncol = K)
+  for (i in seq_len(nrow(Z))) {
+    if (counts[i] > K) {
+      out[i, ] <- Z[i, sort(sample.int(counts[i], K))]
+    } else { # counts[i] == K by the rejection loop's convergence
+      out[i, ] <- Z[i, seq_len(K)]
+    }
+  }
+  return(out)
+}
+
 #' Apply resolved reporting options to an ascending event-time vector
 #' @noRd
 .report_slice_vector <- function(x, rep_) {

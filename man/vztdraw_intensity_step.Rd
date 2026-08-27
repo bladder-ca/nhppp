@@ -87,5 +87,13 @@ are resampled until the condition holds. The per-round acceptance
 probability degrades in the strictness of the bounds and in the looseness
 of the majorizer, so a tight majorizer matters much more here than in the
 unconditional sampler. There is no iteration cap.
+
+Special case \code{K1 = K2 = K} (exactly K events): only under-counts are
+rejected; rows with more than K survivors are salvaged by keeping a
+uniformly random size-K subset of the events. This is exact — given the
+count, event times are conditionally iid, so the subset is an exact draw
+from the exactly-K law for every surviving count alike — and avoids the
+near-zero acceptance probability of two-sided rejection when the target
+integrated intensity is large relative to K.
 }
 \keyword{internal}

@@ -65,8 +65,15 @@ Thinning (intensity) family
   may be pushed into the proposal), thinned, and rows whose accepted count
   falls outside `[K1, K2]` are resampled. The per-round acceptance
   probability degrades in the strictness of the bounds and in the
-  looseness of the majorizer; there is no iteration cap. The scalar
-  thinning samplers support only `generate_at_least_K = 1`.
+  looseness of the majorizer; there is no iteration cap. Special case
+  `K1 = K2 = K` (exactly K events): only under-counts are rejected —
+  rows with more than K survivors are salvaged exactly by keeping a
+  uniformly random size-K subset of the events (conditionally-iid times
+  make the subset an exact exactly-K draw regardless of the surviving
+  count, with no knowledge of the integrated target intensity), avoiding
+  the near-zero two-sided acceptance probability when the target
+  integrated intensity is large relative to K. The scalar thinning
+  samplers support only `generate_at_least_K = 1`.
 - The thinning kernels now error when `lambda` exceeds the majorizer also
   on the conditioned path (the old R-only zero-truncated path silently
   capped acceptance probabilities above 1, sampling from the wrong

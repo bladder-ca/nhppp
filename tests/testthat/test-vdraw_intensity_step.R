@@ -123,6 +123,50 @@ test_that("conditioned thinning agrees across grids and majorizers", {
 })
 
 
+test_that("exactly-K thinning salvages over-counts by uniform subsampling", {
+  set.seed(20260901)
+  n_draws <- 10000
+  # Lambda_target = 2 * 4 = 8 with K = 2: two-sided rejection would accept a
+  # row with probability P(N = 2 | N >= 2) of a Poisson(8), about 1%, while
+  # the subsample salvage converges in essentially one round.
+  rate <- 2
+  lfun <- function(x, ...) rate * (x > 0)
+  lmaj <- matrix(rep(rate, 5 * n_draws), ncol = 5) # tight majorizer
+  breaks <- seq(1, 5, length.out = 6)
+  K <- 2L
+  # exact law given N = K under a constant rate: K iid U(1, 5);
+  # first event CDF 1 - (1 - (t-1)/4)^K. A wrong salvage that kept the
+  # earliest K (the report_first_K object) would fail this KS sharply.
+  cdf_min_of_K <- function(q) 1 - (1 - (q - 1) / 4)^K
+
+  Z <- vdraw_intensity_step(
+    lambda = lfun, lambda_maj_matrix = lmaj, time_breaks = breaks,
+    generate_at_least_K = K, generate_at_most_K = K
+  )
+  expect_true(all(rowSums(!is.na(Z)) == K))
+  expect_gt(
+    suppressWarnings(stats::ks.test(Z[, 1], cdf_min_of_K))$p.value,
+    0.001
+  )
+  expect_gt(
+    suppressWarnings(stats::ks.test(as.vector(Z), "punif", 1, 5))$p.value,
+    0.001
+  )
+
+  # the regular-grid loop takes the same path
+  Z <- vdraw_intensity(
+    lambda = lfun, lambda_maj_matrix = lmaj[1:5000, ],
+    rate_matrix_t_min = 1, rate_matrix_t_max = 5,
+    generate_at_least_K = K, generate_at_most_K = K
+  )
+  expect_true(all(rowSums(!is.na(Z)) == K))
+  expect_gt(
+    suppressWarnings(stats::ks.test(Z[, 1], cdf_min_of_K))$p.value,
+    0.001
+  )
+})
+
+
 test_that("vztdraw_intensity_step() handles vectorized lambda arguments", {
   set.seed(20260829)
   N <- 300

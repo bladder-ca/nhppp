@@ -18,6 +18,14 @@
 #' the looseness of the majorizer, so a tight majorizer matters much more
 #' here than in the unconditional sampler. There is no iteration cap.
 #'
+#' Special case `K1 = K2 = K` (exactly K events): only under-counts are
+#' rejected; rows with more than K survivors are salvaged by keeping a
+#' uniformly random size-K subset of the events. This is exact — given the
+#' count, event times are conditionally iid, so the subset is an exact draw
+#' from the exactly-K law for every surviving count alike — and avoids the
+#' near-zero acceptance probability of two-sided rejection when the target
+#' integrated intensity is large relative to K.
+#'
 #' @param lambda (function) intensity function, vectorized
 #' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
 #'        If you have arguments for `lambda` that vary by draw, they should be passed as
@@ -114,7 +122,13 @@ vztdraw_intensity_step_regular <- function(
     )
   }
 
+  # exactly-K: over-count rows are salvaged by uniform subsampling (exact),
+  # so only under-counts force a redraw
+  exact_K <- (gen_$at_least > 0L && gen_$at_least == gen_$at_most)
   fails_condition <- function(counts) {
+    if (exact_K) {
+      return(counts < gen_$at_least)
+    }
     (counts < gen_$at_least) | (gen_$at_most > 0L & counts > gen_$at_most)
   }
 
@@ -136,5 +150,8 @@ vztdraw_intensity_step_regular <- function(
     needs_redraw <- fails_condition(rowSums(!is.na(Z)))
   }
 
+  if (exact_K) {
+    Z <- .subsample_exactly_K(Z, gen_$at_least)
+  }
   return(.report_slice(Z, rep_))
 }
