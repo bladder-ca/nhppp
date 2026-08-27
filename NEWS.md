@@ -63,6 +63,10 @@ Internals
   column trimming skips the copy when nothing is trimmed, 1-row
   `range_t`/`t_min`/`t_max` inputs are shared across rows instead of
   being replicated at the R level.
+- New on-demand R-hub v2 workflow (`.github/workflows/rhub.yaml`) for
+  sanitizer and valgrind checks. The unified kernels are clean under
+  clang-ASan, gcc-ASan, and valgrind (the one valgrind finding is a small
+  leak in the rstream dependency, not in nhppp code).
 
 Structured argument containers for user functions
 - The args containers (`lambda_args`, `Lambda_args`) now have two explicit
@@ -120,6 +124,14 @@ Thinning (intensity) family
   process when the majorizer was invalid). The internal
   `vdraw_intensity_step_regular_forcezt()` is removed, superseded by the
   conditioned C++ kernel.
+
+Documentation
+- Reference examples modernized to the current API: `draw()`, `vdraw()`,
+  and `vdraw_cumulative_intensity()` gain examples (they had none); the
+  structured args containers, the generation bounds (including exactly-K),
+  the reporting truncations, and `get_step_majorizer(fun_args = )` are now
+  demonstrated on the reference pages. Vignette code uses `budget_cap` and
+  the reporting/generation vocabulary throughout.
 
 Breaking change (random streams only)
 - Same-seed results differ from 1.0.5.x for the vectorized sc-step,
