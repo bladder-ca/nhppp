@@ -43,6 +43,7 @@ test_that("vdraw_intensity_step() samples on irregular grids", {
 
 
 test_that("thinning with a tight majorizer reproduces the conditioned sc_step law", {
+  skip_on_cran()
   # lambda == majorizer == constant 0.6: acceptance probability is 1, so the
   # conditioned thinned process must equal the conditioned piecewise-constant
   # process: counts ~ K-truncated Poisson(0.6 * 4), times uniform.
@@ -89,6 +90,7 @@ test_that("thinning with a tight majorizer reproduces the conditioned sc_step la
 
 
 test_that("conditioned thinning agrees across grids and majorizers", {
+  skip_on_cran()
   set.seed(20260828)
   n_draws <- 2000
   lfun <- function(x, ...) 0.2 * x
@@ -124,6 +126,7 @@ test_that("conditioned thinning agrees across grids and majorizers", {
 
 
 test_that("exactly-K thinning salvages over-counts by uniform subsampling", {
+  skip_on_cran()
   set.seed(20260901)
   n_draws <- 10000
   # Lambda_target = 2 * 4 = 8 with K = 2: two-sided rejection would accept a

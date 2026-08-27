@@ -30,6 +30,7 @@ test_that("reporting / generation resolvers work", {
 
 
 test_that("rbtpois() samples the doubly-truncated Poisson distribution", {
+  skip_on_cran()
   set.seed(20260825)
   n <- 20000
   for (fixture in list(
@@ -81,6 +82,7 @@ test_that("rbtpois() samples the doubly-truncated Poisson distribution", {
 
 
 test_that("generate_at_least_K conditions the vectorized sc_step samplers", {
+  skip_on_cran()
   set.seed(20260826)
   n_draws <- 10000
   lmat <- matrix(rep(1, 5 * n_draws), ncol = 5) # Lambda_total = 4 on (1, 5)
@@ -126,6 +128,7 @@ test_that("generate_at_least_K conditions the vectorized sc_step samplers", {
 
 
 test_that("generate_at_most_K conditions on a right-truncated count", {
+  skip_on_cran()
   set.seed(20260827)
   n_draws <- 10000
   lmat <- matrix(rep(1, 5 * n_draws), ncol = 5) # Lambda_total = 4 on (1, 5)
@@ -162,6 +165,7 @@ test_that("generate_at_most_K conditions on a right-truncated count", {
 
 
 test_that("exactly-K conditioning differs from reporting the first K of an at-least-K draw", {
+  skip_on_cran()
   set.seed(20260828)
   n_draws <- 10000
   lmat <- matrix(rep(1, 5 * n_draws), ncol = 5) # constant rate 1 on (1, 5)
@@ -196,6 +200,7 @@ test_that("exactly-K conditioning differs from reporting the first K of an at-le
 
 
 test_that("report_first_K / report_last_K are reporting truncations", {
+  skip_on_cran()
   set.seed(20260829)
   n_draws <- 5000
   lmat <- matrix(rep(1, 5 * n_draws), ncol = 5) # constant rate on (1, 5)
@@ -236,6 +241,7 @@ test_that("report_first_K / report_last_K are reporting truncations", {
 
 
 test_that("scalar samplers honor the new options", {
+  skip_on_cran()
   set.seed(20260830)
 
   x <- ztppp(rate = 0.2, t_min = 0, t_max = 10, generate_at_least_K = 4)

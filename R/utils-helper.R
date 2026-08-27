@@ -105,23 +105,61 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL,
       atmost1 = atmost1, atleast1 = atleast1, atmostk = atmostk, atleastk = atleastk
     )
   } else {
+    # All checks are whole-matrix operations with one expectation each --
+    # per-row testthat expectations cost milliseconds of reporter overhead
+    # apiece and dominate the suite runtime on 10^4-row fixtures.
+    n <- nrow(times)
+    K <- ncol(times)
     if (length(t_min) == 1) {
-      t_min <- rep(t_min, nrow(times))
+      t_min <- rep(t_min, n)
     }
-    stopifnot(nrow(times) == length(t_min))
+    stopifnot(n == length(t_min))
     if (!is.null(t_max)) {
       if (length(t_max) == 1) {
-        t_max <- rep(t_max, nrow(times))
+        t_max <- rep(t_max, n)
       }
-      stopifnot(nrow(times) == length(t_max))
+      stopifnot(n == length(t_max))
     }
-    for (i in 1:nrow(times)) {
-      tmax_i <- if (!is.null(t_max)) t_max[i] else NULL
-      testthat::expect_identical(times[i, !is.na(times[i, ])], sort(times[i, ], na.last = NA))
-      check_ppp_vector_validity(
-        times = times[i, ], t_min = t_min[i], t_max = tmax_i, size = size,
-        atmost1 = atmost1, atleast1 = atleast1, atmostk = atmostk, atleastk = atleastk
-      )
+    .which_rows <- function(ok) {
+      w <- which(!ok)
+      paste("failing rows:", paste(w[seq_len(min(10, length(w)))], collapse = ", "))
+    }
+    if (K > 1) {
+      left <- times[, -K, drop = FALSE]
+      right <- times[, -1, drop = FALSE]
+      # strictly increasing within each row (sorted + unique in one check);
+      # the NA-alignment check below makes NA differences safe to skip here
+      d <- right - left
+      sorted_ok <- rowSums(!(d > 0 | is.na(d))) == 0
+      testthat::expect_true(all(sorted_ok), info = .which_rows(sorted_ok))
+      # events are left-aligned: no non-NA entry to the right of an NA
+      aligned_ok <- rowSums(is.na(left) & !is.na(right)) == 0
+      testthat::expect_true(all(aligned_ok), info = .which_rows(aligned_ok))
+    }
+    # bounds: t_min / t_max have length nrow(times) and recycle down columns
+    lower_ok <- rowSums(times < t_min, na.rm = TRUE) == 0
+    testthat::expect_true(all(lower_ok), info = .which_rows(lower_ok))
+    if (!is.null(t_max)) {
+      upper_ok <- rowSums(times > t_max, na.rm = TRUE) == 0
+      testthat::expect_true(all(upper_ok), info = .which_rows(upper_ok))
+    }
+    cnt <- rowSums(!is.na(times))
+    if (atleast1) {
+      testthat::expect_true(all(cnt >= 1), info = .which_rows(cnt >= 1))
+    }
+    if (!is.null(atleastk)) {
+      testthat::expect_true(all(cnt >= atleastk), info = .which_rows(cnt >= atleastk))
+    }
+    if (!is.null(atmostk)) {
+      testthat::expect_true(all(cnt <= atmostk), info = .which_rows(cnt <= atmostk))
+    }
+    if (atmost1) {
+      testthat::expect_true(all(cnt <= 1), info = .which_rows(cnt <= 1))
+    }
+    if (!is.null(size)) {
+      # empty rows are exempt, matching the vector check's nonzero-length guard
+      size_ok <- cnt == 0 | cnt == size
+      testthat::expect_true(all(size_ok), info = .which_rows(size_ok))
     }
   }
 }

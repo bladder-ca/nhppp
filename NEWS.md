@@ -46,6 +46,11 @@ Internals
   faster in the included benchmark (`benchmarks/bench_sc_step_unify.R`).
 - The zero-truncated kernels now honor `tol` instead of a hard-coded
   `.99999` event-count quantile.
+- Test infrastructure: the sample-validity helper checks matrices with
+  whole-matrix operations instead of per-row testthat expectations
+  (the suite drops from ~15 minutes to ~15 seconds on the 10^4-row
+  distributional fixtures), and the distributional tests (Q-Q agreement,
+  chi-square, and Kolmogorov-Smirnov assertions) are skipped on CRAN.
 - Copy/allocation fixes: no per-event row materialization in the interval
   search, fused Lambda construction, no dead matrix pre-allocations,
   column trimming skips the copy when nothing is trimmed, 1-row

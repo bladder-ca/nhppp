@@ -19,6 +19,7 @@ test_that("ztdraw_intensity_line() works", {
 })
 
 test_that("ztdraw_intensity_line() matches draw_cumulative_intensity_inversion() (and linear intensity)", {
+  skip_on_cran()
   l <- function(t) {
     return(2)
   }

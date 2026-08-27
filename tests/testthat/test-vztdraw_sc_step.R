@@ -169,6 +169,7 @@ test_that("vztdraw_sc_step() works with subintervals", {
 
 
 test_that("vztdraw_sc_step() agrees with vztdraw_sc_step_regular_cpp() on equal-spaced breaks", {
+  skip_on_cran()
   b <- seq(100, 110, length.out = 6)
   l <- matrix(rep(1, 50), ncol = 5)
   L <- mat_cumsum_columns(l)
@@ -202,6 +203,7 @@ test_that("vztdraw_sc_step() agrees with vztdraw_sc_step_regular_cpp() on equal-
 
 
 test_that("vztdraw_sc_step() agrees with the scalar draw_sc_step(atleast1 = TRUE)", {
+  skip_on_cran()
   set.seed(123)
   n <- 2000
   lambda_vector <- c(0.5, 1, 2, 0.5, 1)

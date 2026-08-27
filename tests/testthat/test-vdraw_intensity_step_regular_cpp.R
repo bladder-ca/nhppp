@@ -173,6 +173,7 @@ test_that("vdraw_intensity_step_regular_cpp() works with subinterval", {
 
 
 test_that("vdraw_intensity_step_regular_cpp() works with different majorizers", {
+  skip_on_cran()
   set.seed(123)
   lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$exponent
   l_args <- list(exponent = 1L)
@@ -238,6 +239,7 @@ test_that("vdraw_intensity_step_regular_cpp() uses blocked random numbers", {
 
 
 test_that("vdraw_intensity_step_regular_cpp() locates the majorizer interval when dt != 1", {
+  skip_on_cran()
   # Regression: the interval lookup computed floor(t - t0)/dt (misplaced
   # parenthesis), which is correct only when dt == 1. With a tight,
   # non-constant majorizer and dt = 0.25 the wrong interval makes

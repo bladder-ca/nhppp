@@ -238,6 +238,7 @@ test_that("vdraw_sc_step() agrees with vdraw_sc_step_regular_cpp() on equal-spac
 
 
 test_that("vdraw_sc_step() agrees with the scalar draw_sc_step()", {
+  skip_on_cran()
   set.seed(123)
   n <- 2000
   lambda_vector <- c(0.5, 1, 2, 0.5, 1)
