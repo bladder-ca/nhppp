@@ -28,9 +28,15 @@ vdraw_intensity(
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional named list of arguments to pass to \code{lambda}.
-If you have arguments for \code{lambda} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{lambda_args}{(list) arguments for \code{lambda}, with up to two elements:
+\code{shared} (named list of row-invariant arguments of any type, stored
+once and never replicated) and \code{row_args} (data.frame or data.table
+with one row per point process, auto-subset when rows are resampled).
+When non-\code{NULL}, the container is passed as \code{lambda}'s second
+positional argument exactly as given, except that \code{row_args} is
+already row-subset; the name of the second formal is up to you. A
+flat list with neither element is treated as all-shared; a
+\code{vector_arguments} element is deprecated (use \code{row_args}).}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 

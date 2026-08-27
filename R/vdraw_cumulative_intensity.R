@@ -11,12 +11,15 @@
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param t_max (scalar | vector | column matrix) the upper bound of the interval for each sampled point process
 #'        The length of this argument is the number of point processes that should be drawn.
-#' @param Lambda_args (list) optional named list of arguments to pass to `Lambda`.
-#'        If you have arguments for `Lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
-#' @param Lambda_inv_args (list) optional named list of arguments to pass to `Lambda_inv`.
-#'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param Lambda_args (list) arguments for BOTH `Lambda` and `Lambda_inv`, with
+#'        up to two elements: `shared` (named list of row-invariant arguments)
+#'        and `row_args` (data.frame or data.table with one row per point
+#'        process). When the structured container is used it is passed as the
+#'        second positional argument of both functions; the name of the second
+#'        formal is up to you. A flat list keeps the released behavior
+#'        (`Lambda(t, Lambda_args = ...)`, named) with a deprecation warning.
+#' @param Lambda_inv_args (list) deprecated; pass one structured `Lambda_args`
+#'        container used by both `Lambda` and `Lambda_inv`.
 #' @param tol the tolerange for the calulations.
 #' @param atmost1 boolean, report at most 1 event time per sampled point
 #'        process (alias for `report_first_K = 1`).
@@ -56,7 +59,30 @@ vdraw_cumulative_intensity <- function(Lambda,
   }
   range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
-  range_L <- Lambda(range_t, Lambda_args = Lambda_args)
+
+  fa_ <- .resolve_fun_args(Lambda_args, n_draws = N_rows, arg_name = "Lambda_args")
+  # structured containers get the positional-conditional convention, one
+  # container delivered to both Lambda and Lambda_inv; flat containers (and
+  # any use of Lambda_inv_args) keep the released named-argument behavior
+  use_legacy_call <- !is.null(Lambda_inv_args) || fa_$mode %in% c("flat", "legacy_va")
+  if (!is.null(Lambda_inv_args)) {
+    warning(
+      "`Lambda_inv_args` is deprecated; pass one structured `Lambda_args` container ",
+      "(elements `shared`/`row_args`), delivered to both `Lambda` and `Lambda_inv`",
+      call. = FALSE
+    )
+  } else if (fa_$mode == "flat") {
+    warning(
+      "passing a flat `Lambda_args` list is deprecated; use the structured container ",
+      "(elements `shared`/`row_args`), delivered positionally to both `Lambda` and `Lambda_inv`",
+      call. = FALSE
+    )
+  }
+  range_L <- if (use_legacy_call) {
+    Lambda(range_t, Lambda_args = Lambda_args)
+  } else {
+    .call_with_args(Lambda, range_t, fa_$container)
+  }
 
   N_cols <- max(stats::qpois(p = 1 - tol, lambda = 1 * (range_L[, 2] - range_L[, 1])))
   if (rep_$first > 0L && rep_$first < N_cols) {
@@ -74,5 +100,8 @@ vdraw_cumulative_intensity <- function(Lambda,
     }
     warped_t[!in_range_L, col] <- NA
   }
-  return(Lambda_inv(warped_t, Lambda_inv_args = Lambda_inv_args))
+  if (use_legacy_call) {
+    return(Lambda_inv(warped_t, Lambda_inv_args = Lambda_inv_args))
+  }
+  return(.call_with_args(Lambda_inv, warped_t, fa_$container))
 }

@@ -362,25 +362,27 @@ function $N_k(t) = \int_0^t{\nu_k(s) \ \textrm{d}s}$, and its inverse $N_k^{-1}(
 (The inverse function recovers $t$ from the value of $N_k(t)$: $t = N_k^{-1}\big( N_k(t)\big)$). This sampling is done with `nhppp`'s `vdraw_cumulative_intensity()`
 function. 
 
-A bit of calculus can yield $N_k(t) = \frac{1}{\beta_k} (e^{\alpha_k + \beta_k t} - e^{\alpha_k})$, which we can implement in vectorized form and with default parameters
-already set: 
+A bit of calculus can yield $N_k(t) = \frac{1}{\beta_k} (e^{\alpha_k + \beta_k t} - e^{\alpha_k})$, which we can implement in vectorized form. The person-specific parameters
+$\alpha_k, \beta_k$ arrive through the args container's `row_args` element (a
+`data.table` with one row per sampled person), which is passed as the function's
+second argument:
 
 ```{r Nu}
-Nu <- function(t, Lambda_args = list(population), ...) {
-  P <- Lambda_args$population
+Nu <- function(t, a) {
+  P <- a$row_args
   (
     exp(P$param_cancer_death_intercept + P$param_cancer_death_slope * t) -
       exp(P$param_cancer_death_intercept)
   ) / P$param_cancer_death_slope
 }
 ```
-The inverse $N_k^{-1}(\cdot)$ is 
+The inverse $N_k^{-1}(\cdot)$ is
 
 $N_k^{-1}(z) = \big( \log( \beta_k z + e^\alpha_k ) - \alpha_k \big)/\beta_k $
 
 ```{r Nu_inv}
-Nu_inv <- function(z, Lambda_inv_args = list(population), ...) {
-  P <- Lambda_inv_args$population
+Nu_inv <- function(z, a) {
+  P <- a$row_args
   (
     log(P$param_cancer_death_slope * z +
       exp(P$param_cancer_death_intercept)) -
@@ -389,24 +391,21 @@ Nu_inv <- function(z, Lambda_inv_args = list(population), ...) {
 }
 ```
 
-Then, we can sample the times to cancer death.  
+Then, we can sample the times to cancer death. The same `Lambda_args` container
+is delivered to both `Nu` and `Nu_inv`.
 
 ```{r age_dead_cancer_causes}
-args_list <- list(population = pop[!is.na(age_cancer_emergence), ])
 pop[
   !is.na(age_cancer_emergence),
   age_dead_from_cancer_causes := nhppp::vdraw_cumulative_intensity(
     Lambda = Nu,
-    Lambda_args = args_list,
     Lambda_inv = Nu_inv,
-    Lambda_inv_args = args_list,
+    Lambda_args = list(row_args = pop[!is.na(age_cancer_emergence), ]),
     t_min = pop[!is.na(age_cancer_emergence), age_cancer_emergence],
     t_max = pop[!is.na(age_cancer_emergence), age_dead_from_other_causes],
     atmost1 = TRUE
   )
 ]
-
-rm(list = "args_list") # cleanup
 ```
 
 

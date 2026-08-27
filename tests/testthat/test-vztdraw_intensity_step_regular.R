@@ -49,10 +49,10 @@ test_that("vztdraw_intensity_step_regular() works when `lambda` has non-vectoriz
 test_that("vztdraw_intensity_step_regular() works when `lambda` has vectorized arguments", {
   set.seed(123)
   N <- 1000
-  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$vector_arguments$exponent
+  lfun <- function(x, a, ...) .2 * x^a$row_args$exponent
   l_args <- list(
-    vector_arguments = data.table::data.table(exponent = seq(from = 0.5, to = 2, length.out = N))
-    )
+    row_args = data.frame(exponent = seq(from = 0.5, to = 2, length.out = N))
+  )
   # max lambda is .2 * 5^2 = 5, so the majorizer must be >= 5 everywhere
   # (the C++ thinning kernel errors on lambda > majorizer; the old R-only
   # path silently capped acceptance probabilities > 1)

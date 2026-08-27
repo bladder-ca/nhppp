@@ -27,9 +27,15 @@
 #' integrated intensity is large relative to K.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
@@ -98,19 +104,16 @@ vztdraw_intensity_step_regular <- function(
   t_min <- if (length(t_min) == 1) rep(t_min, n_draws) else as.vector(t_min)
   t_max <- if (length(t_max) == 1) rep(t_max, n_draws) else as.vector(t_max)
 
-  has_vector_args <- !is.null(lambda_args$vector_arguments)
-  if (has_vector_args) {
-    stopifnot(data.table::is.data.table(lambda_args$vector_arguments))
-    original_vector_arguments <- lambda_args$vector_arguments
-  }
+  fa_ <- .resolve_fun_args(lambda_args, n_draws = n_draws, arg_name = "lambda_args")
 
   draw_round <- function(rows) {
-    if (has_vector_args) {
-      lambda_args$vector_arguments <- original_vector_arguments[rows, , drop = FALSE]
-    }
+    all_rows <- (length(rows) == n_draws)
+    # pre-wrapped to a 1-argument function so the cpp wrapper does not
+    # re-resolve (and re-warn on deprecated containers) every round
+    l_ <- .wrap_fun(lambda, .subset_fun_args(fa_, if (all_rows) NULL else rows))
     vdraw_intensity_step_regular_cpp(
-      lambda = lambda,
-      lambda_args = lambda_args,
+      lambda = l_,
+      lambda_args = NULL,
       Lambda_maj_matrix = if (!is.null(Lambda_maj_matrix)) Lambda_maj_matrix[rows, , drop = FALSE] else NULL,
       lambda_maj_matrix = if (!is.null(lambda_maj_matrix)) lambda_maj_matrix[rows, , drop = FALSE] else NULL,
       rate_matrix_t_min = range_t[rows, 1, drop = FALSE],

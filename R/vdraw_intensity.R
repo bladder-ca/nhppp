@@ -7,9 +7,15 @@
 #'    The majorizers are step functions over equal-length time intevals.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound

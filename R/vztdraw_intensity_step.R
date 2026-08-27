@@ -64,18 +64,11 @@ vztdraw_intensity_step <- function(
   use_subinterval <- !is.null(args$subinterval)
   sub <- if (use_subinterval) args$subinterval else matrix(0, 1, 2)
 
-  has_vector_args <- !is.null(lambda_args$vector_arguments)
-  if (has_vector_args) {
-    stopifnot(data.table::is.data.table(lambda_args$vector_arguments))
-    original_vector_arguments <- lambda_args$vector_arguments
-  }
+  fa_ <- .resolve_fun_args(lambda_args, n_draws = n_draws, arg_name = "lambda_args")
 
   draw_round <- function(rows) {
-    la <- lambda_args
-    if (has_vector_args) {
-      la$vector_arguments <- original_vector_arguments[rows, , drop = FALSE]
-    }
-    l_ <- if (is.null(la)) lambda else function(X, ...) lambda(X, la)
+    all_rows <- (length(rows) == n_draws)
+    l_ <- .wrap_fun(lambda, .subset_fun_args(fa_, if (all_rows) NULL else rows))
     .Call(
       `_nhppp_vdraw_intensity_step_general`, l_,
       args$rate[rows, , drop = FALSE], args$is_cumulative,

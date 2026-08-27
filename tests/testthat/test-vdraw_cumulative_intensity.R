@@ -53,12 +53,29 @@ test_that("vdraw_cumulative_intensity_inversion() works when functions take argu
   t0_b <- rep(0.5, 10) + runif(n = 10)
   t1_b <- rep(2, 10) + runif(n = 10)
 
-  # scalars
-  expect_no_error(df0 <- vdraw_cumulative_intensity(Lambda = L, Lambda_inv = Li, t_min = t0_a, t_max = t1_a, Lambda_args = args, Lambda_inv_args = args, atmost1 = FALSE))
+  # scalars; the released flat-list/Lambda_inv_args form now warns
+  expect_warning(
+    df0 <- vdraw_cumulative_intensity(Lambda = L, Lambda_inv = Li, t_min = t0_a, t_max = t1_a, Lambda_args = args, Lambda_inv_args = args, atmost1 = FALSE),
+    "deprecated"
+  )
   check_ppp_sample_validity(df0, t_min = t0_a, t_max = t1_a)
   # vectors
-  expect_no_error(df1 <- vdraw_cumulative_intensity(Lambda = L, Lambda_inv = Li, t_min = t0_b, t_max = t1_b, Lambda_args = args, Lambda_inv_args = args, atmost1 = FALSE))
+  expect_warning(
+    df1 <- vdraw_cumulative_intensity(Lambda = L, Lambda_inv = Li, t_min = t0_b, t_max = t1_b, Lambda_args = args, Lambda_inv_args = args, atmost1 = FALSE),
+    "deprecated"
+  )
   check_ppp_sample_validity(df1, t_min = t0_b, t_max = t1_b)
+
+  # the structured container is delivered positionally to both functions
+  Ls <- function(t, a) a$shared$a * t
+  Lis <- function(z, a) z / a$shared$a
+  expect_no_error(
+    df2 <- vdraw_cumulative_intensity(
+      Lambda = Ls, Lambda_inv = Lis, t_min = t0_b, t_max = t1_b,
+      Lambda_args = list(shared = list(a = 2)), atmost1 = FALSE
+    )
+  )
+  check_ppp_sample_validity(df2, t_min = t0_b, t_max = t1_b)
 })
 
 test_that("vdraw_cumulative_intensity_inversion() uses blocked random numbers", {

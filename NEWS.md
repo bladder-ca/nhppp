@@ -52,6 +52,34 @@ Internals
   `range_t`/`t_min`/`t_max` inputs are shared across rows instead of
   being replicated at the R level.
 
+Structured argument containers for user functions
+- The args containers (`lambda_args`, `Lambda_args`) now have two explicit
+  channels: `shared` (a named list of row-invariant arguments of any type,
+  stored once and never replicated across point processes) and `row_args`
+  (a data.frame or data.table with one row per point process, validated
+  for row count and automatically row-subset by the rejection loops). The
+  container is passed as the user function's SECOND POSITIONAL argument,
+  exactly as given except that `row_args` is already subset; the name of
+  the second formal is the user's choice.
+- Deprecations and compatibility: a flat list with neither recognized
+  element keeps its released all-shared behavior with no warning (thinning
+  family); the nested `vector_arguments` data.table convention is
+  deprecated (mapped onto `row_args` semantics, warning once per call);
+  `Lambda_inv_args` is deprecated — one `Lambda_args` container is
+  delivered to both `Lambda` and `Lambda_inv`. For
+  `vdraw_cumulative_intensity()`, flat/legacy containers keep the released
+  named-argument call (`Lambda(t, Lambda_args = ...)`) with a deprecation
+  warning; structured containers get the positional call. When no
+  arguments are supplied at all, user functions are now called with a
+  single argument (`Lambda(t)` instead of `Lambda(t, Lambda_args = NULL)`),
+  so plain one-argument closures work everywhere.
+- `row_args`/`vector_arguments` accept plain data.frames (the data.table
+  requirement is dropped; data.tables are still accepted as-is, read-only,
+  never coerced or copied).
+- `get_step_majorizer()` gains `fun_args`, taking the same container with
+  the same delivery convention, so the sampler's `lambda` can be used for
+  majorizer construction without hand-wrapping.
+
 Thinning (intensity) family
 - New `vdraw_intensity_step()`: vectorized thinning sampler with piecewise
   constant majorizers over arbitrary interval bounds (`time_breaks`, as in

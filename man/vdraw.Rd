@@ -32,9 +32,15 @@ vdraw(
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional named list of arguments to pass to \code{lambda}.
-If you have arguments for \code{lambda} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{lambda_args}{(list) arguments for \code{lambda}, with up to two elements:
+\code{shared} (named list of row-invariant arguments of any type, stored
+once and never replicated) and \code{row_args} (data.frame or data.table
+with one row per point process, auto-subset when rows are resampled).
+When non-\code{NULL}, the container is passed as \code{lambda}'s second
+positional argument exactly as given, except that \code{row_args} is
+already row-subset; the name of the second formal is up to you. A
+flat list with neither element is treated as all-shared; a
+\code{vector_arguments} element is deprecated (use \code{row_args}).}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
@@ -47,13 +53,16 @@ It should take a vectorized argument t for times and an optional arguments list.
 \item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form
 It should take a vectorized argument z and an optional arguments list.}
 
-\item{Lambda_args}{(list) optional named list of arguments to pass to \code{Lambda}.
-If you have arguments for \code{Lambda} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{Lambda_args}{(list) arguments for BOTH \code{Lambda} and \code{Lambda_inv}, with
+up to two elements: \code{shared} (named list of row-invariant arguments)
+and \code{row_args} (data.frame or data.table with one row per point
+process). When the structured container is used it is passed as the
+second positional argument of both functions; the name of the second
+formal is up to you. A flat list keeps the released behavior
+(\code{Lambda(t, Lambda_args = ...)}, named) with a deprecation warning.}
 
-\item{Lambda_inv_args}{(list) optional named list of arguments to pass to \code{Lambda_inv}.
-If you have arguments for \code{Lambda_inv} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{Lambda_inv_args}{(list) deprecated; pass one structured \code{Lambda_args}
+container used by both \code{Lambda} and \code{Lambda_inv}.}
 
 \item{t_min}{(scalar | vector | column matrix) is the lower bound
 of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,

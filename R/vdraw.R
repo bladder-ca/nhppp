@@ -6,9 +6,15 @@
 #' For time-intensive simulations prefer one of the specific functions.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param Lambda (function, double vector) an increasing function
@@ -16,12 +22,15 @@
 #'        It should take a vectorized argument t for times and an optional arguments list.
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
 #'        It should take a vectorized argument z and an optional arguments list.
-#' @param Lambda_args (list) optional named list of arguments to pass to `Lambda`.
-#'        If you have arguments for `Lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
-#' @param Lambda_inv_args (list) optional named list of arguments to pass to `Lambda_inv`.
-#'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param Lambda_args (list) arguments for BOTH `Lambda` and `Lambda_inv`, with
+#'        up to two elements: `shared` (named list of row-invariant arguments)
+#'        and `row_args` (data.frame or data.table with one row per point
+#'        process). When the structured container is used it is passed as the
+#'        second positional argument of both functions; the name of the second
+#'        formal is up to you. A flat list keeps the released behavior
+#'        (`Lambda(t, Lambda_args = ...)`, named) with a deprecation warning.
+#' @param Lambda_inv_args (list) deprecated; pass one structured `Lambda_args`
+#'        container used by both `Lambda` and `Lambda_inv`.
 #' @param t_min (scalar | vector | column matrix) is the lower bound
 #'        of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 #'        times are sampled from the subinterval.

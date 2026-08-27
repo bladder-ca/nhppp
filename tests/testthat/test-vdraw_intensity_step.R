@@ -170,9 +170,9 @@ test_that("exactly-K thinning salvages over-counts by uniform subsampling", {
 test_that("vztdraw_intensity_step() handles vectorized lambda arguments", {
   set.seed(20260829)
   N <- 300
-  lfun <- function(x, lambda_args, ...) .2 * x^lambda_args$vector_arguments$exponent
+  lfun <- function(x, a, ...) .2 * x^a$row_args$exponent
   l_args <- list(
-    vector_arguments = data.table::data.table(exponent = seq(from = 0.5, to = 2, length.out = N))
+    row_args = data.frame(exponent = seq(from = 0.5, to = 2, length.out = N))
   )
   lmaj <- matrix(5.5, nrow = N, ncol = 5) # max lambda = .2 * 5^2 = 5
 

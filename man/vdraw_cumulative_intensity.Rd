@@ -35,13 +35,16 @@ The length of this argument is the number of point processes that should be draw
 \item{t_max}{(scalar | vector | column matrix) the upper bound of the interval for each sampled point process
 The length of this argument is the number of point processes that should be drawn.}
 
-\item{Lambda_args}{(list) optional named list of arguments to pass to \code{Lambda}.
-If you have arguments for \code{Lambda} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{Lambda_args}{(list) arguments for BOTH \code{Lambda} and \code{Lambda_inv}, with
+up to two elements: \code{shared} (named list of row-invariant arguments)
+and \code{row_args} (data.frame or data.table with one row per point
+process). When the structured container is used it is passed as the
+second positional argument of both functions; the name of the second
+formal is up to you. A flat list keeps the released behavior
+(\code{Lambda(t, Lambda_args = ...)}, named) with a deprecation warning.}
 
-\item{Lambda_inv_args}{(list) optional named list of arguments to pass to \code{Lambda_inv}.
-If you have arguments for \code{Lambda_inv} that vary by draw, they should be passed as
-a data.table named \code{vector_arguments}.}
+\item{Lambda_inv_args}{(list) deprecated; pass one structured \code{Lambda_args}
+container used by both \code{Lambda} and \code{Lambda_inv}.}
 
 \item{tol}{the tolerange for the calulations.}
 
