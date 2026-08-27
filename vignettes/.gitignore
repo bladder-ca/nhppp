@@ -10,3 +10,6 @@
 *.rdb
 *.rdx
 __packages
+
+/.quarto/
+**/*.quarto_ipynb
