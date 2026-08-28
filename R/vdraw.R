@@ -63,6 +63,10 @@
 #' @param atmostB deprecated alias for `budget_cap`.
 
 #'
+#' @param output (string) `"matrix"` (default) for the NA-padded event
+#'        matrix or `"long"` for the long event format
+#'        `list(id, time, n_draws)`; see `vdraw_sc_step()`. Not implemented
+#'        for the thinning route (`lambda` given).
 #' @return a vector of event times
 #' @examples
 #' # thinning (lambda and a majorizer matrix)
@@ -102,9 +106,14 @@ vdraw <- function(
     generate_at_least_K = NULL,
     generate_at_most_K = NULL,
     budget_cap = NULL,
-    atmostB = NULL) {
+    atmostB = NULL,
+    output = c("matrix", "long")) {
+  long_ <- .resolve_output(output)
   if (!is.null(lambda) &&
     !(is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix))) {
+    if (long_) {
+      stop("`output = \"long\"` has not been implemented for the thinning samplers")
+    }
     return(
       vdraw_intensity(
         lambda = lambda,
@@ -142,7 +151,8 @@ vdraw <- function(
       report_last_K = report_last_K,
       atleast1 = atleast1,
       generate_at_least_K = generate_at_least_K,
-      generate_at_most_K = generate_at_most_K
+      generate_at_most_K = generate_at_most_K,
+      output = output
     )
   )
 }

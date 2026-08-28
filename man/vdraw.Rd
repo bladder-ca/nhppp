@@ -26,7 +26,8 @@ vdraw(
   generate_at_least_K = NULL,
   generate_at_most_K = NULL,
   budget_cap = NULL,
-  atmostB = NULL
+  atmostB = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -106,6 +107,11 @@ sampled process on at most K events.}
 budget of the kernel (approximation knob, not an exact contract).}
 
 \item{atmostB}{deprecated alias for \code{budget_cap}.}
+
+\item{output}{(string) \code{"matrix"} (default) for the NA-padded event
+matrix or \code{"long"} for the long event format
+\code{list(id, time, n_draws)}; see \code{vdraw_sc_step()}. Not implemented
+for the thinning route (\code{lambda} given).}
 }
 \value{
 a vector of event times

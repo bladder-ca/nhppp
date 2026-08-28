@@ -35,7 +35,17 @@
 #'        `1 - tol` quantile bound), not an exact reporting contract.
 #' @param atmostB deprecated alias for `budget_cap`.
 #'
-#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
+#' @param output (string) `"matrix"` (default) returns the NA-padded event
+#'        matrix, one row per point process. `"long"` returns the long event
+#'        format `list(id, time, n_draws)` with one entry per event: `id` is
+#'        the 1-based point-process index (ascending; times ascending within
+#'        `id`). A point process with no events contributes no entries, so
+#'        its id is absent; `n_draws` distinguishes "no events" from "not
+#'        sampled". No `NA` is used. The long format is built without
+#'        allocating the dense matrix, so prefer it when event counts vary
+#'        widely across point processes.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`.
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular_cpp(
@@ -57,9 +67,11 @@ vdraw_sc_step_regular_cpp <- function(
     report_first_K = NULL,
     report_last_K = NULL,
     budget_cap = NULL,
-    atmostB = NULL) {
+    atmostB = NULL,
+    output = c("matrix", "long")) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
+  long_ <- .resolve_output(output)
 
   if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
     rate <- lambda_matrix
@@ -103,7 +115,7 @@ vdraw_sc_step_regular_cpp <- function(
     .Call(
       `_nhppp_vdraw_sc_step_regular2`,
       rate, is_cumulative_rate, range_t, subinterval, tol,
-      rep_$first, rep_$last, budget_cap
+      rep_$first, rep_$last, budget_cap, long_
     )
   )
 }

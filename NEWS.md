@@ -125,6 +125,25 @@ Thinning (intensity) family
   `vdraw_intensity_step_regular_forcezt()` is removed, superseded by the
   conditioned C++ kernel.
 
+Long-format output for the vectorized samplers
+- New `output = c("matrix", "long")` argument on the sc-step samplers
+  (`vdraw_sc_step()`, `vztdraw_sc_step()`, `vdraw_sc_step_regular()` and
+  the `_cpp` kernels) and on `vdraw_cumulative_intensity()` / `vdraw()`.
+  `"long"` returns `list(id, time, n_draws)` with one entry per event:
+  `id` is the 1-based point-process index (ascending, times ascending
+  within id). A point process with zero events contributes no entries —
+  its id is absent, and `n_draws` distinguishes "no events" from "not
+  sampled"; no `NA` is used. The C++ paths build the long format directly
+  (no dense intermediate; accumulator reserve()d from the expected
+  `Lambda` mass), so it is preferred when event counts vary widely across
+  point processes: in the included benchmark (10^6 processes, mean ~1
+  event, max ~40), 404 MB dense vs 11.5 MB long, and ~30% faster. RNG
+  consumption is identical across the two outputs, so a same-seed dense
+  and long draw hold the same event values. On the conditioned
+  `vdraw_cumulative_intensity()` path, `Lambda_inv` is called on the
+  event vector with `row_args` subset to one row per event (aligned by
+  id). The thinning samplers do not take `output` yet.
+
 Documentation
 - Reference examples modernized to the current API: `draw()`, `vdraw()`,
   and `vdraw_cumulative_intensity()` gain examples (they had none); the

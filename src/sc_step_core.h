@@ -34,6 +34,19 @@
 // one row per draw. Cumulative Lambda columns hold values at interval ends
 // (no leading zero). Empty rows are NA-filled; output is trimmed to the max
 // reported event count (min 1 column).
+//
+// Output sinks: the cores are additionally templated on an output policy.
+//   DenseSink - the NA-padded event matrix (one row per draw); the default,
+//     so existing call sites compile unchanged.
+//   LongSink  - long format: parallel vectors (id, time), one entry per
+//     event, ids 1-based and ascending, times ascending within id, plus
+//     n_draws. A draw with zero events contributes no entries; NA never
+//     appears. Events are accumulated in std::vectors (reserve()d from the
+//     expected Lambda mass, geometric growth beyond that) and copied once
+//     into R vectors at the end.
+// The sink only records events that the algorithms emit -- RNG consumption
+// is identical across sinks, so a same-seed dense and long run hold the
+// same event values.
 
 namespace nhppp {
 
@@ -168,15 +181,96 @@ inline int compact_last(Rcpp::NumericMatrix& Z, const int d,
   return n_keep;
 }
 
+// The NA-padded event-matrix output (the historical behavior).
+struct DenseSink {
+  static constexpr bool is_long = false;
+  typedef Rcpp::NumericMatrix result_type;
+  Rcpp::NumericMatrix Z;
+  const int n_draws;
+  int ev_max;
+
+  DenseSink(const int n_draws_, const int n_cols, const double)
+    : Z(na_matrix(n_draws_, n_cols)), n_draws(n_draws_), ev_max(0) {}
+
+  void emit(const int d, const int ev, const double t) { Z(d, ev) = t; }
+
+  void end_row(const int d, const int n_generated, const int report_last_K) {
+    const int ev = compact_last(Z, d, n_generated, report_last_K);
+    if (ev > 0) ev_max = std::max(ev_max, ev - 1);
+  }
+
+  result_type result() { return trim_columns(Z, ev_max, n_draws); }
+};
+
+// Long-format output: list(id, time, n_draws). Zero-event draws contribute
+// no entries (their id is absent); no NA anywhere. expected_events is a
+// reserve() hint only -- correctness does not depend on it.
+struct LongSink {
+  static constexpr bool is_long = true;
+  typedef Rcpp::List result_type;
+  std::vector<int> id;
+  std::vector<double> time;
+  const int n_draws;
+
+  LongSink(const int n_draws_, const int, const double expected_events)
+    : n_draws(n_draws_) {
+    if (expected_events > 0) {
+      const std::size_t r = static_cast<std::size_t>(expected_events);
+      id.reserve(r);
+      time.reserve(r);
+    }
+  }
+
+  void emit(const int d, const int, const double t) {
+    id.push_back(d + 1);
+    time.push_back(t);
+  }
+
+  // report_last_K analog of compact_last: the current draw's events are the
+  // vector tail, so keep the last n_keep of that segment and shrink.
+  void end_row(const int, const int n_generated, const int report_last_K) {
+    if (report_last_K <= 0 || n_generated <= report_last_K) return;
+    const std::size_t start = time.size() - n_generated;
+    const std::size_t from = time.size() - report_last_K;
+    for (int i = 0; i != report_last_K; ++i) {
+      time[start + i] = time[from + i];
+    }
+    time.resize(start + report_last_K);
+    id.resize(start + report_last_K);
+  }
+
+  result_type result() {
+    return Rcpp::List::create(
+      Rcpp::Named("id") = Rcpp::IntegerVector(id.begin(), id.end()),
+      Rcpp::Named("time") = Rcpp::NumericVector(time.begin(), time.end()),
+      Rcpp::Named("n_draws") = n_draws);
+  }
+};
+
+// reserve() hint for LongSink: expected whole-range event mass sum(Lambda)
+// plus a 4-sigma Poisson margin, floored at n_draws * k_min events under a
+// lower generation bound and capped at the per-draw event cap. The
+// whole-range mass upper-bounds any subinterval mass.
+inline double long_reserve_hint(const Rcpp::NumericMatrix& Lambda,
+                                const int k_min, const int per_draw_cap) {
+  const int K = Lambda.cols();
+  const int n_draws = Lambda.rows();
+  double mass = 0.0;
+  for (int d = 0; d != n_draws; ++d) mass += Lambda(d, K - 1);
+  if (k_min > 0) mass = std::max(mass, static_cast<double>(n_draws) * k_min);
+  mass += 4.0 * std::sqrt(mass) + 16.0;
+  return std::min(mass, static_cast<double>(n_draws) * per_draw_cap);
+}
+
 // Unconditional inversion sampler (Exp(1) walk). Events arrive in time
 // order, so report_first_K may cut generation short; report_last_K must let
 // the walk run to the end of the (sub)interval and compacts afterwards.
-template <class Grid>
-Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
-                                 const bool is_cumulative, const Grid& g,
-                                 const Rcpp::NumericMatrix& subinterval,
-                                 const double tol, const int report_first_K,
-                                 const int report_last_K, const int budget_cap) {
+template <class Grid, class Sink = DenseSink>
+typename Sink::result_type sc_step_core(const Rcpp::NumericMatrix& rate,
+                                        const bool is_cumulative, const Grid& g,
+                                        const Rcpp::NumericMatrix& subinterval,
+                                        const double tol, const int report_first_K,
+                                        const int report_last_K, const int budget_cap) {
   const int K = rate.cols();
   const int n_draws = rate.rows();
   const bool shared_sub = (subinterval.rows() == 1);
@@ -187,13 +281,14 @@ Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
   if (report_first_K > 0 && report_first_K < n_max_events) n_max_events = report_first_K;
   // report_last_K cannot shrink the generation budget: the whole realization
   // must be generated before the last K are known
+  const double hint =
+    (Sink::is_long && n_max_events > 0) ? long_reserve_hint(Lambda, 0, n_max_events) : 0.0;
+  Sink sink(n_draws, std::max(n_max_events, 1), hint);
   if (n_max_events == 0) {
-    return na_matrix(n_draws, 1);
+    return sink.result();
   }
 
-  Rcpp::NumericMatrix Z = na_matrix(n_draws, n_max_events);
   std::vector<double> L(K); // contiguous copy of the current row of Lambda
-  int ev_max = 0;
   double f0, f1;
   for (int d = 0; d != n_draws; ++d) {
     for (int j = 0; j != K; ++j) L[j] = Lambda(d, j);
@@ -212,14 +307,13 @@ Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
       j0 = upper_bound_index(L.data(), K, j0, tau);
       if (j0 == -1) break;
       const double L_prev = (j0 > 0) ? L[j0 - 1] : 0.0;
-      Z(d, ev) = g.time_at(d, j0, (tau - L_prev) / (L[j0] - L_prev));
+      sink.emit(d, ev, g.time_at(d, j0, (tau - L_prev) / (L[j0] - L_prev)));
       ++ev;
       if (ev == n_max_events) break;
     }
-    ev = compact_last(Z, d, ev, report_last_K);
-    if (ev > 0) ev_max = std::max(ev_max, ev - 1);
+    sink.end_row(d, ev, report_last_K);
   }
-  return trim_columns(Z, ev_max, n_draws);
+  return sink.result();
 }
 
 // Conditional order-statistics sampler for gen_at_least_K <= N <=
@@ -227,16 +321,16 @@ Rcpp::NumericMatrix sc_step_core(const Rcpp::NumericMatrix& rate,
 // quantile) cap the count N, but never below gen_at_least_K; the reporting
 // options select which min(N, K) order statistics are returned and never
 // affect N itself.
-template <class Grid>
-Rcpp::NumericMatrix sc_step_orderstat_core(const Rcpp::NumericMatrix& rate,
-                                           const bool is_cumulative, const Grid& g,
-                                           const Rcpp::NumericMatrix& subinterval,
-                                           const double tol,
-                                           const int report_first_K,
-                                           const int report_last_K,
-                                           const int gen_at_least_K,
-                                           const int gen_at_most_K,
-                                           const int budget_cap) {
+template <class Grid, class Sink = DenseSink>
+typename Sink::result_type sc_step_orderstat_core(const Rcpp::NumericMatrix& rate,
+                                                  const bool is_cumulative, const Grid& g,
+                                                  const Rcpp::NumericMatrix& subinterval,
+                                                  const double tol,
+                                                  const int report_first_K,
+                                                  const int report_last_K,
+                                                  const int gen_at_least_K,
+                                                  const int gen_at_most_K,
+                                                  const int budget_cap) {
   const int K = rate.cols();
   const int n_draws = rate.rows();
   const bool shared_sub = (subinterval.rows() == 1);
@@ -252,10 +346,12 @@ Rcpp::NumericMatrix sc_step_orderstat_core(const Rcpp::NumericMatrix& rate,
   if (report_first_K > 0 && report_first_K < n_cols) n_cols = report_first_K;
   if (report_last_K > 0 && report_last_K < n_cols) n_cols = report_last_K;
 
-  Rcpp::NumericMatrix Z = na_matrix(n_draws, n_cols);
+  const int per_draw_reported = n_cols;
+  const double hint =
+    Sink::is_long ? long_reserve_hint(Lambda, k_min, per_draw_reported) : 0.0;
+  Sink sink(n_draws, n_cols, hint);
   std::vector<double> L(K);
   std::vector<double> U(n_count_cap);
-  int ev_max = 0;
   double f0, f1;
   for (int d = 0; d != n_draws; ++d) {
     for (int j = 0; j != K; ++j) L[j] = Lambda(d, j);
@@ -288,15 +384,17 @@ Rcpp::NumericMatrix sc_step_orderstat_core(const Rcpp::NumericMatrix& rate,
     }
 
     int j0 = i0;
+    int emitted = 0;
     for (int i = 0; i != n_report; ++i) {
       j0 = upper_bound_index(L.data(), K, j0, U[offset + i]);
       if (j0 == -1) break;
       const double L_prev = (j0 > 0) ? L[j0 - 1] : 0.0;
-      Z(d, i) = g.time_at(d, j0, (U[offset + i] - L_prev) / (L[j0] - L_prev));
-      ev_max = std::max(ev_max, i);
+      sink.emit(d, i, g.time_at(d, j0, (U[offset + i] - L_prev) / (L[j0] - L_prev)));
+      ++emitted;
     }
+    sink.end_row(d, emitted, 0); // reporting was applied pre-emission
   }
-  return trim_columns(Z, ev_max, n_draws);
+  return sink.result();
 }
 
 } // namespace nhppp

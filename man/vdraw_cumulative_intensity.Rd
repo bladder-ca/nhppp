@@ -18,7 +18,8 @@ vdraw_cumulative_intensity(
   report_last_K = NULL,
   atleast1 = FALSE,
   generate_at_least_K = NULL,
-  generate_at_most_K = NULL
+  generate_at_most_K = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -70,9 +71,22 @@ condition on exactly K events. Any generation bound switches the
 sampler from sequential inversion to the order-statistics
 construction on the \code{Lambda} scale with a doubly-truncated
 Poisson number of events.}
+
+\item{output}{(string) \code{"matrix"} (default) returns the NA-padded event
+matrix, one row per point process. \code{"long"} returns the long event
+format \code{list(id, time, n_draws)} with one entry per event: \code{id} is
+the 1-based point-process index (ascending; times ascending within
+\code{id}); a point process with no events contributes no entries, and
+\code{n_draws} distinguishes "no events" from "not sampled". On the
+conditioned (order-statistics) path the long format is built with
+no dense intermediate, and \code{Lambda_inv} is called on the event
+VECTOR with the container's \code{row_args} subset to one row per event
+(aligned by \code{id}); the unconditioned path converts its dense walk
+at the end.}
 }
 \value{
-a matrix of event times with one row per sampled point process.
+a matrix of event times with one row per sampled point process,
+or the long event format if \code{output = "long"}.
 }
 \description{
 Sample NHPPP times using the cumulative intensity function and its inverse.

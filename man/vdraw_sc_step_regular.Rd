@@ -20,7 +20,8 @@ vdraw_sc_step_regular(
   generate_at_least_K = NULL,
   generate_at_most_K = NULL,
   budget_cap = NULL,
-  atmostB = NULL
+  atmostB = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -78,9 +79,14 @@ extreme tail of the event-count distribution together with the
 contract.}
 
 \item{atmostB}{deprecated alias for \code{budget_cap}.}
+
+\item{output}{(string) \code{"matrix"} (default) for the NA-padded event
+matrix or \code{"long"} for the long event format
+\code{list(id, time, n_draws)}; see \code{vdraw_sc_step()}.}
 }
 \value{
-a vector of event times t
+a matrix of event times t, with rows corresponding to the sampled
+point processes, or the long event format if \code{output = "long"}
 if no events realize, it will have 0 length
 }
 \description{

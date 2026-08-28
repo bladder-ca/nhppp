@@ -18,7 +18,8 @@ vztdraw_sc_step_regular_cpp(
   report_last_K = NULL,
   generate_at_least_K = 1,
   generate_at_most_K = NULL,
-  budget_cap = NULL
+  budget_cap = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -68,9 +69,20 @@ most K events. May be combined with \code{generate_at_least_K}
 \item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
 budget of the kernel (approximation knob; never truncates below
 \code{generate_at_least_K}).}
+
+\item{output}{(string) \code{"matrix"} (default) returns the NA-padded event
+matrix, one row per point process. \code{"long"} returns the long event
+format \code{list(id, time, n_draws)} with one entry per event: \code{id} is
+the 1-based point-process index (ascending; times ascending within
+\code{id}). A point process with no events contributes no entries, so
+its id is absent; \code{n_draws} distinguishes "no events" from "not
+sampled". No \code{NA} is used. The long format is built without
+allocating the dense matrix, so prefer it when event counts vary
+widely across point processes.}
 }
 \value{
-a matrix of event times t, with rows corresponding to the sampled point processes.
+a matrix of event times t, with rows corresponding to the sampled
+point processes, or the long event format if \code{output = "long"}.
 }
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)

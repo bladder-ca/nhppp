@@ -38,8 +38,20 @@
 #'        sampler from sequential inversion to the order-statistics
 #'        construction on the `Lambda` scale with a doubly-truncated
 #'        Poisson number of events.
+#' @param output (string) `"matrix"` (default) returns the NA-padded event
+#'        matrix, one row per point process. `"long"` returns the long event
+#'        format `list(id, time, n_draws)` with one entry per event: `id` is
+#'        the 1-based point-process index (ascending; times ascending within
+#'        `id`); a point process with no events contributes no entries, and
+#'        `n_draws` distinguishes "no events" from "not sampled". On the
+#'        conditioned (order-statistics) path the long format is built with
+#'        no dense intermediate, and `Lambda_inv` is called on the event
+#'        VECTOR with the container's `row_args` subset to one row per event
+#'        (aligned by `id`); the unconditioned path converts its dense walk
+#'        at the end.
 #'
-#' @return a matrix of event times with one row per sampled point process.
+#' @return a matrix of event times with one row per sampled point process,
+#'        or the long event format if `output = "long"`.
 #' @examples
 #' Z <- vdraw_cumulative_intensity(
 #'   Lambda = function(t) t^1.5,
@@ -71,9 +83,11 @@ vdraw_cumulative_intensity <- function(Lambda,
                                        report_last_K = NULL,
                                        atleast1 = FALSE,
                                        generate_at_least_K = NULL,
-                                       generate_at_most_K = NULL) {
+                                       generate_at_most_K = NULL,
+                                       output = c("matrix", "long")) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
+  long_ <- .resolve_output(output)
   range_t <- cbind(as.vector(t_min), as.vector(t_max))
   N_rows <- nrow(range_t)
 
@@ -115,6 +129,40 @@ vdraw_cumulative_intensity <- function(Lambda,
     N_events <- as.integer(
       pmin(N_events, pmax(gen_$at_least, stats::qpois(p = 1 - tol, lambda = mu)))
     )
+    if (long_) {
+      # true long construction: no dense intermediate. The spacings walk is
+      # done on the event vector with a segmented cumsum (one segment of
+      # N_i + 1 exponentials per point process).
+      seg_len <- N_events + 1L
+      ends <- cumsum(seg_len) # global index of S_(N_i + 1), per process
+      cs <- cumsum(stats::rexp(n = sum(seg_len), rate = 1))
+      offs <- c(0, cs[ends])[seq_len(N_rows)] # cumsum before each segment
+      S_total <- cs[ends] - offs
+      id <- rep(seq_len(N_rows), times = N_events)
+      if (length(id) == 0L) {
+        return(list(id = integer(0), time = numeric(0), n_draws = N_rows))
+      }
+      pos <- sequence(N_events) # event index within its process
+      gidx <- rep(c(0L, ends[-N_rows]), times = N_events) + pos
+      warped <- (cs[gidx] - offs[id]) / S_total[id] * mu[id] + range_L[id, 1]
+      # reporting truncations, per process, before the inversion
+      if (rep_$first > 0L) {
+        keep <- pos <= rep_$first
+        id <- id[keep]
+        warped <- warped[keep]
+      } else if (rep_$last > 0L) {
+        keep <- pos > N_events[id] - rep_$last
+        id <- id[keep]
+        warped <- warped[keep]
+      }
+      times <- if (use_legacy_call) {
+        Lambda_inv(warped, Lambda_inv_args = Lambda_inv_args)
+      } else {
+        # align per-process arguments with the event vector
+        .call_with_args(Lambda_inv, warped, .subset_fun_args(fa_, rows = id))
+      }
+      return(list(id = id, time = as.vector(times), n_draws = N_rows))
+    }
     N_cols <- max(1L, N_events)
     warped_t <- matrix(stats::rexp(n = (N_cols + 1L) * N_rows, rate = 1), ncol = N_cols + 1L)
     matrix_cumsum_columns_inplace(warped_t)
@@ -144,5 +192,11 @@ vdraw_cumulative_intensity <- function(Lambda,
   } else {
     .call_with_args(Lambda_inv, warped_t, fa_$container)
   }
-  return(.report_slice(Z, rep_))
+  Z <- .report_slice(Z, rep_)
+  if (long_) {
+    # the unconditioned R-level walk is inherently blocked (dense); only the
+    # returned object is long
+    return(.long_from_matrix(Z))
+  }
+  return(Z)
 }

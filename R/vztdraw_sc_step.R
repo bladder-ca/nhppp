@@ -43,7 +43,17 @@
 #'        budget of the kernel (approximation knob; never truncates below
 #'        `generate_at_least_K`).
 #'
-#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
+#' @param output (string) `"matrix"` (default) returns the NA-padded event
+#'        matrix, one row per point process. `"long"` returns the long event
+#'        format `list(id, time, n_draws)` with one entry per event: `id` is
+#'        the 1-based point-process index (ascending; times ascending within
+#'        `id`). A point process with no events contributes no entries, so
+#'        its id is absent; `n_draws` distinguishes "no events" from "not
+#'        sampled". No `NA` is used. The long format is built without
+#'        allocating the dense matrix, so prefer it when event counts vary
+#'        widely across point processes.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`.
 #'
 #' @examples
 #' x <- vztdraw_sc_step(
@@ -70,13 +80,15 @@ vztdraw_sc_step <- function(
     report_last_K = NULL,
     generate_at_least_K = 1,
     generate_at_most_K = NULL,
-    budget_cap = NULL) {
+    budget_cap = NULL,
+    output = c("matrix", "long")) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   gen_ <- .resolve_generation(FALSE, generate_at_least_K, generate_at_most_K)
   if (gen_$at_least == 0L && gen_$at_most == 0L) {
     stop("at least one of `generate_at_least_K`/`generate_at_most_K` must be set for the conditioned (zt) samplers")
   }
   budget_cap <- .resolve_budget_cap(budget_cap, NULL)
+  long_ <- .resolve_output(output)
 
   args <- .prep_vdraw_sc_step_args(
     lambda_matrix = lambda_matrix,
@@ -96,7 +108,7 @@ vztdraw_sc_step <- function(
     .Call(
       `_nhppp_vztdraw_sc_step_general2`,
       args$rate, args$is_cumulative, args$time_breaks, subinterval,
-      tol, rep_$first, rep_$last, gen_$at_least, gen_$at_most, budget_cap
+      tol, rep_$first, rep_$last, gen_$at_least, gen_$at_most, budget_cap, long_
     )
   )
 }

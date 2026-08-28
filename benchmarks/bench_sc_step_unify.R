@@ -63,3 +63,23 @@ out$name <- vapply(res$expression, deparse1, character(1))
 print(res[, c("expression", "median", "itr/sec", "n_itr")])
 saveRDS(res, file.path("benchmarks", paste0("sc_step_unify_", label, ".rds")))
 cat("saved benchmarks/sc_step_unify_", label, ".rds\n", sep = "")
+
+# ---- dense vs long output ---------------------------------------------------
+# Heterogeneous rates: most rows ~1 expected event, a few rows ~40. The dense
+# matrix pads every row to the widest; the long format stores only events.
+bench_long_output <- function(n_draws = 1e6, n_rep = 5) {
+  rate <- c(rep(0.25, n_draws - 100), rep(10, 100))
+  lmat <- matrix(rep(rate, 5), ncol = 5)
+  breaks <- seq(0, 4, length.out = 6)
+  td <- system.time(for (i in seq_len(n_rep)) {
+    Zd <- vdraw_sc_step(lambda_matrix = lmat, time_breaks = breaks)
+  })["elapsed"]
+  tl <- system.time(for (i in seq_len(n_rep)) {
+    Zl <- vdraw_sc_step(lambda_matrix = lmat, time_breaks = breaks, output = "long")
+  })["elapsed"]
+  cat(sprintf(
+    "n = %g: dense %.0f ms (%.0f MB), long %.0f ms (%.1f MB)\n",
+    n_draws, 1000 * td / n_rep, object.size(Zd) / 2^20,
+    1000 * tl / n_rep, object.size(Zl) / 2^20
+  ))
+}

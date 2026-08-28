@@ -99,6 +99,13 @@ check_ppp_vector_validity <- function(times, t_min, t_max = NULL, size = NULL,
 check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL,
                                       atmost1 = FALSE, atleast1 = FALSE,
                                       atmostk = NULL, atleastk = NULL) {
+  if (is.list(times) && !is.data.frame(times) &&
+    all(c("id", "time", "n_draws") %in% names(times))) {
+    return(check_ppp_long_validity(
+      x = times, t_min = t_min, t_max = t_max, size = size,
+      atmost1 = atmost1, atleast1 = atleast1, atmostk = atmostk, atleastk = atleastk
+    ))
+  }
   if (!is.matrix(times)) {
     check_ppp_vector_validity(
       times = times, t_min = t_min, t_max = t_max, size = size,
@@ -162,6 +169,67 @@ check_ppp_sample_validity <- function(times, t_min, t_max = NULL, size = NULL,
       testthat::expect_true(all(size_ok), info = .which_rows(size_ok))
     }
   }
+}
+
+#' Check the validity of ppp samples in the long event format
+#'
+#' @description Standard checks for a long-format sample
+#' `list(id, time, n_draws)`: ids in range and ascending, times ascending
+#' within id, all times in `[t_min, t_max]`, and the per-process count
+#' contracts. All checks are whole-vector operations.
+#'
+#' @param x (list) long event sample with elements `id`, `time`, `n_draws`
+#' @param t_min (double | vector) the start of the time interval
+#' @param t_max (double | vector) optional: the end of the time interval
+#' @param size (double) optional: the per-process event count (empty
+#'        processes are exempt, matching the matrix check)
+#' @param atmost1 (boolean) optional: at most one event per process
+#' @param atleast1 (boolean) optional: at least one event per process
+#' @param atmostk (integer) optional: at most `k` events per process
+#' @param atleastk (integer) optional: at least `k` events per process
+#' @return None
+#' @keywords internal
+check_ppp_long_validity <- function(x, t_min, t_max = NULL, size = NULL,
+                                    atmost1 = FALSE, atleast1 = FALSE,
+                                    atmostk = NULL, atleastk = NULL) {
+  .which_rows <- function(ok) {
+    w <- which(!ok)
+    paste("failing rows:", paste(w[seq_len(min(10, length(w)))], collapse = ", "))
+  }
+  n <- x$n_draws
+  testthat::expect_true(is.numeric(x$id) && is.double(x$time) && length(n) == 1)
+  testthat::expect_identical(length(x$id), length(x$time))
+  testthat::expect_true(!anyNA(x$id) && !anyNA(x$time))
+  testthat::expect_true(all(x$id >= 1L & x$id <= n))
+  if (length(x$id) > 1) {
+    di <- diff(x$id)
+    testthat::expect_true(all(di >= 0)) # ids grouped and ascending
+    testthat::expect_true(all(diff(x$time) > 0 | di > 0)) # ascending within id
+  }
+  t_min_e <- if (length(t_min) == 1) t_min else t_min[x$id]
+  testthat::expect_true(all(x$time >= t_min_e))
+  if (!is.null(t_max)) {
+    t_max_e <- if (length(t_max) == 1) t_max else t_max[x$id]
+    testthat::expect_true(all(x$time <= t_max_e))
+  }
+  cnt <- tabulate(x$id, nbins = n)
+  if (atleast1) {
+    testthat::expect_true(all(cnt >= 1), info = .which_rows(cnt >= 1))
+  }
+  if (!is.null(atleastk)) {
+    testthat::expect_true(all(cnt >= atleastk), info = .which_rows(cnt >= atleastk))
+  }
+  if (!is.null(atmostk)) {
+    testthat::expect_true(all(cnt <= atmostk), info = .which_rows(cnt <= atmostk))
+  }
+  if (atmost1) {
+    testthat::expect_true(all(cnt <= 1), info = .which_rows(cnt <= 1))
+  }
+  if (!is.null(size)) {
+    size_ok <- cnt == 0 | cnt == size
+    testthat::expect_true(all(size_ok), info = .which_rows(size_ok))
+  }
+  invisible(NULL)
 }
 
 #' Check that two ppp vectors Q-Q agree

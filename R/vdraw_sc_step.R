@@ -137,8 +137,18 @@
 #'        `1 - tol` quantile bound), not an exact reporting or conditioning
 #'        contract.
 #' @param atmostB deprecated alias for `budget_cap`.
+#' @param output (string) `"matrix"` (default) returns the NA-padded event
+#'        matrix, one row per point process. `"long"` returns the long event
+#'        format `list(id, time, n_draws)` with one entry per event: `id` is
+#'        the 1-based point-process index (ascending; times ascending within
+#'        `id`). A point process with no events contributes no entries, so
+#'        its id is absent; `n_draws` distinguishes "no events" from "not
+#'        sampled". No `NA` is used. The long format is built without
+#'        allocating the dense matrix, so prefer it when event counts vary
+#'        widely across point processes.
 #'
-#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`.
 #'
 #' @examples
 #' # one set of interval bounds for all point processes
@@ -175,10 +185,12 @@ vdraw_sc_step <- function(
     generate_at_least_K = NULL,
     generate_at_most_K = NULL,
     budget_cap = NULL,
-    atmostB = NULL) {
+    atmostB = NULL,
+    output = c("matrix", "long")) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
+  long_ <- .resolve_output(output)
 
   args <- .prep_vdraw_sc_step_args(
     lambda_matrix = lambda_matrix,
@@ -199,7 +211,7 @@ vdraw_sc_step <- function(
       .Call(
         `_nhppp_vztdraw_sc_step_general2`,
         args$rate, args$is_cumulative, args$time_breaks, subinterval,
-        tol, rep_$first, rep_$last, gen_$at_least, gen_$at_most, budget_cap
+        tol, rep_$first, rep_$last, gen_$at_least, gen_$at_most, budget_cap, long_
       )
     )
   }
@@ -207,7 +219,7 @@ vdraw_sc_step <- function(
     .Call(
       `_nhppp_vdraw_sc_step_general2`,
       args$rate, args$is_cumulative, args$time_breaks, subinterval,
-      tol, rep_$first, rep_$last, budget_cap
+      tol, rep_$first, rep_$last, budget_cap, long_
     )
   )
 }

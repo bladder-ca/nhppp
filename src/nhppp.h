@@ -33,7 +33,7 @@ double simple_lerp(
   const double b,
   const double f);
 
-Rcpp::NumericMatrix vdraw_sc_step_regular2(
+SEXP vdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
@@ -41,10 +41,11 @@ Rcpp::NumericMatrix vdraw_sc_step_regular2(
   const double tol,
   const int report_first_K,
   const int report_last_K,
-  const int budget_cap
+  const int budget_cap,
+  const bool long_output
 );
 
-Rcpp::NumericMatrix vdraw_sc_step_general2(
+SEXP vdraw_sc_step_general2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & time_breaks,
@@ -52,10 +53,11 @@ Rcpp::NumericMatrix vdraw_sc_step_general2(
   const double tol,
   const int report_first_K,
   const int report_last_K,
-  const int budget_cap
+  const int budget_cap,
+  const bool long_output
 );
 
-Rcpp::NumericMatrix vztdraw_sc_step_regular2(
+SEXP vztdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
@@ -65,10 +67,11 @@ Rcpp::NumericMatrix vztdraw_sc_step_regular2(
   const int report_last_K,
   const int gen_at_least_K,
   const int gen_at_most_K,
-  const int budget_cap
+  const int budget_cap,
+  const bool long_output
 );
 
-Rcpp::NumericMatrix vztdraw_sc_step_general2(
+SEXP vztdraw_sc_step_general2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & time_breaks,
@@ -78,7 +81,8 @@ Rcpp::NumericMatrix vztdraw_sc_step_general2(
   const int report_last_K,
   const int gen_at_least_K,
   const int gen_at_most_K,
-  const int budget_cap
+  const int budget_cap,
+  const bool long_output
 );
 
 Rcpp::NumericMatrix vdraw_intensity_step_regular(

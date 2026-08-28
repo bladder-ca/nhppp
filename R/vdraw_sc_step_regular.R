@@ -46,7 +46,11 @@
 #'        contract.
 #' @param atmostB deprecated alias for `budget_cap`.
 #'
-#' @return a vector of event times t
+#' @param output (string) `"matrix"` (default) for the NA-padded event
+#'        matrix or `"long"` for the long event format
+#'        `list(id, time, n_draws)`; see `vdraw_sc_step()`.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`
 #'         if no events realize, it will have 0 length
 #'
 #' @examples
@@ -71,7 +75,8 @@ vdraw_sc_step_regular <- function(
     generate_at_least_K = NULL,
     generate_at_most_K = NULL,
     budget_cap = NULL,
-    atmostB = NULL) {
+    atmostB = NULL,
+    output = c("matrix", "long")) {
   rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
   gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
   budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
@@ -90,7 +95,8 @@ vdraw_sc_step_regular <- function(
         report_last_K = if (rep_$last > 0L) rep_$last else NULL,
         generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
         generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL,
-        budget_cap = if (budget_cap > 0L) budget_cap else NULL
+        budget_cap = if (budget_cap > 0L) budget_cap else NULL,
+        output = output
       )
     )
   }
@@ -105,7 +111,8 @@ vdraw_sc_step_regular <- function(
       tol = tol,
       report_first_K = if (rep_$first > 0L) rep_$first else NULL,
       report_last_K = if (rep_$last > 0L) rep_$last else NULL,
-      budget_cap = if (budget_cap > 0L) budget_cap else NULL
+      budget_cap = if (budget_cap > 0L) budget_cap else NULL,
+      output = output
     )
   )
 }
