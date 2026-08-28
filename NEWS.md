@@ -92,6 +92,10 @@ Structured argument containers for user functions
 - `row_args`/`vector_arguments` accept plain data.frames (the data.table
   requirement is dropped; data.tables are still accepted as-is, read-only,
   never coerced or copied).
+- New vignette "How to write an intensity or cumulative intensity function
+  for vectorized models": the calling contract, the structured container
+  and its alignment idiom, majorizer construction, a worked
+  thinning-vs-inversion example, and the anti-patterns.
 - `get_step_majorizer()` gains `fun_args`, taking the same container with
   the same delivery convention, so the sampler's `lambda` can be used for
   majorizer construction without hand-wrapping.
