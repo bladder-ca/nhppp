@@ -143,6 +143,9 @@ Long-format output for the vectorized samplers
   `vdraw_cumulative_intensity()` path, `Lambda_inv` is called on the
   event vector with `row_args` subset to one row per event (aligned by
   id). The thinning samplers do not take `output` yet.
+- New vignette "Long event output for large simulations" showing the two
+  formats side by side, the no-event semantics, and the memory/time
+  comparison as event-count heterogeneity grows.
 
 Documentation
 - Reference examples modernized to the current API: `draw()`, `vdraw()`,
