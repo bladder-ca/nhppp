@@ -216,7 +216,7 @@ intermediate, and `Lambda_inv` is evaluated once on the event vector.
 
 ## Which format to use
 
-- **Dense (default)**: first-event workloads (`atmost1`, `report_first_K`),
+- **Dense (default)**: first-event workloads (`report_first_K = 1`),
   homogeneous event counts, or any code that expects the matrix layout.
   Nothing changes for existing code.
 - **Long**: many processes with ragged event counts -- event-history

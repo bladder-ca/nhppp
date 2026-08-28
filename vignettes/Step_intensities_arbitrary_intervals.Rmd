@@ -85,10 +85,9 @@ As with the other `vdraw_*()` functions, `Lambda_matrix` (cumulative
 intensities at the interval ends) can be given instead of `lambda_matrix`,
 and the truncation options work the same way: `report_first_K` /
 `report_last_K` report only the earliest or latest K events of a
-realization (`atmost1` is the alias for `report_first_K = 1`);
+realization;
 `generate_at_least_K` / `generate_at_most_K` condition the sampled process
-on its number of events (`atleast1` is the alias for
-`generate_at_least_K = 1`); and `budget_cap` caps the computational event
+on its number of events; and `budget_cap` caps the computational event
 budget.
 
 ### The sampled times follow the target intensity
@@ -175,15 +174,15 @@ t_first <- vdraw_sc_step(
   time_breaks = age_breaks,
   t_min = 40,
   t_max = T1,
-  atmost1 = TRUE
+  report_first_K = 1
 )
 summary(as.vector(t_first))
 ```
 
 ## Zero-truncated sampling
 
-`vztdraw_sc_step()` -- equivalently `vdraw_sc_step(generate_at_least_K = 1)`
-or its alias `atleast1 = TRUE` -- conditions on at least one event in the
+`vztdraw_sc_step()` -- equivalently `vdraw_sc_step(generate_at_least_K = 1)` 
+-- conditions on at least one event in the
 sampled interval. This is the
 natural tool when simulating people who are known to become cases, e.g.,
 drawing an age at diagnosis for each of $K$ cases:
@@ -194,7 +193,8 @@ t_dx <- vztdraw_sc_step(
   time_breaks = age_breaks,
   t_min = 40,
   t_max = T1,
-  atmost1 = TRUE
+  report_first_K = 1, 
+  generate_at_least_K = 1
 )
 sum(is.na(t_dx)) # everyone has an event now
 ```

@@ -101,30 +101,20 @@ The other functions have the same bahavior.
 
 Define a vectorized form of the intensity function. 
 ```{r function-lambda-0} 
-l <- function(t, alpha = pop$alpha, beta = pop$beta, ...) exp(alpha + beta * t)
-```
-
-Arguments `alpha` and `beta` can be scalars or vectors (or column matrices). 
-Argument `t` can be a scalar, a vector of $K$ ages (times), or a $K \times s$ matrix. See some examples of the behavior of the vectorized function. The ellipses (`...`) allow `l()` to ignore extra arguments without breaking the execution of the script. While we won't do that on purpose, some sampling functions in the `nhppp` package that take function arguments need the ability to pass optional extraneous arguments. 
-
-Scalar arguments, evaluated at `t = 45`
-```{r} 
-l(t = 45, alpha = -4, beta = 0.03)
-```
-
-
-Scalar arguments, evaluated at `t = 45:50` (vector) or as a column matrix 
-The function returns results in the format of the `t` argument. 
-``` {r}  
-l(t = 45:50, alpha = -4, beta = 0.03)
-
-l(t = matrix(45:50, ncol = 1), alpha = -4, beta = 0.03)
+# first positional argument is `t`
+# second positional argument is a named list: 
+#   list(shared = ..., row_args = ...)
+l <- function(t, args) {
+ alpha <- args$row_args$alpha
+ beta <- args$row_args$beta
+ exp(alpha + beta * t)
+}
 ```
 
 
-Vector arguments, using the first 5 people and evaluating all people at `t = 45`
+For example, here we use vectorized arguments, using the first 5 people and evaluating all people at `t = 45`
 ```{r}
-l(t = 45, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = 45, list(row_args = pop[1:5, .(alpha, beta)]))
 ```
 
 Matrix arguments are convenient: 
@@ -132,7 +122,9 @@ the rows are people and the columns are the ages (times) -- and they can differ 
 For the first 5 people, we evaluate a different age for each person. 
 The results are returned in a matrix format. 
 ```{r}
-l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), 
+  args = list(row_args = pop[1:5, .(alpha, beta)])
+)
 ``` 
 
 For the first 5 people, we evaluate three different ages for each person. We arrange a `t_mat`
@@ -141,24 +133,25 @@ The results are returned in a matrix format.
 
 ```{r}
 t_mat <- matrix(c(
-  45, 50, 45, 47.4, 30,
-  45.1, 50.1, 45.5, 47.8, 38,
-  48, 52.7, 60.1, 70.1, 99.9
-), ncol = 3, byrow = TRUE)
+    45,   50,   45, 
+  47.4,   30, 45.1, 
+  50.1, 45.5, 47.8, 
+    38,   48, 52.7, 
+  60.1, 70.1, 99.9), ncol = 3, byrow = TRUE)
 t_mat
 
-l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = t_mat, args = list(row_args = pop[1:5, .(alpha, beta)]))
 ```
 
 
-The defaults for the `alpha` and `beta` arguments of the `l()` functions
-are the respective columns of the whole population. We can then evaluate the 
-intensity function $\lambda()$ for the whole population passing only the `t`
-argument.  
+Analogusly, we can evaluate the 
+intensity function $\lambda()$ for the whole population passing the `t`
+argument, and the whole population's `alpha` and `beta` variables.
 
 ```{r}
 t_mat <- matrix(rep(c(45, 50, 55), each = K), ncol = 3, byrow = TRUE)
-l(t = t_mat) |> head()
+l(t = t_mat, 
+ args = list(row_args = pop[, .(alpha, beta)])) |> head()
 ```
 
 
@@ -174,7 +167,9 @@ $\Lambda(t) = \frac{1}{\beta} (e^{\alpha + \beta t} - e^\alpha)$.
 
 The vectorized version of $\Lambda$ for our example is 
 ``` {r Lambda}
-L <- function(t, alpha = pop$alpha, beta = pop$beta, ...) {
+L <- function(t, args) {
+  alpha <- args$row_args$alpha
+  beta <- args$row_args$beta
   (exp(alpha + beta * t) - exp(alpha)) / beta
 }
 ```
@@ -189,7 +184,9 @@ it satisfies ${\Lambda^{-1} \big ( \Lambda(t) \big ) = t}$. In our example, $\La
 
 The vectorized implementation of $\Lambda^{-1}$ for our example is 
 ``` {r Lambda-inv}
-Li <- function(z, alpha = pop$alpha, beta = pop$beta, ...) {
+Li <- function(z, args) {
+  alpha <- args$row_args$alpha
+  beta <- args$row_args$beta
   (log(beta * z + exp(alpha)) - alpha) / beta
 }
 ```
@@ -279,19 +276,21 @@ breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 lmaj_mat <- nhppp::get_step_majorizer(
   fun = l,
   breaks = breaks_mat,
-  is_monotone = TRUE
+  is_monotone = TRUE, 
+  fun_args = list(row_args = pop[,.(alpha, beta)])
 )
 
 pop[
   ,
   t_thinning := nhppp::vdraw_intensity(
     lambda = l,
+    lambda_args = list(row_args = pop[,.(alpha, beta)]),
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 40,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE,
+    report_first_K = 1,
     budget_cap = 5
   )
 ]
@@ -303,7 +302,7 @@ tictoc::toc(log = TRUE) # timer end
 
 The most efficient sampling is possible when one knows $\Lambda()$ and $\Lambda^{-1}()$. 
 The `nhppp` package can sample in this case using the `vdraw_cumulative_intensity()`
-function. Here `range_t` is a matrix with information on each person's $[T_{k0}, T_{k1})$. 
+function. 
 
 ```{r method-3}
 tictoc::tic("Method 3 (inversion)")
@@ -312,9 +311,10 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L,
     Lambda_inv = Li,
+    Lambda_args = list(row_args = pop[,.(alpha, beta)]),
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc(log = TRUE) # timer end
@@ -336,7 +336,7 @@ It is very flexible -- it can accommodate very complex time varying intensity
 functions. You almost always know $\lambda$ and can get its majorizer $\lambda_*$ 
 easily and fast.  
 
-3. `r tictoc::tic.log()[[3]]`. This approach is many times faster that the second one, 
+3. `r tictoc::tic.log()[[3]]`. This approach is typically times faster that the second one in most problems,  
 but requires implementations for $\Lambda$ and $\Lambda^{-1}$.
  
 

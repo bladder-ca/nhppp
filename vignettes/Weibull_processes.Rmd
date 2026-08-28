@@ -88,15 +88,24 @@ Define vectorized forms of the Weibull $\lambda()$, $\Lambda()$, and $\Lambda^{-
 default the values in `pop`.
 
 ```{r function-lambda-weibull} 
-l_weibull <- function(t, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+# first positional argument is t/z
+# second positional argument is a named list 
+# list(shared  = ..., row_args = ...)
+l_weibull <- function(t, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   alpha/sigma * (t/sigma)^(alpha-1)
 }
 
-L_weibull <- function(t, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+L_weibull <- function(t, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   (t/sigma)^alpha
 }
 
-Li_weibull<- function(z, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+Li_weibull<- function(z, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   sigma * z^(1/alpha)
 } 
 ```
@@ -152,6 +161,7 @@ breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 
 lmaj_mat <- nhppp::get_step_majorizer(
   fun = l_weibull,
+  fun_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
   breaks = breaks_mat,
   is_monotone = TRUE
 )
@@ -160,12 +170,13 @@ pop[
   ,
   t_thinning := nhppp::vdraw_intensity(
     lambda = l_weibull,
+    lambda_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 20,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE,
+    report_first_K = 1,
     budget_cap = 5
   )
 ]
@@ -176,7 +187,7 @@ tictoc::toc(log = TRUE) # timer end
 
 The most efficient sampling is possible when one knows $\Lambda()$ and $\Lambda^{-1}()$. 
 The `nhppp` package can sample in this case using the `vdraw_cumulative_intensity()`
-function. Here `range_t` is a matrix with information on each person's $[T_{k0}, T_{k1})$. 
+function. 
 
 ```{r method-2}
 tictoc::tic("Method 2 (vectorized, inversion)")
@@ -185,9 +196,10 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L_weibull,
     Lambda_inv = Li_weibull,
+    Lambda_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc(log = TRUE) # timer end
@@ -230,29 +242,23 @@ Let's fix the parameter values for all $K$ people and do a histogram of the simu
 
 ```{r histogram}
 if(nchar(system.file(package = 'ggplot2'))>0) {
-  pop2 <- setDT(list(id = 1:10000)) 
+  pop2 <- setDT(list(id = 1:10^5)) 
   pop2[, `:=`(
     T0 = 20, 
     T1 = 100, 
-    a = 2.78, 
-    s = 74
+    alpha_weibull = 2.78, 
+    sigma_weibull = 74
   )]
   setindex(pop2, id)
   pop2
   
-  ## re-define functions to use `pop2` by default 
-  ##    clunckiness of `nhppp` -- help us improve it!
-  l  <- function(t, a = pop2$a, s = pop2$s, ...) a/s * (t/s)^(a-1)
-  L  <- function(t, a = pop2$a, s = pop2$s, ...) (t/s)^a
-  Li <- function(z, a = pop2$a, s = pop2$s, ...)  s * z^(1/a)
-  
   ## get all times (full trajectories)
   Z <- nhppp::vdraw_cumulative_intensity(
-      Lambda = L,
-      Lambda_inv = Li,
+      Lambda = L_weibull,
+      Lambda_inv = Li_weibull,
+      Lambda_args = list(row_args = pop2[, .(alpha_weibull, sigma_weibull)]),
       t_min = pop2$T0,
-      t_max = pop2$T1,
-      atmost1 = FALSE
+      t_max = pop2$T1
     )
   
   ## ignore non-realized times 
@@ -261,9 +267,9 @@ if(nchar(system.file(package = 'ggplot2'))>0) {
   
   x <- seq(from = 20, to = 100, length.out = 100)
   ## normalize the hazard rate to have area 1 between 20 and 100
-  y <- l(x, a = pop2$a[1], s = pop2$s[1]) / (
-        L(100, a = pop2$a[1], s = pop2$s[1]) - 
-        L(20, a = pop2$a[1], s = pop2$s[1])
+  y <- l_weibull(x, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)])) / (
+        L_weibull(100, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)])) -
+        L_weibull(20, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)]))
        )
   
   
