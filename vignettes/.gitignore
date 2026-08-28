@@ -10,6 +10,12 @@
 *.rdb
 *.rdx
 __packages
+*.css
+*.js
+*.woff
+*.png
+
+.DS_Store
 
 /.quarto/
 **/*.quarto_ipynb
