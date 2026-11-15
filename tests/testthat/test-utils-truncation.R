@@ -408,3 +408,119 @@ test_that("regular and general grids agree on identical equal-spaced breaks (sam
   )
   expect_equal(Z_reg, Z_gen, tolerance = 1e-12)
 })
+
+# ---- Scalar samplers: full reporting / generation option set ---------------
+# Each entry: a sampler call with a flexible option list, and its interval.
+scalar_samplers <- list(
+  ppp = list(
+    f = function(...) ppp(rate = 2, t_min = 1, t_max = 6, ...),
+    t_min = 1, t_max = 6
+  ),
+  draw_sc_linear = list(
+    f = function(...) draw_sc_linear(intercept = 1, slope = 0.4, t_min = 0, t_max = 5, ...),
+    t_min = 0, t_max = 5
+  ),
+  draw_sc_loglinear = list(
+    f = function(...) draw_sc_loglinear(intercept = 0.2, slope = 0.2, t_min = 0, t_max = 5, ...),
+    t_min = 0, t_max = 5
+  ),
+  draw_cumulative_intensity = list(
+    f = function(...) {
+      draw_cumulative_intensity(
+        Lambda = function(t) 0.5 * t^2, Lambda_inv = function(z) sqrt(2 * z),
+        t_min = 0, t_max = 4, ...
+      )
+    },
+    t_min = 0, t_max = 4
+  ),
+  draw_intensity = list(
+    f = function(...) {
+      draw_intensity(
+        lambda = function(t) 1 + 0.5 * t, line_majorizer_intercept = 1,
+        line_majorizer_slope = 0.5, t_min = 0, t_max = 5, ...
+      )
+    },
+    t_min = 0, t_max = 5
+  )
+)
+
+test_that("scalar samplers: default and atmost1 calls are unchanged by report_first_K = 1", {
+  for (nm in names(scalar_samplers)) {
+    s <- scalar_samplers[[nm]]
+    set.seed(11)
+    a <- s$f(atmost1 = TRUE)
+    set.seed(11)
+    b <- s$f(report_first_K = 1)
+    expect_identical(a, b, info = nm)
+    expect_true(length(b) <= 1, info = nm)
+  }
+})
+
+test_that("scalar samplers: report_first_K / report_last_K slice the same realization", {
+  for (nm in names(scalar_samplers)) {
+    s <- scalar_samplers[[nm]]
+    set.seed(23)
+    full <- s$f()
+    expect_true(length(full) >= 4, info = nm) # fixture produces enough events
+    set.seed(23)
+    first3 <- s$f(report_first_K = 3)
+    set.seed(23)
+    last2 <- s$f(report_last_K = 2)
+    expect_identical(first3, full[1:3], info = nm)
+    expect_identical(last2, utils::tail(full, 2), info = nm)
+    check_ppp_sample_validity(first3, t_min = s$t_min, t_max = s$t_max, atmostk = 3)
+    check_ppp_sample_validity(last2, t_min = s$t_min, t_max = s$t_max, atmostk = 2)
+  }
+})
+
+test_that("scalar samplers: report options reject contradictory settings", {
+  for (nm in names(scalar_samplers)) {
+    s <- scalar_samplers[[nm]]
+    expect_error(s$f(atmost1 = TRUE, report_last_K = 2), info = nm)
+    expect_error(s$f(report_first_K = 2, report_last_K = 2), info = nm)
+    expect_error(s$f(report_first_K = 0), info = nm)
+  }
+})
+
+test_that("scalar samplers: generation bounds route to the conditioned twin", {
+  twins <- list(
+    ppp = function(...) ztppp(rate = 2, t_min = 1, t_max = 6, ...),
+    draw_sc_linear = function(...) ztdraw_sc_linear(intercept = 1, slope = 0.4, t_min = 0, t_max = 5, ...),
+    draw_sc_loglinear = function(...) ztdraw_sc_loglinear(intercept = 0.2, slope = 0.2, t_min = 0, t_max = 5, ...),
+    draw_cumulative_intensity = function(...) {
+      ztdraw_cumulative_intensity(
+        Lambda = function(t) 0.5 * t^2, Lambda_inv = function(z) sqrt(2 * z),
+        t_min = 0, t_max = 4, ...
+      )
+    }
+  )
+  for (nm in names(twins)) {
+    s <- scalar_samplers[[nm]]
+    set.seed(5)
+    a <- s$f(generate_at_least_K = 6, generate_at_most_K = 8, report_last_K = 3)
+    set.seed(5)
+    b <- twins[[nm]](generate_at_least_K = 6, generate_at_most_K = 8, report_last_K = 3)
+    expect_identical(a, b, info = nm)
+
+    set.seed(6)
+    a1 <- s$f(atleast1 = TRUE)
+    set.seed(6)
+    b1 <- twins[[nm]]()
+    expect_identical(a1, b1, info = nm)
+
+    counts <- replicate(200, length(s$f(generate_at_least_K = 3, generate_at_most_K = 4)))
+    expect_true(all(counts >= 3 & counts <= 4), info = nm)
+    counts_hi <- replicate(200, length(s$f(generate_at_most_K = 2)))
+    expect_true(all(counts_hi <= 2), info = nm)
+  }
+})
+
+test_that("draw_intensity(): only generate_at_least_K = 1 is supported", {
+  s <- scalar_samplers$draw_intensity
+  counts <- replicate(200, length(s$f(atleast1 = TRUE)))
+  expect_true(all(counts >= 1))
+  counts <- replicate(200, length(s$f(generate_at_least_K = 1, report_first_K = 2)))
+  expect_true(all(counts >= 1 & counts <= 2))
+  expect_error(s$f(generate_at_least_K = 2), "only `generate_at_least_K = 1`")
+  expect_error(s$f(generate_at_most_K = 3), "only `generate_at_least_K = 1`")
+})

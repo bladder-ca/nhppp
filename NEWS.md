@@ -34,6 +34,15 @@ New features — two orthogonal truncation option classes
   rejection resampling (proposals push only the lower bound into the
   majorizer; the accepted-count condition is verified per row). The
   scalar thinning samplers support only `generate_at_least_K = 1`.
+- The scalar samplers `ppp()`, `draw_sc_linear()`, `draw_sc_loglinear()`,
+  `draw_cumulative_intensity()` and `draw_intensity()` accept the full
+  option set (`report_first_K`, `report_last_K`, `atleast1`,
+  `generate_at_least_K`, `generate_at_most_K`), like `draw_sc_step()` and
+  `draw()`. Any generation bound routes to the zero-truncated twin
+  (`ztppp()`, `ztdraw_sc_linear()`, `ztdraw_sc_loglinear()`,
+  `ztdraw_cumulative_intensity()`); `draw_intensity()` supports only
+  `generate_at_least_K = 1`. The new arguments follow the existing ones, and
+  calls that do not use them return the same draws as before.
 - `budget_cap` replaces `atmostB` (soft-deprecated alias with a warning):
   it caps the computational event budget of the vectorized kernels and is
   an approximation knob (jointly with the `1 - tol` quantile bound), not

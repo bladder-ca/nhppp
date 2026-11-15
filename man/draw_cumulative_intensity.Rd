@@ -5,7 +5,18 @@
 \title{Simulate from a non homogeneous Poisson Point Process (NHPPP)
 over an interval when you know the cumulative intensity and its inverse.}
 \usage{
-draw_cumulative_intensity(Lambda, Lambda_inv, t_min, t_max, atmost1 = FALSE)
+draw_cumulative_intensity(
+  Lambda,
+  Lambda_inv,
+  t_min,
+  t_max,
+  atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
+)
 }
 \arguments{
 \item{Lambda}{(function, double vector) a continuous increasing R to R map
@@ -17,7 +28,24 @@ which is the integrated rate of the NHPPP}
 
 \item{t_max}{(double) the upper bound of the time interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
+
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation — the count law is
+unchanged).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events.}
 }
 \value{
 a vector of event times (t_); if no events realize,

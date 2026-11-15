@@ -201,7 +201,7 @@ for statistical simulation analyses) or when you develop code.
 
 It's arguments `intercept`, `slope` have the same name as the parameters 
 in our log-linear intensity function $\lambda$. The `t_min`, `t_max` arguments ask for
-the bounds of the interval $[T_{k0}, T_{k1})$. The argument `atmost1` asks only 
+the bounds of the interval $[T_{k0}, T_{k1})$. The argument `report_first_K = 1` asks only 
 for the first time. This special case function uses a bespoke inversion algorithm; 
 it's as fast as we can do without vectorization. 
 
@@ -214,7 +214,7 @@ for (k in 1:K) {
     slope = pop$beta[k],
     t_min = pop$T0[k],
     t_max = pop$T1[k],
-    atmost1 = TRUE
+    report_first_K = 1
   )
   if (length(t1) != 0) {
     t_nonvec_special_case[k] <- t1

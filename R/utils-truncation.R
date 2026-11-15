@@ -151,3 +151,29 @@
   }
   return(x)
 }
+
+#' Run a scalar sampler under the resolved reporting / generation options
+#'
+#' @description Without generation bounds, calls `plain_fun(atmost1 = )` (the
+#' unconditioned sampler; `atmost1` is set when `report_first_K = 1`, so the
+#' RNG consumption of existing calls is unchanged) and applies the reporting
+#' slice. With any generation bound, calls the conditioned sampler
+#' `zt_fun(report_first_K = , report_last_K = , generate_at_least_K = ,
+#' generate_at_most_K = )`, which applies both option classes itself.
+#' @param rep_ result of `.resolve_reporting()`
+#' @param gen_ result of `.resolve_generation()`
+#' @param plain_fun function of `atmost1` returning a vector of event times
+#' @param zt_fun function taking the four option arguments
+#' @noRd
+.run_scalar_sampler <- function(rep_, gen_, plain_fun, zt_fun) {
+  nz <- function(k) if (k > 0L) k else NULL
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
+    return(zt_fun(
+      report_first_K = nz(rep_$first),
+      report_last_K = nz(rep_$last),
+      generate_at_least_K = nz(gen_$at_least),
+      generate_at_most_K = nz(gen_$at_most)
+    ))
+  }
+  return(.report_slice_vector(plain_fun(atmost1 = (rep_$first == 1L)), rep_))
+}

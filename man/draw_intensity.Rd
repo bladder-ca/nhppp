@@ -12,7 +12,12 @@ draw_intensity(
   step_majorizer_vector = NULL,
   t_min = NULL,
   t_max = NULL,
-  atmost1 = FALSE
+  atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -30,7 +35,25 @@ draw_intensity(
 
 \item{t_max}{(double) the upper bound of the interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
+
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation — the count law is
+unchanged).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or \code{1}: condition the sampled process on
+at least 1 event. Larger values are not implemented for the scalar
+thinning sampler and raise an error.}
+
+\item{generate_at_most_K}{must be \code{NULL}; conditioning on at most K events
+is not implemented for the scalar thinning sampler.}
 }
 \value{
 a vector of event times
