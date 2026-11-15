@@ -46,11 +46,15 @@ at 1.1.0).
 
 `cran-comments.md` rewritten for 1.1.0.
 
-Reverse dependencies: none on CRAN.
+Reverse dependencies: none on CRAN. 7b. \[x\] Scalar samplers (`ppp`,
+`draw_sc_linear`, `draw_sc_loglinear`, `draw_cumulative_intensity`,
+`draw_intensity`) given the full option set (1d806d7). Local
+`check --as-cran`: 0/0/0, 1667 tests pass. win-devel resubmitted
+2026-11-15; confirm only the maintainer NOTE remains.
 
-`usethis::use_version("minor")` -\> 1.1.0; `devtools::submit_cran()`;
-approve the confirmation email. Wait for the maintainer before doing
-this step.
+`usethis::use_version("minor")` -\> 1.1.0 (done, 786a45e);
+`devtools::submit_cran()`; approve the confirmation email. Wait for the
+maintainer before doing this step.
 
 After CRAN accepts: `use_github_release()`;
 `use_dev_version(push = TRUE)`.
