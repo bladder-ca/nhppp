@@ -280,7 +280,7 @@ for (k in 1:K) {
   }
 }
 tictoc::toc(log = TRUE)
-#> Method 1 (nonvectorized): 2.456 sec elapsed
+#> Method 1 (nonvectorized): 3.15 sec elapsed
 pop[, t_nonvec_special_case := t_nonvec_special_case]
 ```
 
@@ -360,7 +360,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, thinning): 0.059 sec elapsed
+#> Method 2 (vectorized, thinning): 0.065 sec elapsed
 ```
 
 ## Method 3: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -386,7 +386,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 3 (inversion): 0.058 sec elapsed
+#> Method 3 (inversion): 0.07 sec elapsed
 ```
 
 ## Comparisons
@@ -399,16 +399,16 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (nonvectorized): 2.456 sec elapsed. This is the slowest
+1.  Method 1 (nonvectorized): 3.15 sec elapsed. This is the slowest
     approach – but still not bad for $`10^{5}`$ samples!
 
-2.  Method 2 (vectorized, thinning): 0.059 sec elapsed. This approach is
+2.  Method 2 (vectorized, thinning): 0.065 sec elapsed. This approach is
     many times faster that then first approach. It is very flexible – it
     can accommodate very complex time varying intensity functions. You
     almost always know $`\lambda`$ and can get its majorizer
     $`\lambda_*`$ easily and fast.
 
-3.  Method 3 (inversion): 0.058 sec elapsed. This approach is typically
+3.  Method 3 (inversion): 0.07 sec elapsed. This approach is typically
     times faster that the second one in most problems,  
     but requires implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 
