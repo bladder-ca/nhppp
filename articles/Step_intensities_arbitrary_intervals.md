@@ -312,7 +312,7 @@ knitr::kable(timing, digits = 4)
 | vdraw_sc_step, bands, shared breaks  |      19 |   0.002 |
 | vdraw_sc_step, bands, per-row breaks |      19 |   0.004 |
 | vdraw_sc_step, one-year grid         |     100 |   0.010 |
-| vdraw_sc_step_regular, one-year grid |     100 |   0.010 |
+| vdraw_sc_step_regular, one-year grid |     100 |   0.009 |
 
 Three observations:
 
