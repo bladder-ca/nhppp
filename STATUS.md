@@ -25,7 +25,7 @@ Last updated: 2026-11-15
 
 ## Release checklist for the next CRAN version
 
-1. [ ] Merge `dev` into `main`. Open a PR `dev` -> `main`; the PR triggers
+1. [ ] Merge `dev` into `main`. PR #66 open (2026-11-15); merge once CI is green. Open a PR `dev` -> `main`; the PR triggers
    R-CMD-check on 5 platforms (CI runs on `main` and on PRs to `main` only).
    `main`'s one extra commit (R-hub workflow, e637c8d) has been merged into `dev`.
 2. [ ] Re-run R-hub sanitizers (`rhub.yaml`, manual dispatch) on the merged code.
