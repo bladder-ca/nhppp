@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
 
 <div id="status" class="section level1">
 
-<p>Last updated: 2026-11-15</p>
+<p>Last updated: 2026-11-15 (PR #66 merged; release prep on <code>main</code>)</p>
 <div class="section level2">
 <h2 id="where-things-stand">Where things stand<a class="anchor" aria-label="anchor" href="#where-things-stand"></a></h2>
 <ul><li>
@@ -65,12 +65,16 @@
 <strong>Reverse dependencies:</strong> none on CRAN (checked 2026-11-15).</li>
 </ul></div>
 <div class="section level2">
-<h2 id="release-checklist-for-the-next-cran-version">Release checklist for the next CRAN version<a class="anchor" aria-label="anchor" href="#release-checklist-for-the-next-cran-version"></a></h2>
-<ol style="list-style-type: decimal"><li><label><input type="checkbox">Merge <code>dev</code> into <code>main</code>. PR #66 open (2026-11-15); merge once CI is green. Open a PR <code>dev</code> -&gt; <code>main</code>; the PR triggers R-CMD-check on 5 platforms (CI runs on <code>main</code> and on PRs to <code>main</code> only). <code>main</code>’s one extra commit (R-hub workflow, e637c8d) has been merged into <code>dev</code>.</label></li>
-<li><label><input type="checkbox">Re-run R-hub sanitizers (<code>rhub.yaml</code>, manual dispatch) on the merged code.</label></li>
-<li><label><input type="checkbox"><code>devtools::check_win_devel()</code>, <code>check_win_release()</code>; <code>urlchecker::url_check()</code>; <code>spelling::spell_check_package()</code>.</label></li>
-<li><label><input type="checkbox" checked>Reverse-dependency check: none needed (no revdeps).</label></li>
-<li><label><input type="checkbox">Release paperwork: choose the version (1.1.0 is reasonable given the new API), NEWS heading, rewrite <code>cran-comments.md</code> (it still describes 1.0.5), then <code>devtools::submit_cran()</code>.</label></li>
+<h2 id="release-checklist-for-110-tracked-in-github-issue-65">Release checklist for 1.1.0 (tracked in GitHub issue #65)<a class="anchor" aria-label="anchor" href="#release-checklist-for-110-tracked-in-github-issue-65"></a></h2>
+<ol style="list-style-type: decimal"><li><label><input type="checkbox" checked>Merge <code>dev</code> into <code>main</code>: PR #66 merged 2026-11-15 after all CI checks passed.</label></li>
+<li><label><input type="checkbox" checked>R-hub sanitizers on <code>main</code>: clang-ASan and gcc-ASan clean; valgrind reports only the rstream leak (8 bytes, <code>r_set_current_stream</code>, RngWrap.c). Run 43737308205.</label></li>
+<li><label><input type="checkbox" checked><code>use_github_links()</code>, <code>urlchecker::url_check()</code> (all OK), <code>build_readme()</code> (README unchanged).</label></li>
+<li><label><input type="checkbox" checked><code>devtools::check(remote = TRUE, manual = TRUE)</code>: 0 errors, 0 warnings, 2 notes (version suffix; local HTML Tidy too old). Both notes are benign.</label></li>
+<li><label><input type="checkbox" checked><code>devtools::check_win_devel()</code>: only the version-suffix NOTE (goes away at 1.1.0).</label></li>
+<li><label><input type="checkbox" checked><code>cran-comments.md</code> rewritten for 1.1.0.</label></li>
+<li><label><input type="checkbox" checked>Reverse dependencies: none on CRAN.</label></li>
+<li><label><input type="checkbox"><code>usethis::use_version("minor")</code> -&gt; 1.1.0; <code>devtools::submit_cran()</code>; approve the confirmation email. Wait for the maintainer before doing this step.</label></li>
+<li><label><input type="checkbox">After CRAN accepts: <code>use_github_release()</code>; <code>use_dev_version(push = TRUE)</code>.</label></li>
 </ol></div>
 <div class="section level2">
 <h2 id="open-items--notes">Open items / notes<a class="anchor" aria-label="anchor" href="#open-items--notes"></a></h2>

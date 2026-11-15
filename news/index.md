@@ -1,6 +1,6 @@
 # Changelog
 
-## nhppp (development version)
+## nhppp 1.1.0
 
 - Unify the sc-step C++ kernels; separate reporting from count
   conditioning (report_first_K/report_last_K vs
