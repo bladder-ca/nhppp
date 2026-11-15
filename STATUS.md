@@ -1,6 +1,6 @@
 # STATUS
 
-Last updated: 2026-11-15
+Last updated: 2026-11-15 (PR #66 merged; release prep on `main`)
 
 ## Where things stand
 
@@ -23,18 +23,19 @@ Last updated: 2026-11-15
   long-output path).
 - **Reverse dependencies:** none on CRAN (checked 2026-11-15).
 
-## Release checklist for the next CRAN version
+## Release checklist for 1.1.0 (tracked in GitHub issue #65)
 
-1. [ ] Merge `dev` into `main`. PR #66 open (2026-11-15); merge once CI is green. Open a PR `dev` -> `main`; the PR triggers
-   R-CMD-check on 5 platforms (CI runs on `main` and on PRs to `main` only).
-   `main`'s one extra commit (R-hub workflow, e637c8d) has been merged into `dev`.
-2. [ ] Re-run R-hub sanitizers (`rhub.yaml`, manual dispatch) on the merged code.
-3. [ ] `devtools::check_win_devel()`, `check_win_release()`; `urlchecker::url_check()`;
-   `spelling::spell_check_package()`.
-4. [x] Reverse-dependency check: none needed (no revdeps).
-5. [ ] Release paperwork: choose the version (1.1.0 is reasonable given the new API),
-   NEWS heading, rewrite `cran-comments.md` (it still describes 1.0.5), then
-   `devtools::submit_cran()`.
+1. [x] Merge `dev` into `main`: PR #66 merged 2026-11-15 after all CI checks passed.
+2. [x] R-hub sanitizers on `main`: clang-ASan and gcc-ASan clean; valgrind reports only the rstream leak (8 bytes, `r_set_current_stream`, RngWrap.c). Run 43737308205.
+3. [x] `use_github_links()`, `urlchecker::url_check()` (all OK), `build_readme()` (README
+   unchanged).
+4. [x] `devtools::check(remote = TRUE, manual = TRUE)`: 0 errors, 0 warnings, 2 notes (version suffix; local HTML Tidy too old). Both notes are benign.
+5. [x] `devtools::check_win_devel()`: only the version-suffix NOTE (goes away at 1.1.0).
+6. [x] `cran-comments.md` rewritten for 1.1.0.
+7. [x] Reverse dependencies: none on CRAN.
+8. [ ] `usethis::use_version("minor")` -> 1.1.0; `devtools::submit_cran()`; approve the
+   confirmation email. Wait for the maintainer before doing this step.
+9. [ ] After CRAN accepts: `use_github_release()`; `use_dev_version(push = TRUE)`.
 
 ## Open items / notes
 
