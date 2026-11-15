@@ -78,6 +78,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// rbtpois_vec
+Rcpp::IntegerVector rbtpois_vec(const Rcpp::NumericVector& lambda, const int k_min, const int k_max);
+RcppExport SEXP _nhppp_rbtpois_vec(SEXP lambdaSEXP, SEXP k_minSEXP, SEXP k_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const int >::type k_min(k_minSEXP);
+    Rcpp::traits::input_parameter< const int >::type k_max(k_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(rbtpois_vec(lambda, k_min, k_max));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rztpois
 int rztpois(const double lambda);
 RcppExport SEXP _nhppp_rztpois(SEXP lambdaSEXP) {
@@ -100,24 +113,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// step_regular_inverse
-Rcpp::NumericMatrix step_regular_inverse(const int max_events, const Rcpp::NumericMatrix& Lambda, const Rcpp::NumericMatrix& Tau, const Rcpp::NumericMatrix& range_t, const bool atmost1);
-RcppExport SEXP _nhppp_step_regular_inverse(SEXP max_eventsSEXP, SEXP LambdaSEXP, SEXP TauSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
+// vdraw_intensity_step_general
+NumericMatrix vdraw_intensity_step_general(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const bool use_subinterval, const double tol, const int report_first_K, const int report_last_K, const int gen_at_least_K, const int budget_cap);
+RcppExport SEXP _nhppp_vdraw_intensity_step_general(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP use_subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP gen_at_least_KSEXP, SEXP budget_capSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type max_events(max_eventsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Lambda(LambdaSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type range_t(range_tSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(step_regular_inverse(max_events, Lambda, Tau, range_t, atmost1));
+    Rcpp::traits::input_parameter< const Function& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type rate_maj(rate_majSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type use_subinterval(use_subintervalSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_least_K(gen_at_least_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_general(lambda, rate_maj, is_cumulative, time_breaks, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap));
     return rcpp_result_gen;
 END_RCPP
 }
 // vdraw_intensity_step_regular
-NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinteval, const double tol, const bool atmost1, const int atmostB);
-RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintevalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP atmostBSEXP) {
+NumericMatrix vdraw_intensity_step_regular(const Function& lambda, const NumericMatrix& rate_maj, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool use_subinterval, const double tol, const int report_first_K, const int report_last_K, const int gen_at_least_K, const int budget_cap);
+RcppExport SEXP _nhppp_vdraw_intensity_step_regular(SEXP lambdaSEXP, SEXP rate_majSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP use_subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP gen_at_least_KSEXP, SEXP budget_capSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -126,32 +145,38 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
-    Rcpp::traits::input_parameter< const bool >::type use_subinteval(use_subintevalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type use_subinterval(use_subintervalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinteval, tol, atmost1, atmostB));
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_least_K(gen_at_least_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_intensity_step_regular(lambda, rate_maj, is_cumulative, range_t, subinterval, use_subinterval, tol, report_first_K, report_last_K, gen_at_least_K, budget_cap));
     return rcpp_result_gen;
 END_RCPP
 }
-// vdraw_sc_step_regular
-NumericMatrix vdraw_sc_step_regular(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const double tol, const bool atmost1);
-RcppExport SEXP _nhppp_vdraw_sc_step_regular(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP tolSEXP, SEXP atmost1SEXP) {
+// vdraw_sc_step_general2
+SEXP vdraw_sc_step_general2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const double tol, const int report_first_K, const int report_last_K, const int budget_cap, const bool long_output);
+RcppExport SEXP _nhppp_vdraw_sc_step_general2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP budget_capSEXP, SEXP long_outputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular(rate, is_cumulative, range_t, tol, atmost1));
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    Rcpp::traits::input_parameter< const bool >::type long_output(long_outputSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_general2(rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, budget_cap, long_output));
     return rcpp_result_gen;
 END_RCPP
 }
 // vdraw_sc_step_regular2
-NumericMatrix vdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const double tol, const bool atmost1, const int atmostB);
-RcppExport SEXP _nhppp_vdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP atmost1SEXP, SEXP atmostBSEXP) {
+SEXP vdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const double tol, const int report_first_K, const int report_last_K, const int budget_cap, const bool long_output);
+RcppExport SEXP _nhppp_vdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP budget_capSEXP, SEXP long_outputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -160,29 +185,38 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    Rcpp::traits::input_parameter< const int >::type atmostB(atmostBSEXP);
-    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, atmost1, atmostB));
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    Rcpp::traits::input_parameter< const bool >::type long_output(long_outputSEXP);
+    rcpp_result_gen = Rcpp::wrap(vdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, budget_cap, long_output));
     return rcpp_result_gen;
 END_RCPP
 }
-// vztdraw_sc_step_regular
-NumericMatrix vztdraw_sc_step_regular(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const bool atmost1);
-RcppExport SEXP _nhppp_vztdraw_sc_step_regular(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP atmost1SEXP) {
+// vztdraw_sc_step_general2
+SEXP vztdraw_sc_step_general2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& time_breaks, const NumericMatrix& subinterval, const double tol, const int report_first_K, const int report_last_K, const int gen_at_least_K, const int gen_at_most_K, const int budget_cap, const bool long_output);
+RcppExport SEXP _nhppp_vztdraw_sc_step_general2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP time_breaksSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP gen_at_least_KSEXP, SEXP gen_at_most_KSEXP, SEXP budget_capSEXP, SEXP long_outputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericMatrix& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_regular(rate, is_cumulative, range_t, atmost1));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type time_breaks(time_breaksSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_least_K(gen_at_least_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_most_K(gen_at_most_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    Rcpp::traits::input_parameter< const bool >::type long_output(long_outputSEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_general2(rate, is_cumulative, time_breaks, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap, long_output));
     return rcpp_result_gen;
 END_RCPP
 }
 // vztdraw_sc_step_regular2
-NumericMatrix vztdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const bool atmost1);
-RcppExport SEXP _nhppp_vztdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP atmost1SEXP) {
+SEXP vztdraw_sc_step_regular2(const NumericMatrix& rate, const bool is_cumulative, const NumericMatrix& range_t, const NumericMatrix& subinterval, const double tol, const int report_first_K, const int report_last_K, const int gen_at_least_K, const int gen_at_most_K, const int budget_cap, const bool long_output);
+RcppExport SEXP _nhppp_vztdraw_sc_step_regular2(SEXP rateSEXP, SEXP is_cumulativeSEXP, SEXP range_tSEXP, SEXP subintervalSEXP, SEXP tolSEXP, SEXP report_first_KSEXP, SEXP report_last_KSEXP, SEXP gen_at_least_KSEXP, SEXP gen_at_most_KSEXP, SEXP budget_capSEXP, SEXP long_outputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -190,8 +224,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type is_cumulative(is_cumulativeSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type range_t(range_tSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type subinterval(subintervalSEXP);
-    Rcpp::traits::input_parameter< const bool >::type atmost1(atmost1SEXP);
-    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, atmost1));
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_first_K(report_first_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type report_last_K(report_last_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_least_K(gen_at_least_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type gen_at_most_K(gen_at_most_KSEXP);
+    Rcpp::traits::input_parameter< const int >::type budget_cap(budget_capSEXP);
+    Rcpp::traits::input_parameter< const bool >::type long_output(long_outputSEXP);
+    rcpp_result_gen = Rcpp::wrap(vztdraw_sc_step_regular2(rate, is_cumulative, range_t, subinterval, tol, report_first_K, report_last_K, gen_at_least_K, gen_at_most_K, budget_cap, long_output));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -203,14 +243,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_nhppp_matrix_cumsum_columns_inplace", (DL_FUNC) &_nhppp_matrix_cumsum_columns_inplace, 1},
     {"_nhppp_matrix_diff_columns", (DL_FUNC) &_nhppp_matrix_diff_columns, 1},
     {"_nhppp_matrix_diff_columns_inplace", (DL_FUNC) &_nhppp_matrix_diff_columns_inplace, 1},
+    {"_nhppp_rbtpois_vec", (DL_FUNC) &_nhppp_rbtpois_vec, 3},
     {"_nhppp_rztpois", (DL_FUNC) &_nhppp_rztpois, 1},
     {"_nhppp_rztpois_vec", (DL_FUNC) &_nhppp_rztpois_vec, 1},
-    {"_nhppp_step_regular_inverse", (DL_FUNC) &_nhppp_step_regular_inverse, 5},
-    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 9},
-    {"_nhppp_vdraw_sc_step_regular", (DL_FUNC) &_nhppp_vdraw_sc_step_regular, 5},
-    {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 7},
-    {"_nhppp_vztdraw_sc_step_regular", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular, 4},
-    {"_nhppp_vztdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular2, 5},
+    {"_nhppp_vdraw_intensity_step_general", (DL_FUNC) &_nhppp_vdraw_intensity_step_general, 11},
+    {"_nhppp_vdraw_intensity_step_regular", (DL_FUNC) &_nhppp_vdraw_intensity_step_regular, 11},
+    {"_nhppp_vdraw_sc_step_general2", (DL_FUNC) &_nhppp_vdraw_sc_step_general2, 9},
+    {"_nhppp_vdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vdraw_sc_step_regular2, 9},
+    {"_nhppp_vztdraw_sc_step_general2", (DL_FUNC) &_nhppp_vztdraw_sc_step_general2, 11},
+    {"_nhppp_vztdraw_sc_step_regular2", (DL_FUNC) &_nhppp_vztdraw_sc_step_regular2, 11},
     {NULL, NULL, 0}
 };
 

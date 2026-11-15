@@ -7,9 +7,9 @@
 #'
 #' @param lambda (function) a vectorized intensity function, with one or two arguments.
 #'  The first is time. The optional second is a named list with additional arguments.
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`: see `vdraw_intensity()`
+#'        (elements `shared` and `row_args`; passed as `lambda`'s second
+#'        positional argument).
 #' @param Lambda_maj_matrix (matrix) for the majorizeintegrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param range_t (vector, or matrix) `t_min` and `t_max`, possibly vectorized
@@ -29,13 +29,21 @@ vztdraw_intensity <- function(
     tol = 10^-6,
     atmost1 = FALSE,
     ...) {
+  if (is.matrix(range_t)) {
+    rate_matrix_t_min <- range_t[, 1]
+    rate_matrix_t_max <- range_t[, 2]
+  } else {
+    rate_matrix_t_min <- range_t[1]
+    rate_matrix_t_max <- range_t[2]
+  }
   return(
     vztdraw_intensity_step_regular(
       lambda = lambda,
       lambda_args = lambda_args,
       Lambda_maj_matrix = Lambda_maj_matrix,
       lambda_maj_matrix = lambda_maj_matrix,
-      range_t = range_t,
+      rate_matrix_t_min = rate_matrix_t_min,
+      rate_matrix_t_max = rate_matrix_t_max,
       tol = tol,
       atmost1 = atmost1,
       ...

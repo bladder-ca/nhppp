@@ -6,9 +6,15 @@
 #' For time-intensive simulations prefer one of the specific functions.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param Lambda (function, double vector) an increasing function
@@ -16,12 +22,15 @@
 #'        It should take a vectorized argument t for times and an optional arguments list.
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`, also in vectorized form
 #'        It should take a vectorized argument z and an optional arguments list.
-#' @param Lambda_args (list) optional named list of arguments to pass to `Lambda`.
-#'        If you have arguments for `Lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
-#' @param Lambda_inv_args (list) optional named list of arguments to pass to `Lambda_inv`.
-#'        If you have arguments for `Lambda_inv` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param Lambda_args (list) arguments for BOTH `Lambda` and `Lambda_inv`, with
+#'        up to two elements: `shared` (named list of row-invariant arguments)
+#'        and `row_args` (data.frame or data.table with one row per point
+#'        process). When the structured container is used it is passed as the
+#'        second positional argument of both functions; the name of the second
+#'        formal is up to you. A flat list keeps the released behavior
+#'        (`Lambda(t, Lambda_args = ...)`, named) with a deprecation warning.
+#' @param Lambda_inv_args (list) deprecated; pass one structured `Lambda_args`
+#'        container used by both `Lambda` and `Lambda_inv`.
 #' @param t_min (scalar | vector | column matrix) is the lower bound
 #'        of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 #'        times are sampled from the subinterval.
@@ -37,12 +46,44 @@
 #'        of the time interval for each row of (Lambda|lambda)_maj_matrix.
 #'        The length of this argument is the number of point processes that should be drawn.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events.
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel (approximation knob, not an exact contract).
+#' @param atmostB deprecated alias for `budget_cap`.
 
 #'
+#' @param output (string) `"matrix"` (default) for the NA-padded event
+#'        matrix or `"long"` for the long event format
+#'        `list(id, time, n_draws)`; see `vdraw_sc_step()`. Not implemented
+#'        for the thinning route (`lambda` given).
 #' @return a vector of event times
+#' @examples
+#' # thinning (lambda and a majorizer matrix)
+#' x <- vdraw(
+#'   lambda = function(t, ...) 1 + sin(t),
+#'   lambda_maj_matrix = matrix(rep(2, 50), nrow = 10),
+#'   rate_matrix_t_min = 0,
+#'   rate_matrix_t_max = 5
+#' )
+#'
+#' # inversion (Lambda and its inverse), conditioned on at least one event
+#' x <- vdraw(
+#'   Lambda = function(t) 2 * t,
+#'   Lambda_inv = function(z) z / 2,
+#'   t_min = 0, t_max = rep(5, 10),
+#'   atleast1 = TRUE
+#' )
 #' @export
 vdraw <- function(
     lambda = NULL,
@@ -59,10 +100,20 @@ vdraw <- function(
     rate_matrix_t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
+    report_first_K = NULL,
+    report_last_K = NULL,
     atleast1 = FALSE,
-    atmostB = NULL) {
+    generate_at_least_K = NULL,
+    generate_at_most_K = NULL,
+    budget_cap = NULL,
+    atmostB = NULL,
+    output = c("matrix", "long")) {
+  long_ <- .resolve_output(output)
   if (!is.null(lambda) &&
-    !(is.null(lambda_maj_matrix) & is.null(lambda_maj_matrix))) {
+    !(is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix))) {
+    if (long_) {
+      stop("`output = \"long\"` has not been implemented for the thinning samplers")
+    }
     return(
       vdraw_intensity(
         lambda = lambda,
@@ -75,7 +126,12 @@ vdraw <- function(
         t_max = t_max,
         tol = tol,
         atmost1 = atmost1,
+        report_first_K = report_first_K,
+        report_last_K = report_last_K,
         atleast1 = atleast1,
+        generate_at_least_K = generate_at_least_K,
+        generate_at_most_K = generate_at_most_K,
+        budget_cap = budget_cap,
         atmostB = atmostB
       )
     )
@@ -91,7 +147,12 @@ vdraw <- function(
       Lambda_inv_args = Lambda_inv_args,
       tol = tol,
       atmost1 = atmost1,
-      atleast1 = atleast1
+      report_first_K = report_first_K,
+      report_last_K = report_last_K,
+      atleast1 = atleast1,
+      generate_at_least_K = generate_at_least_K,
+      generate_at_most_K = generate_at_most_K,
+      output = output
     )
   )
 }

@@ -7,8 +7,19 @@
 #'             `[t_1 = range_t[1],       t_2)`: the first interval
 #'             `[t_k,                t_{k+1})`: the `k`-th interval
 #'             `[t_{K}, t_{K+1} = range_t[2])`: the `K`-th (last) interval
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation — the count law is
+#'        unchanged).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events.
 #'
 #' @return a vector of event times t
 #'         if no events realize, it will have 0 length
@@ -21,15 +32,33 @@ draw_sc_step <- function(lambda_vector,
                          time_breaks,
                          # rng_stream = NULL,
                          atmost1 = FALSE,
-                         atleast1 = FALSE) {
+                         report_first_K = NULL,
+                         report_last_K = NULL,
+                         atleast1 = FALSE,
+                         generate_at_least_K = NULL,
+                         generate_at_most_K = NULL) {
   len_time_breaks <- length(time_breaks)
   if (len_time_breaks != (length(lambda_vector) + 1)) stop("incompatible `time_breaks` and `lambda_vector` lengths")
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
 
-  if (atleast1 == FALSE) {
-    ppp_t_fun <- ppp2
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
+    ppp_t_fun <- function(rate, t_min, t_max, atmost1) {
+      ztppp(
+        rate = rate, t_min = t_min, t_max = t_max,
+        report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+        report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+        generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
+        generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL
+      )
+    }
   } else {
-    ppp_t_fun <- ztppp
+    ppp_t_fun <- function(rate, t_min, t_max, atmost1) {
+      z <- ppp2(rate = rate, t_min = t_min, t_max = t_max, atmost1 = atmost1)
+      return(.report_slice_vector(z, rep_))
+    }
   }
+  atmost1 <- (rep_$first == 1L)
 
   if (len_time_breaks == 2) {
     return(ppp_t_fun(t_min = time_breaks[1], t_max = time_breaks[2], rate = lambda_vector, atmost1 = atmost1))

@@ -22,17 +22,36 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (the count law is unchanged). At most one of
+#'        `report_first_K`/`report_last_K` may be set.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; the count law is unchanged).
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel. This is an approximation knob (it truncates the
+#'        extreme tail of the event-count distribution together with the
+#'        `1 - tol` quantile bound), not an exact reporting contract.
+#' @param atmostB deprecated alias for `budget_cap`.
 #'
-#' @return a matrix of event times t, with rows corresponding to the sampled point processes.
+#' @param output (string) `"matrix"` (default) returns the NA-padded event
+#'        matrix, one row per point process. `"long"` returns the long event
+#'        format `list(id, time, n_draws)` with one entry per event: `id` is
+#'        the 1-based point-process index (ascending; times ascending within
+#'        `id`). A point process with no events contributes no entries, so
+#'        its id is absent; `n_draws` distinguishes "no events" from "not
+#'        sampled". No `NA` is used. The long format is built without
+#'        allocating the dense matrix, so prefer it when event counts vary
+#'        widely across point processes.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`.
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular_cpp(
 #'   Lambda_matrix = matrix(1:5, nrow = 1),
 #'   rate_matrix_t_min = 100,
-#'   rate_matrix_t_max = 110,
-#'   atmost1 = FALSE
+#'   rate_matrix_t_max = 110
 #' )
 #' @export
 #' @keywords internal
@@ -45,10 +64,14 @@ vdraw_sc_step_regular_cpp <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
-    atmostB = NULL) {
-  if (is.null(atmostB)) {
-    atmostB <- 0 # has to be <=0 in the C++ argument to be ignored
-  }
+    report_first_K = NULL,
+    report_last_K = NULL,
+    budget_cap = NULL,
+    atmostB = NULL,
+    output = c("matrix", "long")) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
+  long_ <- .resolve_output(output)
 
   if (!is.null(lambda_matrix) && is.null(Lambda_matrix)) {
     rate <- lambda_matrix
@@ -59,7 +82,7 @@ vdraw_sc_step_regular_cpp <- function(
   } else {
     stop("lambda_matrix and Lambda_matrix cannot both be `NULL`")
   }
-  mode(rate) <- "numeric"
+  if (!is.double(rate)) storage.mode(rate) <- "double"
 
   num_na <- sum(is.na(rate))
   if (num_na > 0) {
@@ -67,40 +90,32 @@ vdraw_sc_step_regular_cpp <- function(
     stop("The ", rate_argument, " contains ", num_na, " NA values")
   }
 
+  # 1-row matrices are shared across all point processes (the C++ kernel
+  # selects row 0), so they are not replicated here
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
   if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if (nrow(range_t) == 1 && nrow(rate) != 1) {
-    range_t <- range_t[rep(1, nrow(rate)), ]
-  }
 
   if (is.null(t_min) && is.null(t_max)) {
-    return(
-      .Call(
-        `_nhppp_vdraw_sc_step_regular`,
-        rate, is_cumulative_rate, range_t, tol, atmost1
-      )
-    )
+    subinterval <- range_t
+  } else {
+    # if here, at most one of t_min t_max is null
+    if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
+    if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
+
+    subinterval <- cbind(as.vector(t_min), as.vector(t_max))
+    if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
+      stop("The (rows of) [Lambda|lambda]_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
+    }
+    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
   }
 
-  # if here, at most one of t_min t_max is null
-  if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
-  if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
-
-  subinterval <- cbind(as.vector(t_min), as.vector(t_max))
-  if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
-    stop("The (rows of) [Lambda|lambda]_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
-  }
-  if (nrow(subinterval) == 1 && nrow(rate) != 1) {
-    subinterval <- subinterval[rep(1, nrow(rate)), ]
-  }
-
-  stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
   return(
     .Call(
       `_nhppp_vdraw_sc_step_regular2`,
-      rate, is_cumulative_rate, range_t, subinterval, tol, atmost1, atmostB
+      rate, is_cumulative_rate, range_t, subinterval, tol,
+      rep_$first, rep_$last, budget_cap, long_
     )
   )
 }

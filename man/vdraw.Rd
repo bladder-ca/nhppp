@@ -20,14 +20,28 @@ vdraw(
   rate_matrix_t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
   atleast1 = FALSE,
-  atmostB = NULL
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL,
+  budget_cap = NULL,
+  atmostB = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
+\item{lambda_args}{(list) arguments for \code{lambda}, with up to two elements:
+\code{shared} (named list of row-invariant arguments of any type, stored
+once and never replicated) and \code{row_args} (data.frame or data.table
+with one row per point process, auto-subset when rows are resampled).
+When non-\code{NULL}, the container is passed as \code{lambda}'s second
+positional argument exactly as given, except that \code{row_args} is
+already row-subset; the name of the second formal is up to you. A
+flat list with neither element is treated as all-shared; a
+\code{vector_arguments} element is deprecated (use \code{row_args}).}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
@@ -40,9 +54,16 @@ It should take a vectorized argument t for times and an optional arguments list.
 \item{Lambda_inv}{(function, double vector) the inverse of \code{Lambda()}, also in vectorized form
 It should take a vectorized argument z and an optional arguments list.}
 
-\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
+\item{Lambda_args}{(list) arguments for BOTH \code{Lambda} and \code{Lambda_inv}, with
+up to two elements: \code{shared} (named list of row-invariant arguments)
+and \code{row_args} (data.frame or data.table with one row per point
+process). When the structured container is used it is passed as the
+second positional argument of both functions; the name of the second
+formal is up to you. A flat list keeps the released behavior
+(\code{Lambda(t, Lambda_args = ...)}, named) with a deprecation warning.}
 
-\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
+\item{Lambda_inv_args}{(list) deprecated; pass one structured \code{Lambda_args}
+container used by both \code{Lambda} and \code{Lambda_inv}.}
 
 \item{t_min}{(scalar | vector | column matrix) is the lower bound
 of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
@@ -64,11 +85,33 @@ The length of this argument is the number of point processes that should be draw
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events.}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the kernel (approximation knob, not an exact contract).}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
+
+\item{output}{(string) \code{"matrix"} (default) for the NA-padded event
+matrix or \code{"long"} for the long event format
+\code{list(id, time, n_draws)}; see \code{vdraw_sc_step()}. Not implemented
+for the thinning route (\code{lambda} given).}
 }
 \value{
 a vector of event times
@@ -76,4 +119,21 @@ a vector of event times
 \description{
 This is a wrapper to the package's specific functions, and thus slightly slower.
 For time-intensive simulations prefer one of the specific functions.
+}
+\examples{
+# thinning (lambda and a majorizer matrix)
+x <- vdraw(
+  lambda = function(t, ...) 1 + sin(t),
+  lambda_maj_matrix = matrix(rep(2, 50), nrow = 10),
+  rate_matrix_t_min = 0,
+  rate_matrix_t_max = 5
+)
+
+# inversion (Lambda and its inverse), conditioned on at least one event
+x <- vdraw(
+  Lambda = function(t) 2 * t,
+  Lambda_inv = function(z) z / 2,
+  t_min = 0, t_max = rep(5, 10),
+  atleast1 = TRUE
+)
 }

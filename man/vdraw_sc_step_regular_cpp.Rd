@@ -14,7 +14,11 @@ vdraw_sc_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atmostB = NULL
+  report_first_K = NULL,
+  report_last_K = NULL,
+  budget_cap = NULL,
+  atmostB = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -42,12 +46,36 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (the count law is unchanged). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; the count law is unchanged).}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the kernel. This is an approximation knob (it truncates the
+extreme tail of the event-count distribution together with the
+\code{1 - tol} quantile bound), not an exact reporting contract.}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
+
+\item{output}{(string) \code{"matrix"} (default) returns the NA-padded event
+matrix, one row per point process. \code{"long"} returns the long event
+format \code{list(id, time, n_draws)} with one entry per event: \code{id} is
+the 1-based point-process index (ascending; times ascending within
+\code{id}). A point process with no events contributes no entries, so
+its id is absent; \code{n_draws} distinguishes "no events" from "not
+sampled". No \code{NA} is used. The long format is built without
+allocating the dense matrix, so prefer it when event counts vary
+widely across point processes.}
 }
 \value{
-a matrix of event times t, with rows corresponding to the sampled point processes.
+a matrix of event times t, with rows corresponding to the sampled
+point processes, or the long event format if \code{output = "long"}.
 }
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
@@ -57,8 +85,7 @@ where the intervals have the same length (are "regular").
 x <- vdraw_sc_step_regular_cpp(
   Lambda_matrix = matrix(1:5, nrow = 1),
   rate_matrix_t_min = 100,
-  rate_matrix_t_max = 110,
-  atmost1 = FALSE
+  rate_matrix_t_max = 110
 )
 }
 \keyword{internal}

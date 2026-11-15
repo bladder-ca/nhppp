@@ -14,7 +14,12 @@ vdraw_cumulative_intensity(
   Lambda_inv_args = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -31,19 +36,76 @@ The length of this argument is the number of point processes that should be draw
 \item{t_max}{(scalar | vector | column matrix) the upper bound of the interval for each sampled point process
 The length of this argument is the number of point processes that should be drawn.}
 
-\item{Lambda_args}{(list) optional arguments to pass to Lambda.}
+\item{Lambda_args}{(list) arguments for BOTH \code{Lambda} and \code{Lambda_inv}, with
+up to two elements: \code{shared} (named list of row-invariant arguments)
+and \code{row_args} (data.frame or data.table with one row per point
+process). When the structured container is used it is passed as the
+second positional argument of both functions; the name of the second
+formal is up to you. A flat list keeps the released behavior
+(\code{Lambda(t, Lambda_args = ...)}, named) with a deprecation warning.}
 
-\item{Lambda_inv_args}{(list) optional arguments to pass to Lambda_inv().}
+\item{Lambda_inv_args}{(list) deprecated; pass one structured \code{Lambda_args}
+container used by both \code{Lambda} and \code{Lambda_inv}.}
 
 \item{tol}{the tolerange for the calulations.}
 
-\item{atmost1}{boolean, draw at most 1 event time per sampled point process.}
+\item{atmost1}{boolean, report at most 1 event time per sampled point
+process (alias for \code{report_first_K = 1}).}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1}).}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events in \verb{(t_min, t_max)}.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events in \verb{(t_min, t_max)}. May be
+combined with \code{generate_at_least_K} (K1 <= K2); equal bounds
+condition on exactly K events. Any generation bound switches the
+sampler from sequential inversion to the order-statistics
+construction on the \code{Lambda} scale with a doubly-truncated
+Poisson number of events.}
+
+\item{output}{(string) \code{"matrix"} (default) returns the NA-padded event
+matrix, one row per point process. \code{"long"} returns the long event
+format \code{list(id, time, n_draws)} with one entry per event: \code{id} is
+the 1-based point-process index (ascending; times ascending within
+\code{id}); a point process with no events contributes no entries, and
+\code{n_draws} distinguishes "no events" from "not sampled". On the
+conditioned (order-statistics) path the long format is built with
+no dense intermediate, and \code{Lambda_inv} is called on the event
+VECTOR with the container's \code{row_args} subset to one row per event
+(aligned by \code{id}); the unconditioned path converts its dense walk
+at the end.}
 }
 \value{
-a matrix of event times with one row per sampled point process.
+a matrix of event times with one row per sampled point process,
+or the long event format if \code{output = "long"}.
 }
 \description{
 Sample NHPPP times using the cumulative intensity function and its inverse.
+}
+\examples{
+Z <- vdraw_cumulative_intensity(
+  Lambda = function(t) t^1.5,
+  Lambda_inv = function(z) z^(1 / 1.5),
+  t_min = 0,
+  t_max = rep(2, 10)
+)
+
+# arguments in the structured container; conditioned on exactly two events
+Z <- vdraw_cumulative_intensity(
+  Lambda = function(t, a) t^a$shared$p,
+  Lambda_inv = function(z, a) z^(1 / a$shared$p),
+  t_min = 0,
+  t_max = rep(2, 10),
+  Lambda_args = list(shared = list(p = 1.5)),
+  generate_at_least_K = 2, generate_at_most_K = 2
+)
 }

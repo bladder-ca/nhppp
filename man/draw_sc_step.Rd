@@ -5,7 +5,16 @@
 \title{Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
 The intervals need not have the same length.}
 \usage{
-draw_sc_step(lambda_vector, time_breaks, atmost1 = FALSE, atleast1 = FALSE)
+draw_sc_step(
+  lambda_vector,
+  time_breaks,
+  atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
+)
 }
 \arguments{
 \item{lambda_vector}{(scalar, double) \code{K} constant rates, one per interval}
@@ -16,9 +25,24 @@ of constant rates:
 \verb{[t_k,                t_\{k+1\})}: the \code{k}-th interval
 \verb{[t_\{K\}, t_\{K+1\} = range_t[2])}: the \code{K}-th (last) interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation — the count law is
+unchanged).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events.}
 }
 \value{
 a vector of event times t

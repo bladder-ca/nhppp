@@ -22,19 +22,42 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
-#' @param atleast1 boolean, draw at least 1 event time
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (a reporting truncation — the count law of
+#'        the sampled process is unchanged). At most one of
+#'        `report_first_K`/`report_last_K` may be set.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events in the (sub)interval
+#'        (order-statistics sampling path).
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events. May be combined with
+#'        `generate_at_least_K` (K1 <= K2; K1 = K2 conditions on exactly K
+#'        events).
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the kernel. This is an approximation knob (it truncates the
+#'        extreme tail of the event-count distribution together with the
+#'        `1 - tol` quantile bound), not an exact reporting or conditioning
+#'        contract.
+#' @param atmostB deprecated alias for `budget_cap`.
 #'
-#' @return a vector of event times t
+#' @param output (string) `"matrix"` (default) for the NA-padded event
+#'        matrix or `"long"` for the long event format
+#'        `list(id, time, n_draws)`; see `vdraw_sc_step()`.
+#' @return a matrix of event times t, with rows corresponding to the sampled
+#'        point processes, or the long event format if `output = "long"`
 #'         if no events realize, it will have 0 length
 #'
 #' @examples
 #' x <- vdraw_sc_step_regular(
 #'   Lambda_matrix = matrix(1:5, nrow = 1),
 #'   rate_matrix_t_min = 100,
-#'   rate_matrix_t_max = 110,
-#'   atmost1 = FALSE
+#'   rate_matrix_t_max = 110
 #' )
 #' @export
 vdraw_sc_step_regular <- function(
@@ -46,24 +69,19 @@ vdraw_sc_step_regular <- function(
     t_max = NULL,
     tol = 10^-6,
     atmost1 = FALSE,
+    report_first_K = NULL,
+    report_last_K = NULL,
+    atleast1 = FALSE,
+    generate_at_least_K = NULL,
+    generate_at_most_K = NULL,
+    budget_cap = NULL,
     atmostB = NULL,
-    atleast1 = FALSE) {
-  if (isFALSE(atleast1)) {
-    return(
-      vdraw_sc_step_regular_cpp(
-        lambda_matrix = lambda_matrix,
-        Lambda_matrix = Lambda_matrix,
-        rate_matrix_t_min = rate_matrix_t_min,
-        rate_matrix_t_max = rate_matrix_t_max,
-        t_min = t_min,
-        t_max = t_max,
-        tol = tol,
-        atmost1 = atmost1,
-        atmostB = atmostB
-      )
-    )
-  }
-  if (isTRUE(atleast1)) {
+    output = c("matrix", "long")) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
+  budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
+
+  if (gen_$at_least > 0L || gen_$at_most > 0L) {
     return(
       vztdraw_sc_step_regular_cpp(
         lambda_matrix = lambda_matrix,
@@ -72,9 +90,29 @@ vdraw_sc_step_regular <- function(
         rate_matrix_t_max = rate_matrix_t_max,
         t_min = t_min,
         t_max = t_max,
-        atmost1 = atmost1
+        tol = tol,
+        report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+        report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+        generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
+        generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL,
+        budget_cap = if (budget_cap > 0L) budget_cap else NULL,
+        output = output
       )
     )
   }
-  stop("never here")
+  return(
+    vdraw_sc_step_regular_cpp(
+      lambda_matrix = lambda_matrix,
+      Lambda_matrix = Lambda_matrix,
+      rate_matrix_t_min = rate_matrix_t_min,
+      rate_matrix_t_max = rate_matrix_t_max,
+      t_min = t_min,
+      t_max = t_max,
+      tol = tol,
+      report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+      report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+      budget_cap = if (budget_cap > 0L) budget_cap else NULL,
+      output = output
+    )
+  )
 }

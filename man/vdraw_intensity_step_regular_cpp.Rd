@@ -16,13 +16,25 @@ vdraw_intensity_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = NULL,
+  budget_cap = NULL,
   atmostB = NULL
 )
 }
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
+\item{lambda_args}{(list) arguments for \code{lambda}, with up to two elements:
+\code{shared} (named list of row-invariant arguments of any type, stored
+once and never replicated) and \code{row_args} (data.frame or data.table
+with one row per point process, auto-subset when rows are resampled).
+When non-\code{NULL}, the container is passed as \code{lambda}'s second
+positional argument exactly as given, except that \code{row_args} is
+already row-subset; the name of the second formal is up to you. A
+flat list with neither element is treated as all-shared; a
+\code{vector_arguments} element is deprecated (use \code{row_args}).}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
@@ -48,9 +60,29 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K accepted event times. Ignored (all accepted events are
+returned) when \code{generate_at_least_K >= 1} — the conditional
+rejection loop needs the full survivor count and applies reporting
+after convergence.}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K accepted event times (ascending order). Same conditional-path
+caveat as \code{report_first_K}.}
+
+\item{generate_at_least_K}{\code{NULL}, or a positive integer: draw the
+majorizer candidates conditioned on at least K majorizer events.
+NOTE: this does not by itself condition the thinned process on K
+accepted events; rows with too few survivors must be resampled by
+the caller (see \code{vztdraw_intensity_step_regular()}).}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the majorizer kernel (approximation knob).}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
 }
 \value{
 a matrix of event times (columns) per draw (rows)

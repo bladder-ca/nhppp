@@ -14,8 +14,14 @@ vdraw_sc_step_regular(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL,
+  budget_cap = NULL,
   atmostB = NULL,
-  atleast1 = FALSE
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -43,14 +49,44 @@ If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
 \item{tol}{(scalar, double) tolerance for the number of events}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atmostB}{If not NULL, draw at most B (B>0) event times. NULL means ignore.}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (a reporting truncation — the count law of
+the sampled process is unchanged). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events in the (sub)interval
+(order-statistics sampling path).}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events. May be combined with
+\code{generate_at_least_K} (K1 <= K2; K1 = K2 conditions on exactly K
+events).}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the kernel. This is an approximation knob (it truncates the
+extreme tail of the event-count distribution together with the
+\code{1 - tol} quantile bound), not an exact reporting or conditioning
+contract.}
+
+\item{atmostB}{deprecated alias for \code{budget_cap}.}
+
+\item{output}{(string) \code{"matrix"} (default) for the NA-padded event
+matrix or \code{"long"} for the long event format
+\code{list(id, time, n_draws)}; see \code{vdraw_sc_step()}.}
 }
 \value{
-a vector of event times t
+a matrix of event times t, with rows corresponding to the sampled
+point processes, or the long event format if \code{output = "long"}
 if no events realize, it will have 0 length
 }
 \description{
@@ -61,7 +97,6 @@ where the intervals have the same length (are "regular").
 x <- vdraw_sc_step_regular(
   Lambda_matrix = matrix(1:5, nrow = 1),
   rate_matrix_t_min = 100,
-  rate_matrix_t_max = 110,
-  atmost1 = FALSE
+  rate_matrix_t_max = 110
 )
 }

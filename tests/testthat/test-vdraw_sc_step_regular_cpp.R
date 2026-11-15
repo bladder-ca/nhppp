@@ -219,3 +219,35 @@ test_that("vdraw_sc_step_regular_cpp() handles NA values in rate matrices", {
     atmost1 = FALSE
   ))
 })
+
+
+test_that("vdraw_sc_step_regular_cpp() works with subinterval bounds at the top of the range", {
+  # Regression: i0 was not clamped, so t_min == rate_matrix_t_max indexed
+  # one past the end of the cumulative intensity row (out-of-bounds read).
+  set.seed(123)
+  l <- matrix(rep(1, 500), ncol = 5)
+  L <- mat_cumsum_columns(l)
+
+  expect_no_error(Z <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    t_min = 110,
+    t_max = 110,
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  expect_true(all(is.na(Z)))
+
+  # degenerate interior subinterval: zero measure, zero events
+  expect_no_error(Z <- vdraw_sc_step_regular_cpp(
+    Lambda_matrix = L,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    t_min = 105,
+    t_max = 105,
+    tol = 10^-6,
+    atmost1 = FALSE
+  ))
+  expect_true(all(is.na(Z)))
+})

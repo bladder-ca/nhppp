@@ -14,10 +14,38 @@
 #' @param step_majorizer_vector (vector, double) `K` constant majorizing rates, one per interval; all intervals are of equal length (regular)
 #' @param t_min (double) the lower bound of the interval
 #' @param t_max (double) the upper bound of the interval
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atleast1 boolean, draw at least 1 event time in interval
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times (reporting truncation).
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times (ascending order; reporting truncation).
+#' @param atleast1 boolean, condition on at least 1 event (alias for
+#'        `generate_at_least_K = 1`)
+#' @param generate_at_least_K `NULL` or a positive integer: condition the
+#'        sampled process on at least K events. With `lambda` (thinning),
+#'        only `generate_at_least_K = 1` is implemented.
+#' @param generate_at_most_K `NULL` or a positive integer: condition the
+#'        sampled process on at most K events. Not implemented with `lambda`
+#'        (thinning).
 #'
 #' @return a vector of event times
+#' @examples
+#' # thinning, with a constant majorizer line
+#' x <- draw(
+#'   lambda = function(t) 1 + sin(t),
+#'   line_majorizer_intercept = 2,
+#'   line_majorizer_slope = 0,
+#'   t_min = 0, t_max = 10
+#' )
+#'
+#' # inversion, conditioned on at least one event
+#' x <- draw(
+#'   Lambda = function(t) 2 * t,
+#'   Lambda_inv = function(z) z / 2,
+#'   t_min = 0, t_max = 10,
+#'   atleast1 = TRUE
+#' )
 #' @export
 draw <- function(
     Lambda = NULL,
@@ -30,29 +58,48 @@ draw <- function(
     t_min = NULL,
     t_max = NULL,
     atmost1 = FALSE,
-    atleast1 = FALSE) {
+    report_first_K = NULL,
+    report_last_K = NULL,
+    atleast1 = FALSE,
+    generate_at_least_K = NULL,
+    generate_at_most_K = NULL) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(atleast1, generate_at_least_K, generate_at_most_K)
+  conditioned <- (gen_$at_least > 0L || gen_$at_most > 0L)
+
   if (!is.null(Lambda)) {
-    if (atleast1) {
-      func <- ztdraw_cumulative_intensity
-    } else {
-      func <- draw_cumulative_intensity
+    if (conditioned) {
+      return(ztdraw_cumulative_intensity(
+        Lambda = Lambda,
+        Lambda_inv = Lambda_inv,
+        t_min = t_min,
+        t_max = t_max,
+        report_first_K = if (rep_$first > 0L) rep_$first else NULL,
+        report_last_K = if (rep_$last > 0L) rep_$last else NULL,
+        generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL,
+        generate_at_most_K = if (gen_$at_most > 0L) gen_$at_most else NULL
+      ))
     }
-    return(func(
+    z <- draw_cumulative_intensity(
       Lambda = Lambda,
       Lambda_inv = Lambda_inv,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = atmost1
-    ))
+      atmost1 = (rep_$first == 1L)
+    )
+    return(.report_slice_vector(z, rep_))
   }
 
   if (!is.null(lambda)) {
-    if (atleast1) {
+    if (gen_$at_least >= 2L || gen_$at_most > 0L) {
+      stop("only `generate_at_least_K = 1` has been implemented for the scalar thinning-based (intensity) samplers.")
+    }
+    if (gen_$at_least == 1L) {
       func <- ztdraw_intensity
     } else {
       func <- draw_intensity
     }
-    return(func(
+    z <- func(
       lambda = lambda,
       line_majorizer_intercept = line_majorizer_intercept,
       line_majorizer_slope = line_majorizer_slope,
@@ -60,7 +107,8 @@ draw <- function(
       step_majorizer_vector = step_majorizer_vector,
       t_min = t_min,
       t_max = t_max,
-      atmost1 = atmost1
-    ))
+      atmost1 = (rep_$first == 1L)
+    )
+    return(.report_slice_vector(z, rep_))
   }
 }

@@ -1,4 +1,5 @@
 test_that("PPP methods agree on the first time to event", {
+  skip_on_cran()
   set.seed(123)
   r_ppp_next_n <- unlist(lapply(integer(10000), function(x) ppp_next_n(n = 1, rate = 10, t_min = 1)))
   r_ppp <- unlist(lapply(integer(10000), function(x) ppp(t_min = 1, t_max = 3, rate = 10, atmost1 = TRUE)))
@@ -13,6 +14,7 @@ test_that("PPP methods agree on the first time to event", {
 
 
 test_that("draw_sc_step() agrees with strung together constant rates", {
+  skip_on_cran()
   set.seed(123)
   r_ppp <- unlist(lapply(
     integer(10000),
@@ -45,6 +47,7 @@ test_that("draw_sc_step() agrees with strung together constant rates", {
 
 
 test_that("draw_sc_step_regular() agrees with strung together constant rates", {
+  skip_on_cran()
   set.seed(123)
   r_ppp <- unlist(lapply(
     integer(10000),
@@ -78,6 +81,7 @@ test_that("draw_sc_step_regular() agrees with strung together constant rates", {
 })
 
 test_that("vdraw_sc_step_regular() agrees with strung together constant rates", {
+  skip_on_cran()
   set.seed(123)
   r_ppp <- unlist(lapply(
     integer(10000),
@@ -114,6 +118,7 @@ test_that("vdraw_sc_step_regular() agrees with strung together constant rates", 
 
 
 test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rates", {
+  skip_on_cran()
   set.seed(123)
   r_ppp <- unlist(lapply(
     integer(10000),
@@ -149,6 +154,7 @@ test_that("vdraw_sc_step_regular_cpp() agrees with strung together constant rate
 
 
 test_that("NHPPP methods agree on the first time to event with constant rate", {
+  skip_on_cran()
   set.seed(123)
   l <- function(t) 2
   L <- function(t) 2 * t
@@ -175,6 +181,7 @@ test_that("NHPPP methods agree on the first time to event with constant rate", {
 })
 
 test_that("NHPPP linear intensity agrees with general methods", {
+  skip_on_cran()
   set.seed(123)
   l <- function(t, intercept = 1, slope = 2) intercept + slope * t
   L <- function(t, intercept = 1, slope = 2, t0 = 1) Lambda_linear_form(t, intercept = intercept, slope = slope, t0 = t0)
@@ -195,6 +202,7 @@ test_that("NHPPP linear intensity agrees with general methods", {
 })
 
 test_that("NHPPP loglinear agrees with general methods", {
+  skip_on_cran()
   set.seed(123)
   l <- function(t, intercept = .1, slope = .02) exp(intercept + slope * t)
   L <- function(t, intercept = .1, slope = .02, t0 = 1) Lambda_exp_form(t, intercept = intercept, slope = slope, t0 = t0)

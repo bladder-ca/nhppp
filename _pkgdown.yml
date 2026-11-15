@@ -29,6 +29,7 @@ reference:
   contents:
   - draw_intensity
   - vdraw_intensity
+  - vdraw_intensity_step
 
 - subtitle: NHPPP from cumulative intensity function 
   desc: Non-homogeneous Poisson Point Processes from cumulative intensity functions
@@ -44,8 +45,10 @@ reference:
   - draw_sc_loglinear
   - draw_sc_step
   - draw_sc_step_regular
+  - vdraw_sc_step
   - vdraw_sc_step_regular
   - vdraw_sc_step_regular_cpp
+  - vztdraw_sc_step
   - ztdraw_sc_linear
   - ztdraw_sc_loglinear
   - vztdraw_sc_step_regular_cpp

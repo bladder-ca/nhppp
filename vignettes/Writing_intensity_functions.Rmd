@@ -1,0 +1,233 @@
+---
+title: "How to write an intensity or cumulative intensity function for vectorized models"
+author: "TA Trikalinos"
+date: "2026-08-28"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to write an intensity or cumulative intensity function for vectorized models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+set.seed(20260828)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(nhppp)
+```
+
+## What this vignette shows
+
+The vectorized samplers take user functions in two roles: an **intensity**
+`lambda` for the thinning samplers (`vdraw_intensity()`,
+`vdraw_intensity_step()`), and a **cumulative intensity** pair
+`Lambda` / `Lambda_inv` for the inversion sampler
+(`vdraw_cumulative_intensity()`). This vignette states the calling contract
+these functions must satisfy, shows the canonical way to pass parameters --
+including parameters that differ across the simulated point processes -- and
+collects the idioms and anti-patterns.
+
+## The calling contract
+
+Every user function is called **elementwise-vectorized**: it receives an array
+of time points (or of $\Lambda$-values, for `Lambda_inv`) and must return an
+object of the same shape, computed element by element. The samplers call
+
+- `lambda(t)` or `lambda(t, a)`,
+- `Lambda(t)` or `Lambda(t, a)`, and `Lambda_inv(z)` or `Lambda_inv(z, a)`,
+
+where `a` is the argument container you supplied (next section), passed as the
+**second positional argument**; the name of the second formal is yours to
+choose. When you supply no container the function is called with a single
+argument, so a plain closure works:
+
+```{r closure}
+l <- function(t) 0.5 * sqrt(t)
+Z <- vdraw_intensity(
+  lambda = l,
+  lambda_maj_matrix = matrix(1.2, nrow = 100, ncol = 5),
+  rate_matrix_t_min = 1, rate_matrix_t_max = 5
+)
+```
+
+The shape of the first argument depends on the sampler: the thinning samplers
+pass a matrix of candidate times with **one row per point process**; the
+inversion sampler passes a two-column matrix of interval bounds to `Lambda`
+and a matrix of $\Lambda$-values to `Lambda_inv` (also one row per process).
+Elementwise arithmetic preserves shape automatically, so you rarely need to
+think about it -- but it matters for how per-process parameters align, below.
+
+## Passing parameters: the structured container
+
+All of the function's parameters live in one container with two channels (slots):
+
+```{r container-shape, eval = FALSE}
+lambda_args = list(
+  shared   = list(...), # row-invariant parameters, any type; stored ONCE
+  row_args = data.frame(...) # one row per point process
+)
+```
+
+- `shared` holds anything that is the same for every point process: scalars,
+  vectors, matrices, spline bases, fitted model objects. It is never
+  replicated across processes, so a large shared object costs its size once
+  -- not once per process.
+- `row_args` holds parameters that vary by point process: a `data.frame` (or
+  `data.table` -- accepted as-is, read-only, never coerced or copied) with
+  **one row per point process**, in the same order as the rows of the rate or
+  majorizer matrix. The samplers validate the row count.
+
+Inside your function, access both channels through the second argument:
+
+```{r container-use}
+l <- function(t, a) {
+  a$shared$scale * t^a$row_args$exponent
+}
+n <- 1000
+args <- list(
+  shared = list(scale = 0.2),
+  row_args = data.frame(exponent = seq(0.5, 1.5, length.out = n))
+)
+Z <- vdraw_intensity(
+  lambda = l, lambda_args = args,
+  lambda_maj_matrix = matrix(3, nrow = n, ncol = 5),
+  rate_matrix_t_min = 1, rate_matrix_t_max = 5
+)
+```
+
+**Why this aligns.** `t` arrives as an `n x M` matrix and
+`a$row_args$exponent` is a length-`n` vector. R recycles vectors down the
+columns of a matrix, and the matrix has one row per process -- so
+`t^a$row_args$exponent` raises every entry of row $i$ to `exponent[i]`. This
+column-major recycling is the relied-upon R idiom: write the function as if
+`t` were a column of times for all processes at once, index nothing by hand.
+
+**Rejection resampling is handled for you.** The conditioned thinning
+samplers redraw only the point processes that failed the condition. In those
+rounds your function receives `a` with `row_args` **already subset** to the
+processes being redrawn, still aligned row-for-row with the candidate matrix.
+Do not cache row indices between calls.
+
+## Cumulative intensity pairs
+
+`Lambda` must be continuous and increasing in `t` for each process, and
+`Lambda_inv` must be its inverse. **One container serves both functions** --
+there is a single `Lambda_args`, delivered to `Lambda` and `Lambda_inv`
+alike, so write the pair against the same parameterization:
+
+```{r inversion}
+L <- function(t, a) (a$shared$r + a$row_args$d) * t
+Li <- function(z, a) z / (a$shared$r + a$row_args$d)
+n <- 1000
+ctr <- list(
+  shared = list(r = 0.4),
+  row_args = data.frame(d = runif(n, 0, 0.4))
+)
+Z <- vdraw_cumulative_intensity(
+  Lambda = L, Lambda_inv = Li,
+  t_min = rep(0, n), t_max = rep(10, n),
+  Lambda_args = ctr
+)
+```
+
+Two additional requirements:
+
+- **`NA` in, `NA` out.** The sampler calls `Lambda_inv` on `NA`-padded
+  matrices (padding marks processes that have run out of events). Plain
+  arithmetic propagates `NA` automatically; only special-case code
+  (`if (z > ...)`, table lookups) needs care -- use vectorized constructs
+  (`ifelse()`, `pmin()`/`pmax()`, `approxfun(..., rule = 2)`).
+- With `output = "long"` on the conditioned path, `Lambda_inv` receives the
+  event **vector** rather than a matrix, with `row_args` subset to one row
+  per event. The same elementwise code covers both cases without change.
+
+## Majorizers from the same function
+
+`get_step_majorizer()` accepts the same container through `fun_args`, so the
+sampler's `lambda` doubles as the input for majorizer construction -- no
+hand-written wrapper:
+
+```{r majorizer}
+l <- function(t, a) a$shared$scale * t^a$row_args$exponent
+n <- 1000
+args <- list(
+  shared = list(scale = 0.2),
+  row_args = data.frame(exponent = seq(0.5, 1.5, length.out = n))
+)
+breaks_mat <- matrix(rep(seq(1, 5, length.out = 6), each = n), nrow = n)
+lmaj <- get_step_majorizer(
+  fun = l, breaks = breaks_mat, is_monotone = TRUE, fun_args = args
+)
+Z <- vdraw_intensity(
+  lambda = l, lambda_args = args, lambda_maj_matrix = lmaj,
+  rate_matrix_t_min = 1, rate_matrix_t_max = 5
+)
+```
+
+If `lambda` ever exceeds the majorizer, the kernels stop with a "Majorizer"
+error rather than silently sampling the wrong process -- prefer a slightly
+generous majorizer over a tight one you have not verified.
+
+## A complete example: heterogeneous population, both algorithms
+
+A population where each person carries a frailty and a shape parameter, and
+the same model is sampled by thinning (only `lambda` known) and by inversion
+(closed-form `Lambda` and inverse): $\lambda_i(t) = w_i \, t^{p_i}$, so
+$\Lambda_i(t) = w_i \, t^{p_i + 1} / (p_i + 1)$.
+
+```{r worked-example}
+n <- 2000
+pop <- data.frame(
+  w = rgamma(n, shape = 4, rate = 4), # frailty, mean 1
+  p = runif(n, 0.5, 1.5)
+)
+args <- list(row_args = pop) # no shared channel needed; that is fine
+
+l <- function(t, a) a$row_args$w * t^a$row_args$p
+L <- function(t, a) a$row_args$w * t^(a$row_args$p + 1) / (a$row_args$p + 1)
+Li <- function(z, a) (z * (a$row_args$p + 1) / a$row_args$w)^(1 / (a$row_args$p + 1))
+
+breaks_mat <- matrix(rep(seq(0, 3, length.out = 7), each = n), nrow = n)
+Z_thin <- vdraw_intensity(
+  lambda = l, lambda_args = args,
+  lambda_maj_matrix = get_step_majorizer(
+    fun = l, breaks = breaks_mat, is_monotone = TRUE, fun_args = args
+  ),
+  rate_matrix_t_min = 0, rate_matrix_t_max = 3
+)
+Z_inv <- vdraw_cumulative_intensity(
+  Lambda = L, Lambda_inv = Li,
+  t_min = rep(0, n), t_max = rep(3, n),
+  Lambda_args = args
+)
+
+# the two exact algorithms sample the same process
+suppressWarnings(stats::ks.test(
+  as.vector(Z_thin[!is.na(Z_thin)]),
+  as.vector(Z_inv[!is.na(Z_inv)])
+))$p.value
+```
+
+## Anti-patterns
+
+- **Do not** replicate row-invariant parameters into `row_args`
+  (`row_args = data.frame(scale = rep(0.2, n))`): it works, but costs `n`
+  copies of what `shared` stores once. At $10^6$--$10^7$ processes this is
+  real memory.
+- **Do not** rely on the deprecated conventions: a flat
+  `lambda_args = list(...)` (all-shared, kept working for released code), the
+  nested `vector_arguments` element, and the separate `Lambda_inv_args` all
+  emit deprecation warnings and will eventually be removed. New code uses
+  `shared`/`row_args` and one `Lambda_args` for the pair.
+- **Do not** write functions that expect the container by name
+  (`function(t, lambda_args)` called as `lambda(t, lambda_args = ...)`): the
+  delivery is positional; name the second formal whatever you like, but do
+  not depend on the name.
+- **Do not** modify `a` inside the function (in particular, no
+  `data.table` by-reference operations on `a$row_args`): the container is
+  read-only shared state; mutating it corrupts subsequent calls, including
+  the resampling rounds of the conditioned thinning samplers.
+- **Do not** branch on scalar tests (`if (t < 1) ...`) -- `t` is a matrix;
+  use vectorized alternatives.

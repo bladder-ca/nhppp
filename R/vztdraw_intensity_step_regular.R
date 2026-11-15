@@ -1,15 +1,41 @@
-#' Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-#'    an interval (thinning method) with piecewise constant_majorizers (R)
+#' Vectorized sampling from a K-truncated non homogeneous Poisson Point Process (NHPPP) from
+#'    an interval (thinning method) with piecewise constant majorizers (R)
 #'
 #' @description
-#' Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-#'    an interval (thinning method) with piecewise constant_majorizers.
-#'    The majorizers are step functions over equal-length time intevals.
+#' Vectorized thinning sampler conditional on the accepted event count lying
+#' in `[generate_at_least_K, generate_at_most_K]` (`generate_at_least_K = 1`
+#' alone, the default, is the zero-truncated process).
+#' The majorizers are step functions over equal-length time intervals.
+#'
+#' Conditioning is by rejection: candidate realizations are proposed from the
+#' majorizer conditioned on at least K1 majorizer events (only the lower
+#' bound may be pushed into the proposal — at least K1 accepted events
+#' implies at least K1 majorizer events, whereas an upper bound on the
+#' majorizer count would over-restrict and bias the accepted law), thinned
+#' against `lambda`, and rows whose surviving count falls outside
+#' `[K1, K2]` are resampled until the condition holds. The per-round
+#' acceptance probability degrades in the strictness of the bounds and in
+#' the looseness of the majorizer, so a tight majorizer matters much more
+#' here than in the unconditional sampler. There is no iteration cap.
+#'
+#' Special case `K1 = K2 = K` (exactly K events): only under-counts are
+#' rejected; rows with more than K survivors are salvaged by keeping a
+#' uniformly random size-K subset of the events. This is exact — given the
+#' count, event times are conditionally iid, so the subset is an exact draw
+#' from the exactly-K law for every surviving count alike — and avoids the
+#' near-zero acceptance probability of two-sided rejection when the target
+#' integrated intensity is large relative to K.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
@@ -26,7 +52,18 @@
 #'        of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
-#' @param atmost1 boolean, draw at most 1 event time
+#' @param tol (scalar, double) tolerance for the number of events
+#' @param atmost1 boolean, report at most 1 event time of the conditioned
+#'        process (alias for `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K event times of the conditioned realization.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K event times of the conditioned realization (ascending order).
+#' @param generate_at_least_K non-negative integer: condition on at least K
+#'        accepted events. The default 1 is the zero-truncated process.
+#' @param generate_at_most_K `NULL` or a positive integer: condition on at
+#'        most K accepted events (rejection on the upper bound).
+#' @param ... absorbed (for wrapper compatibility)
 #' @keywords internal
 vztdraw_intensity_step_regular <- function(
     lambda = NULL,
@@ -37,97 +74,87 @@ vztdraw_intensity_step_regular <- function(
     rate_matrix_t_max = NULL,
     t_min = NULL,
     t_max = NULL,
+    tol = 10^-6,
     atmost1 = FALSE,
+    report_first_K = NULL,
+    report_last_K = NULL,
+    generate_at_least_K = 1,
+    generate_at_most_K = NULL,
     ...) {
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(FALSE, generate_at_least_K, generate_at_most_K)
+  if (gen_$at_least == 0L && gen_$at_most == 0L) {
+    stop("at least one of `generate_at_least_K`/`generate_at_most_K` must be set for the conditioned (zt) samplers")
+  }
 
-  #browser()
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
-    rate <- lambda_maj_matrix
+    n_draws <- nrow(lambda_maj_matrix)
   } else if (is.null(lambda_maj_matrix) && !is.null(Lambda_maj_matrix)) {
-    rate <- Lambda_maj_matrix
+    n_draws <- nrow(Lambda_maj_matrix)
   } else {
     stop("lambda_maj_matrix and Lambda_maj_matrix cannot both be `NULL`")
   }
 
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
-  if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
-    stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
+  if (nrow(range_t) == 1 && n_draws != 1) {
+    range_t <- range_t[rep(1, n_draws), ]
   }
-  if (nrow(range_t) == 1 && nrow(rate) != 1) {
-    range_t <- range_t[rep(1, nrow(rate)), ]
+  if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
+  if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
+  t_min <- if (length(t_min) == 1) rep(t_min, n_draws) else as.vector(t_min)
+  t_max <- if (length(t_max) == 1) rep(t_max, n_draws) else as.vector(t_max)
+
+  fa_ <- .resolve_fun_args(lambda_args, n_draws = n_draws, arg_name = "lambda_args")
+
+  draw_round <- function(rows) {
+    all_rows <- (length(rows) == n_draws)
+    # pre-wrapped to a 1-argument function so the cpp wrapper does not
+    # re-resolve (and re-warn on deprecated containers) every round
+    l_ <- .wrap_fun(lambda, .subset_fun_args(fa_, if (all_rows) NULL else rows))
+    vdraw_intensity_step_regular_cpp(
+      lambda = l_,
+      lambda_args = NULL,
+      Lambda_maj_matrix = if (!is.null(Lambda_maj_matrix)) Lambda_maj_matrix[rows, , drop = FALSE] else NULL,
+      lambda_maj_matrix = if (!is.null(lambda_maj_matrix)) lambda_maj_matrix[rows, , drop = FALSE] else NULL,
+      rate_matrix_t_min = range_t[rows, 1, drop = FALSE],
+      rate_matrix_t_max = range_t[rows, 2, drop = FALSE],
+      t_min = t_min[rows],
+      t_max = t_max[rows],
+      tol = tol,
+      generate_at_least_K = if (gen_$at_least > 0L) gen_$at_least else NULL
+    )
   }
 
-  if (is.null(t_min) && is.null(t_max)) {
-    subinterval <- range_t
-  } else {
-    if (is.null(t_min)) t_min <- range_t[, 1, drop = FALSE]
-    if (is.null(t_max)) t_max <- range_t[, 2, drop = FALSE]
-    subinterval <- cbind(as.vector(t_min), as.vector(t_max))
-    if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
-      stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
+  # exactly-K: over-count rows are salvaged by uniform subsampling (exact),
+  # so only under-counts force a redraw
+  exact_K <- (gen_$at_least > 0L && gen_$at_least == gen_$at_most)
+  fails_condition <- function(counts) {
+    if (exact_K) {
+      return(counts < gen_$at_least)
     }
-    if (nrow(subinterval) == 1 && nrow(rate) != 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ]
-    }
-    stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
+    (counts < gen_$at_least) | (gen_$at_most > 0L & counts > gen_$at_most)
   }
 
-  Z <- vdraw_intensity_step_regular_forcezt(
-    lambda = lambda,
-    lambda_args = lambda_args,
-    Lambda_maj_matrix = Lambda_maj_matrix,
-    lambda_maj_matrix = lambda_maj_matrix,
-    rate_matrix_t_min = rate_matrix_t_min,
-    rate_matrix_t_max = rate_matrix_t_max,
-    t_min = t_min,
-    t_max = t_max,
-    atmost1 = atmost1,
-    force_zt_majorizer = TRUE
-  )
+  Z <- draw_round(seq_len(n_draws))
+  needs_redraw <- fails_condition(rowSums(!is.na(Z)))
 
-  #browser()
-  has_no_times <- is.na(Z[, 1])
-  max_events <- ncol(Z)
-
-  if (sum(has_no_times) > 0 && !is.null(lambda_args$vector_arguments)) {
-    stopifnot(data.table::is.data.table(lambda_args$vector_arguments))
-    original_vector_arguments <- lambda_args$vector_arguments
-  }
-
-
-  while (sum(has_no_times) > 0) {
-    if(!is.null(lambda_args$vector_arguments)) {
-      lambda_args$vector_arguments <- original_vector_arguments[which(has_no_times==TRUE), , drop = FALSE]
-    }
-    Z_add <- vdraw_intensity_step_regular_forcezt(
-      lambda = lambda,
-      lambda_args = lambda_args,
-      Lambda_maj_matrix = Lambda_maj_matrix[has_no_times, , drop = FALSE],
-      lambda_maj_matrix = lambda_maj_matrix[has_no_times, , drop = FALSE],
-      rate_matrix_t_min = range_t[has_no_times, 1, drop = FALSE],
-      rate_matrix_t_max = range_t[has_no_times, 2, drop = FALSE],
-      t_min = subinterval[has_no_times, 1, drop = FALSE],
-      t_max = subinterval[has_no_times, 2, drop = FALSE],
-      atmost1 = atmost1,
-      force_zt_majorizer = TRUE
-    ) # force_zt_majorizer)
+  while (any(needs_redraw)) {
+    Z_add <- draw_round(which(needs_redraw))
 
     diff_cols <- ncol(Z_add) - ncol(Z)
     if (diff_cols > 0) {
-      Z <- matrix(
-        c(as.vector(Z), rep(NA, times = abs(diff_cols) * nrow(Z))),
-        ncol = ncol(Z_add), nrow = nrow(Z), byrow = FALSE
-      )
+      Z <- cbind(Z, matrix(NA_real_, nrow = nrow(Z), ncol = diff_cols))
     }
     if (diff_cols < 0) {
-      Z_add <- matrix(
-        c(as.vector(Z_add), rep(NA, times = abs(diff_cols) * nrow(Z_add))),
-        ncol = ncol(Z), nrow = nrow(Z_add), byrow = FALSE
-      )
+      Z_add <- cbind(Z_add, matrix(NA_real_, nrow = nrow(Z_add), ncol = -diff_cols))
     }
 
-    Z[has_no_times, ] <- Z_add
-    has_no_times <- is.na(Z[, 1])
+    Z[needs_redraw, ] <- Z_add
+    needs_redraw <- fails_condition(rowSums(!is.na(Z)))
   }
-  return(Z)
+
+  if (exact_K) {
+    Z <- .subsample_exactly_K(Z, gen_$at_least)
+  }
+  return(.report_slice(Z, rep_))
 }

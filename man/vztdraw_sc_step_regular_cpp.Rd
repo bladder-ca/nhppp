@@ -12,7 +12,14 @@ vztdraw_sc_step_regular_cpp(
   rate_matrix_t_max = NULL,
   t_min = NULL,
   t_max = NULL,
-  atmost1 = FALSE
+  tol = 10^-6,
+  atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL,
+  budget_cap = NULL,
+  output = c("matrix", "long")
 )
 }
 \arguments{
@@ -38,14 +45,50 @@ of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 times are sampled from the subinterval.
 If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{tol}{(scalar, double) tolerance for the number of events}
+
+\item{atmost1}{boolean, report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
+
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization (never
+affects the conditioned count itself). At most one of
+\code{report_first_K}/\code{report_last_K} may be set.}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+events in the sampled (sub)interval. The default 1 is the
+zero-truncated process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K events. May be combined with \code{generate_at_least_K}
+(K1 <= K2; K1 = K2 conditions on exactly K events).}
+
+\item{budget_cap}{\code{NULL} or a positive integer: cap the computational event
+budget of the kernel (approximation knob; never truncates below
+\code{generate_at_least_K}).}
+
+\item{output}{(string) \code{"matrix"} (default) returns the NA-padded event
+matrix, one row per point process. \code{"long"} returns the long event
+format \code{list(id, time, n_draws)} with one entry per event: \code{id} is
+the 1-based point-process index (ascending; times ascending within
+\code{id}). A point process with no events contributes no entries, so
+its id is absent; \code{n_draws} distinguishes "no events" from "not
+sampled". No \code{NA} is used. The long format is built without
+allocating the dense matrix, so prefer it when event counts vary
+widely across point processes.}
 }
 \value{
-a vector of event times t
-if no events realize, it will have 0 length
+a matrix of event times t, with rows corresponding to the sampled
+point processes, or the long event format if \code{output = "long"}.
 }
 \description{
 Simulate a piecewise constant-rate Poisson Point Process over \verb{(t_min, t_max]} (inversion method)
-where the intervals have the same length (are "regular").
+where the intervals have the same length (are "regular"), conditional on
+the event count lying in \verb{[generate_at_least_K, generate_at_most_K]}
+(\code{generate_at_least_K = 1} alone, the default, is the zero-truncated
+process).
 }
 \keyword{internal}

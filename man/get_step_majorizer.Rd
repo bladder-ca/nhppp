@@ -5,7 +5,7 @@
 \title{Piecewise constant (step) majorizer for K-Lipschitz functions over an interval
 (vectorized over the \code{breaks} argument).}
 \usage{
-get_step_majorizer(fun, breaks, is_monotone = TRUE, K = 0)
+get_step_majorizer(fun, breaks, is_monotone = TRUE, K = 0, fun_args = NULL)
 }
 \arguments{
 \item{fun}{A function object with a single argument \code{x}.
@@ -17,6 +17,13 @@ If breaks is a matrix, each row is treated as a separate set of breaks.}
 \item{is_monotone}{(boolean) Is the function monotone? (Default is \code{TRUE}.)}
 
 \item{K}{(double) A non-negative number for the Lipschitz cone. (Default is 0.)}
+
+\item{fun_args}{(list) arguments for \code{fun}, with up to two elements:
+\code{shared} (named list of row-invariant arguments) and \code{row_args}
+(data.frame or data.table with one row per row of \code{breaks}). When
+non-\code{NULL}, the container is passed as \code{fun}'s second positional
+argument — the same convention (and the same \code{lambda}) as the
+vectorized samplers.}
 }
 \value{
 A vector of length \code{M} with the values of the piecewise constant majorizer
@@ -28,4 +35,12 @@ The returned object has the same dimensions as \code{breaks}.
 }
 \examples{
 get_step_majorizer(fun = abs, breaks = -5:5, is_monotone = FALSE, K = 1)
+
+# a lambda that takes the structured args container
+get_step_majorizer(
+  fun = function(t, a) a$shared$scale * abs(t),
+  breaks = matrix(rep(-5:5, each = 3), nrow = 3),
+  is_monotone = FALSE, K = 2,
+  fun_args = list(shared = list(scale = 2))
+)
 }

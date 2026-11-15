@@ -2,8 +2,8 @@
 % Please edit documentation in R/vztdraw_intensity_step_regular.R
 \name{vztdraw_intensity_step_regular}
 \alias{vztdraw_intensity_step_regular}
-\title{Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers (R)}
+\title{Vectorized sampling from a K-truncated non homogeneous Poisson Point Process (NHPPP) from
+an interval (thinning method) with piecewise constant majorizers (R)}
 \usage{
 vztdraw_intensity_step_regular(
   lambda = NULL,
@@ -14,14 +14,27 @@ vztdraw_intensity_step_regular(
   rate_matrix_t_max = NULL,
   t_min = NULL,
   t_max = NULL,
+  tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = 1,
+  generate_at_most_K = NULL,
   ...
 )
 }
 \arguments{
 \item{lambda}{(function) intensity function, vectorized}
 
-\item{lambda_args}{(list) optional arguments to pass to \code{lambda}}
+\item{lambda_args}{(list) arguments for \code{lambda}, with up to two elements:
+\code{shared} (named list of row-invariant arguments of any type, stored
+once and never replicated) and \code{row_args} (data.frame or data.table
+with one row per point process, auto-subset when rows are resampled).
+When non-\code{NULL}, the container is passed as \code{lambda}'s second
+positional argument exactly as given, except that \code{row_args} is
+already row-subset; the name of the second formal is up to you. A
+flat list with neither element is treated as all-shared; a
+\code{vector_arguments} element is deprecated (use \code{row_args}).}
 
 \item{Lambda_maj_matrix}{(matrix) integrated intensity rates at the end of each interval}
 
@@ -45,11 +58,48 @@ of a subinterval of (rate_matrix_t_min, rate_matrix_t_max]. If set,
 times are sampled from the subinterval.
 If omitted, it is equivalent to \code{rate_matrix_t_max}.}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{tol}{(scalar, double) tolerance for the number of events}
+
+\item{atmost1}{boolean, report at most 1 event time of the conditioned
+process (alias for \code{report_first_K = 1})}
+
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times of the conditioned realization.}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times of the conditioned realization (ascending order).}
+
+\item{generate_at_least_K}{non-negative integer: condition on at least K
+accepted events. The default 1 is the zero-truncated process.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition on at
+most K accepted events (rejection on the upper bound).}
+
+\item{...}{absorbed (for wrapper compatibility)}
 }
 \description{
-Vectorized sampling from a zero-truncated non homogeneous Poisson Point Process (NHPPP) from
-an interval (thinning method) with piecewise constant_majorizers.
-The majorizers are step functions over equal-length time intevals.
+Vectorized thinning sampler conditional on the accepted event count lying
+in \verb{[generate_at_least_K, generate_at_most_K]} (\code{generate_at_least_K = 1}
+alone, the default, is the zero-truncated process).
+The majorizers are step functions over equal-length time intervals.
+
+Conditioning is by rejection: candidate realizations are proposed from the
+majorizer conditioned on at least K1 majorizer events (only the lower
+bound may be pushed into the proposal — at least K1 accepted events
+implies at least K1 majorizer events, whereas an upper bound on the
+majorizer count would over-restrict and bias the accepted law), thinned
+against \code{lambda}, and rows whose surviving count falls outside
+\verb{[K1, K2]} are resampled until the condition holds. The per-round
+acceptance probability degrades in the strictness of the bounds and in
+the looseness of the majorizer, so a tight majorizer matters much more
+here than in the unconditional sampler. There is no iteration cap.
+
+Special case \code{K1 = K2 = K} (exactly K events): only under-counts are
+rejected; rows with more than K survivors are salvaged by keeping a
+uniformly random size-K subset of the events. This is exact — given the
+count, event times are conditionally iid, so the subset is an exact draw
+from the exactly-K law for every surviving count alike — and avoids the
+near-zero acceptance probability of two-sided rejection when the target
+integrated intensity is large relative to K.
 }
 \keyword{internal}

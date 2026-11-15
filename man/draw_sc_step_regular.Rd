@@ -11,7 +11,11 @@ draw_sc_step_regular(
   t_min = NULL,
   t_max = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -23,9 +27,24 @@ draw_sc_step_regular(
 
 \item{t_max}{(scalar, double) upper bound of the time interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation — the count law is
+unchanged).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events.}
 }
 \value{
 a vector of event times t

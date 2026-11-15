@@ -73,3 +73,10 @@ inst/doc
 docs
 /doc/
 /Meta/
+
+# any agents etc
+/agents/
+CLAUDE.md
+.claude/
+
+Rplots.pdf

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <vector>
 
 #include <Rcpp.h>
 #include <Rmath.h>
@@ -18,51 +19,70 @@ Rcpp::NumericMatrix matrix_cumsum_columns(const Rcpp::NumericMatrix & X);
 Rcpp::NumericMatrix matrix_diff_columns(const Rcpp::NumericMatrix & X);
 
 int find_upper_bound_index(
-  const Rcpp::NumericVector& L, 
-  const int start, 
+  const Rcpp::NumericVector& L,
+  const int start,
   const double tau);
 
 int find_lower_bound_index(
-  const Rcpp::NumericVector& L, 
-  const int start, 
+  const Rcpp::NumericVector& L,
+  const int start,
   const double tau);
 
 double simple_lerp(
-  const double a, 
-  const double b, 
+  const double a,
+  const double b,
   const double f);
 
-Rcpp::NumericMatrix vdraw_sc_step_regular2(
+SEXP vdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const bool atmost1, 
-  const int atmostB
+  const int report_first_K,
+  const int report_last_K,
+  const int budget_cap,
+  const bool long_output
 );
 
-Rcpp::NumericMatrix vdraw_sc_step_regular(
+SEXP vdraw_sc_step_general2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
-  const Rcpp::NumericMatrix & range_t,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
   const double tol,
-  const bool atmost1
+  const int report_first_K,
+  const int report_last_K,
+  const int budget_cap,
+  const bool long_output
 );
 
-Rcpp::NumericMatrix vztdraw_sc_step_regular(
-  const Rcpp::NumericMatrix & rate,
-  const bool is_cumulative,
-  const Rcpp::NumericMatrix & range_t,
-  const bool atmost1
-);
-
-Rcpp::NumericMatrix vztdraw_sc_step_regular2(
+SEXP vztdraw_sc_step_regular2(
   const Rcpp::NumericMatrix & rate,
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
-  const bool atmost1
+  const double tol,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int gen_at_most_K,
+  const int budget_cap,
+  const bool long_output
+);
+
+SEXP vztdraw_sc_step_general2(
+  const Rcpp::NumericMatrix & rate,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
+  const double tol,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int gen_at_most_K,
+  const int budget_cap,
+  const bool long_output
 );
 
 Rcpp::NumericMatrix vdraw_intensity_step_regular(
@@ -71,24 +91,35 @@ Rcpp::NumericMatrix vdraw_intensity_step_regular(
   const bool is_cumulative,
   const Rcpp::NumericMatrix & range_t,
   const Rcpp::NumericMatrix & subinterval,
-  const bool use_subinteval,
+  const bool use_subinterval,
   const double tol,
-  const bool atmost1, 
-  const int atmostB);
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int budget_cap);
 
-
-Rcpp::NumericMatrix step_regular_inverse(
-  const int max_events, 
-  const Rcpp::NumericMatrix & Lambda,
-  const Rcpp::NumericMatrix & Tau, 
-  const Rcpp::NumericMatrix & range_t, 
-  const bool atmost1
-);
+Rcpp::NumericMatrix vdraw_intensity_step_general(
+  const Rcpp::Function & lambda,
+  const Rcpp::NumericMatrix & rate_maj,
+  const bool is_cumulative,
+  const Rcpp::NumericMatrix & time_breaks,
+  const Rcpp::NumericMatrix & subinterval,
+  const bool use_subinterval,
+  const double tol,
+  const int report_first_K,
+  const int report_last_K,
+  const int gen_at_least_K,
+  const int budget_cap);
 
 int safe_double_to_int(const double x);
 
+int rbtpois(const double lambda, const int k_min, const int k_max);
+
+Rcpp::IntegerVector rbtpois_vec(const Rcpp::NumericVector & lambda,
+                                const int k_min, const int k_max);
+
 int rztpois(const double lambda);
 
-Rcpp::IntegerVector rztpois_vec(const Rcpp::NumericVector & lambda); 
+Rcpp::IntegerVector rztpois_vec(const Rcpp::NumericVector & lambda);
 
 #endif

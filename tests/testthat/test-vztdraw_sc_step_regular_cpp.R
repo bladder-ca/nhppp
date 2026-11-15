@@ -130,3 +130,34 @@ test_that("vztdraw_sc_step_regular_cpp() works with subinterval", {
   ))
   check_ppp_sample_validity(Z0, t_min = 0, t_max = 5, atmost1 = TRUE, atleast1 = TRUE)
 })
+
+
+test_that("vztdraw_sc_step_regular_cpp() works with subinterval bounds at the top of the range", {
+  # Regression: i0 was not clamped, so t_min == rate_matrix_t_max indexed
+  # one past the end of the cumulative intensity row (out-of-bounds read).
+  set.seed(123)
+  l <- matrix(rep(1, 500), ncol = 5)
+  L <- mat_cumsum_columns(l)
+
+  expect_no_error(Z <- vztdraw_sc_step_regular_cpp(
+    Lambda_matrix = L,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    t_min = 110,
+    t_max = 110,
+    atmost1 = FALSE
+  ))
+  # measure-zero subinterval: the zero-truncated count degenerates to 0
+  expect_true(all(is.na(Z)))
+
+  # near-degenerate subinterval at the top: events must stay in bounds
+  expect_no_error(Z <- vztdraw_sc_step_regular_cpp(
+    Lambda_matrix = L,
+    rate_matrix_t_min = 100,
+    rate_matrix_t_max = 110,
+    t_min = 109.99,
+    t_max = 110,
+    atmost1 = FALSE
+  ))
+  check_ppp_sample_validity(Z, t_min = 109.99, t_max = 110, atleast1 = TRUE)
+})

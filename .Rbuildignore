@@ -19,3 +19,8 @@ tools
 ^data-raw$
 ^doc$
 ^Meta$
+^CLAUDE\.md$
+^\.claude$
+^agents$
+^vignettes/\.quarto$
+^STATUS\.md$

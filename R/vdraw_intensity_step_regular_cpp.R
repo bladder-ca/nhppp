@@ -7,9 +7,15 @@
 #'    The majorizers are step functions over equal-length time intevals.
 #'
 #' @param lambda (function) intensity function, vectorized
-#' @param lambda_args (list) optional named list of arguments to pass to `lambda`.
-#'        If you have arguments for `lambda` that vary by draw, they should be passed as
-#'        a data.table named `vector_arguments`.
+#' @param lambda_args (list) arguments for `lambda`, with up to two elements:
+#'        `shared` (named list of row-invariant arguments of any type, stored
+#'        once and never replicated) and `row_args` (data.frame or data.table
+#'        with one row per point process, auto-subset when rows are resampled).
+#'        When non-`NULL`, the container is passed as `lambda`'s second
+#'        positional argument exactly as given, except that `row_args` is
+#'        already row-subset; the name of the second formal is up to you. A
+#'        flat list with neither element is treated as all-shared; a
+#'        `vector_arguments` element is deprecated (use `row_args`).
 #' @param Lambda_maj_matrix (matrix) integrated intensity rates at the end of each interval
 #' @param lambda_maj_matrix (matrix) intensity rates, one per interval
 #' @param rate_matrix_t_min (scalar | vector | column matrix) is the lower bound
@@ -27,8 +33,24 @@
 #'        times are sampled from the subinterval.
 #'        If omitted, it is equivalent to `rate_matrix_t_max`.
 #' @param tol (scalar, double) tolerance for the number of events
-#' @param atmost1 boolean, draw at most 1 event time
-#' @param atmostB If not NULL, draw at most B (B>0) event times. NULL means ignore.
+#' @param atmost1 boolean, report at most 1 event time (alias for
+#'        `report_first_K = 1`)
+#' @param report_first_K `NULL` or a positive integer: report only the
+#'        earliest K accepted event times. Ignored (all accepted events are
+#'        returned) when `generate_at_least_K >= 1` — the conditional
+#'        rejection loop needs the full survivor count and applies reporting
+#'        after convergence.
+#' @param report_last_K `NULL` or a positive integer: report only the latest
+#'        K accepted event times (ascending order). Same conditional-path
+#'        caveat as `report_first_K`.
+#' @param generate_at_least_K `NULL`, or a positive integer: draw the
+#'        majorizer candidates conditioned on at least K majorizer events.
+#'        NOTE: this does not by itself condition the thinned process on K
+#'        accepted events; rows with too few survivors must be resampled by
+#'        the caller (see `vztdraw_intensity_step_regular()`).
+#' @param budget_cap `NULL` or a positive integer: cap the computational event
+#'        budget of the majorizer kernel (approximation knob).
+#' @param atmostB deprecated alias for `budget_cap`.
 #'
 #' @return a matrix of event times (columns) per draw (rows)
 #'         NAs are structural empty spots
@@ -43,10 +65,14 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
                                              t_max = NULL,
                                              tol = 10^-6,
                                              atmost1 = FALSE,
+                                             report_first_K = NULL,
+                                             report_last_K = NULL,
+                                             generate_at_least_K = NULL,
+                                             budget_cap = NULL,
                                              atmostB = NULL) {
-  if (is.null(atmostB)) {
-    atmostB <- 0 # has to be <=0 to be ignored
-  }
+  rep_ <- .resolve_reporting(atmost1, report_first_K, report_last_K)
+  gen_ <- .resolve_generation(FALSE, generate_at_least_K, NULL)
+  budget_cap <- .resolve_budget_cap(budget_cap, atmostB)
 
   if (!is.null(lambda_maj_matrix) && is.null(Lambda_maj_matrix)) {
     rate <- lambda_maj_matrix
@@ -57,7 +83,7 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   } else {
     stop("lambda_maj_matrix and Lambda_maj_matrix cannot both be `NULL`")
   }
-  mode(rate) <- "numeric"
+  if (!is.double(rate)) storage.mode(rate) <- "double"
 
   num_na <- sum(is.na(rate))
   if (num_na > 0) {
@@ -65,22 +91,16 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     stop("The ", rate_argument, " contains ", num_na, " NA values")
   }
 
+  # 1-row matrices are shared across all point processes (the C++ kernel
+  # selects row 0), so they are not replicated here
   range_t <- cbind(as.vector(rate_matrix_t_min), as.vector(rate_matrix_t_max))
   if (nrow(range_t) > 1 && nrow(range_t) != nrow(rate)) {
     stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [rate_matrix_t_min|rate_matrix_t_max] imply different numbers of point processes to be sampled.")
   }
-  if (nrow(range_t) == 1 && nrow(rate) != 1) {
-    range_t <- range_t[rep(1, nrow(rate)), ]
-  }
 
 
-  if (is.null(lambda_args)) {
-    l_ <- lambda
-  } else {
-    l_ <- function(X, ...) {
-      return(lambda(X, lambda_args))
-    }
-  }
+  fa_ <- .resolve_fun_args(lambda_args, n_draws = nrow(rate), arg_name = "lambda_args")
+  l_ <- .wrap_fun(lambda, fa_$container)
 
 
   if (is.null(t_min) && is.null(t_max)) {
@@ -94,9 +114,6 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
     if (nrow(subinterval) > 1 && nrow(subinterval) != nrow(rate)) {
       stop("The (rows of) [Lambda|lambda]_maj_matrix and (length of) [t_min|t_max] imply different numbers of point processes to be sampled.")
     }
-    if (nrow(subinterval) == 1 && nrow(rate) != 1) {
-      subinterval <- subinterval[rep(1, nrow(rate)), ]
-    }
     stopifnot(all(subinterval[, 1] >= range_t[, 1]), all(subinterval[, 2] <= range_t[, 2]))
   }
 
@@ -104,7 +121,8 @@ vdraw_intensity_step_regular_cpp <- function(lambda = NULL,
   return(
     .Call(
       `_nhppp_vdraw_intensity_step_regular`, l_,
-      rate, is_cumulative_rate, range_t, subinterval, use_subinterval, tol, atmost1, atmostB
+      rate, is_cumulative_rate, range_t, subinterval, use_subinterval,
+      tol, rep_$first, rep_$last, gen_$at_least, budget_cap
     )
   )
 }

@@ -16,7 +16,11 @@ draw(
   t_min = NULL,
   t_max = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 }
 \arguments{
@@ -38,9 +42,25 @@ draw(
 
 \item{t_max}{(double) the upper bound of the interval}
 
-\item{atmost1}{boolean, draw at most 1 event time}
+\item{atmost1}{boolean, report at most 1 event time (alias for
+\code{report_first_K = 1})}
 
-\item{atleast1}{boolean, draw at least 1 event time in interval}
+\item{report_first_K}{\code{NULL} or a positive integer: report only the
+earliest K event times (reporting truncation).}
+
+\item{report_last_K}{\code{NULL} or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).}
+
+\item{atleast1}{boolean, condition on at least 1 event (alias for
+\code{generate_at_least_K = 1})}
+
+\item{generate_at_least_K}{\code{NULL} or a positive integer: condition the
+sampled process on at least K events. With \code{lambda} (thinning),
+only \code{generate_at_least_K = 1} is implemented.}
+
+\item{generate_at_most_K}{\code{NULL} or a positive integer: condition the
+sampled process on at most K events. Not implemented with \code{lambda}
+(thinning).}
 }
 \value{
 a vector of event times
@@ -48,4 +68,21 @@ a vector of event times
 \description{
 This is a wrapper to the package's specific functions, and thus somewhat slower.
 For time-intensive simulations prefer one of the specific functions.
+}
+\examples{
+# thinning, with a constant majorizer line
+x <- draw(
+  lambda = function(t) 1 + sin(t),
+  line_majorizer_intercept = 2,
+  line_majorizer_slope = 0,
+  t_min = 0, t_max = 10
+)
+
+# inversion, conditioned on at least one event
+x <- draw(
+  Lambda = function(t) 2 * t,
+  Lambda_inv = function(z) z / 2,
+  t_min = 0, t_max = 10,
+  atleast1 = TRUE
+)
 }
