@@ -259,9 +259,9 @@ analyses) or when you develop code.
 It’s arguments `intercept`, `slope` have the same name as the parameters
 in our log-linear intensity function $`\lambda`$. The `t_min`, `t_max`
 arguments ask for the bounds of the interval $`[T_{k0}, T_{k1})`$. The
-argument `atmost1` asks only for the first time. This special case
-function uses a bespoke inversion algorithm; it’s as fast as we can do
-without vectorization.
+argument `report_first_K = 1` asks only for the first time. This special
+case function uses a bespoke inversion algorithm; it’s as fast as we can
+do without vectorization.
 
 ``` r
 
@@ -273,14 +273,14 @@ for (k in 1:K) {
     slope = pop$beta[k],
     t_min = pop$T0[k],
     t_max = pop$T1[k],
-    atmost1 = TRUE
+    report_first_K = 1
   )
   if (length(t1) != 0) {
     t_nonvec_special_case[k] <- t1
   }
 }
 tictoc::toc(log = TRUE)
-#> Method 1 (nonvectorized): 0.943 sec elapsed
+#> Method 1 (nonvectorized): 1.898 sec elapsed
 pop[, t_nonvec_special_case := t_nonvec_special_case]
 ```
 
@@ -360,7 +360,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, thinning): 0.049 sec elapsed
+#> Method 2 (vectorized, thinning): 0.054 sec elapsed
 ```
 
 ## Method 3: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -386,7 +386,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 3 (inversion): 0.048 sec elapsed
+#> Method 3 (inversion): 0.049 sec elapsed
 ```
 
 ## Comparisons
@@ -399,16 +399,16 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (nonvectorized): 0.943 sec elapsed. This is the slowest
+1.  Method 1 (nonvectorized): 1.898 sec elapsed. This is the slowest
     approach – but still not bad for $`10^{5}`$ samples!
 
-2.  Method 2 (vectorized, thinning): 0.049 sec elapsed. This approach is
+2.  Method 2 (vectorized, thinning): 0.054 sec elapsed. This approach is
     many times faster that then first approach. It is very flexible – it
     can accommodate very complex time varying intensity functions. You
     almost always know $`\lambda`$ and can get its majorizer
     $`\lambda_*`$ easily and fast.
 
-3.  Method 3 (inversion): 0.048 sec elapsed. This approach is typically
+3.  Method 3 (inversion): 0.049 sec elapsed. This approach is typically
     times faster that the second one in most problems,  
     but requires implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 

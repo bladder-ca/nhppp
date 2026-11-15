@@ -37,14 +37,32 @@ honored on all paths. - The vectorized thinning samplers support both
 generation bounds by rejection resampling (proposals push only the lower
 bound into the majorizer; the accepted-count condition is verified per
 row). The scalar thinning samplers support only
-`generate_at_least_K = 1`. - `budget_cap` replaces `atmostB`
-(soft-deprecated alias with a warning): it caps the computational event
-budget of the vectorized kernels and is an approximation knob (jointly
-with the `1 - tol` quantile bound), not an exact reporting or
-conditioning contract. It is now honored uniformly by all vectorized
-sc-step paths (the whole-range regular path used to ignore `atmostB`
-silently) and never truncates the conditioned count below
-`generate_at_least_K`.
+`generate_at_least_K = 1`. - The scalar samplers
+[`ppp()`](https://bladder-ca.github.io/nhppp/reference/ppp.md),
+[`draw_sc_linear()`](https://bladder-ca.github.io/nhppp/reference/draw_sc_linear.md),
+[`draw_sc_loglinear()`](https://bladder-ca.github.io/nhppp/reference/draw_sc_loglinear.md),
+[`draw_cumulative_intensity()`](https://bladder-ca.github.io/nhppp/reference/draw_cumulative_intensity.md)
+and
+[`draw_intensity()`](https://bladder-ca.github.io/nhppp/reference/draw_intensity.md)
+accept the full option set (`report_first_K`, `report_last_K`,
+`atleast1`, `generate_at_least_K`, `generate_at_most_K`), like
+[`draw_sc_step()`](https://bladder-ca.github.io/nhppp/reference/draw_sc_step.md)
+and [`draw()`](https://bladder-ca.github.io/nhppp/reference/draw.md).
+Any generation bound routes to the zero-truncated twin
+([`ztppp()`](https://bladder-ca.github.io/nhppp/reference/ztppp.md),
+[`ztdraw_sc_linear()`](https://bladder-ca.github.io/nhppp/reference/ztdraw_sc_linear.md),
+[`ztdraw_sc_loglinear()`](https://bladder-ca.github.io/nhppp/reference/ztdraw_sc_loglinear.md),
+[`ztdraw_cumulative_intensity()`](https://bladder-ca.github.io/nhppp/reference/ztdraw_cumulative_intensity.md));
+[`draw_intensity()`](https://bladder-ca.github.io/nhppp/reference/draw_intensity.md)
+supports only `generate_at_least_K = 1`. The new arguments follow the
+existing ones, and calls that do not use them return the same draws as
+before. - `budget_cap` replaces `atmostB` (soft-deprecated alias with a
+warning): it caps the computational event budget of the vectorized
+kernels and is an approximation knob (jointly with the `1 - tol`
+quantile bound), not an exact reporting or conditioning contract. It is
+now honored uniformly by all vectorized sc-step paths (the whole-range
+regular path used to ignore `atmostB` silently) and never truncates the
+conditioned count below `generate_at_least_K`.
 
 Internals - The eight sc-step C++ kernels (regular/general x plain/zt x
 whole-range/subinterval) are unified into two template algorithm cores

@@ -62,7 +62,12 @@ For time-intensive simulations prefer one of the specific functions.</p>
 <span>  step_majorizer_vector <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  atmost1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  report_first_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  report_last_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  atleast1 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  generate_at_least_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  generate_at_most_K <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,7 +104,35 @@ For time-intensive simulations prefer one of the specific functions.</p>
 
 
 <dt id="arg-atmost-">atmost1<a class="anchor" aria-label="anchor" href="#arg-atmost-"></a></dt>
-<dd><p>boolean, draw at most 1 event time</p></dd>
+<dd><p>boolean, report at most 1 event time (alias for
+<code>report_first_K = 1</code>)</p></dd>
+
+
+<dt id="arg-report-first-k">report_first_K<a class="anchor" aria-label="anchor" href="#arg-report-first-k"></a></dt>
+<dd><p><code>NULL</code> or a positive integer: report only the
+earliest K event times (reporting truncation — the count law is
+unchanged).</p></dd>
+
+
+<dt id="arg-report-last-k">report_last_K<a class="anchor" aria-label="anchor" href="#arg-report-last-k"></a></dt>
+<dd><p><code>NULL</code> or a positive integer: report only the latest
+K event times (ascending order; reporting truncation).</p></dd>
+
+
+<dt id="arg-atleast-">atleast1<a class="anchor" aria-label="anchor" href="#arg-atleast-"></a></dt>
+<dd><p>boolean, condition on at least 1 event (alias for
+<code>generate_at_least_K = 1</code>)</p></dd>
+
+
+<dt id="arg-generate-at-least-k">generate_at_least_K<a class="anchor" aria-label="anchor" href="#arg-generate-at-least-k"></a></dt>
+<dd><p><code>NULL</code> or <code>1</code>: condition the sampled process on
+at least 1 event. Larger values are not implemented for the scalar
+thinning sampler and raise an error.</p></dd>
+
+
+<dt id="arg-generate-at-most-k">generate_at_most_K<a class="anchor" aria-label="anchor" href="#arg-generate-at-most-k"></a></dt>
+<dd><p>must be <code>NULL</code>; conditioning on at most K events
+is not implemented for the scalar thinning sampler.</p></dd>
 
 </dl></div>
     <div class="section level2">

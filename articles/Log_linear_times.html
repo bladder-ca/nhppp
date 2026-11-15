@@ -369,9 +369,9 @@ same name as the parameters in our log-linear intensity function
 The <code>t_min</code>, <code>t_max</code> arguments ask for the bounds
 of the interval
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>,</mo><msub><mi>T</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[T_{k0}, T_{k1})</annotation></semantics></math>.
-The argument <code>atmost1</code> asks only for the first time. This
-special case function uses a bespoke inversion algorithm; it’s as fast
-as we can do without vectorization.</p>
+The argument <code>report_first_K = 1</code> asks only for the first
+time. This special case function uses a bespoke inversion algorithm;
+it’s as fast as we can do without vectorization.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">tic</a></span><span class="op">(</span><span class="st">"Method 1 (nonvectorized)"</span><span class="op">)</span></span>
 <span><span class="va">t_nonvec_special_case</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="va">K</span><span class="op">)</span></span>
@@ -381,14 +381,14 @@ as we can do without vectorization.</p>
 <span>    slope <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
 <span>    t_min <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T0</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
 <span>    t_max <span class="op">=</span> <span class="va">pop</span><span class="op">$</span><span class="va">T1</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
-<span>    atmost1 <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    report_first_K <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">t_nonvec_special_case</span><span class="op">[</span><span class="va">k</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">t1</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Method 1 (nonvectorized): 0.943 sec elapsed</span></span>
+<span><span class="co">#&gt; Method 1 (nonvectorized): 1.898 sec elapsed</span></span>
 <span><span class="va">pop</span><span class="op">[</span>, <span class="va">t_nonvec_special_case</span> <span class="op">:=</span> <span class="va">t_nonvec_special_case</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -486,7 +486,7 @@ needs).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.049 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, thinning): 0.054 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-3-vectorized-sampling-using-lambda-and-lambda-1">Method 3: Vectorized sampling using
@@ -514,7 +514,7 @@ The <code>nhppp</code> package can sample in this case using the
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 3 (inversion): 0.048 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 3 (inversion): 0.049 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
@@ -528,11 +528,11 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 <code>R</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Method 1 (nonvectorized): 0.943 sec elapsed. This is the slowest
+<li><p>Method 1 (nonvectorized): 1.898 sec elapsed. This is the slowest
 approach – but still not bad for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>
 samples!</p></li>
-<li><p>Method 2 (vectorized, thinning): 0.049 sec elapsed. This approach
+<li><p>Method 2 (vectorized, thinning): 0.054 sec elapsed. This approach
 is many times faster that then first approach. It is very flexible – it
 can accommodate very complex time varying intensity functions. You
 almost always know
@@ -540,7 +540,7 @@ almost always know
 and can get its majorizer
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 easily and fast.</p></li>
-<li><p>Method 3 (inversion): 0.048 sec elapsed. This approach is
+<li><p>Method 3 (inversion): 0.049 sec elapsed. This approach is
 typically times faster that the second one in most problems,<br>
 but requires implementations for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
