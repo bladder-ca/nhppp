@@ -30,7 +30,10 @@ vztdraw_intensity(
 
 - lambda_args:
 
-  (list) optional list of named arguments for `lambda()`
+  (list) arguments for `lambda`: see
+  [`vdraw_intensity()`](https://bladder-ca.github.io/nhppp/reference/vdraw_intensity.md)
+  (elements `shared` and `row_args`; passed as `lambda`'s second
+  positional argument).
 
 - Lambda_maj_matrix:
 

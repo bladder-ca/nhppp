@@ -18,7 +18,11 @@ draw(
   t_min = NULL,
   t_max = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  report_first_K = NULL,
+  report_last_K = NULL,
+  atleast1 = FALSE,
+  generate_at_least_K = NULL,
+  generate_at_most_K = NULL
 )
 ```
 
@@ -68,12 +72,54 @@ draw(
 
 - atmost1:
 
-  boolean, draw at most 1 event time
+  boolean, report at most 1 event time (alias for `report_first_K = 1`)
+
+- report_first_K:
+
+  `NULL` or a positive integer: report only the earliest K event times
+  (reporting truncation).
+
+- report_last_K:
+
+  `NULL` or a positive integer: report only the latest K event times
+  (ascending order; reporting truncation).
 
 - atleast1:
 
-  boolean, draw at least 1 event time in interval
+  boolean, condition on at least 1 event (alias for
+  `generate_at_least_K = 1`)
+
+- generate_at_least_K:
+
+  `NULL` or a positive integer: condition the sampled process on at
+  least K events. With `lambda` (thinning), only
+  `generate_at_least_K = 1` is implemented.
+
+- generate_at_most_K:
+
+  `NULL` or a positive integer: condition the sampled process on at most
+  K events. Not implemented with `lambda` (thinning).
 
 ## Value
 
 a vector of event times
+
+## Examples
+
+``` r
+# thinning, with a constant majorizer line
+x <- draw(
+  lambda = function(t) 1 + sin(t),
+  line_majorizer_intercept = 2,
+  line_majorizer_slope = 0,
+  t_min = 0, t_max = 10
+)
+
+# inversion, conditioned on at least one event
+x <- draw(
+  Lambda = function(t) 2 * t,
+  Lambda_inv = function(z) z / 2,
+  t_min = 0, t_max = 10,
+  atleast1 = TRUE
+)
+```

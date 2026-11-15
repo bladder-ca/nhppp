@@ -113,50 +113,22 @@ Define a vectorized form of the intensity function.
 
 ``` r
 
-l <- function(t, alpha = pop$alpha, beta = pop$beta, ...) exp(alpha + beta * t)
+# first positional argument is `t`
+# second positional argument is a named list: 
+#   list(shared = ..., row_args = ...)
+l <- function(t, args) {
+ alpha <- args$row_args$alpha
+ beta <- args$row_args$beta
+ exp(alpha + beta * t)
+}
 ```
 
-Arguments `alpha` and `beta` can be scalars or vectors (or column
-matrices). Argument `t` can be a scalar, a vector of $`K`$ ages (times),
-or a $`K \times s`$ matrix. See some examples of the behavior of the
-vectorized function. The ellipses (`...`) allow `l()` to ignore extra
-arguments without breaking the execution of the script. While we won’t
-do that on purpose, some sampling functions in the `nhppp` package that
-take function arguments need the ability to pass optional extraneous
-arguments.
-
-Scalar arguments, evaluated at `t = 45`
+For example, here we use vectorized arguments, using the first 5 people
+and evaluating all people at `t = 45`
 
 ``` r
 
-l(t = 45, alpha = -4, beta = 0.03)
-#> [1] 0.07065121
-```
-
-Scalar arguments, evaluated at `t = 45:50` (vector) or as a column
-matrix The function returns results in the format of the `t` argument.
-
-``` r
-
-l(t = 45:50, alpha = -4, beta = 0.03)
-#> [1] 0.07065121 0.07280286 0.07502004 0.07730474 0.07965902 0.08208500
-
-l(t = matrix(45:50, ncol = 1), alpha = -4, beta = 0.03)
-#>            [,1]
-#> [1,] 0.07065121
-#> [2,] 0.07280286
-#> [3,] 0.07502004
-#> [4,] 0.07730474
-#> [5,] 0.07965902
-#> [6,] 0.08208500
-```
-
-Vector arguments, using the first 5 people and evaluating all people at
-`t = 45`
-
-``` r
-
-l(t = 45, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = 45, list(row_args = pop[1:5, .(alpha, beta)]))
 #> [1] 0.04943966 0.06380303 0.05296605 0.03496243 0.06470944
 ```
 
@@ -167,7 +139,9 @@ returned in a matrix format.
 
 ``` r
 
-l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = matrix(c(45, 50, 45, 47.4, 30), ncol = 1), 
+  args = list(row_args = pop[1:5, .(alpha, beta)])
+)
 #>            [,1]
 #> [1,] 0.04943966
 #> [2,] 0.07494128
@@ -184,10 +158,11 @@ returned in a matrix format.
 ``` r
 
 t_mat <- matrix(c(
-  45, 50, 45, 47.4, 30,
-  45.1, 50.1, 45.5, 47.8, 38,
-  48, 52.7, 60.1, 70.1, 99.9
-), ncol = 3, byrow = TRUE)
+    45,   50,   45, 
+  47.4,   30, 45.1, 
+  50.1, 45.5, 47.8, 
+    38,   48, 52.7, 
+  60.1, 70.1, 99.9), ncol = 3, byrow = TRUE)
 t_mat
 #>      [,1] [,2] [,3]
 #> [1,] 45.0 50.0 45.0
@@ -196,7 +171,7 @@ t_mat
 #> [4,] 38.0 48.0 52.7
 #> [5,] 60.1 70.1 99.9
 
-l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
+l(t = t_mat, args = list(row_args = pop[1:5, .(alpha, beta)]))
 #>            [,1]       [,2]       [,3]
 #> [1,] 0.04943966 0.05719509 0.04943966
 #> [2,] 0.06892608 0.03937330 0.06400868
@@ -205,15 +180,15 @@ l(t = t_mat, alpha = pop$alpha[1:5], beta = pop$beta[1:5])
 #> [5,] 0.10137780 0.13647889 0.33101750
 ```
 
-The defaults for the `alpha` and `beta` arguments of the `l()` functions
-are the respective columns of the whole population. We can then evaluate
-the intensity function $`\lambda()`$ for the whole population passing
-only the `t` argument.
+Analogusly, we can evaluate the intensity function $`\lambda()`$ for the
+whole population passing the `t` argument, and the whole population’s
+`alpha` and `beta` variables.
 
 ``` r
 
 t_mat <- matrix(rep(c(45, 50, 55), each = K), ncol = 3, byrow = TRUE)
-l(t = t_mat) |> head()
+l(t = t_mat, 
+ args = list(row_args = pop[, .(alpha, beta)])) |> head()
 #>            [,1]       [,2]       [,3]
 #> [1,] 0.04943966 0.04943966 0.04943966
 #> [2,] 0.06380303 0.06380303 0.06380303
@@ -243,7 +218,9 @@ The vectorized version of $`\Lambda`$ for our example is
 
 ``` r
 
-L <- function(t, alpha = pop$alpha, beta = pop$beta, ...) {
+L <- function(t, args) {
+  alpha <- args$row_args$alpha
+  beta <- args$row_args$beta
   (exp(alpha + beta * t) - exp(alpha)) / beta
 }
 ```
@@ -263,7 +240,9 @@ The vectorized implementation of $`\Lambda^{-1}`$ for our example is
 
 ``` r
 
-Li <- function(z, alpha = pop$alpha, beta = pop$beta, ...) {
+Li <- function(z, args) {
+  alpha <- args$row_args$alpha
+  beta <- args$row_args$beta
   (log(beta * z + exp(alpha)) - alpha) / beta
 }
 ```
@@ -301,7 +280,7 @@ for (k in 1:K) {
   }
 }
 tictoc::toc(log = TRUE)
-#> Method 1 (nonvectorized): 1.524 sec elapsed
+#> Method 1 (nonvectorized): 1.589 sec elapsed
 pop[, t_nonvec_special_case := t_nonvec_special_case]
 ```
 
@@ -343,11 +322,11 @@ the majorizer matrix with the `rate_matrix_t_min` and
 `rate_matrix_t_max` options. The sampling intervals
 $`[T_{k0}, T_{k1})`$for each simulated person are a subset of the
 interval for which the majorizer matrix is defined, and are specified
-with the `t_min` and `t_max` options. (The `atmostB` option can be
+with the `t_min` and `t_max` options. (The `budget_cap` option can be
 useful to speed up the sampling and minimize memory needs when one is
 interested in the first event only. The smaller the value, the faster
 the algorithm but you have to check that you have not specified it to be
-too small. In this example, `atmostB = 5` is fine – it returns exact
+too small. In this example, `budget_cap = 5` is fine – it returns exact
 solutions; but we have checked it \[not shown\]. If you do not want to
 mess with it, do not use the option. The function may be already fast
 enough for your needs).
@@ -362,24 +341,26 @@ breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 lmaj_mat <- nhppp::get_step_majorizer(
   fun = l,
   breaks = breaks_mat,
-  is_monotone = TRUE
+  is_monotone = TRUE, 
+  fun_args = list(row_args = pop[,.(alpha, beta)])
 )
 
 pop[
   ,
   t_thinning := nhppp::vdraw_intensity(
     lambda = l,
+    lambda_args = list(row_args = pop[,.(alpha, beta)]),
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 40,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE,
-    atmostB = 5
+    report_first_K = 1,
+    budget_cap = 5
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, thinning): 0.112 sec elapsed
+#> Method 2 (vectorized, thinning): 0.066 sec elapsed
 ```
 
 ## Method 3: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -388,8 +369,7 @@ The most efficient sampling is possible when one knows $`\Lambda()`$ and
 $`\Lambda^{-1}()`$. The `nhppp` package can sample in this case using
 the
 [`vdraw_cumulative_intensity()`](https://bladder-ca.github.io/nhppp/reference/vdraw_cumulative_intensity.md)
-function. Here `range_t` is a matrix with information on each person’s
-$`[T_{k0}, T_{k1})`$.
+function.
 
 ``` r
 
@@ -399,13 +379,14 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L,
     Lambda_inv = Li,
+    Lambda_args = list(row_args = pop[,.(alpha, beta)]),
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 3 (inversion): 0.016 sec elapsed
+#> Method 3 (inversion): 0.072 sec elapsed
 ```
 
 ## Comparisons
@@ -418,18 +399,18 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (nonvectorized): 1.524 sec elapsed. This is the slowest
+1.  Method 1 (nonvectorized): 1.589 sec elapsed. This is the slowest
     approach – but still not bad for $`10^{5}`$ samples!
 
-2.  Method 2 (vectorized, thinning): 0.112 sec elapsed. This approach is
+2.  Method 2 (vectorized, thinning): 0.066 sec elapsed. This approach is
     many times faster that then first approach. It is very flexible – it
     can accommodate very complex time varying intensity functions. You
     almost always know $`\lambda`$ and can get its majorizer
     $`\lambda_*`$ easily and fast.
 
-3.  Method 3 (inversion): 0.016 sec elapsed. This approach is many times
-    faster that the second one, but requires implementations for
-    $`\Lambda`$ and $`\Lambda^{-1}`$.
+3.  Method 3 (inversion): 0.072 sec elapsed. This approach is typically
+    times faster that the second one in most problems,  
+    but requires implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 
 ### Simulated times
 

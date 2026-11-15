@@ -31,5 +31,5 @@ a vector of non zero counts of size `size`
 
 ``` r
 rng_stream_rztpois(10)
-#>  [1] 1 1 1 1 2 1 1 3 2 1
+#>  [1] 1 1 1 1 2 3 1 1 2 1
 ```

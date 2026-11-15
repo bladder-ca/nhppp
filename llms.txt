@@ -113,7 +113,7 @@ Constant-intensity Poisson Point Processes
   : Simulate n events from a homogeneous Poisson Point Process.
 
 - [`ztppp()`](https://bladder-ca.github.io/nhppp/reference/ztppp.md) :
-  Simulate a zero-truncated homogeneous Poisson Point Process over
+  Simulate a count-conditioned homogeneous Poisson Point Process over
   (t_min, t_max\]
 
 ### NHPPP wrapper functions
@@ -138,6 +138,9 @@ Non-homogeneous Poisson Point Processes from intensity functions
   : Vectorized sampling from a non homogeneous Poisson Point Process
   (NHPPP) from an interval (thinning method) with piecewise
   constant_majorizers (C++)
+- [`vdraw_intensity_step()`](https://bladder-ca.github.io/nhppp/reference/vdraw_intensity_step.md)
+  : Vectorized sampling from NHPPPs given the intensity function, with
+  piecewise constant majorizers over arbitrary interval bounds (C++)
 
 ### NHPPP from cumulative intensity function
 
@@ -180,6 +183,10 @@ Non-homogeneous Poisson Point Processes from intensity functions
   : Sampling from NHPPPs with piecewise constant intensities with same
   interval lengths (non-vectorized)
 
+- [`vdraw_sc_step()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step.md)
+  : Vectorized sampling from NHPPPs with piecewise constant intensities
+  over arbitrary interval bounds (C++)
+
 - [`vdraw_sc_step_regular()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step_regular.md)
   : Vectorized sampling from NHPPPs with piecewise constant intensities
   with same interval lengths
@@ -187,6 +194,10 @@ Non-homogeneous Poisson Point Processes from intensity functions
 - [`vdraw_sc_step_regular_cpp()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step_regular_cpp.md)
   : Vectorized sampling from NHPPPs with piecewise constant intensities
   with same interval lengths (C++)
+
+- [`vztdraw_sc_step()`](https://bladder-ca.github.io/nhppp/reference/vztdraw_sc_step.md)
+  : Vectorized sampling from zero-truncated NHPPPs with piecewise
+  constant intensities over arbitrary interval bounds (C++)
 
 - [`ztdraw_sc_linear()`](https://bladder-ca.github.io/nhppp/reference/ztdraw_sc_linear.md)
   :
@@ -221,7 +232,14 @@ Auxiliary functions
   processes](https://bladder-ca.github.io/nhppp/articles/Gompertz_processes.md):
 - [Sampling log-linear
   times](https://bladder-ca.github.io/nhppp/articles/Log_linear_times.md):
+- [Long event output for large
+  simulations](https://bladder-ca.github.io/nhppp/articles/Long_output_format.md):
 - [A simple discrete event simulation model of a cancer's natural
   history](https://bladder-ca.github.io/nhppp/articles/Simple_des_model_cancer_natural_Hx.md):
+- [Step intensities over arbitrary
+  intervals](https://bladder-ca.github.io/nhppp/articles/Step_intensities_arbitrary_intervals.md):
 - [Sampling from Weibull
   processes](https://bladder-ca.github.io/nhppp/articles/Weibull_processes.md):
+- [How to write an intensity or cumulative intensity function for
+  vectorized
+  models](https://bladder-ca.github.io/nhppp/articles/Writing_intensity_functions.md):

@@ -148,11 +148,11 @@ rm(list = "rhos") # cleanup
 4.  Because no person lives beyond the maximum simulation age of 110
     years, we need to force the simulation of at least one death event
     over the simulation interval. This means that we are sampling from a
-    zero-truncated NHPPP. Setting the option `atleast1` to `TRUE`
+    zero-truncated NHPPP. Setting the option `generate_at_least_K = 1`
     achieves this.
 
 5.  We only need to sample the earliest event from this NHPPP. So we set
-    the `atmost1` option to `TRUE`.
+    the `report_first K = 1` option to `TRUE`.
 
 ``` r
 
@@ -165,8 +165,8 @@ pop[
       rate_matrix_t_max = 110,
       t_min = pop$spawn_age, # 40
       t_max = pop$max_simulation_age, # 110
-      atmost1 = TRUE,
-      atleast1 = TRUE
+      report_first_K = 1, 
+      generate_at_least_K = 1
     )
 ]
 ```
@@ -310,8 +310,12 @@ vectorized form.
 
 ``` r
 
-lambda <- function(t, P = pop, ...) {
+# first positional argument is t
+# second positional argument is a named list 
+# list(shared = ..., row_args = ...)
+lambda <- function(t, args) {
   # non-risk factor part: shape / scale * (t/scale)^(shape - 1)
+  P <- args$row_args
   (P$param_cancer_emergence_shape / P$param_cancer_emergence_scale) *
     (t / P$param_cancer_emergence_scale)^(P$param_cancer_emergence_shape - 1) +
     # risk factor (toxin exposure) part: delta_k * xi(t)
@@ -360,6 +364,7 @@ works.)
 
 lambda_star <- nhppp::get_step_majorizer(
   fun = lambda,
+  fun_args = list(row_args = pop),
   breaks = time_breaks,
   is_monotone = FALSE,
   K = 1.9 / 4 # This is the maximum slope of xi() -- which you get with some calculus
@@ -385,12 +390,13 @@ pop[
   ,
   age_cancer_emergence := nhppp::vdraw_intensity(
     lambda = lambda,
+    lambda_args = list(row_args = pop),
     lambda_maj_matrix = lambda_star,
     rate_matrix_t_min = 40,
     rate_matrix_t_max = 110,
     t_min = pop$spawn_age,
     t_max = pmin(pop$age_dead_from_other_causes, 110, na.rm = TRUE),
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ][
   ,
@@ -432,13 +438,15 @@ function.
 
 A bit of calculus can yield
 $`N_k(t) = \frac{1}{\beta_k} (e^{\alpha_k + \beta_k t} - e^{\alpha_k})`$,
-which we can implement in vectorized form and with default parameters
-already set:
+which we can implement in vectorized form. The person-specific
+parameters $`\alpha_k, \beta_k`$ arrive through the args container’s
+`row_args` element (a `data.table` with one row per sampled person),
+which is passed as the function’s second argument:
 
 ``` r
 
-Nu <- function(t, Lambda_args = list(population), ...) {
-  P <- Lambda_args$population
+Nu <- function(t, a) {
+  P <- a$row_args
   (
     exp(P$param_cancer_death_intercept + P$param_cancer_death_slope * t) -
       exp(P$param_cancer_death_intercept)
@@ -452,8 +460,8 @@ The inverse $`N_k^{-1}(\cdot)`$ is
 
 ``` r
 
-Nu_inv <- function(z, Lambda_inv_args = list(population), ...) {
-  P <- Lambda_inv_args$population
+Nu_inv <- function(z, a) {
+  P <- a$row_args
   (
     log(P$param_cancer_death_slope * z +
       exp(P$param_cancer_death_intercept)) -
@@ -462,25 +470,22 @@ Nu_inv <- function(z, Lambda_inv_args = list(population), ...) {
 }
 ```
 
-Then, we can sample the times to cancer death.
+Then, we can sample the times to cancer death. The same `Lambda_args`
+container is delivered to both `Nu` and `Nu_inv`.
 
 ``` r
 
-args_list <- list(population = pop[!is.na(age_cancer_emergence), ])
 pop[
   !is.na(age_cancer_emergence),
   age_dead_from_cancer_causes := nhppp::vdraw_cumulative_intensity(
     Lambda = Nu,
-    Lambda_args = args_list,
     Lambda_inv = Nu_inv,
-    Lambda_inv_args = args_list,
+    Lambda_args = list(row_args = pop[!is.na(age_cancer_emergence), ]),
     t_min = pop[!is.na(age_cancer_emergence), age_cancer_emergence],
     t_max = pop[!is.na(age_cancer_emergence), age_dead_from_other_causes],
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
-
-rm(list = "args_list") # cleanup
 ```
 
 ### Dying from all causes
@@ -538,7 +543,7 @@ pop[
   age_clinical_cancer_dx := NA
 ]
 tictoc::toc()
-#> 0.007 sec elapsed
+#> 0.003 sec elapsed
 ```
 
 With `nhppp`, we can use the
@@ -562,11 +567,11 @@ pop[
     lambda_matrix = mu_mat,
     rate_matrix_t_min = pop[!is.na(age_cancer_emergence), age_cancer_emergence],
     rate_matrix_t_max = pop[!is.na(age_cancer_emergence), age_dead],
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc()
-#> 0.011 sec elapsed
+#> 0.113 sec elapsed
 ```
 
 ## Some descriptives

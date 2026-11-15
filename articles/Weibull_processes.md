@@ -100,15 +100,24 @@ $`\Lambda^{-1}()`$ functions that take as default the values in `pop`.
 
 ``` r
 
-l_weibull <- function(t, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+# first positional argument is t/z
+# second positional argument is a named list 
+# list(shared  = ..., row_args = ...)
+l_weibull <- function(t, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   alpha/sigma * (t/sigma)^(alpha-1)
 }
 
-L_weibull <- function(t, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+L_weibull <- function(t, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   (t/sigma)^alpha
 }
 
-Li_weibull<- function(z, alpha = pop$alpha_weibull, sigma = pop$sigma_weibull, ...) {
+Li_weibull<- function(z, args) {
+  alpha <- args$row_args$alpha_weibull
+  sigma <- args$row_args$sigma_weibull
   sigma * z^(1/alpha)
 } 
 ```
@@ -150,14 +159,14 @@ to specify a start and stop time for each row of the majorizer matrix
 with the `rate_matrix_t_min` and `rate_matrix_t_max` options. The
 sampling intervals $`[T_{k0}, T_{k1})`$for each simulated person are a
 subset of the interval for which the majorizer matrix is defined, and
-are specified with the `t_min` and `t_max` options. (The `atmostB`
+are specified with the `t_min` and `t_max` options. (The `budget_cap`
 option can be useful to speed up the sampling and minimize memory needs
 when one is interested in the first event only. The smaller the value,
 the faster the algorithm but you have to check that you have not
-specified it to be too small. In this example, `atmostB = 5` is fine –
-it returns exact solutions; but we have checked it \[not shown\]. If you
-do not want to mess with it, do not use the option. The function may be
-already fast enough for your needs).
+specified it to be too small. In this example, `budget_cap = 5` is fine
+– it returns exact solutions; but we have checked it \[not shown\]. If
+you do not want to mess with it, do not use the option. The function may
+be already fast enough for your needs).
 
 ``` r
 
@@ -168,6 +177,7 @@ breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 
 lmaj_mat <- nhppp::get_step_majorizer(
   fun = l_weibull,
+  fun_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
   breaks = breaks_mat,
   is_monotone = TRUE
 )
@@ -176,17 +186,18 @@ pop[
   ,
   t_thinning := nhppp::vdraw_intensity(
     lambda = l_weibull,
+    lambda_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 20,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE,
-    atmostB = 5
+    report_first_K = 1,
+    budget_cap = 5
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 1 (vectorized, thinning): 1.267 sec elapsed
+#> Method 1 (vectorized, thinning): 1.065 sec elapsed
 ```
 
 ### Method 2: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -195,8 +206,7 @@ The most efficient sampling is possible when one knows $`\Lambda()`$ and
 $`\Lambda^{-1}()`$. The `nhppp` package can sample in this case using
 the
 [`vdraw_cumulative_intensity()`](https://bladder-ca.github.io/nhppp/reference/vdraw_cumulative_intensity.md)
-function. Here `range_t` is a matrix with information on each person’s
-$`[T_{k0}, T_{k1})`$.
+function.
 
 ``` r
 
@@ -206,13 +216,14 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L_weibull,
     Lambda_inv = Li_weibull,
+    Lambda_args = list(row_args = pop[, .(alpha_weibull, sigma_weibull)]),
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, inversion): 0.122 sec elapsed
+#> Method 2 (vectorized, inversion): 0.748 sec elapsed
 ```
 
 ### Comparisons
@@ -225,14 +236,14 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (vectorized, thinning): 1.267 sec elapsed. This is the
+1.  Method 1 (vectorized, thinning): 1.065 sec elapsed. This is the
     slower approach – but still not bad for $`10^{6}`$ samples! It uses
     the thinning algorithm which is very flexible – it can accommodate
     very complex time varying intensity functions. You almost always
     know $`\lambda`$ and can get its majorizer $`\lambda_*`$ easily and
     fast.
 
-2.  Method 2 (vectorized, inversion): 0.122 sec elapsed. This approach
+2.  Method 2 (vectorized, inversion): 0.748 sec elapsed. This approach
     is many times faster that the previous one, but requires
     implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 
@@ -269,29 +280,23 @@ the numerical analyses in the `nhppp` paper.
 ``` r
 
 if(nchar(system.file(package = 'ggplot2'))>0) {
-  pop2 <- setDT(list(id = 1:10000)) 
+  pop2 <- setDT(list(id = 1:10^5)) 
   pop2[, `:=`(
     T0 = 20, 
     T1 = 100, 
-    a = 2.78, 
-    s = 74
+    alpha_weibull = 2.78, 
+    sigma_weibull = 74
   )]
   setindex(pop2, id)
   pop2
   
-  ## re-define functions to use `pop2` by default 
-  ##    clunckiness of `nhppp` -- help us improve it!
-  l  <- function(t, a = pop2$a, s = pop2$s, ...) a/s * (t/s)^(a-1)
-  L  <- function(t, a = pop2$a, s = pop2$s, ...) (t/s)^a
-  Li <- function(z, a = pop2$a, s = pop2$s, ...)  s * z^(1/a)
-  
   ## get all times (full trajectories)
   Z <- nhppp::vdraw_cumulative_intensity(
-      Lambda = L,
-      Lambda_inv = Li,
+      Lambda = L_weibull,
+      Lambda_inv = Li_weibull,
+      Lambda_args = list(row_args = pop2[, .(alpha_weibull, sigma_weibull)]),
       t_min = pop2$T0,
-      t_max = pop2$T1,
-      atmost1 = FALSE
+      t_max = pop2$T1
     )
   
   ## ignore non-realized times 
@@ -300,9 +305,9 @@ if(nchar(system.file(package = 'ggplot2'))>0) {
   
   x <- seq(from = 20, to = 100, length.out = 100)
   ## normalize the hazard rate to have area 1 between 20 and 100
-  y <- l(x, a = pop2$a[1], s = pop2$s[1]) / (
-        L(100, a = pop2$a[1], s = pop2$s[1]) - 
-        L(20, a = pop2$a[1], s = pop2$s[1])
+  y <- l_weibull(x, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)])) / (
+        L_weibull(100, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)])) -
+        L_weibull(20, list(row_args = pop2[1, .(alpha_weibull, sigma_weibull)]))
        )
   
   

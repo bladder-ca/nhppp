@@ -18,6 +18,10 @@ vdraw_intensity_step_regular_cpp(
   t_max = NULL,
   tol = 10^-6,
   atmost1 = FALSE,
+  report_first_K = NULL,
+  report_last_K = NULL,
+  generate_at_least_K = NULL,
+  budget_cap = NULL,
   atmostB = NULL
 )
 ```
@@ -30,7 +34,15 @@ vdraw_intensity_step_regular_cpp(
 
 - lambda_args:
 
-  (list) optional arguments to pass to `lambda`
+  (list) arguments for `lambda`, with up to two elements: `shared`
+  (named list of row-invariant arguments of any type, stored once and
+  never replicated) and `row_args` (data.frame or data.table with one
+  row per point process, auto-subset when rows are resampled). When
+  non-`NULL`, the container is passed as `lambda`'s second positional
+  argument exactly as given, except that `row_args` is already
+  row-subset; the name of the second formal is up to you. A flat list
+  with neither element is treated as all-shared; a `vector_arguments`
+  element is deprecated (use `row_args`).
 
 - Lambda_maj_matrix:
 
@@ -72,11 +84,37 @@ vdraw_intensity_step_regular_cpp(
 
 - atmost1:
 
-  boolean, draw at most 1 event time
+  boolean, report at most 1 event time (alias for `report_first_K = 1`)
+
+- report_first_K:
+
+  `NULL` or a positive integer: report only the earliest K accepted
+  event times. Ignored (all accepted events are returned) when
+  `generate_at_least_K >= 1` — the conditional rejection loop needs the
+  full survivor count and applies reporting after convergence.
+
+- report_last_K:
+
+  `NULL` or a positive integer: report only the latest K accepted event
+  times (ascending order). Same conditional-path caveat as
+  `report_first_K`.
+
+- generate_at_least_K:
+
+  `NULL`, or a positive integer: draw the majorizer candidates
+  conditioned on at least K majorizer events. NOTE: this does not by
+  itself condition the thinned process on K accepted events; rows with
+  too few survivors must be resampled by the caller (see
+  [`vztdraw_intensity_step_regular()`](https://bladder-ca.github.io/nhppp/reference/vztdraw_intensity_step_regular.md)).
+
+- budget_cap:
+
+  `NULL` or a positive integer: cap the computational event budget of
+  the majorizer kernel (approximation knob).
 
 - atmostB:
 
-  If not NULL, draw at most B (B\>0) event times. NULL means ignore.
+  deprecated alias for `budget_cap`.
 
 ## Value
 

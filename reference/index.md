@@ -19,7 +19,7 @@ Constant-intensity Poisson Point Processes
   : Simulate n events from a homogeneous Poisson Point Process.
 
 - [`ztppp()`](https://bladder-ca.github.io/nhppp/reference/ztppp.md) :
-  Simulate a zero-truncated homogeneous Poisson Point Process over
+  Simulate a count-conditioned homogeneous Poisson Point Process over
   (t_min, t_max\]
 
 ### NHPPP wrapper functions
@@ -44,6 +44,9 @@ Non-homogeneous Poisson Point Processes from intensity functions
   : Vectorized sampling from a non homogeneous Poisson Point Process
   (NHPPP) from an interval (thinning method) with piecewise
   constant_majorizers (C++)
+- [`vdraw_intensity_step()`](https://bladder-ca.github.io/nhppp/reference/vdraw_intensity_step.md)
+  : Vectorized sampling from NHPPPs given the intensity function, with
+  piecewise constant majorizers over arbitrary interval bounds (C++)
 
 ### NHPPP from cumulative intensity function
 
@@ -86,6 +89,10 @@ Non-homogeneous Poisson Point Processes from intensity functions
   : Sampling from NHPPPs with piecewise constant intensities with same
   interval lengths (non-vectorized)
 
+- [`vdraw_sc_step()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step.md)
+  : Vectorized sampling from NHPPPs with piecewise constant intensities
+  over arbitrary interval bounds (C++)
+
 - [`vdraw_sc_step_regular()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step_regular.md)
   : Vectorized sampling from NHPPPs with piecewise constant intensities
   with same interval lengths
@@ -93,6 +100,10 @@ Non-homogeneous Poisson Point Processes from intensity functions
 - [`vdraw_sc_step_regular_cpp()`](https://bladder-ca.github.io/nhppp/reference/vdraw_sc_step_regular_cpp.md)
   : Vectorized sampling from NHPPPs with piecewise constant intensities
   with same interval lengths (C++)
+
+- [`vztdraw_sc_step()`](https://bladder-ca.github.io/nhppp/reference/vztdraw_sc_step.md)
+  : Vectorized sampling from zero-truncated NHPPPs with piecewise
+  constant intensities over arbitrary interval bounds (C++)
 
 - [`ztdraw_sc_linear()`](https://bladder-ca.github.io/nhppp/reference/ztdraw_sc_linear.md)
   :

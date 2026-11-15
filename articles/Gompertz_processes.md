@@ -101,15 +101,23 @@ and $`\Lambda^{-1}()`$ functions that take as default the values in
 
 ``` r
 
-l_gompertz <- function(t, a = pop$a_gompertz, b = pop$b_gompertz, ...) {
+# the first positional argument is t/z; 
+# the second should be a list(shared = ..., row_args = ...)
+l_gompertz <- function(t, args) {
+  a <- args$row_args$a_gompertz
+  b <- args$row_args$b_gompertz
   a * b * exp(b * t)
 }
 
-L_gompertz <- function(t, a = pop$a_gompertz, b = pop$b_gompertz, ...) {
+L_gompertz <- function(t, args) {
+  a <- args$row_args$a_gompertz
+  b <- args$row_args$b_gompertz
   a * exp(b * t) - a
 }
 
-Li_gompertz <- function(z, a = pop$a_gompertz, b = pop$b_gompertz, ...) {
+Li_gompertz <- function(z, args) {
+  a <- args$row_args$a_gompertz
+  b <- args$row_args$b_gompertz
   log(z/a +1) / b
 }
  
@@ -152,14 +160,14 @@ to specify a start and stop time for each row of the majorizer matrix
 with the `rate_matrix_t_min` and `rate_matrix_t_max` options. The
 sampling intervals $`[T_{k0}, T_{k1})`$for each simulated person are a
 subset of the interval for which the majorizer matrix is defined, and
-are specified with the `t_min` and `t_max` options. (The `atmostB`
+are specified with the `t_min` and `t_max` options. (The `budget_cap`
 option can be useful to speed up the sampling and minimize memory needs
 when one is interested in the first event only. The smaller the value,
 the faster the algorithm but you have to check that you have not
-specified it to be too small. In this example, `atmostB = 5` is fine –
-it returns exact solutions; but we have checked it \[not shown\]. If you
-do not want to mess with it, do not use the option. The function may be
-already fast enough for your needs).
+specified it to be too small. In this example, `budget_cap = 10` is fine
+– it returns exact solutions; but we have checked it \[not shown\]. If
+you do not want to mess with it, do not use the option. The function may
+be already fast enough for your needs).
 
 ``` r
 
@@ -171,24 +179,26 @@ breaks_mat <- matrix(rep(break_points, each = K), nrow = K)
 lmaj_mat <- nhppp::get_step_majorizer(
   fun = l_gompertz,
   breaks = breaks_mat,
-  is_monotone = TRUE
+  is_monotone = TRUE, 
+  fun_args = list(row_args = pop[, .(a_gompertz, b_gompertz)])
 )
 
 pop[
   ,
   t_thinning := nhppp::vdraw_intensity(
     lambda = l_gompertz,
+    lambda_args = list(row_args = pop[, .(a_gompertz, b_gompertz)]),
     lambda_maj_matrix = lmaj_mat,
     rate_matrix_t_min = 20,
     rate_matrix_t_max = 100,
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE,
-    atmostB = 10
+    report_first_K = 1,
+    budget_cap = 10
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 1 (vectorized, thinning): 0.23 sec elapsed
+#> Method 1 (vectorized, thinning): 0.116 sec elapsed
 ```
 
 ### Method 2: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -208,13 +218,14 @@ pop[
   t_inversion := nhppp::vdraw_cumulative_intensity(
     Lambda = L_gompertz,
     Lambda_inv = Li_gompertz,
+    Lambda_args = list(row_args = pop[, .(a_gompertz, b_gompertz)]),
     t_min = pop$T0,
     t_max = pop$T1,
-    atmost1 = TRUE
+    report_first_K = 1
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, inversion): 0.087 sec elapsed
+#> Method 2 (vectorized, inversion): 0.07 sec elapsed
 ```
 
 ### Comparisons
@@ -227,15 +238,15 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (vectorized, thinning): 0.23 sec elapsed. This is the
+1.  Method 1 (vectorized, thinning): 0.116 sec elapsed. This is the
     slower approach – but still not bad for $`10^{5}`$ samples! It uses
     the thinning algorithm which is very flexible – it can accommodate
     very complex time varying intensity functions. You almost always
     know $`\lambda`$ and can get its majorizer $`\lambda_*`$ easily and
     fast.
 
-2.  Method 2 (vectorized, inversion): 0.087 sec elapsed. This approach
-    is many times faster that the previous one, but requires
+2.  Method 2 (vectorized, inversion): 0.07 sec elapsed. This approach is
+    many times faster that the previous one, but requires
     implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 
 ### Simulated times
@@ -269,9 +280,9 @@ can use either method; we demonstrate with the faster one.
 Z <- nhppp::vdraw_cumulative_intensity(
     Lambda = L_gompertz,
     Lambda_inv = Li_gompertz,
+    Lambda_args = list(row_args = pop[, .(a_gompertz, b_gompertz)]),
     t_min = pop$T0,
-    t_max = pop$T1,
-    atmost1 = FALSE
+    t_max = pop$T1
   )
 
 dim(Z) # a lot of events!
@@ -298,25 +309,19 @@ if(nchar(system.file(package = 'ggplot2'))>0) {
   pop2[, `:=`(
     T0 = 20, 
     T1 = 100, 
-    a = 0.005, 
-    b = 0.090
+    a_gompertz = 0.005, 
+    b_gompertz = 0.090
   )]
   setindex(pop2, id)
   pop2
   
-  ## re-define functions to use `pop2` by default 
-  ##    clunckiness of `nhppp` -- help us improve it!
-  l  <- function(t, a = pop2$a, b = pop2$b, ...) a * b * exp(b * t)
-  L  <- function(t, a = pop2$a, b = pop2$b, ...) a * exp(b * t) - a
-  Li <- function(z, a = pop2$a, b = pop2$b, ...) log(z/a +1) / b
-  
   ## get all times (full trajectories)
   Z <- nhppp::vdraw_cumulative_intensity(
-      Lambda = L,
-      Lambda_inv = Li,
+      Lambda = L_gompertz,
+      Lambda_inv = Li_gompertz,
+      Lambda_args = list(row_args = pop2[, .(a_gompertz, b_gompertz)]),
       t_min = pop2$T0,
-      t_max = pop2$T1,
-      atmost1 = FALSE
+      t_max = pop2$T1
     )
   
   ## ignore non-realized times 
@@ -325,9 +330,9 @@ if(nchar(system.file(package = 'ggplot2'))>0) {
   
   x <- seq(from = 20, to = 100, length.out = 100)
   ## normalize the hazard rate to have area 1 between 20 and 100
-  y <- l(x, a = pop2$a[1], b = pop2$b[1]) / (
-        L(100, a = pop2$a[1], b = pop2$b[1]) - 
-        L(20, a = pop2$a[1], b = pop2$b[1])
+  y <- l_gompertz(x, list(row_args = pop2[1, .(a_gompertz, b_gompertz), drop=FALSE])) / (
+        L_gompertz(100, list(row_args = pop2[1, .(a_gompertz, b_gompertz), drop=FALSE])) - 
+        L_gompertz(20, list(row_args = pop2[1, .(a_gompertz, b_gompertz), drop=FALSE]))
        )
   
   

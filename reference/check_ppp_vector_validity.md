@@ -13,7 +13,9 @@ check_ppp_vector_validity(
   t_max = NULL,
   size = NULL,
   atmost1 = FALSE,
-  atleast1 = FALSE
+  atleast1 = FALSE,
+  atmostk = NULL,
+  atleastk = NULL
 )
 ```
 
@@ -42,6 +44,14 @@ check_ppp_vector_validity(
 - atleast1:
 
   (boolean) optional: at least one sample returned
+
+- atmostk:
+
+  (integer) optional: at most `k` samples returned
+
+- atleastk:
+
+  (integer) optional: at least `k` samples returned
 
 ## Value
 
