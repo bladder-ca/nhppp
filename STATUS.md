@@ -4,10 +4,12 @@ Last updated: 2026-11-15 (1.1.0 submitted to CRAN; awaiting acceptance)
 
 ## Where things stand
 
-- **Post-1.1.0 on `dev` (uncommitted, 2026-11-15):** version bumped to 1.1.0.9000; `rstream`
-  moved Imports -> Suggests (dropped vestigial `importClassesFrom`; guarded `rstream_r()`
-  helper; tests build streams via `helper-rstream.R` and skip without rstream).
-  `devtools::check()`: 0/0/0.
+- **Post-1.1.0 on `dev` (2026-11-15, 1.1.0.9000):** rstream dropped as a dependency.
+  Removed deprecated `ppp_n()`, `ppp_orderstat()`, `ppp_sequential()`, the
+  `ppp_next_n(rng_stream)` argument, and all `rng_stream_*()` helpers (`rztpois()`/`rbtpois()`
+  kept, now in `R/utils-tpois.R`). Stream-based CRN is the user's job via
+  `rstream::rstream.RNG()` (verified to drive R and C++ samplers); noted in `?nhppp`.
+  No CRAN reverse deps. `devtools::check()`: 0/0/0. `lifecycle` is now unused (open item).
 - **On CRAN:** 1.0.5 (submitted 2026-04-21; tag `v1.0.5`, SHA 7a04d4f).
 - **Development:** `dev` at 1.0.5.9002. `refactor/sc-step-unify` and `origin/dev` point
   to the same commit. The work since 1.0.5 (see `NEWS.md`):

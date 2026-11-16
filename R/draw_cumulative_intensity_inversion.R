@@ -1,8 +1,7 @@
 #' Simulate from a non homogeneous Poisson Point Process (NHPPP) from
 #'    (t_min, t_max) (inversion method)
 #'
-#' @description  Sample NHPPP times using the inversion method,
-#' optionally using an `rstream` generator object
+#' @description  Sample NHPPP times using the inversion method.
 #' @param Lambda (function, double vector) a continuous increasing R to R map
 #'               which is the integrated rate of the NHPPP
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`

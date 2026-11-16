@@ -46,8 +46,7 @@ a vector of event times of the conditioned process
 }
 \description{
 Sample zero-truncated NHPPP times from a linear intensity function
-using the inversion method, optionally using an \code{rstream}
-generator
+using the inversion method.
 }
 \examples{
 x <- ztdraw_sc_linear(intercept = 0, slope = 0.2, t_min = 0, t_max = 10)

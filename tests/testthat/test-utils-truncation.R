@@ -74,10 +74,6 @@ test_that("rbtpois() samples the doubly-truncated Poisson distribution", {
   expect_true(all(x >= 2 & x <= 5))
   x <- rbtpois_vec(rep(2.5, 5000), 3L, 0L)
   expect_true(all(x >= 3))
-
-  # rng_stream variant
-  x <- rng_stream_rbtpois(size = 1000, lambda = 1, k_min = 0, k_max = 3)
-  expect_true(all(x <= 3))
 })
 
 

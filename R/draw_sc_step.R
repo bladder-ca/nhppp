@@ -30,7 +30,6 @@
 #' @export
 draw_sc_step <- function(lambda_vector,
                          time_breaks,
-                         # rng_stream = NULL,
                          atmost1 = FALSE,
                          report_first_K = NULL,
                          report_last_K = NULL,

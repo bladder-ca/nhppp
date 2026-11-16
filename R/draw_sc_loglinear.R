@@ -2,8 +2,7 @@
 #'    (t_min, t_max) with log-linear intensity function (inversion method)
 #'
 #' @description  Sample NHPPP times from an log linear intensity function
-#' using the inversion method, optionally using an `rstream`
-#' generator
+#' using the inversion method.
 #'
 #' @param intercept (double) the intercept in the exponent
 #' @param slope (double) the slope in the exponent

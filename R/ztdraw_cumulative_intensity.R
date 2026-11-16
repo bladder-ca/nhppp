@@ -1,8 +1,7 @@
 #' Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from
 #'    (t_min, t_max) (order statistics method)
 #'
-#' @description  Sample zero-truncated NHPPP times using the order statistics method,
-#' optionally using an `rstream` generator
+#' @description  Sample zero-truncated NHPPP times using the order statistics method.
 #' @param Lambda (function, double vector) a continuous increasing R to R map
 #'               which is the integrated rate of the NHPPP
 #' @param Lambda_inv (function, double vector) the inverse of `Lambda()`

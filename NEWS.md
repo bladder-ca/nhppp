@@ -1,7 +1,11 @@
 # nhppp (development version)
 
-* `rstream` moved from Imports to Suggests; it is needed only when an
-  `rng_stream` object is supplied.
+* Removed `ppp_n()`, `ppp_orderstat()` and `ppp_sequential()` (deprecated since
+  0.5.0; use `ppp_exactly_n()`, `ppp2()` and `ppp()`) and the deprecated
+  `rng_stream` argument of `ppp_next_n()`.
+* Removed the internal `rng_stream_*()` helpers; `rstream` is no longer a
+  dependency. For stream-based reproducibility, set an `rstream` object as R's
+  global generator with `rstream::rstream.RNG()` (see `?nhppp`).
 
 # nhppp 1.1.0
 

@@ -29,7 +29,6 @@ Suggests:
     knitr,
     rlecuyer,
     rmarkdown,
-    rstream,
     testthat,
     tictoc,
     truncnorm,

@@ -2,8 +2,7 @@
 #'    (t_min, t_max) with linear intensity function
 #'
 #' @description  Sample zero-truncated NHPPP times from a linear intensity function
-#' using the inversion method, optionally using an `rstream`
-#' generator
+#' using the inversion method.
 #'
 #' @param intercept (double) the intercept
 #' @param slope (double) the slope
