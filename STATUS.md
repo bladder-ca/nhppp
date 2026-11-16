@@ -1,12 +1,13 @@
 # STATUS
 
-Last updated: 2026-11-16 (1.1.1 submitted to CRAN; awaiting acceptance)
+Last updated: 2026-11-16 (1.1.1 on CRAN; dev at 1.1.1.9000)
 
 ## Where things stand
 
-- **1.1.1 (patch; submitted to CRAN 2026-11-16, SHA 4c25a68; PR \#67
-  merged):** rstream dropped as a dependency. Removed deprecated
-  `ppp_n()`, `ppp_orderstat()`, `ppp_sequential()`, the
+- **On CRAN: 1.1.1** (accepted 2026-11-16; tag `v1.1.1` at 4c25a68,
+  GitHub release published). Development: `main`/`dev` at 1.1.1.9000.
+- **1.1.1 contents:** rstream dropped as a dependency. Removed
+  deprecated `ppp_n()`, `ppp_orderstat()`, `ppp_sequential()`, the
   `ppp_next_n(rng_stream)` argument, and all `rng_stream_*()` helpers
   ([`rztpois()`](https://bladder-ca.github.io/nhppp/reference/rztpois.md)/[`rbtpois()`](https://bladder-ca.github.io/nhppp/reference/rbtpois.md)
   kept, now in `R/utils-tpois.R`). Stream-based CRN is the user’s job
@@ -17,13 +18,10 @@ Last updated: 2026-11-16 (1.1.1 submitted to CRAN; awaiting acceptance)
   No CRAN reverse deps. `devtools::check()`: 0/0/0. `lifecycle` kept
   (decision 2026-11-15). Release prep: url_check clean; check(remote,
   manual) 0/0/2 notes (days since last update; local HTML Tidy);
-  win-devel clean. v1.1.0 tagged on GitHub. Next: on CRAN acceptance,
-  `usethis::use_github_release()` (tags v1.1.1 from CRAN-SUBMISSION),
-  then `usethis::use_dev_version()` -\> 1.1.1.9000.
-- **On CRAN:** 1.0.5 (submitted 2026-04-21; tag `v1.0.5`, SHA 7a04d4f).
-- **Development:** `dev` at 1.0.5.9002. `refactor/sc-step-unify` and
-  `origin/dev` point to the same commit. The work since 1.0.5 (see
-  `NEWS.md`):
+  win-devel clean. v1.1.0 tagged on GitHub.
+- **History:** 1.0.5 on CRAN 2026-04-21 (tag `v1.0.5`, SHA 7a04d4f);
+  1.1.0 on CRAN 2026-11-15 (tag `v1.1.0`, SHA a0c62ed). The 1.1.0 work
+  since 1.0.5 (see `NEWS.md`):
   - unified sc-step C++ kernels;
   - truncation options split into reporting (`report_first_K`,
     `report_last_K`) and generation conditioning (`generate_at_least_K`,

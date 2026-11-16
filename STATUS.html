@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,15 +43,15 @@
 
 <div id="status" class="section level1">
 
-<p>Last updated: 2026-11-16 (1.1.1 submitted to CRAN; awaiting acceptance)</p>
+<p>Last updated: 2026-11-16 (1.1.1 on CRAN; dev at 1.1.1.9000)</p>
 <div class="section level2">
 <h2 id="where-things-stand">Where things stand<a class="anchor" aria-label="anchor" href="#where-things-stand"></a></h2>
 <ul><li>
-<strong>1.1.1 (patch; submitted to CRAN 2026-11-16, SHA 4c25a68; PR #67 merged):</strong> rstream dropped as a dependency. Removed deprecated <code>ppp_n()</code>, <code>ppp_orderstat()</code>, <code>ppp_sequential()</code>, the <code>ppp_next_n(rng_stream)</code> argument, and all <code>rng_stream_*()</code> helpers (<code><a href="reference/rztpois.html">rztpois()</a></code>/<code><a href="reference/rbtpois.html">rbtpois()</a></code> kept, now in <code>R/utils-tpois.R</code>). Stream-based CRN is the user’s job via <code><a href="https://rdrr.io/pkg/rstream/man/rstream.RNG.html" class="external-link">rstream::rstream.RNG()</a></code> (verified to drive R and C++ samplers); noted in <code><a href="reference/nhppp-package.html">?nhppp</a></code>. No CRAN reverse deps. <code>devtools::check()</code>: 0/0/0. <code>lifecycle</code> kept (decision 2026-11-15). Release prep: url_check clean; check(remote, manual) 0/0/2 notes (days since last update; local HTML Tidy); win-devel clean. v1.1.0 tagged on GitHub. Next: on CRAN acceptance, <code>usethis::use_github_release()</code> (tags v1.1.1 from CRAN-SUBMISSION), then <code>usethis::use_dev_version()</code> -&gt; 1.1.1.9000.</li>
+<strong>On CRAN: 1.1.1</strong> (accepted 2026-11-16; tag <code>v1.1.1</code> at 4c25a68, GitHub release published). Development: <code>main</code>/<code>dev</code> at 1.1.1.9000.</li>
 <li>
-<strong>On CRAN:</strong> 1.0.5 (submitted 2026-04-21; tag <code>v1.0.5</code>, SHA 7a04d4f).</li>
+<strong>1.1.1 contents:</strong> rstream dropped as a dependency. Removed deprecated <code>ppp_n()</code>, <code>ppp_orderstat()</code>, <code>ppp_sequential()</code>, the <code>ppp_next_n(rng_stream)</code> argument, and all <code>rng_stream_*()</code> helpers (<code><a href="reference/rztpois.html">rztpois()</a></code>/<code><a href="reference/rbtpois.html">rbtpois()</a></code> kept, now in <code>R/utils-tpois.R</code>). Stream-based CRN is the user’s job via <code><a href="https://rdrr.io/pkg/rstream/man/rstream.RNG.html" class="external-link">rstream::rstream.RNG()</a></code> (verified to drive R and C++ samplers); noted in <code><a href="reference/nhppp-package.html">?nhppp</a></code>. No CRAN reverse deps. <code>devtools::check()</code>: 0/0/0. <code>lifecycle</code> kept (decision 2026-11-15). Release prep: url_check clean; check(remote, manual) 0/0/2 notes (days since last update; local HTML Tidy); win-devel clean. v1.1.0 tagged on GitHub.</li>
 <li>
-<strong>Development:</strong> <code>dev</code> at 1.0.5.9002. <code>refactor/sc-step-unify</code> and <code>origin/dev</code> point to the same commit. The work since 1.0.5 (see <code>NEWS.md</code>):
+<strong>History:</strong> 1.0.5 on CRAN 2026-04-21 (tag <code>v1.0.5</code>, SHA 7a04d4f); 1.1.0 on CRAN 2026-11-15 (tag <code>v1.1.0</code>, SHA a0c62ed). The 1.1.0 work since 1.0.5 (see <code>NEWS.md</code>):
 <ul><li>unified sc-step C++ kernels;</li>
 <li>truncation options split into reporting (<code>report_first_K</code>, <code>report_last_K</code>) and generation conditioning (<code>generate_at_least_K</code>, <code>generate_at_most_K</code>), with the doubly-truncated Poisson primitive <code>rbtpois</code>;</li>
 <li>
