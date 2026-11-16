@@ -6,6 +6,8 @@ internal helpers that existed only to support them, are removed. This also remov
 valgrind leak reported for 1.1.0, which was in rstream's code, not ours. No C++ code
 changed. See NEWS.md for details.
 
+Importing `rstream` in `nhppp` causes a break in a package that imports both `nhppp` and `rstream`.
+
 ## Test environments
 
 * local macOS (aarch64), R release
