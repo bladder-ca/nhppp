@@ -1,6 +1,6 @@
 Package: nhppp
 Title: Simulating Nonhomogeneous Poisson Point Processes 
-Version: 1.1.0
+Version: 1.1.0.9000
 Authors@R: 
     c(person(given = "Thomas", 
              family = "Trikalinos", 
@@ -17,7 +17,6 @@ Description: Simulates events from one dimensional nonhomogeneous Poisson point 
 License: GPL (>= 3)
 Imports: 
     lifecycle,
-    rstream,
     Rcpp (>= 1.0.12)
 LinkingTo: Rcpp
 Encoding: UTF-8
@@ -30,6 +29,7 @@ Suggests:
     knitr,
     rlecuyer,
     rmarkdown,
+    rstream,
     testthat,
     tictoc,
     truncnorm,

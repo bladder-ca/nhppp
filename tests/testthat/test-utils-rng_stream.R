@@ -6,7 +6,7 @@ test_that("rng_stream_runif() works without rstream object", {
 
 test_that("rng_stream_runif() works with rstream object", {
   # check rstream
-  S <- methods::new("rstream.mrg32k3a")
+  S <- new_mrg32k3a()
   expect_no_error(df2 <- rng_stream_runif(size = 10, rng_stream = S))
   expect_equal(length(df2), 10)
 
@@ -18,14 +18,14 @@ test_that("rng_stream_runif() works with rstream object", {
 
 test_that("rng_stream_rexp() works ", {
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = NULL))
-  expect_no_error(S1 <- methods::new("rstream.mrg32k3a"))
+  expect_no_error(S1 <- new_mrg32k3a())
   expect_no_error(rng_stream_rexp(size = 10, rate = 1, rng_stream = S1))
 })
 
 
 test_that("rng_stream_rztpois() works ", {
   expect_no_error(rng_stream_rztpois(size = 10, lambda = 1, rng_stream = NULL))
-  expect_no_error(S1 <- methods::new("rstream.mrg32k3a"))
+  expect_no_error(S1 <- new_mrg32k3a())
   expect_no_error(rng_stream_rztpois(size = 10, lambda = 1, rng_stream = S1))
 })
 

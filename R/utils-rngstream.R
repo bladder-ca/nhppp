@@ -1,3 +1,13 @@
+# Draw `size` uniforms from an rstream object. rstream is in Suggests: a caller
+# who supplies a stream object necessarily has it installed, but fail clearly
+# if not.
+rstream_r <- function(rng_stream, size) {
+  if (!requireNamespace("rstream", quietly = TRUE)) {
+    stop("Package 'rstream' is required when `rng_stream` is supplied.", call. = FALSE)
+  }
+  rstream::r(rng_stream, size)
+}
+
 #' Uniform random samples from `rstream` objects
 #'
 #' @description Sample from `rstream` objects
@@ -9,7 +19,6 @@
 #' @return a vector of uniform variates of size `size`
 #' @keywords internal
 #' @export
-#' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
 #' rng_stream_runif(10)
 rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NULL) {
@@ -17,7 +26,7 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
     if (class(rng_stream)[1] == "RNGClass") {
       rng_stream <- rng_stream$.getPointer()
     }
-    u <- rstream::r(rng_stream, size) * (maximum - minimum) + minimum
+    u <- rstream_r(rng_stream, size) * (maximum - minimum) + minimum
   } else {
     u <- stats::runif(n = size, min = minimum, max = maximum)
   }
@@ -36,7 +45,6 @@ rng_stream_runif <- function(size = 1, minimum = 0, maximum = 1, rng_stream = NU
 #' @return a vector of exponential variates of size `size`
 #' @keywords internal
 #' @export
-#' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
 #' rng_stream_rexp(10)
 rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
@@ -62,7 +70,6 @@ rng_stream_rexp <- function(size = 1, rate = 1, rng_stream = NULL) {
 #' @return a vector of counts of size `size`
 #' @keywords internal
 #' @export
-#' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
 #' rng_stream_rpois(10)
 rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
@@ -70,7 +77,7 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
     if (class(rng_stream)[1] == "RNGClass") {
       rng_stream <- rng_stream$.getPointer()
     }
-    p <- rstream::r(rng_stream, size)
+    p <- rstream_r(rng_stream, size)
     x <- stats::qpois(p = p, lambda = lambda)
   } else {
     x <- stats::rpois(n = size, lambda = lambda)
@@ -91,7 +98,6 @@ rng_stream_rpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
 #' @return a vector of non zero counts of size `size`
 #' @keywords internal
 #' @export
-#' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
 #' rng_stream_rztpois(10)
 rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
@@ -100,7 +106,7 @@ rng_stream_rztpois <- function(size = 1, lambda = 1, rng_stream = NULL) {
     if (class(rng_stream)[1] == "RNGClass") {
       rng_stream <- rng_stream$.getPointer()
     }
-    p <- rstream::r(rng_stream, size) * (1 - exp_minus_lambda) + exp_minus_lambda
+    p <- rstream_r(rng_stream, size) * (1 - exp_minus_lambda) + exp_minus_lambda
   } else {
     p <- stats::runif(n = size, min = exp_minus_lambda, max = 1)
   }
@@ -174,7 +180,6 @@ rbtpois <- function(n, lambda, k_min = 1, k_max = Inf) {
 #' @return a vector of counts (all in `[k_min, k_max]`) of size `size`
 #' @keywords internal
 #' @export
-#' @importClassesFrom rstream rstream.mrg32k3a
 #' @examples
 #' rng_stream_rbtpois(10, lambda = 1, k_min = 2)
 rng_stream_rbtpois <- function(size = 1, lambda = 1, k_min = 1, k_max = Inf, rng_stream = NULL) {

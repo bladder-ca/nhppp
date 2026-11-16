@@ -33,7 +33,7 @@ test_that("draw_intensity() works with linear majorization function", {
   l <- function(t) {
     return(2)
   }
-  S <- methods::new("rstream.mrg32k3a")
+  S <- new_mrg32k3a()
 
   # works with zero slope majorization function
   expect_no_error(withr::with_preserve_seed(

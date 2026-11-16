@@ -4,6 +4,10 @@ Last updated: 2026-11-15 (1.1.0 submitted to CRAN; awaiting acceptance)
 
 ## Where things stand
 
+- **Post-1.1.0 on `dev` (uncommitted, 2026-11-15):** version bumped to 1.1.0.9000; `rstream`
+  moved Imports -> Suggests (dropped vestigial `importClassesFrom`; guarded `rstream_r()`
+  helper; tests build streams via `helper-rstream.R` and skip without rstream).
+  `devtools::check()`: 0/0/0.
 - **On CRAN:** 1.0.5 (submitted 2026-04-21; tag `v1.0.5`, SHA 7a04d4f).
 - **Development:** `dev` at 1.0.5.9002. `refactor/sc-step-unify` and `origin/dev` point
   to the same commit. The work since 1.0.5 (see `NEWS.md`):

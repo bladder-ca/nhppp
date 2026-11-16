@@ -1,3 +1,8 @@
+# nhppp (development version)
+
+* `rstream` moved from Imports to Suggests; it is needed only when an
+  `rng_stream` object is supplied.
+
 # nhppp 1.1.0
 
 * Unify the sc-step C++ kernels; separate reporting from count conditioning
