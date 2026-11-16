@@ -2,6 +2,8 @@
 
 ## nhppp 1.1.0
 
+CRAN release: 2026-11-15
+
 - Unify the sc-step C++ kernels; separate reporting from count
   conditioning (report_first_K/report_last_K vs
   generate_at_least_K/generate_at_most_K); rename atmostB to budget_cap

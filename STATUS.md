@@ -1,6 +1,6 @@
 # STATUS
 
-Last updated: 2026-11-15 (1.1.0 submitted to CRAN; awaiting acceptance)
+Last updated: 2026-11-15 (PR \#66 merged; release prep on `main`)
 
 ## Where things stand
 
@@ -52,10 +52,9 @@ Reverse dependencies: none on CRAN. 7b. \[x\] Scalar samplers (`ppp`,
 `check --as-cran`: 0/0/0, 1667 tests pass. win-devel (resubmitted):
 fully clean.
 
-SUBMITTED 2026-11-15 17:38 UTC (SHA a0c62ed); confirmation email
-approved. `usethis::use_version("minor")` -\> 1.1.0 (done, 786a45e);
-`devtools::submit_cran()`; approve the confirmation email. Wait for the
-maintainer before doing this step.
+READY TO SUBMIT. `usethis::use_version("minor")` -\> 1.1.0 (done,
+786a45e); `devtools::submit_cran()`; approve the confirmation email.
+Wait for the maintainer before doing this step.
 
 After CRAN accepts: `use_github_release()`;
 `use_dev_version(push = TRUE)`.

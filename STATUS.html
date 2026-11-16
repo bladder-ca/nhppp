@@ -38,12 +38,12 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="logo.png" class="logo" alt=""><h1>STATUS</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/STATUS.md" class="external-link"><code>STATUS.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.1.0/STATUS.md" class="external-link"><code>STATUS.md</code></a></small>
     </div>
 
 <div id="status" class="section level1">
 
-<p>Last updated: 2026-11-15 (1.1.0 submitted to CRAN; awaiting acceptance)</p>
+<p>Last updated: 2026-11-15 (PR #66 merged; release prep on <code>main</code>)</p>
 <div class="section level2">
 <h2 id="where-things-stand">Where things stand<a class="anchor" aria-label="anchor" href="#where-things-stand"></a></h2>
 <ul><li>
@@ -73,7 +73,7 @@
 <li><label><input type="checkbox" checked><code>devtools::check_win_devel()</code>: only the version-suffix NOTE (goes away at 1.1.0).</label></li>
 <li><label><input type="checkbox" checked><code>cran-comments.md</code> rewritten for 1.1.0.</label></li>
 <li><label><input type="checkbox" checked>Reverse dependencies: none on CRAN. 7b. [x] Scalar samplers (<code>ppp</code>, <code>draw_sc_linear</code>, <code>draw_sc_loglinear</code>, <code>draw_cumulative_intensity</code>, <code>draw_intensity</code>) given the full option set (1d806d7). Local <code>check --as-cran</code>: 0/0/0, 1667 tests pass. win-devel (resubmitted): fully clean.</label></li>
-<li><label><input type="checkbox" checked>SUBMITTED 2026-11-15 17:38 UTC (SHA a0c62ed); confirmation email approved. <code>usethis::use_version("minor")</code> -&gt; 1.1.0 (done, 786a45e); <code>devtools::submit_cran()</code>; approve the confirmation email. Wait for the maintainer before doing this step.</label></li>
+<li><label><input type="checkbox">READY TO SUBMIT. <code>usethis::use_version("minor")</code> -&gt; 1.1.0 (done, 786a45e); <code>devtools::submit_cran()</code>; approve the confirmation email. Wait for the maintainer before doing this step.</label></li>
 <li><label><input type="checkbox">After CRAN accepts: <code>use_github_release()</code>; <code>use_dev_version(push = TRUE)</code>.</label></li>
 </ol></div>
 <div class="section level2">

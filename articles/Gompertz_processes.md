@@ -225,7 +225,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, inversion): 0.07 sec elapsed
+#> Method 2 (vectorized, inversion): 0.071 sec elapsed
 ```
 
 ### Comparisons
@@ -245,8 +245,8 @@ the package locally, it is probably the machine you are using to run
     know $`\lambda`$ and can get its majorizer $`\lambda_*`$ easily and
     fast.
 
-2.  Method 2 (vectorized, inversion): 0.07 sec elapsed. This approach is
-    many times faster that the previous one, but requires
+2.  Method 2 (vectorized, inversion): 0.071 sec elapsed. This approach
+    is many times faster that the previous one, but requires
     implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 
 ### Simulated times

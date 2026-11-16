@@ -71,7 +71,7 @@ Trikalinos</h4>
             
             <h4 data-toc-skip class="date">2025-08-20</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/vignettes/Gompertz_processes.Rmd" class="external-link"><code>vignettes/Gompertz_processes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.1.0/vignettes/Gompertz_processes.Rmd" class="external-link"><code>vignettes/Gompertz_processes.Rmd</code></a></small>
       <div class="d-none name"><code>Gompertz_processes.Rmd</code></div>
     </div>
 
@@ -338,7 +338,7 @@ The <code>nhppp</code> package can sample in this case using the
 <span>  <span class="op">)</span></span>
 <span><span class="op">]</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html" class="external-link">toc</a></span><span class="op">(</span>log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># timer end</span></span>
-<span><span class="co">#&gt; Method 2 (vectorized, inversion): 0.07 sec elapsed</span></span></code></pre></div>
+<span><span class="co">#&gt; Method 2 (vectorized, inversion): 0.071 sec elapsed</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="comparisons">Comparisons<a class="anchor" aria-label="anchor" href="#comparisons"></a>
@@ -362,9 +362,9 @@ always know
 and can get its majorizer
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mo>*</mo></msub><annotation encoding="application/x-tex">\lambda_*</annotation></semantics></math>
 easily and fast.</p></li>
-<li><p>Method 2 (vectorized, inversion): 0.07 sec elapsed. This approach
-is many times faster that the previous one, but requires implementations
-for
+<li><p>Method 2 (vectorized, inversion): 0.071 sec elapsed. This
+approach is many times faster that the previous one, but requires
+implementations for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Λ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Lambda^{-1}</annotation></semantics></math>.</p></li>
