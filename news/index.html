@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,9 +38,14 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.1.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="nhppp-111">nhppp 1.1.1<a class="anchor" aria-label="anchor" href="#nhppp-111"></a></h2>
+<ul><li>Removed <code>ppp_n()</code>, <code>ppp_orderstat()</code> and <code>ppp_sequential()</code> (deprecated since 0.5.0; use <code><a href="../reference/ppp_exactly_n.html">ppp_exactly_n()</a></code>, <code><a href="../reference/ppp2.html">ppp2()</a></code> and <code><a href="../reference/ppp.html">ppp()</a></code>) and the deprecated <code>rng_stream</code> argument of <code><a href="../reference/ppp_next_n.html">ppp_next_n()</a></code>.</li>
+<li>Removed the internal <code>rng_stream_*()</code> helpers; <code>rstream</code> is no longer a dependency. For stream-based reproducibility, set an <code>rstream</code> object as R’s global generator with <code><a href="https://rdrr.io/pkg/rstream/man/rstream.RNG.html" class="external-link">rstream::rstream.RNG()</a></code> (see <code><a href="../reference/nhppp-package.html">?nhppp</a></code>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="nhppp-110">nhppp 1.1.0<a class="anchor" aria-label="anchor" href="#nhppp-110"></a></h2><p class="text-muted">CRAN release: 2026-11-15</p>
 <ul><li>Unify the sc-step C++ kernels; separate reporting from count conditioning (report_first_K/report_last_K vs generate_at_least_K/generate_at_most_K); rename atmostB to budget_cap</li>

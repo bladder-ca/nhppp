@@ -5,7 +5,7 @@ Simulate n events from a homogeneous Poisson Point Process.
 ## Usage
 
 ``` r
-ppp_next_n(n = 1, rate = 1, t_min = 0, rng_stream = deprecated())
+ppp_next_n(n = 1, rate = 1, t_min = 0)
 ```
 
 ## Arguments
@@ -21,10 +21,6 @@ ppp_next_n(n = 1, rate = 1, t_min = 0, rng_stream = deprecated())
 - t_min:
 
   scalar for the starting time value
-
-- rng_stream:
-
-  **\[deprecated\]** an `rstream` object
 
 ## Value
 

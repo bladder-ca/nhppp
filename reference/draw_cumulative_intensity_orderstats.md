@@ -1,7 +1,6 @@
 # Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (order statistics method)
 
-Sample NHPPP times using the order statistics method, optionally using
-an `rstream` generator object.
+Sample NHPPP times using the order statistics method.
 
 ## Usage
 

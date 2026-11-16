@@ -1,5 +1,21 @@
 # Changelog
 
+## nhppp 1.1.1
+
+- Removed `ppp_n()`, `ppp_orderstat()` and `ppp_sequential()`
+  (deprecated since 0.5.0; use
+  [`ppp_exactly_n()`](https://bladder-ca.github.io/nhppp/reference/ppp_exactly_n.md),
+  [`ppp2()`](https://bladder-ca.github.io/nhppp/reference/ppp2.md) and
+  [`ppp()`](https://bladder-ca.github.io/nhppp/reference/ppp.md)) and
+  the deprecated `rng_stream` argument of
+  [`ppp_next_n()`](https://bladder-ca.github.io/nhppp/reference/ppp_next_n.md).
+- Removed the internal `rng_stream_*()` helpers; `rstream` is no longer
+  a dependency. For stream-based reproducibility, set an `rstream`
+  object as R’s global generator with
+  [`rstream::rstream.RNG()`](https://rdrr.io/pkg/rstream/man/rstream.RNG.html)
+  (see
+  [`?nhppp`](https://bladder-ca.github.io/nhppp/reference/nhppp-package.md)).
+
 ## nhppp 1.1.0
 
 CRAN release: 2026-11-15

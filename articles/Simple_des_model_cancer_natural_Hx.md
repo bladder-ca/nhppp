@@ -571,7 +571,7 @@ pop[
   )
 ]
 tictoc::toc()
-#> 0.111 sec elapsed
+#> 0.103 sec elapsed
 ```
 
 ## Some descriptives

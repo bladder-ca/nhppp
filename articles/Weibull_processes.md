@@ -197,7 +197,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 1 (vectorized, thinning): 1.062 sec elapsed
+#> Method 1 (vectorized, thinning): 0.984 sec elapsed
 ```
 
 ### Method 2: Vectorized sampling using $`\Lambda()`$ and $`\Lambda^{-1}()`$
@@ -223,7 +223,7 @@ pop[
   )
 ]
 tictoc::toc(log = TRUE) # timer end
-#> Method 2 (vectorized, inversion): 0.755 sec elapsed
+#> Method 2 (vectorized, inversion): 0.742 sec elapsed
 ```
 
 ### Comparisons
@@ -236,14 +236,14 @@ probably some virtual server with minimal resources. If you installed
 the package locally, it is probably the machine you are using to run
 `R`.
 
-1.  Method 1 (vectorized, thinning): 1.062 sec elapsed. This is the
+1.  Method 1 (vectorized, thinning): 0.984 sec elapsed. This is the
     slower approach – but still not bad for $`10^{6}`$ samples! It uses
     the thinning algorithm which is very flexible – it can accommodate
     very complex time varying intensity functions. You almost always
     know $`\lambda`$ and can get its majorizer $`\lambda_*`$ easily and
     fast.
 
-2.  Method 2 (vectorized, inversion): 0.755 sec elapsed. This approach
+2.  Method 2 (vectorized, inversion): 0.742 sec elapsed. This approach
     is many times faster that the previous one, but requires
     implementations for $`\Lambda`$ and $`\Lambda^{-1}`$.
 

@@ -195,9 +195,9 @@ knitr::kable(rbind(
 
 |          | population              | dense_ms | long_ms |
 |:---------|:------------------------|---------:|--------:|
-| elapsed  | homogeneous             |       22 |      17 |
-| elapsed1 | mildly heterogeneous    |       26 |      17 |
-| elapsed2 | extremely heterogeneous |       69 |      16 |
+| elapsed  | homogeneous             |       17 |      17 |
+| elapsed1 | mildly heterogeneous    |       25 |      17 |
+| elapsed2 | extremely heterogeneous |       68 |      16 |
 
 ## The conditioned samplers work the same way
 

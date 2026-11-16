@@ -1,9 +1,27 @@
 # STATUS
 
-Last updated: 2026-11-15 (PR \#66 merged; release prep on `main`)
+Last updated: 2026-11-15 (1.1.1 prepared; win-devel submitted, awaiting
+result)
 
 ## Where things stand
 
+- **1.1.1 (patch, prepared 2026-11-15; PR \#67 dev-\>main):** rstream
+  dropped as a dependency. Removed deprecated `ppp_n()`,
+  `ppp_orderstat()`, `ppp_sequential()`, the `ppp_next_n(rng_stream)`
+  argument, and all `rng_stream_*()` helpers
+  ([`rztpois()`](https://bladder-ca.github.io/nhppp/reference/rztpois.md)/[`rbtpois()`](https://bladder-ca.github.io/nhppp/reference/rbtpois.md)
+  kept, now in `R/utils-tpois.R`). Stream-based CRN is the user’s job
+  via
+  [`rstream::rstream.RNG()`](https://rdrr.io/pkg/rstream/man/rstream.RNG.html)
+  (verified to drive R and C++ samplers); noted in
+  [`?nhppp`](https://bladder-ca.github.io/nhppp/reference/nhppp-package.md).
+  No CRAN reverse deps. `devtools::check()`: 0/0/0. `lifecycle` kept
+  (decision 2026-11-15). Release prep: url_check clean; README rebuilt;
+  check(remote, manual): 0/0/2 notes (days since last update = 0; local
+  HTML Tidy). win-devel submitted; result pending by email. Next:
+  confirm win-devel, merge PR \#67, `usethis::use_github_release()` for
+  1.1.0 (CRAN-SUBMISSION still points at a0c62ed, no v1.1.0 tag yet),
+  then `devtools::submit_cran()`.
 - **On CRAN:** 1.0.5 (submitted 2026-04-21; tag `v1.0.5`, SHA 7a04d4f).
 - **Development:** `dev` at 1.0.5.9002. `refactor/sc-step-unify` and
   `origin/dev` point to the same commit. The work since 1.0.5 (see
@@ -52,9 +70,10 @@ Reverse dependencies: none on CRAN. 7b. \[x\] Scalar samplers (`ppp`,
 `check --as-cran`: 0/0/0, 1667 tests pass. win-devel (resubmitted):
 fully clean.
 
-READY TO SUBMIT. `usethis::use_version("minor")` -\> 1.1.0 (done,
-786a45e); `devtools::submit_cran()`; approve the confirmation email.
-Wait for the maintainer before doing this step.
+SUBMITTED 2026-11-15 17:38 UTC (SHA a0c62ed); confirmation email
+approved. `usethis::use_version("minor")` -\> 1.1.0 (done, 786a45e);
+`devtools::submit_cran()`; approve the confirmation email. Wait for the
+maintainer before doing this step.
 
 After CRAN accepts: `use_github_release()`;
 `use_dev_version(push = TRUE)`.

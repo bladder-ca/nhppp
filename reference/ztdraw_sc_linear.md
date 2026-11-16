@@ -1,7 +1,7 @@
 # Simulate `size` samples from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) with linear intensity function
 
 Sample zero-truncated NHPPP times from a linear intensity function using
-the inversion method, optionally using an `rstream` generator
+the inversion method.
 
 ## Usage
 

@@ -14,6 +14,15 @@ density function; and the thinning of a majorizing NHPPP via an
 acceptance-rejection scheme (Lewis PAW, Shedler, GS (1979)
 [doi:10.1002/nav.3800260304](https://doi.org/10.1002/nav.3800260304) ).
 
+## Random numbers
+
+All samplers, in R and in C++, draw from R's global random number
+generator, so [`set.seed()`](https://rdrr.io/r/base/Random.html) makes
+results reproducible. For stream-based reproducibility or common random
+numbers, install a stream generator as R's global generator before
+sampling, e.g. with the `rstream` package:
+`s <- methods::new("rstream.mrg32k3a"); rstream::rstream.RNG(s)`.
+
 ## See also
 
 Useful links:

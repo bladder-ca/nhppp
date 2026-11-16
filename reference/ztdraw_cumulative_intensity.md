@@ -1,7 +1,6 @@
 # Simulate from a zero-truncated non homogeneous Poisson Point Process (zt-NHPPP) from (t_min, t_max) (order statistics method)
 
-Sample zero-truncated NHPPP times using the order statistics method,
-optionally using an `rstream` generator
+Sample zero-truncated NHPPP times using the order statistics method.
 
 ## Usage
 

@@ -1,7 +1,6 @@
 # Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) (inversion method)
 
-Sample NHPPP times using the inversion method, optionally using an
-`rstream` generator object
+Sample NHPPP times using the inversion method.
 
 ## Usage
 

@@ -1,7 +1,7 @@
 # Special case: Simulate from a non homogeneous Poisson Point Process (NHPPP) from (t_min, t_max) with log-linear intensity function (inversion method)
 
 Sample NHPPP times from an log linear intensity function using the
-inversion method, optionally using an `rstream` generator
+inversion method.
 
 ## Usage
 

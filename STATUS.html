@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">nhppp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,15 +38,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="logo.png" class="logo" alt=""><h1>STATUS</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/v1.1.0/STATUS.md" class="external-link"><code>STATUS.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bladder-ca/nhppp/blob/main/STATUS.md" class="external-link"><code>STATUS.md</code></a></small>
     </div>
 
 <div id="status" class="section level1">
 
-<p>Last updated: 2026-11-15 (PR #66 merged; release prep on <code>main</code>)</p>
+<p>Last updated: 2026-11-15 (1.1.1 prepared; win-devel submitted, awaiting result)</p>
 <div class="section level2">
 <h2 id="where-things-stand">Where things stand<a class="anchor" aria-label="anchor" href="#where-things-stand"></a></h2>
 <ul><li>
+<strong>1.1.1 (patch, prepared 2026-11-15; PR #67 dev-&gt;main):</strong> rstream dropped as a dependency. Removed deprecated <code>ppp_n()</code>, <code>ppp_orderstat()</code>, <code>ppp_sequential()</code>, the <code>ppp_next_n(rng_stream)</code> argument, and all <code>rng_stream_*()</code> helpers (<code><a href="reference/rztpois.html">rztpois()</a></code>/<code><a href="reference/rbtpois.html">rbtpois()</a></code> kept, now in <code>R/utils-tpois.R</code>). Stream-based CRN is the user’s job via <code><a href="https://rdrr.io/pkg/rstream/man/rstream.RNG.html" class="external-link">rstream::rstream.RNG()</a></code> (verified to drive R and C++ samplers); noted in <code><a href="reference/nhppp-package.html">?nhppp</a></code>. No CRAN reverse deps. <code>devtools::check()</code>: 0/0/0. <code>lifecycle</code> kept (decision 2026-11-15). Release prep: url_check clean; README rebuilt; check(remote, manual): 0/0/2 notes (days since last update = 0; local HTML Tidy). win-devel submitted; result pending by email. Next: confirm win-devel, merge PR #67, <code>usethis::use_github_release()</code> for 1.1.0 (CRAN-SUBMISSION still points at a0c62ed, no v1.1.0 tag yet), then <code>devtools::submit_cran()</code>.</li>
+<li>
 <strong>On CRAN:</strong> 1.0.5 (submitted 2026-04-21; tag <code>v1.0.5</code>, SHA 7a04d4f).</li>
 <li>
 <strong>Development:</strong> <code>dev</code> at 1.0.5.9002. <code>refactor/sc-step-unify</code> and <code>origin/dev</code> point to the same commit. The work since 1.0.5 (see <code>NEWS.md</code>):
@@ -73,7 +75,7 @@
 <li><label><input type="checkbox" checked><code>devtools::check_win_devel()</code>: only the version-suffix NOTE (goes away at 1.1.0).</label></li>
 <li><label><input type="checkbox" checked><code>cran-comments.md</code> rewritten for 1.1.0.</label></li>
 <li><label><input type="checkbox" checked>Reverse dependencies: none on CRAN. 7b. [x] Scalar samplers (<code>ppp</code>, <code>draw_sc_linear</code>, <code>draw_sc_loglinear</code>, <code>draw_cumulative_intensity</code>, <code>draw_intensity</code>) given the full option set (1d806d7). Local <code>check --as-cran</code>: 0/0/0, 1667 tests pass. win-devel (resubmitted): fully clean.</label></li>
-<li><label><input type="checkbox">READY TO SUBMIT. <code>usethis::use_version("minor")</code> -&gt; 1.1.0 (done, 786a45e); <code>devtools::submit_cran()</code>; approve the confirmation email. Wait for the maintainer before doing this step.</label></li>
+<li><label><input type="checkbox" checked>SUBMITTED 2026-11-15 17:38 UTC (SHA a0c62ed); confirmation email approved. <code>usethis::use_version("minor")</code> -&gt; 1.1.0 (done, 786a45e); <code>devtools::submit_cran()</code>; approve the confirmation email. Wait for the maintainer before doing this step.</label></li>
 <li><label><input type="checkbox">After CRAN accepts: <code>use_github_release()</code>; <code>use_dev_version(push = TRUE)</code>.</label></li>
 </ol></div>
 <div class="section level2">
