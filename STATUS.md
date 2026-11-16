@@ -9,7 +9,7 @@ Last updated: 2026-11-15 (1.1.1 prepared; win-devel submitted, awaiting result)
   `ppp_next_n(rng_stream)` argument, and all `rng_stream_*()` helpers (`rztpois()`/`rbtpois()`
   kept, now in `R/utils-tpois.R`). Stream-based CRN is the user's job via
   `rstream::rstream.RNG()` (verified to drive R and C++ samplers); noted in `?nhppp`.
-  No CRAN reverse deps. `devtools::check()`: 0/0/0. `lifecycle` is now unused (open item).
+  No CRAN reverse deps. `devtools::check()`: 0/0/0. `lifecycle` kept (decision 2026-11-15).
   Release prep: url_check clean; README rebuilt; check(remote, manual): 0/0/2 notes
   (days since last update = 0; local HTML Tidy). win-devel submitted; result pending by email.
   Next: confirm win-devel, merge PR #67, `usethis::use_github_release()` for 1.1.0 (CRAN-SUBMISSION
