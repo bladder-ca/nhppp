@@ -27,7 +27,7 @@ ztdraw_intensity_step <- function(lambda,
 
   while (TRUE) {
     candidate_times <- draw_sc_step(lambda_vector = majorizer_vector, time_breaks = time_breaks, atmost1 = FALSE, atleast1 = TRUE)
-    u <- rng_stream_runif(size = length(candidate_times), minimum = 0, maximum = 1)
+    u <- stats::runif(n = length(candidate_times))
     acceptance_prob <- lambda(candidate_times) / lambda_maj_fun(candidate_times)
     if (!all(acceptance_prob <= 1 + 10^-6)) stop("lambda > lambda_maj\n")
     candidate_times <- candidate_times[u < acceptance_prob]

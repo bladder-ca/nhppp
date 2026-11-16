@@ -30,7 +30,6 @@ a vector of event times (t_); if no events realize,
 a vector of length 0
 }
 \description{
-Sample NHPPP times using the inversion method,
-optionally using an \code{rstream} generator object
+Sample NHPPP times using the inversion method.
 }
 \keyword{internal}

@@ -46,6 +46,5 @@ most K events.}
 a vector of event times of the conditioned process
 }
 \description{
-Sample zero-truncated NHPPP times using the order statistics method,
-optionally using an \code{rstream} generator
+Sample zero-truncated NHPPP times using the order statistics method.
 }

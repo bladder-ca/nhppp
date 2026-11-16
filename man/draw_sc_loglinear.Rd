@@ -52,8 +52,7 @@ a vector of length 0
 }
 \description{
 Sample NHPPP times from an log linear intensity function
-using the inversion method, optionally using an \code{rstream}
-generator
+using the inversion method.
 }
 \examples{
 x <- draw_sc_loglinear(intercept = 0, slope = 0.2, t_min = 0, t_max = 10)

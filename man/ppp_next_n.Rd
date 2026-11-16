@@ -4,7 +4,7 @@
 \alias{ppp_next_n}
 \title{Simulate n events from a homogeneous Poisson Point Process.}
 \usage{
-ppp_next_n(n = 1, rate = 1, t_min = 0, rng_stream = deprecated())
+ppp_next_n(n = 1, rate = 1, t_min = 0)
 }
 \arguments{
 \item{n}{scalar number of samples}
@@ -12,8 +12,6 @@ ppp_next_n(n = 1, rate = 1, t_min = 0, rng_stream = deprecated())
 \item{rate}{scalar instantaneous rate}
 
 \item{t_min}{scalar for the starting time value}
-
-\item{rng_stream}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} an \code{rstream} object}
 }
 \value{
 a vector with event times t (starting from t_min)
