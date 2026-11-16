@@ -1,4 +1,4 @@
-# nhppp (development version)
+# nhppp 1.1.1
 
 * Removed `ppp_n()`, `ppp_orderstat()` and `ppp_sequential()` (deprecated since
   0.5.0; use `ppp_exactly_n()`, `ppp2()` and `ppp()`) and the deprecated
